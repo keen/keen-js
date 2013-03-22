@@ -1,9 +1,9 @@
 describe("keen", function() {
-  
+
   describe("addEvent", function() {
     beforeEach(function() {
       this.server = sinon.fakeServer.create();
-      
+
       //must go after fake server
       //this test targets CORS-only browsers
       window.XMLHttpRequest.prototype.withCredentials = false;
