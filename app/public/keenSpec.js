@@ -1,65 +1,44 @@
-describe("keen", function() {
+describe("addEvent using CORS and fake Server", function() {
+  beforeEach(function() {
+    jasmine.util.extend(this, new KeenSpecHelper());
 
-  describe("addEvent", function() {
-    beforeEach(function() {
-      this.server = sinon.fakeServer.create();
+    this.server = sinon.fakeServer.create();
 
-      //must go after fake server
-      //this test targets CORS-only browsers
-      window.XMLHttpRequest.prototype.withCredentials = false;
+    var self = this;
+    this.respondWith = function(code, body) {
+      self.server.respondWith("POST", this.postUrl,
+        [code, { "Content-Type": "application/json"}, body]);
+    }
 
-      this.projectId = "fdjlskfjdk";
-      this.keenUrl = "http://web.kn:9999";
-      this.eventCollection = "jasmine";
-      this.postUrl =
-        this.keenUrl + "/3.0/projects/" + this.projectId + "/events/" + this.eventCollection;
+    //must go after fake server
+    //this test targets CORS-only browsers
+    window.XMLHttpRequest.prototype.withCredentials = false;
 
-      Keen.configure(this.projectId, this.apiKey, {
-        keenUrl: this.keenUrl
-      });
-    });
-
-    afterEach(function() {
-      this.server.restore();
-    });
-
-    it("should post to the API using xhr where CORS is supported", function() {
-
-      var callback = sinon.spy();
-      var response = "{\"created\": true }";
-
-      this.server.respondWith("POST", this.postUrl,
-        [200, { "Content-Type": "application/json"}, response]);
-
-      Keen.addEvent(this.eventCollection, {
-        username: "bob", color: "blue"
-      }, callback);
-
-      this.server.respond();
-
-      expect(callback).toHaveBeenCalledOnce();
-      expect(callback).toHaveBeenCalledWith(JSON.parse(response));
-    });
-
-    it("should call the error callback on error", function() {
-
-      window.XMLHttpRequest.prototype.withCredentials = false;
-
-      var errback = sinon.spy();
-      var response = "{\"error\": true }";
-
-      this.server.respondWith("POST", this.postUrl,
-          [500, { "Content-Type": "application/json"}, response]);
-
-      Keen.addEvent(this.eventCollection, {
-        username: "bob",
-        color: "blue"
-      }, null, errback);
-
-      this.server.respond();
-
-      expect(errback).toHaveBeenCalledOnce();
+    Keen.configure(this.projectId, this.apiKey, {
+      keenUrl: this.keenUrl
     });
   });
 
+  afterEach(function() {
+    this.server.restore();
+  });
+
+  it("should post to the API using xhr where CORS is supported", function() {
+    var callback = sinon.spy();
+    this.respondWith(200, this.successfulResponse);
+    Keen.addEvent(this.eventCollection, this.eventProperties, callback)
+    this.server.respond();
+    expect(this.server.requests[0].requestBody).toEqual(JSON.stringify(this.eventProperties));
+    expect(callback).toHaveBeenCalledOnce();
+    expect(callback).toHaveBeenCalledWith(JSON.parse(this.successfulResponse));
+  });
+
+  it("should call the error callback on error", function() {
+    var errback = sinon.spy();
+    this.respondWith(500, this.errorResponse);
+    Keen.addEvent(this.eventCollection, this.eventProperties, null, errback)
+    this.server.respond();
+    expect(this.server.requests[0].requestBody).toEqual(JSON.stringify(this.eventProperties));
+    expect(errback).toHaveBeenCalledOnce();
+  });
 });
