@@ -1,3 +1,48 @@
-<h1>keen-js examples</h1>
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Keen IO JS SDK Test</title>
 
-<script src="keen.js"></script>
+  <link rel="stylesheet" type="text/css" href="lib/jasmine.css">
+  <script type="text/javascript" src="lib/jasmine.js"></script>
+  <script type="text/javascript" src="lib/jasmine-html.js"></script>
+  <script type="text/javascript" src="lib/sinon.js"></script>
+  <script type="text/javascript" src="lib/sinon-ie.js"></script>
+  <script type="text/javascript" src="lib/jasmine-sinon.js"></script>
+
+  <script type="text/javascript" src="src/keen.js"></script>
+  <script type="text/javascript" src="keenSpec.js"></script>
+
+  <script type="text/javascript">
+    (function() {
+      var jasmineEnv = jasmine.getEnv();
+      jasmineEnv.updateInterval = 1000;
+
+      var htmlReporter = new jasmine.HtmlReporter();
+
+      jasmineEnv.addReporter(htmlReporter);
+
+      jasmineEnv.specFilter = function(spec) {
+        return htmlReporter.specFilter(spec);
+      };
+
+      var currentWindowOnload = window.onload;
+
+      window.onload = function() {
+        if (currentWindowOnload) {
+          currentWindowOnload();
+        }
+        execJasmine();
+      };
+
+      function execJasmine() {
+        jasmineEnv.execute();
+      }
+
+    })();
+ </script>
+</head>
+<body>
+</body>
+</html>
+
