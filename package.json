@@ -1,10 +1,14 @@
 {
-  "name": "keen-js",
+  "name": "keen",
   "version": "0.1.0",
   "dependencies": {
-    "express":"3.1.0"
+    "express": "3.1.0"
   },
   "engines": {
     "node": "0.8.x"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-uglify": "~0.2.0"
   }
 }
