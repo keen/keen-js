@@ -2,8 +2,10 @@ describe("addEvent integration spec", function() {
   beforeEach(function() {
     jasmine.util.extend(this, new KeenSpecHelper());
 
-    Keen.configure("a8fa7efa70bb4cf0a7e83f3e5a05c9a3",
-                   "E34DE3E7BB71C701F3C97FEACEB06E49");
+    Keen.configure("2b3e5512f3dd47b0ae7020d93a9a2fbb",
+                   "354B2FF5058361CECADBE5F2AD434418", {
+                     keenUrl: "https://staging-api.keen.io"
+                   });
   });
 
   it("should post to the API and run success callback for good data", function() {
@@ -37,7 +39,7 @@ describe("addEvent integration spec", function() {
 
     waitsFor(function() { return proxyCalled; }, "Proxy never called", 1000);
 
-    runs(function () {
+    runs(function() {
       expect(callback).toHaveBeenCalledOnce();
     });
   });
