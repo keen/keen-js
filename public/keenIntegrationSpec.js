@@ -20,7 +20,7 @@ describe("addEvent integration spec", function() {
 
     Keen.addEvent(this.eventCollection, this.eventProperties, proxy, errback)
 
-    waitsFor(function() { return proxyCalled; }, "Proxy never called", 1000);
+    waitsFor(function() { return proxyCalled; }, "Proxy never called", 3000);
 
     runs(function () {
       expect(callback).toHaveBeenCalledOnce();
@@ -44,7 +44,7 @@ describe("addEvent integration spec", function() {
     });
     Keen.addEvent(this.eventCollection, this.eventProperties, callback, proxy)
 
-    waitsFor(function() { return proxyCalled; }, "Proxy never called", 1000);
+    waitsFor(function() { return proxyCalled; }, "Proxy never called", 3000);
 
     runs(function() {
       expect(errback).toHaveBeenCalledOnce();
