@@ -337,7 +337,7 @@ var Keen = Keen || {};
 (function() {
 
     // deal with IE not supporting console.log
-    var alertFallback = true;
+    var alertFallback = false; //only use in dev
     if (typeof console === "undefined" || typeof console.log === "undefined") {
         console = {};
         if (alertFallback) {
