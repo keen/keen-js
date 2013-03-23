@@ -527,7 +527,7 @@ var Keen = Keen || {};
      */
     Keen.getEventCollections = function(success, error) {
         var url = this.client.getKeenUrl("/events");
-        this.client.getResource(url, success, error);
+        this.client.getJSON(url, success, error);
     };
 
     /**
@@ -538,7 +538,7 @@ var Keen = Keen || {};
      */
     Keen.getEventCollectionProperties = function (eventCollection, success, error) {
         var url = this.client.getKeenUrl("/events/" + eventCollection);
-        this.client.getResource(url, success, error);
+        this.client.getJSON(url, success, error);
     };
 
     /**
@@ -822,21 +822,16 @@ var Keen = Keen || {};
     }
 
     /**
-     * Asynchronously sends a HTTP request, JSON-encoding the body if applicable, and invokes the success
-     * callback when the HTTP request succeeds with the JSON-decoded response body or invokes the error
-     * callback when the HTTP request fails with the XHR object and the exception, if applicable.
+     * Asynchronously sends an HTTP GET via XHR or JSONP
      *
      * Automatically sets the Content-Type of the request to "application/json" and sets the Authorization
      * header.
      *
-     * @param method what HTTP method to use
      * @param url what URL to send the request to
-     * @param headers an object with headers
-     * @param body the body of the HTTP request
      * @param success optional callback for success
      * @param error optional callback for error
      */
-    Keen.Client.prototype.getResource = function (url, success, error) {
+    Keen.Client.prototype.getJSON = function (url, success, error) {
       if (supportsXhr()) {
         sendXhr("GET", url, null, null, this.apiKey, success, error);
       } else {
@@ -1697,7 +1692,7 @@ var Keen = Keen || {};
                     console.log(xhr);
                     console.log(e);
                 }
-                this.client.getResource(url, handleResponse, handleError);
+                this.client.getJSON(url, handleResponse, handleError);
             }
         },
 
