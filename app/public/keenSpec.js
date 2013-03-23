@@ -22,22 +22,24 @@ describe("addEvent using CORS and fake Server", function() {
     });
 
     it("should post to the API using xhr where CORS is supported", function() {
-      var callback = sinon.spy();
+      var callback = sinon.spy(), errback = sinon.spy();
       this.respondWith(200, this.successfulResponse);
-      Keen.addEvent(this.eventCollection, this.eventProperties, callback)
+      Keen.addEvent(this.eventCollection, this.eventProperties, callback, errback)
       this.server.respond();
       expect(this.server.requests[1].requestBody).toEqual(JSON.stringify(this.eventProperties));
       expect(callback).toHaveBeenCalledOnce();
+      expect(errback).not.toHaveBeenCalledOnce();
       expect(callback).toHaveBeenCalledWith(JSON.parse(this.successfulResponse));
     });
 
     it("should call the error callback on error", function() {
-      var errback = sinon.spy();
+      var callback = sinon.spy(), errback = sinon.spy();
       this.respondWith(500, this.errorResponse);
-      Keen.addEvent(this.eventCollection, this.eventProperties, null, errback)
+      Keen.addEvent(this.eventCollection, this.eventProperties, callback, errback)
       this.server.respond();
       expect(this.server.requests[1].requestBody).toEqual(JSON.stringify(this.eventProperties));
       expect(errback).toHaveBeenCalledOnce();
+      expect(callback).not.toHaveBeenCalledOnce();
     });
   });
 
