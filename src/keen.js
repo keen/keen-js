@@ -782,7 +782,10 @@ var Keen = Keen || {};
           callbackName += "a";
       }
 
+      var loaded = false;
       window[callbackName] = function (response) {
+          loaded = true;
+
           if (success && response) {
               success(response);
           }
@@ -797,9 +800,23 @@ var Keen = Keen || {};
       script.src = url;
       document.getElementsByTagName("head")[0].appendChild(script);
 
+      // for early IE w/ no onerror event
+      script.onreadystatechange = function() {
+        if (loaded === false && this.readyState === "loaded") {
+          loaded = true;
+          if (error) {
+            error();
+          }
+        }
+      }
+
+      // non-ie, etc
       script.onerror = function() {
-        if (error) {
-          error();
+        if (loaded === false) { // on IE9 both onerror and onreadystatechange are called
+          loaded = true;
+          if (error) {
+            error();
+          }
         }
       }
     }
