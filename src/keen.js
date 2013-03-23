@@ -527,7 +527,7 @@ var Keen = Keen || {};
      */
     Keen.getEventCollections = function(success, error) {
         var url = this.client.getKeenUrl("/events");
-        this.client.sendHttpRequest("GET", url, null, null, true, success, error);
+        this.client.getResource(url, success, error);
     };
 
     /**
@@ -538,7 +538,7 @@ var Keen = Keen || {};
      */
     Keen.getEventCollectionProperties = function (eventCollection, success, error) {
         var url = this.client.getKeenUrl("/events/" + eventCollection);
-        this.client.sendHttpRequest("GET", url, null, null, true, success, error);
+        this.client.getResource(url, success, error);
     };
 
     /**
@@ -694,7 +694,15 @@ var Keen = Keen || {};
             }
         }
 
-        this.sendHttpRequest("POST", url, null, newEvent, false, success, error);
+        if (supportsXhr()) {
+          sendXhr("POST", url, null, newEvent, null, success, error);
+        } else {
+          var jsonBody = JSON.stringify(newEvent);
+          var base64Body = Keen.Base64.encode(jsonBody);
+          url = url + "?data=" + base64Body;
+          url = url + "&modified=" + new Date().getTime();
+          sendJsonpRequest(url, null, success, error);
+        }
     };
 
     /**
@@ -705,6 +713,96 @@ var Keen = Keen || {};
     Keen.Client.prototype.getKeenUrl = function (path) {
         return this.keenUrl + "/3.0/projects/" + this.projectToken + path;
     };
+
+    function supportsXhr() {
+      return "withCredentials" in new XMLHttpRequest();
+    }
+
+    function sendXhr(method, url, headers, body, apiKey, success, error) {
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+          if (xhr.readyState == 4) {
+              if (xhr.status >= 200 && xhr.status < 300) {
+                  var response;
+                  try {
+                      response = JSON.parse(xhr.responseText);
+                  } catch (e) {
+                      console.log("Could not JSON parse HTTP response: " + xhr.responseText);
+                      if (error) {
+                          error(xhr, e);
+                      }
+                  }
+
+                  if (response) {
+                      if (success) {
+                          success(response);
+                      }
+                  }
+              } else {
+                  console.log("HTTP request failed.");
+                  if (error) {
+                      error(xhr, null);
+                  }
+              }
+          }
+      };
+
+      xhr.open(method, url, true);
+
+      if (apiKey){
+          xhr.setRequestHeader("Authorization", apiKey);
+      }
+      if (body) {
+          xhr.setRequestHeader("Content-Type", "application/json");
+      }
+      if (headers) {
+          for (var headerName in headers) {
+              if (headers.hasOwnProperty(headerName)) {
+                  xhr.setRequestHeader(headerName, headers[headerName]);
+              }
+          }
+      }
+
+      var toSend = body ? JSON.stringify(body) : null;
+      xhr.send(toSend);
+    }
+
+    function sendJsonpRequest(url, apiKey, success, error) {
+      // have to fall back to JSONP for GET and sending data base64 encoded for POST
+
+      // add api_key if it's not there
+      if (apiKey && url.indexOf("api_key") < 0) {
+          var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
+          url = url + delimiterChar + "api_key=" + apiKey;
+      }
+
+      // do JSONP
+      var callbackName = "keenJSONPCallback" + new Date().getTime();
+      while (callbackName in window) {
+          callbackName += "a";
+      }
+
+      window[callbackName] = function (response) {
+          if (success && response) {
+              success(response);
+          }
+
+          // now remove this from the namespace
+          window[callbackName] = undefined;
+      };
+
+      url = url + "&jsonp=" + callbackName;
+      var script = document.createElement("script");
+      script.id = "keen-jsonp";
+      script.src = url;
+      document.getElementsByTagName("head")[0].appendChild(script);
+
+      script.onerror = function() {
+        if (error) {
+          error();
+        }
+      }
+    }
 
     /**
      * Asynchronously sends a HTTP request, JSON-encoding the body if applicable, and invokes the success
@@ -721,95 +819,12 @@ var Keen = Keen || {};
      * @param success optional callback for success
      * @param error optional callback for error
      */
-    Keen.Client.prototype.sendHttpRequest = function (method, url, headers, body, auth_required, success, error) {
-        var xhr = new XMLHttpRequest();
-        if (xhr && "withCredentials" in xhr) {
-            // we can use an XHR with CORS, hooray!
-            xhr.onreadystatechange = function () {
-                if (xhr.readyState == 4) {
-                    if (xhr.status >= 200 && xhr.status < 300) {
-                        var response;
-                        try {
-                            response = JSON.parse(xhr.responseText);
-                        } catch (e) {
-                            console.log("Could not JSON parse HTTP response: " + xhr.responseText);
-                            if (error) {
-                                error(xhr, e);
-                            }
-                        }
-
-                        if (response) {
-                            if (success) {
-                                success(response);
-                            }
-                        }
-                    } else {
-                        console.log("HTTP request failed.");
-                        if (error) {
-                            error(xhr, null);
-                        }
-                    }
-                }
-            };
-
-            xhr.open(method, url, true);
-            if(auth_required){
-                xhr.setRequestHeader("Authorization", this.apiKey);
-            }
-            if (body) {
-                xhr.setRequestHeader("Content-Type", "application/json");
-            }
-            if (headers) {
-                for (var headerName in headers) {
-                    if (headers.hasOwnProperty(headerName)) {
-                        xhr.setRequestHeader(headerName, headers[headerName]);
-                    }
-                }
-            }
-            var toSend = body ? JSON.stringify(body) : null;
-            xhr.send(toSend);
-        } else {
-            // have to fall back to JSONP for GET and sending data base64 encoded for POST
-
-            // add api_key if it's not there
-            if (auth_required && url.indexOf("api_key") < 0) {
-                var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
-                url = url + delimiterChar + "api_key=" + this.apiKey;
-            }
-            if (method === "GET") {
-                // do JSONP
-                var callbackName = "keenJSONPCallback" + new Date().getTime();
-                while (callbackName in window) {
-                    callbackName += "a";
-                }
-
-                window[callbackName] = function (response) {
-                    if (success && response) {
-                        success(response);
-                    }
-
-                    // now remove this from the namespace
-                    window[callbackName] = undefined;
-                };
-
-                url = url + "&jsonp=" + callbackName;
-                var script = document.createElement("script");
-                script.src = url;
-                document.getElementsByTagName("head")[0].appendChild(script);
-            } else {
-                // encode data into query string and append
-                // we'll try to do a GET with encoded data in the query string
-                var jsonBody = JSON.stringify(body);
-                var base64Body = Keen.Base64.encode(jsonBody);
-                url = url + "&data=" + base64Body;
-                url = url + "&modified=" + new Date().getTime();
-                var img = document.createElement("img");
-                img.src = url;
-                img.setAttribute("height", "1");
-                img.setAttribute("width", "1");
-                document.body.appendChild(img);
-            }
-        }
+    Keen.Client.prototype.getResource = function (url, success, error) {
+      if (supportsXhr()) {
+        sendXhr("GET", url, null, null, this.apiKey, success, error);
+      } else {
+        sendJsonpRequest(url, this.apiKey, success, error);
+      }
     };
 
     /**
@@ -1665,7 +1680,7 @@ var Keen = Keen || {};
                     console.log(xhr);
                     console.log(e);
                 }
-                this.client.sendHttpRequest("GET", url, null, null, true, handleResponse, handleError);
+                this.client.getResource(url, handleResponse, handleError);
             }
         },
 
