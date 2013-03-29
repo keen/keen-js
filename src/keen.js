@@ -336,7 +336,7 @@ var Keen = Keen || {};
 
 (function() {
 
-    // deal with IE not supporting console.log
+    // deal with some browsers not supporting console.log
     var alertFallback = false; //only use in dev
     if (typeof console === "undefined" || typeof console.log === "undefined") {
         console = {};
@@ -1256,7 +1256,7 @@ var Keen = Keen || {};
             dataTable.addColumn("number", this.getLabel());
             dataTable.addRows(_.map(this.data, function(item) {
                 var date = parseDate(item.timeframe.start);
-                var dateString = createDateString(date, this.query.attributes.interval);
+                var dateString = createDateString(date, this.query.attributes.interval, this.query);
                 return [dateString, item.value];
             }, this));
 
@@ -2182,10 +2182,16 @@ var Keen = Keen || {};
      * Creates the string used to label dates in LineCharts
      *
      * @param date a Javascript Date object
-     * @param interval the interval of the Series (eg: "daily", "weekly", "hourly")
+     * @param interval the interval of the Series (eg: "daily", "weekly", "hourly", "monthly")
      */
-    function createDateString(date, interval) {
+    function createDateString(date, interval, query) {
         var dateString = "";
+
+        //We first need to make sure the date has the same timezone offset as the query.
+        if(query != undefined && query.attributes != undefined && query.attributes.timezone != undefined){
+          //Shift the date's timezone by the difference between the two.
+          date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + (query.attributes.timezone/60))
+        }
 
         if(interval == "daily" || interval == "weekly") {
             dateString += 1 + date.getMonth();
@@ -2213,6 +2219,16 @@ var Keen = Keen || {};
 
         return dateString;
     }
+
+    Date.prototype.stdTimezoneOffset = function() {
+        var jan = new Date(this.getFullYear(), -1, 1);
+        var jul = new Date(this.getFullYear(), 6, 1);
+        return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+    };
+
+    Date.prototype.dst = function() {
+        return this.getTimezoneOffset() < this.stdTimezoneOffset();
+    };
 
     /**
      * Parses an ISO-8601 date into a vanilla javascript Date object.
