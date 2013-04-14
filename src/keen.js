@@ -1256,7 +1256,10 @@ var Keen = Keen || {};
             dataTable.addColumn("number", this.getLabel());
             dataTable.addRows(_.map(this.data, function(item) {
                 var date = parseDate(item.timeframe.start);
-                var dateString = createDateString(date, this.query.attributes.interval, this.query);
+                var dateString = createDateString(date, this.query.attributes.interval, this.query, response);
+                if(item.value == null){
+                    item.value = 0;
+                }
                 return [dateString, item.value];
             }, this));
 
@@ -1307,7 +1310,8 @@ var Keen = Keen || {};
                 fontColor: "black",
                 xAxisLabel: null,
                 yAxisLabel: null,
-                xAxisLabelAngle: null
+                xAxisLabelAngle: null,
+                labelMapping: {}
             };
             this.options = _.extend(this.options, options);
 
@@ -1347,7 +1351,6 @@ var Keen = Keen || {};
             options.colors = opts.colors;
             options.backgroundColor = opts.backgroundColor;
             options.title = opts.title;
-            options.label = opts.label;
             options["hAxis"] = {title: opts.xAxisLabel};
             options["vAxis"] = {title: opts.yAxisLabel, viewWindow: {min:0}};
             if(!opts.showLegend){
@@ -1375,7 +1378,12 @@ var Keen = Keen || {};
 
             //Get the groups into an array.
             _.each(this.data[0].value, function(val){
-                groups.push(val[this.query.attributes.groupBy]);
+                if(this.options.labelMapping[val[this.query.attributes.groupBy]] != null){
+                    groups.push(this.options.labelMapping[val[this.query.attributes.groupBy]]);
+                }
+                else{
+                    groups.push(val[this.query.attributes.groupBy]);
+                }
             }, this);
 
             //This is to handle an empty chart scenario.
@@ -1396,7 +1404,7 @@ var Keen = Keen || {};
                 var result = [];
 
                 var date = parseDate(item.timeframe.start);
-                var dateString = createDateString(date, this.query.attributes.interval);
+                var dateString = createDateString(date, this.query.attributes.interval, this.query, response);
 
                 result.push(dateString);
 
@@ -1460,7 +1468,8 @@ var Keen = Keen || {};
                 showLegend: true,
                 colors: null,
                 backgroundColor: "white",
-                fontColor: "black"
+                fontColor: "black",
+                labelMapping: {}
             };
             this.options = _.extend(this.options, options);
 
@@ -1523,7 +1532,15 @@ var Keen = Keen || {};
             dataTable.addColumn("number", this.getLabel());
             _.each(this.data, function(item) {
 
-                var name = item[this.query.attributes.groupBy] + "";
+                var name = "";
+
+                if(this.options.labelMapping[item[this.query.attributes.groupBy]] != null){
+                    name = this.options.labelMapping[item[this.query.attributes.groupBy]];
+                }
+                else{
+                    name = item[this.query.attributes.groupBy] + "";
+                }
+
                 var value = item.result;
 
                 dataTable.addRow([name, value]);
@@ -2184,13 +2201,33 @@ var Keen = Keen || {};
      * @param date a Javascript Date object
      * @param interval the interval of the Series (eg: "daily", "weekly", "hourly", "monthly")
      */
-    function createDateString(date, interval, query) {
-        var dateString = "";
+    function createDateString(date, interval, query, response) {
 
+        var timezoneOffset = null;
+
+        //If we used an awful string for a timezone, use an int based on the timeframe buckets returned.
+        if(typeof query.attributes.timezone === 'string'){
+            var dt = response.result[0].timeframe.start;
+            var hours = parseInt(dt.slice(dt.length-6, dt.length).slice(1,3));
+            var minutes = parseInt(dt.slice(dt.length-6, dt.length).slice(4,6));
+            var sign = dt.slice(dt.length-6, dt.length).slice(0, 1);
+
+            var totalMinutes = (hours * 60) + minutes;
+            if(sign === "-"){
+                totalMinutes = -totalMinutes
+            }
+
+            timezoneOffset = totalMinutes
+        }
+        else{
+            totalMinutes = query.attributes.timezone/60;
+        }
+
+        var dateString = "";
         //We first need to make sure the date has the same timezone offset as the query.
         if(query != undefined && query.attributes != undefined && query.attributes.timezone != undefined){
-          //Shift the date's timezone by the difference between the two.
-          date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + (query.attributes.timezone/60))
+            //Shift the date's timezone by the difference between the two.
+            date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + (timezoneOffset));
         }
 
         if(interval == "daily" || interval == "weekly") {
