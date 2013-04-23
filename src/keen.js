@@ -1,6 +1,6 @@
 /**
  * Keen IO JavaScript Library
- * Version: 2.0.0
+ * Version: 2.1.0
  */
 
 // Create a JSON object only if one does not already exist. We create the
@@ -851,13 +851,15 @@ var Keen = Keen || {};
 //-------KEEN OBJECT-----------
 
     /**
-     * Configure the Keen IO JS Library with a Project ID and API Key.
-     * @param projectId string the Keen IO Project ID
-     * @param apiKey string the Keen IO API Key
-     * @param options a JS object with configuration values
+     * Configure the Keen IO JS Library with a Project ID and API Keys.
+     * @param config object a config object that contains the project ID and
+     *                      optional keys.
+     *                      projectId -> the Keen IO Project ID
+     *                      writeKey -> a Keen IO Scoped Write Key
+     *                      readKey -> a Keen IO Scoped Read Key
      */
-    Keen.configure = function (projectToken, apiKey, options) {
-        this.client = new Keen.Client(projectToken, apiKey, options);
+    Keen.configure = function (config) {
+        this.client = new Keen.Client(config);
         return this.client;
     };
 
@@ -1016,13 +1018,14 @@ var Keen = Keen || {};
 
     // KEEN CLIENT OBJECT
 
-    Keen.Client = function (projectToken, apiKey, options) {
-        this.projectToken = projectToken;
-        this.apiKey = apiKey;
+    Keen.Client = function (config) {
+        this.projectId = config.projectId;
+        this.writeKey = config.writeKey;
+        this.readKey = config.readKey;
         this.globalProperties = null;
         this.keenUrl = "https://api.keen.io";
-        if(options !== undefined && options.keenUrl !== undefined){
-            this.keenUrl = options.keenUrl;
+        if(config !== undefined && config.keenUrl !== undefined){
+            this.keenUrl = config.keenUrl;
         }
     };
 
@@ -1049,11 +1052,12 @@ var Keen = Keen || {};
         }
 
         if (supportsXhr()) {
-          sendXhr("POST", url, null, newEvent, null, success, error);
+          sendXhr("POST", url, null, newEvent, this.writeKey, success, error);
         } else {
           var jsonBody = JSON.stringify(newEvent);
           var base64Body = Keen.Base64.encode(jsonBody);
-          url = url + "?data=" + base64Body;
+          url = url + "?apiKey=" + this.writeKey;
+          url = url + "&data=" + base64Body;
           url = url + "&modified=" + new Date().getTime();
           sendJsonpRequest(url, null, success, error);
         }
@@ -1065,7 +1069,7 @@ var Keen = Keen || {};
      * @return {String}
      */
     Keen.Client.prototype.getKeenUrl = function (path) {
-        return this.keenUrl + "/3.0/projects/" + this.projectToken + path;
+        return this.keenUrl + "/3.0/projects/" + this.projectId + path;
     };
 
     function supportsXhr() {
@@ -1187,9 +1191,9 @@ var Keen = Keen || {};
      */
     Keen.Client.prototype.getJSON = function (url, success, error) {
       if (supportsXhr()) {
-        sendXhr("GET", url, null, null, this.apiKey, success, error);
+        sendXhr("GET", url, null, null, this.readKey, success, error);
       } else {
-        sendJsonpRequest(url, this.apiKey, success, error);
+        sendJsonpRequest(url, this.readKey, success, error);
       }
     };
 
@@ -1333,11 +1337,9 @@ var Keen = Keen || {};
     };
 
     // handle any queued commands
-    if (Keen._pId) {
-        Keen.configure(Keen._pId, Keen._ak, Keen._op);
-        Keen._pId = null;
-        Keen._ak = null;
-        Keen._op = null;
+    if (Keen._cf) {
+        Keen.configure(Keen._cf);
+        Keen._cf = null;
     }
     if (Keen._gp) {
         Keen.setGlobalProperties(Keen._gp);
@@ -2038,8 +2040,8 @@ var Keen = Keen || {};
      */
     Keen.BaseQuery = Base.extend({
         getResponse : function(callback){
-            if(_.isUndefined(this.client.apiKey)){
-                console.log("Error: Please add an apiKey to Keen.configure() to perform analysis.")
+            if(_.isUndefined(this.client.readKey)){
+                console.log("Error: Please add a readKey to Keen.configure() to perform analysis.")
             }
             else{
                 var path = this.getPath();
@@ -2096,7 +2098,7 @@ var Keen = Keen || {};
         },
 
         buildParams: function(){
-            return {api_key : this.client.apiKey}
+            return {api_key : this.client.readKey}
         }
     });
 
@@ -2135,7 +2137,7 @@ var Keen = Keen || {};
 
         buildParams : function(){
             return {
-                api_key: this.client.apiKey,
+                api_key: this.client.readKey,
                 event_collection: this.attributes.eventCollection,
                 filters: this.attributes.filters,
                 timeframe: this.attributes.timeframe,
@@ -2262,7 +2264,7 @@ var Keen = Keen || {};
             }
 
             return {
-                api_key : this.client.apiKey,
+                api_key : this.client.readKey,
                 steps : this.steps,
                 timeframe : this.attributes.timeframe,
                 timezone : this.attributes.timezone,
