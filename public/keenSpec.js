@@ -1,7 +1,10 @@
 describe("addEvent using CORS and fake Server", function() {
   beforeEach(function() {
     jasmine.util.extend(this, new KeenSpecHelper());
-    Keen.configure(this.projectId, this.apiKey, {
+    Keen.configure({
+      projectId: this.projectId,
+      writeKey: this.writeKey, 
+      readKey: this.readKey,
       keenUrl: this.keenUrl
     });
   });
@@ -24,7 +27,7 @@ describe("addEvent using CORS and fake Server", function() {
     it("should post to the API using xhr where CORS is supported", function() {
       var callback = sinon.spy(), errback = sinon.spy();
       this.respondWith(200, this.successfulResponse);
-      Keen.addEvent(this.eventCollection, this.eventProperties, callback, errback)
+      Keen.addEvent(this.eventCollection, this.eventProperties, callback, errback);
       this.server.respond();
       expect(this.server.requests[1].requestBody).toEqual(JSON.stringify(this.eventProperties));
       expect(callback).toHaveBeenCalledOnce();

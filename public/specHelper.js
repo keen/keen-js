@@ -1,5 +1,7 @@
 KeenSpecHelper = function() {
   this.projectId = "fdjlskfjdk";
+  this.writeKey = "abcdewrite";
+  this.readKey = "abcderead";
   this.keenUrl = "http://web.kn:9999";
   this.eventCollection = "jasmine";
   this.postUrl =
