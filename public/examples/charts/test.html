@@ -19,17 +19,16 @@
             var series = new Keen.Series("purchases", {
                 analysisType: "sum",
                 targetProperty: "item.price",
-                timeframe: "this_hour",
-                interval: "minutely"
+                timeframe: "yesterday",
+                interval: "hourly"
             });
-            series.draw(document.getElementById("div1"), {
-                backgroundColor: "transparent",
+            series.draw(document.getElementById("lineChart"), {
+                backgroundColor: "transparent"
             });
         });
 
     </script>
-    <div id="div1" style="background: #fafafa;">
-
-    </div>
+    <div id="lineChart">
+</div>
 </body>
 </html>
