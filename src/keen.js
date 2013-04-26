@@ -2431,7 +2431,7 @@ var Keen = Keen || {};
     };
     
     Keen.showLoading = function(element) {
-        Spinner().spin(element);
+        var spinner = new Spinner().spin(element);
     };
 
     /**
