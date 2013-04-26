@@ -2430,8 +2430,8 @@ var Keen = Keen || {};
         return this;
     };
     
-    Keen.showLoading = function(element, opts) {
-        var spinner = new Spinner(opts).spin(element);
+    Keen.showLoading = function(element) {
+        Spinner().spin(element);
     };
 
     /**
