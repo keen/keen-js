@@ -19,7 +19,7 @@ var Keen = Keen || {
     var keen = document.createElement('script');
     keen.type = 'text/javascript';
     keen.async = true;
-    keen.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cloudfront.keen.io/code/keen-2.0.1-min.js';
+    keen.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cloudfront.keen.io/code/keen-2.1.0-min.js';
     var s = document.getElementsByTagName('script')[0];
     s.parentNode.insertBefore(keen, s);
 })();
