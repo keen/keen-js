@@ -1056,7 +1056,7 @@ var Keen = Keen || {};
         } else {
           var jsonBody = JSON.stringify(newEvent);
           var base64Body = Keen.Base64.encode(jsonBody);
-          url = url + "?apiKey=" + this.writeKey;
+          url = url + "?api_key=" + this.writeKey;
           url = url + "&data=" + base64Body;
           url = url + "&modified=" + new Date().getTime();
           sendJsonpRequest(url, null, success, error);
