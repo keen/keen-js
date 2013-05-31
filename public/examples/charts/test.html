@@ -19,9 +19,8 @@
     <script>
 
         Keen.onChartsReady(function(){
-            var series = new Keen.Series("purchases", {
-                analysisType: "sum",
-                targetProperty: "item.price",
+            var series = new Keen.Series("pageviews", {
+                analysisType: "count",
                 timeframe: "yesterday",
                 interval: "hourly"
             });
