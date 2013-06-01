@@ -875,7 +875,6 @@ var Keen = Keen || {};
             this.client.uploadEvent(eventCollection, event, success, error);
         }
     };
-
     /**
      * Retrieve an array of event collection names and their properties
      * @param success function (optional), invoked on success
@@ -2491,7 +2490,7 @@ var Keen = Keen || {};
 
                         // Pad with right-hand side if possible
                         if(rhs.length > 1) {
-                            input += rhs.charAt(0);
+                            input += rhs.charAt(1);
                         }
                         // Pad with zeroes if you must
                         else {
