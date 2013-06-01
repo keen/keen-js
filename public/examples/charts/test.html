@@ -19,14 +19,15 @@
     <script>
 
         Keen.onChartsReady(function(){
-            var series = new Keen.Series("pageviews", {
+            var series = new Keen.Metric("pageviews", {
                 analysisType: "count",
-                timeframe: "yesterday",
-                interval: "hourly"
+                timeframe: "yesterday"
             });
-            series.draw(document.getElementById("lineChart"), {
-                backgroundColor: "transparent"
-            });
+            var result = {result:8802};
+
+            var number = new Keen.Number(series);
+            number.draw(document.getElementById("lineChart"), result);
+
         });
 
     </script>
