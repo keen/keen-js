@@ -1072,10 +1072,10 @@ var Keen = Keen || {};
     };
 
     function supportsXhr() { 
-        if (XMLHttpRequest) {
-            return "withCredentials" in new XMLHttpRequest();
-        } else {
+        if (typeof XMLHttpRequest === 'undefined') {
             return false
+        } else {
+            return "withCredentials" in new XMLHttpRequest();
         }
     }
 
