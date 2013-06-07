@@ -1071,8 +1071,12 @@ var Keen = Keen || {};
         return this.keenUrl + "/3.0/projects/" + this.projectId + path;
     };
 
-    function supportsXhr() {
-      return "withCredentials" in new XMLHttpRequest();
+    function supportsXhr() { 
+        if (typeof XMLHttpRequest === 'undefined') {
+            return false
+        } else {
+            return "withCredentials" in new XMLHttpRequest();
+        }
     }
 
     function sendXhr(method, url, headers, body, apiKey, success, error) {
