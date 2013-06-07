@@ -2546,7 +2546,7 @@ var Keen = Keen || {};
             timezoneOffset = totalMinutes
         }
         else{
-            totalMinutes = query.attributes.timezone/60;
+            timezoneOffset = query.attributes.timezone/60;
         }
 
         var dateString = "";
