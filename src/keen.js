@@ -1590,8 +1590,9 @@ var Keen = Keen || {};
     /**
      * Line Chart - A class to display the results of a series.
      *
-     * @param query a query object (either a Keen.Series or Keen.SavedQuery)
-     * @param options the options used to style the visualization (defaults are provided)
+     * @param {Keen.Series|Keen.SavedQuery} query The query you'd like to visualize.
+     * @param {Object} options The options used to style the visualization
+     * @param {String} [options.font="Arial"] Used to style all the text in the visualization.
      */
     Keen.LineChart = Keen.BaseVisualization.extend({
         constructor : function(query, options) {
@@ -1613,7 +1614,8 @@ var Keen = Keen || {};
                 xAxisLabel: null,
                 yAxisLabel: null,
                 showLegend: true,
-                xAxisLabelAngle: null
+                xAxisLabelAngle: null,
+                font: 'Arial'
             };
             this.options = _.extend(this.options, options);
 
@@ -1653,6 +1655,7 @@ var Keen = Keen || {};
             options.colors = [opts.color];
             options.backgroundColor = opts.backgroundColor;
             options.title = opts.title;
+            options.fontName = opts.font;
             options["hAxis"] = {title: opts.xAxisLabel};
             options["vAxis"] = {title: opts.yAxisLabel, viewWindow: {min:0}};
             if(!opts.showLegend){
@@ -1732,6 +1735,7 @@ var Keen = Keen || {};
                 lineWidth: 5,
                 backgroundColor: "white",
                 fontColor: "black",
+                font: null,
                 xAxisLabel: null,
                 yAxisLabel: null,
                 xAxisLabelAngle: null,
@@ -1775,6 +1779,7 @@ var Keen = Keen || {};
             options.colors = opts.colors;
             options.backgroundColor = opts.backgroundColor;
             options.title = opts.title;
+            options.fontName = opts.font;
             options["hAxis"] = {title: opts.xAxisLabel};
             options["vAxis"] = {title: opts.yAxisLabel, viewWindow: {min:0}};
             if(!opts.showLegend){
@@ -1891,6 +1896,7 @@ var Keen = Keen || {};
                 showLegend: true,
                 colors: null,
                 backgroundColor: "white",
+                font: null,
                 fontColor: "black",
                 labelMapping: {}
             };
@@ -1934,6 +1940,7 @@ var Keen = Keen || {};
             if(!opts.showLegend){
                 options.legend["position"] = "none";
             }
+            options.fontName = opts.font;
             options.titleTextStyle = {color: opts.fontColor};
             options.legend.textStyle = {color: opts.fontColor};
             options["chartArea"] = {
@@ -2005,7 +2012,8 @@ var Keen = Keen || {};
                 showLegend: false,
                 color: "#f35757",
                 backgroundColor: "white",
-                fontColor: "black"
+                fontColor: "black",
+                font: "Arial"
             };
             this.options = _.extend(this.options, options);
 
@@ -2036,6 +2044,7 @@ var Keen = Keen || {};
             options.width = opts.width;
             options.title = opts.title;
             options.colors = [opts.color];
+            options.fontName = opts.font;
             options.backgroundColor = opts.backgroundColor;
             if(!opts.showLegend){
                 options.legend["position"] = "none";
