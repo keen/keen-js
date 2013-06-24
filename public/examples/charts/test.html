@@ -19,21 +19,22 @@
     <script>
 
         Keen.onChartsReady(function(){
-            var series = new Keen.Metric("pageviews", {
+            var series = new Keen.Series("pageviews", {
                 analysisType: "count",
-                timeframe: "yesterday"
+                timeframe: "last_7_days",
+                interval: "daily"
             });
-            var result = {result:8802};
 
-            var number = new Keen.Number(series);
-            number.draw(document.getElementById("lineChart"), result);
+            var lineChart = new Keen.LineChart(series, {
+                font: "Courrier New"
+            });
+
+            lineChart.draw(document.getElementById("lineChart"));
 
         });
 
     </script>
     <div id="lineChart">
     </div>
-
-    <a href="http://www.google.com" onclick="Keen.trackExternalLink(self, 'foo', {}, 300)">Click me!</a>
 </body>
 </html>
