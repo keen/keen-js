@@ -852,11 +852,13 @@ var Keen = Keen || {};
 
     /**
      * Configure the Keen IO JS Library with a Project ID and API Keys.
-     * @param config object a config object that contains the project ID and
-     *                      optional keys.
-     *                      projectId -> the Keen IO Project ID
-     *                      writeKey -> a Keen IO Scoped Write Key
-     *                      readKey -> a Keen IO Scoped Read Key
+     * @param {Object} config Contains the project ID and optional keys.
+     * @param {String} config.projectId the Keen IO Project ID
+     * @param {String} [config.writeKey] the Keen IO Scoped Write Key
+     * @param {String} [config.readKey] the Keen IO Scoped Read Key
+     * @param {String} [config.keenUrl] the base url for the Keen IO API
+     *
+     * @returns {Keen.Client} An instance of Keen.Client that has been configured
      */
     Keen.configure = function (config) {
         this.client = new Keen.Client(config);
@@ -865,20 +867,75 @@ var Keen = Keen || {};
 
     /**
      * Add an event to Keen IO.
-     * @param eventCollection string, the name of the event collection
-     * @param event object, the actual event to send
-     * @param success function (optional), invoked on success
-     * @param error function (optional), invoked on failure
+     * @param {String} eventCollection The name of the event collection
+     * @param {Object} event The actual event to send
+     * @param {Function} [success] Invoked on success
+     * @param {Function} [error] Invoked on failure
      */
     Keen.addEvent = function (eventCollection, event, success, error) {
         if (this.client) {
             this.client.uploadEvent(eventCollection, event, success, error);
         }
     };
+
+    /**
+     * Add an event to Keen IO before navigating to an external page/submitting form
+     * @param {Element} htmlElement The html element being clicked/submitted
+     * @param {String} eventCollection The name of the event to be recorded
+     * @param {Object} event The event properties
+     * @param {Integer} [timeout=500] The amount of time to wait in milliseconds before timing out
+     * @param {Function} [timeoutCallback] Invoked on timeout
+     *
+     * @returns {Boolean} Returns false to prevent a default action from taking place
+     */
+    Keen.trackExternalLink = function(htmlElement, eventCollection, event, timeout, timeoutCallback){
+
+        if(timeout === undefined){
+            timeout = 500;
+        }
+
+        var triggered = false;
+        var callback = function(){};
+
+
+        if( htmlElement.nodeName === "A"){
+            callback = function(){
+                if(!triggered){
+                    triggered = true;
+                    window.location = htmlElement.href;
+                }
+            };
+        }
+        else if (htmlElement.nodeName === "FORM"){
+            callback = function(){
+                if(!triggered){
+                    triggered = true;
+                    htmlElement.submit();
+                }
+            }
+        }
+
+        if(timeoutCallback){
+            callback = function(){
+                if(!triggered){
+                    triggered = true;
+                    timeoutCallback();
+                }
+            }
+        }
+
+        Keen.addEvent(eventCollection, event, callback, callback);
+
+        setTimeout(function() {
+            callback();
+        }, timeout);
+
+        return false;
+    };
     /**
      * Retrieve an array of event collection names and their properties
-     * @param success function (optional), invoked on success
-     * @param error function (optional), invoked on failure
+     * @param {Function} [success] Invoked on success
+     * @param {Function} [error] Invoked on failure
      */
     Keen.getEventCollections = function(success, error) {
         var url = this.client.getKeenUrl("/events");
@@ -888,8 +945,8 @@ var Keen = Keen || {};
     /**
      * Retrieve the properties of a given event collection
      * @param eventCollection string, name of the event collection
-     * @param success function (optional), invoked on success
-     * @param error function (optional), invoked on failure
+     * @param {Function} [success] Invoked on success
+     * @param {Function} [error] Invoked on failure
      */
     Keen.getEventCollectionProperties = function (eventCollection, success, error) {
         var url = this.client.getKeenUrl("/events/" + eventCollection);
@@ -898,7 +955,7 @@ var Keen = Keen || {};
 
     /**
      * Sets the global properties to use.
-     * @param newGlobalProperties a function
+     * @param {Function} newGlobalProperties A function that returns an object of properties
      */
     Keen.setGlobalProperties = function (newGlobalProperties) {
         if (this.client) {
@@ -1030,10 +1087,10 @@ var Keen = Keen || {};
 
     /**
      * Uploads a single event to the Keen IO servers.
-     * @param eventCollection string, the name of the event collection to use
-     * @param event JS object, the actual event to send
-     * @param success optional function, invoked on success
-     * @param error optional function, invoked on failure
+     * @param {String} eventCollection The name of the event collection to use
+     * @param {Object} event The actual event properties to send
+     * @param {Function} [success] Invoked on success
+     * @param {Function} [error] Invoked on failure
      */
     Keen.Client.prototype.uploadEvent = function (eventCollection, event, success, error) {
         var url = this.getKeenUrl("/events/" + eventCollection);
@@ -1064,8 +1121,8 @@ var Keen = Keen || {};
 
     /**
      * Returns a full URL by appending the provided path to the root Keen IO URL.
-     * @param path
-     * @return {String}
+     * @param {String} path The path of the desired url
+     * @returns {String} A fully formed URL for use in an API call.
      */
     Keen.Client.prototype.getKeenUrl = function (path) {
         return this.keenUrl + "/3.0/projects/" + this.projectId + path;
@@ -1188,9 +1245,9 @@ var Keen = Keen || {};
      * Automatically sets the Content-Type of the request to "application/json" and sets the Authorization
      * header.
      *
-     * @param url what URL to send the request to
-     * @param success optional callback for success
-     * @param error optional callback for error
+     * @param {String} url what URL to send the request to
+     * @param {Function} [success] Invoked on success
+     * @param {Function} [error] Invoked on failure
      */
     Keen.Client.prototype.getJSON = function (url, success, error) {
       if (supportsXhr()) {
@@ -1400,8 +1457,17 @@ var Keen = Keen || {};
     /**
      * Number - A class to display the results of a metric.
      *
-     * @param query a query object (either a Keen.Metric or Keen.SavedQuery)
-     * @param options the options used to style the visualization (defaults are provided)
+     * @param {Keen.Metric|Keen.SavedQuery} query The query you'd like to visualize.
+     * @param {Object} options The options used to style the visualization (defaults are provided)
+     * @param {String} [options.height="150px"] The height of the visualization.
+     * @param {String} [options.width="300px"] The width of the visualization.
+     * @param {String} [options.font-family="'Helvetica Neue', Helvetica, Arial, sans-serif"] Font family
+     * @param {String} [options.color="white"] The color of the text in the visualization
+     * @param {String} [options.border-radius="0px"] The border radius of the visualization
+     * @param {String} [options.number-background-color="#7dcc77"] The color of the number background
+     * @param {String} [options.label-background-color="#9CD898"] The color of the label background
+     * @param {String} [options.prefix] A text prefix for the number.
+     * @param {String} [options.suffix] A text suffix for the number.
      */
     Keen.Number = Keen.BaseVisualization.extend({
         constructor : function(query, options){
@@ -1427,8 +1493,8 @@ var Keen = Keen || {};
     /**
      * Draws a Number visualization
      *
-     * @param element the HTML element in which to put the visualization
-     * @param response an optional param to pass the results of a Query directly into a visualization
+     * @param {Element} element The HTML element in which to put the visualization
+     * @param {Object} [response] The response from a query you'd like to visualize
      */
     Keen.Number.prototype.draw = function(element, response){
 
