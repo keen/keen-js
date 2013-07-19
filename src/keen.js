@@ -1613,9 +1613,13 @@ var Keen = Keen || {};
                 label: null,
                 xAxisLabel: null,
                 yAxisLabel: null,
+                yAxisMin: 0,
+                yAxisMax: null,
+                viewMode: null,
                 showLegend: true,
                 xAxisLabelAngle: null,
-                font: 'Arial'
+                font: 'Arial',
+                override: {}
             };
             this.options = _.extend(this.options, options);
 
@@ -1656,8 +1660,14 @@ var Keen = Keen || {};
             options.backgroundColor = opts.backgroundColor;
             options.title = opts.title;
             options.fontName = opts.font;
-            options["hAxis"] = {title: opts.xAxisLabel};
-            options["vAxis"] = {title: opts.yAxisLabel, viewWindow: {min:0}};
+            options["hAxis"] = {title: opts.xAxisLabel, viewWindow: {}};
+            options["vAxis"] = {title: opts.yAxisLabel, viewWindow: {}};
+            if( opts.yAxisMin != null){
+                options["vAxis"]["viewWindow"]["min"] = opts.yAxisMin;
+            }
+            if( opts.yAxisMax != null){
+                options["vAxis"]["viewWindow"]["max"] = opts.yAxisMax;
+            }
             if(!opts.showLegend){
                 options["legend"] = {position: "none"}
             }
@@ -1671,6 +1681,10 @@ var Keen = Keen || {};
                 height: opts.chartAreaHeight,
                 width: opts.chartAreaWidth
             };
+
+            if(opts.override != null){
+                options = _.extend(options, opts.override);
+            }
 
             return options;
         };
