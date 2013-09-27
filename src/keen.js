@@ -1822,10 +1822,10 @@ var Keen = Keen || {};
             //Get the groups into an array.
             _.each(this.data[0].value, function(val){
                 if(this.options.labelMapping[val[this.query.attributes.groupBy]] != null){
-                    groups.push(this.options.labelMapping[val[this.query.attributes.groupBy]]);
+                    groups.push(this.options.labelMapping[val[this.query.attributes.groupBy]]+"");
                 }
                 else{
-                    groups.push(val[this.query.attributes.groupBy]);
+                    groups.push(val[this.query.attributes.groupBy]+"");
                 }
             }, this);
 
