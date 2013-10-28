@@ -2235,7 +2235,8 @@ var Keen = Keen || {};
                 timeframe: this.attributes.timeframe,
                 timezone: this.attributes.timezone,
                 target_property: this.attributes.targetProperty,
-                group_by: this.attributes.groupBy
+                group_by: this.attributes.groupBy,
+                latest: this.attributes.latest
             };
         }
     });
@@ -2265,6 +2266,17 @@ var Keen = Keen || {};
      */
     Keen.AdHocQuery.prototype.timeframe = function(timeframe){
         this.attributes.timeframe = timeframe;
+        return this;
+    };
+    
+    
+        /**
+     * Set the latest property for your ad hoc query
+     *
+     * @param latest
+     */
+    Keen.AdHocQuery.prototype.latest = function(latest){
+        this.attributes.latest = latest;
         return this;
     };
 
