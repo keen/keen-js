@@ -343,348 +343,348 @@ if (typeof JSON !== 'object') {
  */
 (function(root, factory) {
 
-  /* CommonJS */
-  if (typeof exports == 'object')  module.exports = factory();
+    /* CommonJS */
+    if (typeof exports == 'object')  module.exports = factory();
 
-  /* AMD module */
-  else if (typeof define == 'function' && define.amd) define('spinner', factory);
+    /* AMD module */
+    else if (typeof define == 'function' && define.amd) define('spinner', factory);
 
-  /* Browser global */
-  else root.Spinner = factory()
+    /* Browser global */
+    else root.Spinner = factory()
 }
-(this, function() {
-  "use strict";
+    (this, function() {
+        "use strict";
 
-  var prefixes = ['webkit', 'Moz', 'ms', 'O'] /* Vendor prefixes */
-    , animations = {} /* Animation rules keyed by their name */
-    , useCssAnimations /* Whether to use CSS animations or setTimeout */
+        var prefixes = ['webkit', 'Moz', 'ms', 'O'] /* Vendor prefixes */
+            , animations = {} /* Animation rules keyed by their name */
+            , useCssAnimations /* Whether to use CSS animations or setTimeout */
 
-  /**
-   * Utility function to create elements. If no tag name is given,
-   * a DIV is created. Optionally properties can be passed.
-   */
-  function createEl(tag, prop) {
-    var el = document.createElement(tag || 'div')
-      , n
+        /**
+         * Utility function to create elements. If no tag name is given,
+         * a DIV is created. Optionally properties can be passed.
+         */
+        function createEl(tag, prop) {
+            var el = document.createElement(tag || 'div')
+                , n
 
-    for(n in prop) el[n] = prop[n]
-    return el
-  }
+            for(n in prop) el[n] = prop[n]
+            return el
+        }
 
-  /**
-   * Appends children and returns the parent.
-   */
-  function ins(parent /* child1, child2, ...*/) {
-    for (var i=1, n=arguments.length; i<n; i++)
-      parent.appendChild(arguments[i])
+        /**
+         * Appends children and returns the parent.
+         */
+        function ins(parent /* child1, child2, ...*/) {
+            for (var i=1, n=arguments.length; i<n; i++)
+                parent.appendChild(arguments[i])
 
-    return parent
-  }
+            return parent
+        }
 
-  /**
-   * Insert a new stylesheet to hold the @keyframe or VML rules.
-   */
-  var sheet = (function() {
-    var el = createEl('style', {type : 'text/css'})
-    ins(document.getElementsByTagName('head')[0], el)
-    return el.sheet || el.styleSheet
-  }())
+        /**
+         * Insert a new stylesheet to hold the @keyframe or VML rules.
+         */
+        var sheet = (function() {
+            var el = createEl('style', {type : 'text/css'})
+            ins(document.getElementsByTagName('head')[0], el)
+            return el.sheet || el.styleSheet
+        }())
 
-  /**
-   * Creates an opacity keyframe animation rule and returns its name.
-   * Since most mobile Webkits have timing issues with animation-delay,
-   * we create separate rules for each line/segment.
-   */
-  function addAnimation(alpha, trail, i, lines) {
-    var name = ['opacity', trail, ~~(alpha*100), i, lines].join('-')
-      , start = 0.01 + i/lines * 100
-      , z = Math.max(1 - (1-alpha) / trail * (100-start), alpha)
-      , prefix = useCssAnimations.substring(0, useCssAnimations.indexOf('Animation')).toLowerCase()
-      , pre = prefix && '-' + prefix + '-' || ''
+        /**
+         * Creates an opacity keyframe animation rule and returns its name.
+         * Since most mobile Webkits have timing issues with animation-delay,
+         * we create separate rules for each line/segment.
+         */
+        function addAnimation(alpha, trail, i, lines) {
+            var name = ['opacity', trail, ~~(alpha*100), i, lines].join('-')
+                , start = 0.01 + i/lines * 100
+                , z = Math.max(1 - (1-alpha) / trail * (100-start), alpha)
+                , prefix = useCssAnimations.substring(0, useCssAnimations.indexOf('Animation')).toLowerCase()
+                , pre = prefix && '-' + prefix + '-' || ''
 
-    if (!animations[name]) {
-      sheet.insertRule(
-        '@' + pre + 'keyframes ' + name + '{' +
-        '0%{opacity:' + z + '}' +
-        start + '%{opacity:' + alpha + '}' +
-        (start+0.01) + '%{opacity:1}' +
-        (start+trail) % 100 + '%{opacity:' + alpha + '}' +
-        '100%{opacity:' + z + '}' +
-        '}', sheet.cssRules.length)
+            if (!animations[name]) {
+                sheet.insertRule(
+                    '@' + pre + 'keyframes ' + name + '{' +
+                        '0%{opacity:' + z + '}' +
+                        start + '%{opacity:' + alpha + '}' +
+                        (start+0.01) + '%{opacity:1}' +
+                        (start+trail) % 100 + '%{opacity:' + alpha + '}' +
+                        '100%{opacity:' + z + '}' +
+                        '}', sheet.cssRules.length)
 
-      animations[name] = 1
-    }
+                animations[name] = 1
+            }
 
-    return name
-  }
+            return name
+        }
 
-  /**
-   * Tries various vendor prefixes and returns the first supported property.
-   */
-  function vendor(el, prop) {
-    var s = el.style
-      , pp
-      , i
+        /**
+         * Tries various vendor prefixes and returns the first supported property.
+         */
+        function vendor(el, prop) {
+            var s = el.style
+                , pp
+                , i
 
-    if(s[prop] !== undefined) return prop
-    prop = prop.charAt(0).toUpperCase() + prop.slice(1)
-    for(i=0; i<prefixes.length; i++) {
-      pp = prefixes[i]+prop
-      if(s[pp] !== undefined) return pp
-    }
-  }
+            if(s[prop] !== undefined) return prop
+            prop = prop.charAt(0).toUpperCase() + prop.slice(1)
+            for(i=0; i<prefixes.length; i++) {
+                pp = prefixes[i]+prop
+                if(s[pp] !== undefined) return pp
+            }
+        }
 
-  /**
-   * Sets multiple style properties at once.
-   */
-  function css(el, prop) {
-    for (var n in prop)
-      el.style[vendor(el, n)||n] = prop[n]
+        /**
+         * Sets multiple style properties at once.
+         */
+        function css(el, prop) {
+            for (var n in prop)
+                el.style[vendor(el, n)||n] = prop[n]
 
-    return el
-  }
+            return el
+        }
 
-  /**
-   * Fills in default values.
-   */
-  function merge(obj) {
-    for (var i=1; i < arguments.length; i++) {
-      var def = arguments[i]
-      for (var n in def)
-        if (obj[n] === undefined) obj[n] = def[n]
-    }
-    return obj
-  }
+        /**
+         * Fills in default values.
+         */
+        function merge(obj) {
+            for (var i=1; i < arguments.length; i++) {
+                var def = arguments[i]
+                for (var n in def)
+                    if (obj[n] === undefined) obj[n] = def[n]
+            }
+            return obj
+        }
 
-  /**
-   * Returns the absolute page-offset of the given element.
-   */
-  function pos(el) {
-    var o = { x:el.offsetLeft, y:el.offsetTop }
-    while((el = el.offsetParent))
-      o.x+=el.offsetLeft, o.y+=el.offsetTop
+        /**
+         * Returns the absolute page-offset of the given element.
+         */
+        function pos(el) {
+            var o = { x:el.offsetLeft, y:el.offsetTop }
+            while((el = el.offsetParent))
+                o.x+=el.offsetLeft, o.y+=el.offsetTop
 
-    return o
-  }
+            return o
+        }
 
-  // Built-in defaults
-  // Keen modifications
+        // Built-in defaults
+        // Keen modifications
 
-  var defaults = {
-    lines: 12,            // The number of lines to draw
-    length: 7,            // The length of each line
-    width: 5,             // The line thickness
-    radius: 10,           // The radius of the inner circle
-    rotate: 0,            // Rotation offset
-    corners: 1,           // Roundness (0..1)
-    color: '#000',        // #rgb or #rrggbb
-    direction: 1,         // 1: clockwise, -1: counterclockwise
-    speed: 1,             // Rounds per second
-    trail: 100,           // Afterglow percentage
-    opacity: 1/4,         // Opacity of the lines
-    fps: 20,              // Frames per second when using setTimeout()
-    zIndex: 2e9,          // Use a high z-index by default
-    className: 'spinner', // CSS class to assign to the element
-    top: 'auto',          // center vertically
-    left: 'auto',         // center horizontally
-    position: 'relative'  // element position
-  }
+        var defaults = {
+            lines: 12,            // The number of lines to draw
+            length: 7,            // The length of each line
+            width: 5,             // The line thickness
+            radius: 10,           // The radius of the inner circle
+            rotate: 0,            // Rotation offset
+            corners: 1,           // Roundness (0..1)
+            color: '#000',        // #rgb or #rrggbb
+            direction: 1,         // 1: clockwise, -1: counterclockwise
+            speed: 1,             // Rounds per second
+            trail: 100,           // Afterglow percentage
+            opacity: 1/4,         // Opacity of the lines
+            fps: 20,              // Frames per second when using setTimeout()
+            zIndex: 2e9,          // Use a high z-index by default
+            className: 'spinner', // CSS class to assign to the element
+            top: 'auto',          // center vertically
+            left: 'auto',         // center horizontally
+            position: 'relative'  // element position
+        }
 
-  /** The constructor */
-  function Spinner(o) {
-    if (typeof this == 'undefined') return new Spinner(o)
-    this.opts = merge(o || {}, Spinner.defaults, defaults)
-  }
+        /** The constructor */
+        function Spinner(o) {
+            if (typeof this == 'undefined') return new Spinner(o)
+            this.opts = merge(o || {}, Spinner.defaults, defaults)
+        }
 
-  // Global defaults that override the built-ins:
-  Spinner.defaults = {}
+        // Global defaults that override the built-ins:
+        Spinner.defaults = {}
 
-  merge(Spinner.prototype, {
+        merge(Spinner.prototype, {
 
-    /**
-     * Adds the spinner to the given target element. If this instance is already
-     * spinning, it is automatically removed from its previous target b calling
-     * stop() internally.
-     */
-    spin: function(target) {
-      this.stop()
+            /**
+             * Adds the spinner to the given target element. If this instance is already
+             * spinning, it is automatically removed from its previous target b calling
+             * stop() internally.
+             */
+            spin: function(target) {
+                this.stop()
 
-      var self = this
-        , o = self.opts
-        , el = self.el = css(createEl(0, {className: o.className}), {position: o.position, width: 0, zIndex: o.zIndex})
-        , mid = o.radius+o.length+o.width
-        , ep // element position
-        , tp // target position
+                var self = this
+                    , o = self.opts
+                    , el = self.el = css(createEl(0, {className: o.className}), {position: o.position, width: 0, zIndex: o.zIndex})
+                    , mid = o.radius+o.length+o.width
+                    , ep // element position
+                    , tp // target position
 
-      if (target) {
-        target.insertBefore(el, target.firstChild||null)
-        tp = pos(target)
-        ep = pos(el)
-        css(el, {
-          left: (o.left == 'auto' ? tp.x-ep.x + (target.offsetWidth >> 1) : parseInt(o.left, 10) + mid) + 'px',
-          top: (o.top == 'auto' ? tp.y-ep.y + (target.offsetHeight >> 1) : parseInt(o.top, 10) + mid)  + 'px'
+                if (target) {
+                    target.insertBefore(el, target.firstChild||null)
+                    tp = pos(target)
+                    ep = pos(el)
+                    css(el, {
+                        left: (o.left == 'auto' ? tp.x-ep.x + (target.offsetWidth >> 1) : parseInt(o.left, 10) + mid) + 'px',
+                        top: (o.top == 'auto' ? tp.y-ep.y + (target.offsetHeight >> 1) : parseInt(o.top, 10) + mid)  + 'px'
+                    })
+                }
+
+                el.setAttribute('role', 'progressbar')
+                self.lines(el, self.opts)
+
+                if (!useCssAnimations) {
+                    // No CSS animation support, use setTimeout() instead
+                    var i = 0
+                        , start = (o.lines - 1) * (1 - o.direction) / 2
+                        , alpha
+                        , fps = o.fps
+                        , f = fps/o.speed
+                        , ostep = (1-o.opacity) / (f*o.trail / 100)
+                        , astep = f/o.lines
+
+                        ;(function anim() {
+                        i++;
+                        for (var j = 0; j < o.lines; j++) {
+                            alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity)
+
+                            self.opacity(el, j * o.direction + start, alpha, o)
+                        }
+                        self.timeout = self.el && setTimeout(anim, ~~(1000/fps))
+                    })()
+                }
+                return self
+            },
+
+            /**
+             * Stops and removes the Spinner.
+             */
+            stop: function() {
+                var el = this.el
+                if (el) {
+                    clearTimeout(this.timeout)
+                    if (el.parentNode) el.parentNode.removeChild(el)
+                    this.el = undefined
+                }
+                return this
+            },
+
+            /**
+             * Internal method that draws the individual lines. Will be overwritten
+             * in VML fallback mode below.
+             */
+            lines: function(el, o) {
+                var i = 0
+                    , start = (o.lines - 1) * (1 - o.direction) / 2
+                    , seg
+
+                function fill(color, shadow) {
+                    return css(createEl(), {
+                        position: 'absolute',
+                        width: (o.length+o.width) + 'px',
+                        height: o.width + 'px',
+                        background: color,
+                        boxShadow: shadow,
+                        transformOrigin: 'left',
+                        transform: 'rotate(' + ~~(360/o.lines*i+o.rotate) + 'deg) translate(' + o.radius+'px' +',0)',
+                        borderRadius: (o.corners * o.width>>1) + 'px'
+                    })
+                }
+
+                for (; i < o.lines; i++) {
+                    seg = css(createEl(), {
+                        position: 'absolute',
+                        top: 1+~(o.width/2) + 'px',
+                        transform: o.hwaccel ? 'translate3d(0,0,0)' : '',
+                        opacity: o.opacity,
+                        animation: useCssAnimations && addAnimation(o.opacity, o.trail, start + i * o.direction, o.lines) + ' ' + 1/o.speed + 's linear infinite'
+                    })
+
+                    if (o.shadow) ins(seg, css(fill('#000', '0 0 4px ' + '#000'), {top: 2+'px'}))
+
+                    ins(el, ins(seg, fill(o.color, '0 0 1px rgba(0,0,0,.1)')))
+                }
+                return el
+            },
+
+            /**
+             * Internal method that adjusts the opacity of a single line.
+             * Will be overwritten in VML fallback mode below.
+             */
+            opacity: function(el, i, val) {
+                if (i < el.childNodes.length) el.childNodes[i].style.opacity = val
+            }
+
         })
-      }
-
-      el.setAttribute('role', 'progressbar')
-      self.lines(el, self.opts)
-
-      if (!useCssAnimations) {
-        // No CSS animation support, use setTimeout() instead
-        var i = 0
-          , start = (o.lines - 1) * (1 - o.direction) / 2
-          , alpha
-          , fps = o.fps
-          , f = fps/o.speed
-          , ostep = (1-o.opacity) / (f*o.trail / 100)
-          , astep = f/o.lines
-
-        ;(function anim() {
-          i++;
-          for (var j = 0; j < o.lines; j++) {
-            alpha = Math.max(1 - (i + (o.lines - j) * astep) % f * ostep, o.opacity)
-
-            self.opacity(el, j * o.direction + start, alpha, o)
-          }
-          self.timeout = self.el && setTimeout(anim, ~~(1000/fps))
-        })()
-      }
-      return self
-    },
-
-    /**
-     * Stops and removes the Spinner.
-     */
-    stop: function() {
-      var el = this.el
-      if (el) {
-        clearTimeout(this.timeout)
-        if (el.parentNode) el.parentNode.removeChild(el)
-        this.el = undefined
-      }
-      return this
-    },
-
-    /**
-     * Internal method that draws the individual lines. Will be overwritten
-     * in VML fallback mode below.
-     */
-    lines: function(el, o) {
-      var i = 0
-        , start = (o.lines - 1) * (1 - o.direction) / 2
-        , seg
-
-      function fill(color, shadow) {
-        return css(createEl(), {
-          position: 'absolute',
-          width: (o.length+o.width) + 'px',
-          height: o.width + 'px',
-          background: color,
-          boxShadow: shadow,
-          transformOrigin: 'left',
-          transform: 'rotate(' + ~~(360/o.lines*i+o.rotate) + 'deg) translate(' + o.radius+'px' +',0)',
-          borderRadius: (o.corners * o.width>>1) + 'px'
-        })
-      }
-
-      for (; i < o.lines; i++) {
-        seg = css(createEl(), {
-          position: 'absolute',
-          top: 1+~(o.width/2) + 'px',
-          transform: o.hwaccel ? 'translate3d(0,0,0)' : '',
-          opacity: o.opacity,
-          animation: useCssAnimations && addAnimation(o.opacity, o.trail, start + i * o.direction, o.lines) + ' ' + 1/o.speed + 's linear infinite'
-        })
-
-        if (o.shadow) ins(seg, css(fill('#000', '0 0 4px ' + '#000'), {top: 2+'px'}))
-
-        ins(el, ins(seg, fill(o.color, '0 0 1px rgba(0,0,0,.1)')))
-      }
-      return el
-    },
-
-    /**
-     * Internal method that adjusts the opacity of a single line.
-     * Will be overwritten in VML fallback mode below.
-     */
-    opacity: function(el, i, val) {
-      if (i < el.childNodes.length) el.childNodes[i].style.opacity = val
-    }
-
-  })
 
 
-  function initVML() {
+        function initVML() {
 
-    /* Utility function to create a VML tag */
-    function vml(tag, attr) {
-      return createEl('<' + tag + ' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">', attr)
-    }
+            /* Utility function to create a VML tag */
+            function vml(tag, attr) {
+                return createEl('<' + tag + ' xmlns="urn:schemas-microsoft.com:vml" class="spin-vml">', attr)
+            }
 
-    // No CSS transforms but VML support, add a CSS rule for VML elements:
-    sheet.addRule('.spin-vml', 'behavior:url(#default#VML)')
+            // No CSS transforms but VML support, add a CSS rule for VML elements:
+            sheet.addRule('.spin-vml', 'behavior:url(#default#VML)')
 
-    Spinner.prototype.lines = function(el, o) {
-      var r = o.length+o.width
-        , s = 2*r
+            Spinner.prototype.lines = function(el, o) {
+                var r = o.length+o.width
+                    , s = 2*r
 
-      function grp() {
-        return css(
-          vml('group', {
-            coordsize: s + ' ' + s,
-            coordorigin: -r + ' ' + -r
-          }),
-          { width: s, height: s }
-        )
-      }
+                function grp() {
+                    return css(
+                        vml('group', {
+                            coordsize: s + ' ' + s,
+                            coordorigin: -r + ' ' + -r
+                        }),
+                        { width: s, height: s }
+                    )
+                }
 
-      var margin = -(o.width+o.length)*2 + 'px'
-        , g = css(grp(), {position: 'absolute', top: margin, left: margin})
-        , i
+                var margin = -(o.width+o.length)*2 + 'px'
+                    , g = css(grp(), {position: 'absolute', top: margin, left: margin})
+                    , i
 
-      function seg(i, dx, filter) {
-        ins(g,
-          ins(css(grp(), {rotation: 360 / o.lines * i + 'deg', left: ~~dx}),
-            ins(css(vml('roundrect', {arcsize: o.corners}), {
-                width: r,
-                height: o.width,
-                left: o.radius,
-                top: -o.width>>1,
-                filter: filter
-              }),
-              vml('fill', {color: o.color, opacity: o.opacity}),
-              vml('stroke', {opacity: 0}) // transparent stroke to fix color bleeding upon opacity change
-            )
-          )
-        )
-      }
+                function seg(i, dx, filter) {
+                    ins(g,
+                        ins(css(grp(), {rotation: 360 / o.lines * i + 'deg', left: ~~dx}),
+                            ins(css(vml('roundrect', {arcsize: o.corners}), {
+                                width: r,
+                                height: o.width,
+                                left: o.radius,
+                                top: -o.width>>1,
+                                filter: filter
+                            }),
+                                vml('fill', {color: o.color, opacity: o.opacity}),
+                                vml('stroke', {opacity: 0}) // transparent stroke to fix color bleeding upon opacity change
+                            )
+                        )
+                    )
+                }
 
-      if (o.shadow)
-        for (i = 1; i <= o.lines; i++)
-          seg(i, -2, 'progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)')
+                if (o.shadow)
+                    for (i = 1; i <= o.lines; i++)
+                        seg(i, -2, 'progid:DXImageTransform.Microsoft.Blur(pixelradius=2,makeshadow=1,shadowopacity=.3)')
 
-      for (i = 1; i <= o.lines; i++) seg(i)
-      return ins(el, g)
-    }
+                for (i = 1; i <= o.lines; i++) seg(i)
+                return ins(el, g)
+            }
 
-    Spinner.prototype.opacity = function(el, i, val, o) {
-      var c = el.firstChild
-      o = o.shadow && o.lines || 0
-      if (c && i+o < c.childNodes.length) {
-        c = c.childNodes[i+o]; c = c && c.firstChild; c = c && c.firstChild
-        if (c) c.opacity = val
-      }
-    }
-  }
+            Spinner.prototype.opacity = function(el, i, val, o) {
+                var c = el.firstChild
+                o = o.shadow && o.lines || 0
+                if (c && i+o < c.childNodes.length) {
+                    c = c.childNodes[i+o]; c = c && c.firstChild; c = c && c.firstChild
+                    if (c) c.opacity = val
+                }
+            }
+        }
 
-  var probe = css(createEl('group'), {behavior: 'url(#default#VML)'})
+        var probe = css(createEl('group'), {behavior: 'url(#default#VML)'})
 
-  if (!vendor(probe, 'transform') && probe.adj) initVML()
-  else useCssAnimations = vendor(probe, 'animation')
+        if (!vendor(probe, 'transform') && probe.adj) initVML()
+        else useCssAnimations = vendor(probe, 'animation')
 
-  return Spinner
+        return Spinner
 
-}));
+    }));
 
 var Keen = Keen || {};
 
@@ -1108,14 +1108,14 @@ var Keen = Keen || {};
         }
 
         if (supportsXhr()) {
-          sendXhr("POST", url, null, newEvent, this.writeKey, success, error);
+            sendXhr("POST", url, null, newEvent, this.writeKey, success, error);
         } else {
-          var jsonBody = JSON.stringify(newEvent);
-          var base64Body = Keen.Base64.encode(jsonBody);
-          url = url + "?api_key=" + this.writeKey;
-          url = url + "&data=" + base64Body;
-          url = url + "&modified=" + new Date().getTime();
-          sendJsonpRequest(url, null, success, error);
+            var jsonBody = JSON.stringify(newEvent);
+            var base64Body = Keen.Base64.encode(jsonBody);
+            url = url + "?api_key=" + this.writeKey;
+            url = url + "&data=" + base64Body;
+            url = url + "&modified=" + new Date().getTime();
+            sendJsonpRequest(url, null, success, error);
         }
     };
 
@@ -1128,7 +1128,7 @@ var Keen = Keen || {};
         return this.keenUrl + "/3.0/projects/" + this.projectId + path;
     };
 
-    function supportsXhr() { 
+    function supportsXhr() {
         if (typeof XMLHttpRequest === 'undefined') {
             return false
         } else {
@@ -1137,106 +1137,106 @@ var Keen = Keen || {};
     }
 
     function sendXhr(method, url, headers, body, apiKey, success, error) {
-      var xhr = new XMLHttpRequest();
-      xhr.onreadystatechange = function () {
-          if (xhr.readyState == 4) {
-              if (xhr.status >= 200 && xhr.status < 300) {
-                  var response;
-                  try {
-                      response = JSON.parse(xhr.responseText);
-                  } catch (e) {
-                      console.log("Could not JSON parse HTTP response: " + xhr.responseText);
-                      if (error) {
-                          error(xhr, e);
-                      }
-                  }
+        var xhr = new XMLHttpRequest();
+        xhr.onreadystatechange = function () {
+            if (xhr.readyState == 4) {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    var response;
+                    try {
+                        response = JSON.parse(xhr.responseText);
+                    } catch (e) {
+                        console.log("Could not JSON parse HTTP response: " + xhr.responseText);
+                        if (error) {
+                            error(xhr, e);
+                        }
+                    }
 
-                  if (response) {
-                      if (success) {
-                          success(response);
-                      }
-                  }
-              } else {
-                  console.log("HTTP request failed.");
-                  if (error) {
-                      error(xhr, null);
-                  }
-              }
-          }
-      };
+                    if (response) {
+                        if (success) {
+                            success(response);
+                        }
+                    }
+                } else {
+                    console.log("HTTP request failed.");
+                    if (error) {
+                        error(xhr, null);
+                    }
+                }
+            }
+        };
 
-      xhr.open(method, url, true);
+        xhr.open(method, url, true);
 
-      if (apiKey){
-          xhr.setRequestHeader("Authorization", apiKey);
-      }
-      if (body) {
-          xhr.setRequestHeader("Content-Type", "application/json");
-      }
-      if (headers) {
-          for (var headerName in headers) {
-              if (headers.hasOwnProperty(headerName)) {
-                  xhr.setRequestHeader(headerName, headers[headerName]);
-              }
-          }
-      }
+        if (apiKey){
+            xhr.setRequestHeader("Authorization", apiKey);
+        }
+        if (body) {
+            xhr.setRequestHeader("Content-Type", "application/json");
+        }
+        if (headers) {
+            for (var headerName in headers) {
+                if (headers.hasOwnProperty(headerName)) {
+                    xhr.setRequestHeader(headerName, headers[headerName]);
+                }
+            }
+        }
 
-      var toSend = body ? JSON.stringify(body) : null;
-      xhr.send(toSend);
+        var toSend = body ? JSON.stringify(body) : null;
+        xhr.send(toSend);
     }
 
     function sendJsonpRequest(url, apiKey, success, error) {
-      // have to fall back to JSONP for GET and sending data base64 encoded for POST
+        // have to fall back to JSONP for GET and sending data base64 encoded for POST
 
-      // add api_key if it's not there
-      if (apiKey && url.indexOf("api_key") < 0) {
-          var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
-          url = url + delimiterChar + "api_key=" + apiKey;
-      }
-
-      // do JSONP
-      var callbackName = "keenJSONPCallback" + new Date().getTime();
-      while (callbackName in window) {
-          callbackName += "a";
-      }
-
-      var loaded = false;
-      window[callbackName] = function (response) {
-          loaded = true;
-
-          if (success && response) {
-              success(response);
-          }
-
-          // now remove this from the namespace
-          window[callbackName] = undefined;
-      };
-
-      url = url + "&jsonp=" + callbackName;
-      var script = document.createElement("script");
-      script.id = "keen-jsonp";
-      script.src = url;
-      document.getElementsByTagName("head")[0].appendChild(script);
-
-      // for early IE w/ no onerror event
-      script.onreadystatechange = function() {
-        if (loaded === false && this.readyState === "loaded") {
-          loaded = true;
-          if (error) {
-            error();
-          }
+        // add api_key if it's not there
+        if (apiKey && url.indexOf("api_key") < 0) {
+            var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
+            url = url + delimiterChar + "api_key=" + apiKey;
         }
-      }
 
-      // non-ie, etc
-      script.onerror = function() {
-        if (loaded === false) { // on IE9 both onerror and onreadystatechange are called
-          loaded = true;
-          if (error) {
-            error();
-          }
+        // do JSONP
+        var callbackName = "keenJSONPCallback" + new Date().getTime();
+        while (callbackName in window) {
+            callbackName += "a";
         }
-      }
+
+        var loaded = false;
+        window[callbackName] = function (response) {
+            loaded = true;
+
+            if (success && response) {
+                success(response);
+            }
+
+            // now remove this from the namespace
+            window[callbackName] = undefined;
+        };
+
+        url = url + "&jsonp=" + callbackName;
+        var script = document.createElement("script");
+        script.id = "keen-jsonp";
+        script.src = url;
+        document.getElementsByTagName("head")[0].appendChild(script);
+
+        // for early IE w/ no onerror event
+        script.onreadystatechange = function() {
+            if (loaded === false && this.readyState === "loaded") {
+                loaded = true;
+                if (error) {
+                    error();
+                }
+            }
+        }
+
+        // non-ie, etc
+        script.onerror = function() {
+            if (loaded === false) { // on IE9 both onerror and onreadystatechange are called
+                loaded = true;
+                if (error) {
+                    error();
+                }
+            }
+        }
     }
 
     /**
@@ -1250,11 +1250,11 @@ var Keen = Keen || {};
      * @param {Function} [error] Invoked on failure
      */
     Keen.Client.prototype.getJSON = function (url, success, error) {
-      if (supportsXhr()) {
-        sendXhr("GET", url, null, null, this.readKey, success, error);
-      } else {
-        sendJsonpRequest(url, this.readKey, success, error);
-      }
+        if (supportsXhr()) {
+            sendXhr("GET", url, null, null, this.readKey, success, error);
+        } else {
+            sendJsonpRequest(url, this.readKey, success, error);
+        }
     };
 
     /**
@@ -1648,7 +1648,7 @@ var Keen = Keen || {};
         element.style.height = this.options.height + "px";
         element.style.display = "block";
         Keen.showLoading(element);
-        
+
 
         //Converts options from our exposed option format to the way google charts expects.
         var convertOptions = function(opts){
@@ -1696,9 +1696,11 @@ var Keen = Keen || {};
             var dataTable = new google.visualization.DataTable();
             dataTable.addColumn("string", "Date");
             dataTable.addColumn("number", this.getLabel());
+            var iteration = 0;
             dataTable.addRows(_.map(this.data, function(item) {
                 var date = parseDate(item.timeframe.start);
-                var dateString = createDateString(date, this.query.attributes.interval, this.query, response);
+                var dateString = createDateString(date, this.query.attributes.interval, this.query, response, iteration);
+                iteration ++;
                 if(item.value == null){
                     item.value = 0;
                 }
@@ -1831,7 +1833,7 @@ var Keen = Keen || {};
 
             //This is to handle an empty chart scenario.
             if(groups.length == 0){
-                groups.push(null);
+                groups.push("");
                 this.options.showLegend = false;
             }
 
@@ -2523,7 +2525,7 @@ var Keen = Keen || {};
         this.attributes.interval = interval;
         return this;
     };
-    
+
     Keen.showLoading = function(element) {
         var spinner = new Spinner().spin(element);
     };
@@ -2620,9 +2622,11 @@ var Keen = Keen || {};
      * @param date a Javascript Date object
      * @param interval the interval of the Series (eg: "daily", "weekly", "hourly", "monthly")
      */
-    function createDateString(date, interval, query, response) {
+    function createDateString(date, interval, query, response, iteration) {
 
         var timezoneOffset = null;
+
+        var isAbsoluteTimeframe = (typeof query.attributes.timeframe == "object");
 
         //If we used an awful string for a timezone, use an int based on the timeframe buckets returned.
         if(typeof query.attributes.timezone === 'string'){
@@ -2649,7 +2653,24 @@ var Keen = Keen || {};
             date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + (timezoneOffset));
         }
 
-        if(interval == "daily" || interval == "weekly") {
+        if(interval == "daily") {
+
+            //This is special casing for if there's an absolute timeframe with a gimpy bucket up front.
+            //Sometimes timezone can make it look like there are two of the same days in a row, so we need to
+            //Handle that crap.
+            if(isAbsoluteTimeframe && response.result.length > 1){
+                if(iteration == 0){
+                    var tomorrow = parseDate(response.result[1].timeframe.start);
+                    if(tomorrow.getDate() == date.getDate()){
+                        date.setDate(date.getDate() - 1);
+                    }
+                }
+            }
+            dateString += 1 + date.getMonth();
+            dateString += "/";
+            dateString += date.getDate();
+        }
+        else if (interval == "weekly"){
             dateString += 1 + date.getMonth();
             dateString += "/";
             dateString += date.getDate();
