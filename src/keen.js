@@ -686,7 +686,7 @@ if (typeof JSON !== 'object') {
 
     }));
 
-var Keen = Keen || {};
+window.Keen = window.Keen || {};
 
 (function() {
 
