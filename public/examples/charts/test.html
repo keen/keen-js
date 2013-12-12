@@ -9,8 +9,8 @@
 
         // Configure the Keen object with your Project ID and API Key
         Keen.configure({
-            projectId: "5193b838384331244f000003",
-            readKey: "889cf89adc396ba0adefe0127f71dbf6aeed1665dece9266d0174986a754717112bd22f721875c56ee24dc742d1007edecc219cb1c9a0d0cd356e7e86f7055054032c61937feddfb3af640c91b0e5d795d9b2a342ccf1254c48179a5823fd7ccb510d008c026e584e400ebceaddb5fd3",
+            projectId: "5011efa95f546f2ce2000000",
+            readKey: "5363FDB4B169254DE48E788A9B649F4D",
             writeKey: ""
         });
     </script>
@@ -21,13 +21,15 @@
 
         Keen.onChartsReady(function() {
 
-            var series = new Keen.Series("digest email opened", {
+            var series = new Keen.Series("pageviews", {
                 analysisType: "count",
-                timeframe: "previous_3_days",
-                //timezone: -14400,
-                interval: "daily"
+                timeframe: "last_hour",
+                interval: "every_5_minutes"
             });
 
+            series.getResponse(function(resp){
+                console.log(resp);
+            });
             series.draw(document.getElementById("visualization-test"))
 
 
