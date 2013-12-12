@@ -2665,7 +2665,7 @@ window.Keen = window.Keen || {};
             date.setMinutes(date.getMinutes() + date.getTimezoneOffset() + (timezoneOffset));
         }
 
-        if(interval == "daily") {
+        if(interval == "daily" || interval.indexOf("day") != -1) {
 
             //This is special casing for if there's an absolute timeframe with a gimpy bucket up front.
             //Sometimes timezone can make it look like there are two of the same days in a row, so we need to
@@ -2682,22 +2682,22 @@ window.Keen = window.Keen || {};
             dateString += "/";
             dateString += date.getDate();
         }
-        else if (interval == "weekly"){
+        else if (interval == "weekly"|| interval.indexOf("week") != -1){
             dateString += 1 + date.getMonth();
             dateString += "/";
             dateString += date.getDate();
         }
-        else if (interval == "hourly"){
+        else if (interval == "hourly"|| interval.indexOf("hours") != -1){
             dateString += date.getHours();
             dateString += ":";
             dateString += "00"
         }
-        else if(interval == "monthly"){
+        else if(interval == "monthly" || interval.indexOf("month") != -1){
             dateString += 1 + date.getMonth();
             dateString += "/";
             dateString += (date.getFullYear() + "").slice(-2);
         }
-        else if(interval == "minutely"){
+        else if(interval == "minutely" || interval.indexOf("minute") != -1){
             dateString += date.getHours();
             dateString += ":";
             dateString += (("0" + date.getMinutes())).slice(-2);
