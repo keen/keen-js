@@ -1785,6 +1785,7 @@ window.Keen = window.Keen || {};
         element.style.display = "block";
         Keen.showLoading(element);
 
+        var colorMappingArray = [];
 
         //Converts options from our exposed option format to the way google charts expects.
         var convertOptions = function(opts){
@@ -1811,6 +1812,7 @@ window.Keen = window.Keen || {};
                 height: opts.chartAreaHeight,
                 width: opts.chartAreaWidth
             };
+            options["series"] = colorMappingArray;
 
             return options;
         };
@@ -1829,6 +1831,15 @@ window.Keen = window.Keen || {};
                 else{
                     groups.push(val[this.query.attributes.groupBy]+"");
                 }
+
+
+                var colorMappingObject = {};
+                if(this.options.colorMapping && this.options.colorMapping[val[this.query.attributes.groupBy]]){
+                    colorMappingObject["color"] = this.options.colorMapping[val[this.query.attributes.groupBy]];
+                }
+
+                colorMappingArray.push(colorMappingObject);
+
             }, this);
 
             //This is to handle an empty chart scenario.
@@ -1865,6 +1876,8 @@ window.Keen = window.Keen || {};
                 if(result.length == 1){
                     result.push(null);
                 }
+
+
 
                 dataTable.addRow(result);
             }, this);
@@ -1914,7 +1927,8 @@ window.Keen = window.Keen || {};
                 backgroundColor: "white",
                 font: null,
                 fontColor: "black",
-                labelMapping: {}
+                labelMapping: {},
+                colorMapping: {}
             };
             this.options = _.extend(this.options, options);
 
@@ -1944,6 +1958,8 @@ window.Keen = window.Keen || {};
         element.style.display = "block";
         Keen.showLoading(element);
 
+        var colorMappingArray = [];
+
         var convertOptions = function(opts){
             var options = {};
             options.legend = {};
@@ -1965,6 +1981,7 @@ window.Keen = window.Keen || {};
                 height: opts.chartAreaHeight,
                 width: opts.chartAreaWidth
             };
+            options.slices = colorMappingArray;
 
             return options;
         };
@@ -1988,6 +2005,13 @@ window.Keen = window.Keen || {};
                 }
 
                 var value = item.result;
+
+                // Set the color of the slice according to the row in the table.
+                var colorMappingEntry = {};
+                if(this.options.colorMapping && this.options.colorMapping[name]){
+                    colorMappingEntry["color"] = this.options.colorMapping[name];
+                }
+                colorMappingArray.push(colorMappingEntry);
 
                 dataTable.addRow([name, value]);
 
