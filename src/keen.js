@@ -2098,7 +2098,9 @@ window.Keen = window.Keen || {};
                 width: opts.chartAreaWidth
             };
             options.vAxis = {
-                minValue: 0,
+                viewWindow: {
+                    min: 0
+                },
                 format: '#'
             };
             options.bar = {
@@ -2124,7 +2126,7 @@ window.Keen = window.Keen || {};
                 }
 
                 //Determine the percentage of the first number the current number is.
-                var percentage = Math.round((this.numbers[i] / firstNumber) * 100);
+                var percentage = firstNumber === 0 ? 0 : Math.round((this.numbers[i] / firstNumber) * 100);
 
                 //Determine the label
                 var label = this.steps[i].event_collection;

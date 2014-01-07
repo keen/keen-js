@@ -9,9 +9,11 @@
 
         // Configure the Keen object with your Project ID and API Key
         Keen.configure({
-            projectId: "5284395636bf5a1b3b000002",
-            readKey: "0f7e845bb44bedcd4fcc22be8f016a4f7d4e6bcafda58ee6f461fc170ef69ef9379e68d6e2bfca503e9e8d15e30584b6cb156ec2905f80c30eb243b7f6b83cf8b94b7eef435373f5f21022946f7ffac1d92c75a57695e7f7acba8506fd0bbf60577de7b13f8642a154a70fc6963d749a"
+            projectId: "52ab9fc1080432035f000000",
+            readKey: "6F1B4D24BDA83033E168459F2FEBE9F8",
+            keenUrl: "http://localhost:8888"
         });
+
     </script>
 </head>
 <body>
@@ -20,96 +22,22 @@
 
         Keen.onChartsReady(function() {
 
-            var resp = {
-                "result": [
-                    {
-                        "event.properties.song.genre.name": "Easy listening",
-                        "result": 5
-                    },
-                    {
-                        "event.properties.song.genre.name": "Miscellaneous",
-                        "result": 8
-                    },
-                    {
-                        "event.properties.song.genre.name": "Country",
-                        "result": 337
-                    },
-                    {
-                        "event.properties.song.genre.name": "Electronic",
-                        "result": 5
-                    },
-                    {
-                        "event.properties.song.genre.name": "Latin",
-                        "result": 6
-                    },
-                    {
-                        "event.properties.song.genre.name": "World",
-                        "result": 14
-                    },
-                    {
-                        "event.properties.song.genre.name": "R&B \\ Hip-Hop",
-                        "result": 210
-                    },
-                    {
-                        "event.properties.song.genre.name": "Blues\/Jazz",
-                        "result": 25
-                    },
-                    {
-                        "event.properties.song.genre.name": "Rock & Roll",
-                        "result": 11
-                    },
-                    {
-                        "event.properties.song.genre.name": "Rap",
-                        "result": 130
-                    },
-                    {
-                        "event.properties.song.genre.name": "Rock",
-                        "result": 1310
-                    },
-                    {
-                        "event.properties.song.genre.name": "Pop",
-                        "result": 179
-                    }
-                ]
-            };
+            var step1 = new Keen.Step("purchases", {actorProperty: "user.id"});
+            var step2 = new Keen.Step("level_up", {actorProperty: "user.age"});
+            var funnel = new Keen.Funnel([step1, step2], {
 
-            var resp2 = {"result": [{"value": [{"event.properties.song.genre.name": "Blues/Jazz", "result": null}, {"event.properties.song.genre.name": "Country", "result": null}, {"event.properties.song.genre.name": "Easy listening", "result": null}, {"event.properties.song.genre.name": "Electronic", "result": null}, {"event.properties.song.genre.name": "Latin", "result": null}, {"event.properties.song.genre.name": "Miscellaneous", "result": null}, {"event.properties.song.genre.name": "Pop", "result": null}, {"event.properties.song.genre.name": "R&B \\ Hip-Hop", "result": null}, {"event.properties.song.genre.name": "Rap", "result": null}, {"event.properties.song.genre.name": "Rock", "result": null}, {"event.properties.song.genre.name": "Rock & Roll", "result": null}, {"event.properties.song.genre.name": "World", "result": null}], "timeframe": {"start": "2013-11-24T00:00:00-08:00", "end": "2013-12-01T00:00:00-08:00"}}, {"value": [{"event.properties.song.genre.name": "Blues/Jazz", "result": null}, {"event.properties.song.genre.name": "Country", "result": 20}, {"event.properties.song.genre.name": "Easy listening", "result": null}, {"event.properties.song.genre.name": "Electronic", "result": null}, {"event.properties.song.genre.name": "Latin", "result": null}, {"event.properties.song.genre.name": "Miscellaneous", "result": null}, {"event.properties.song.genre.name": "Pop", "result": 15}, {"event.properties.song.genre.name": "R&B \\ Hip-Hop", "result": 4}, {"event.properties.song.genre.name": "Rap", "result": 12}, {"event.properties.song.genre.name": "Rock", "result": 129}, {"event.properties.song.genre.name": "Rock & Roll", "result": 1}, {"event.properties.song.genre.name": "World", "result": null}], "timeframe": {"start": "2013-12-01T00:00:00-08:00", "end": "2013-12-08T00:00:00-08:00"}}, {"value": [{"event.properties.song.genre.name": "Blues/Jazz", "result": 23}, {"event.properties.song.genre.name": "Country", "result": 279}, {"event.properties.song.genre.name": "Easy listening", "result": 5}, {"event.properties.song.genre.name": "Electronic", "result": 5}, {"event.properties.song.genre.name": "Latin", "result": 2}, {"event.properties.song.genre.name": "Miscellaneous", "result": 8}, {"event.properties.song.genre.name": "Pop", "result": 152}, {"event.properties.song.genre.name": "R&B \\ Hip-Hop", "result": 174}, {"event.properties.song.genre.name": "Rap", "result": 113}, {"event.properties.song.genre.name": "Rock", "result": 1064}, {"event.properties.song.genre.name": "Rock & Roll", "result": 10}, {"event.properties.song.genre.name": "World", "result": 13}], "timeframe": {"start": "2013-12-08T00:00:00-08:00", "end": "2013-12-15T00:00:00-08:00"}}, {"value": [{"event.properties.song.genre.name": "Blues/Jazz", "result": 2}, {"event.properties.song.genre.name": "Country", "result": 38}, {"event.properties.song.genre.name": "Easy listening", "result": null}, {"event.properties.song.genre.name": "Electronic", "result": null}, {"event.properties.song.genre.name": "Latin", "result": 4}, {"event.properties.song.genre.name": "Miscellaneous", "result": null}, {"event.properties.song.genre.name": "Pop", "result": 12}, {"event.properties.song.genre.name": "R&B \\ Hip-Hop", "result": 32}, {"event.properties.song.genre.name": "Rap", "result": 5}, {"event.properties.song.genre.name": "Rock", "result": 117}, {"event.properties.song.genre.name": "Rock & Roll", "result": null}, {"event.properties.song.genre.name": "World", "result": 1}], "timeframe": {"start": "2013-12-15T00:00:00-08:00", "end": "2013-12-22T00:00:00-08:00"}}]};
-
-            var metric = new Keen.Metric("song_play", {
-                analysisType: "count",
-                timeframe: "this_4_weeks",
-                groupBy: "event.properties.song.genre.name"
+            });
+            funnel.getResponse(function(resp){
+                console.log(resp);
+                var chart = new Keen.FunnelChart(funnel);
+                chart.draw(document.getElementById("div1"), resp);
             });
 
-            var pie = new Keen.PieChart(metric, {
-                colorMapping: {
-                    Rock: "black",
-                    Rap: "#FF0000" //Red
-                }
-            });
-
-            var series = new Keen.Series("song_play", {
-                analysisType: "count",
-                timeframe: "this_4_weeks",
-                interval: "weekly",
-                groupBy: "event.properties.song.genre.name"
-            });
-
-            var mlc = new Keen.MultiLineChart(series, {
-                colorMapping: {
-                    Rock: "black",
-                    Rap: "#FF0000"
-                }
-            });
-
-
-            pie.draw(document.getElementById("visualization-test"), resp);
-            mlc.draw(document.getElementById("mlc-test"), resp2)
 
         });
 
     </script>
-    <div id="visualization-test"></div>
-    <div id="mlc-test"></div>
+    <div id="div1"></div>
+    <div id="div2"></div>
 </body>
 </html>
