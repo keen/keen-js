@@ -1928,7 +1928,8 @@ window.Keen = window.Keen || {};
                 font: null,
                 fontColor: "black",
                 labelMapping: {},
-                colorMapping: {}
+                colorMapping: {},
+                pieSliceText: 'percentage'
             };
             this.options = _.extend(this.options, options);
 
@@ -1975,6 +1976,7 @@ window.Keen = window.Keen || {};
             options.fontName = opts.font;
             options.titleTextStyle = {color: opts.fontColor};
             options.legend.textStyle = {color: opts.fontColor};
+            options.pieSliceText = opts.pieSliceText;
             options["chartArea"] = {
                 left: opts.chartAreaLeft,
                 top: opts.chartAreaTop,
