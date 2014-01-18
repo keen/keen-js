@@ -4,6 +4,11 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON('package.json'),
     uglify: {
+      options : {
+        beautify : {
+          ascii_only : true
+        }    
+      },
       build: {
         files: {
           'build/<%= pkg.name %>.min.js': [ 'src/<%= pkg.name %>.js' ],
