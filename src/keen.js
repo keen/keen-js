@@ -1,6 +1,6 @@
 /**
  * Keen IO JavaScript Library
- * Version: 2.1.0
+ * Version: 2.1.1
  */
 
 // Create a JSON object only if one does not already exist. We create the
@@ -2671,8 +2671,15 @@ window.Keen = window.Keen || {};
         //If we used an awful string for a timezone, use an int based on the timeframe buckets returned.
         if(typeof query.attributes.timezone === 'string'){
             var dt = response.result[0].timeframe.start;
-            var hours = parseInt(dt.slice(dt.length-6, dt.length).slice(1,3));
-            var minutes = parseInt(dt.slice(dt.length-6, dt.length).slice(4,6));
+            var d = new Date(dt);
+            //var hours = parseInt(dt.slice(dt.length-6, dt.length).slice(1,3));
+            //var hours = parseInt(dt.slice(11,13));
+            var hours = d.getUTCHours();
+            
+            //var minutes = parseInt(dt.slice(dt.length-6, dt.length).slice(4,6));
+            //var minutes = parseInt(dt.slice(14,16));
+            var minutes = d.getUTCMinutes();
+            
             var sign = dt.slice(dt.length-6, dt.length).slice(0, 1);
 
             var totalMinutes = (hours * 60) + minutes;
