@@ -28,10 +28,6 @@
         globalProperties: null,
         keenUrl: (config.keenUrl) ? config.keenUrl : 'https://api.keen.io/3.0',
         requestType: _setRequestType(config.requestType || 'xhr')
-        
-        //session: '98234f3248a98sdfsd2'|true|false,
-        //params: 'utm_*'|true|false,
-        //duration: true|false
       };
       return this;
     },
@@ -41,8 +37,7 @@
     },
     
     trackExternalLink: function(htmlElement, eventCollection, event, timeout, timeoutCallback) {
-      console.log('trackExternalLink', arguments);
-      //
+      //console.log('trackExternalLink', arguments);
       if (timeout === undefined){
         timeout = 500;
       }
@@ -82,13 +77,7 @@
     },
     
     setGlobalProperties: function(newGlobalProperties) {
-      console.log('setGlobalProperties', arguments);
-      /*
-        How about an array of objects? [{ "eventCollection": {payload} }]
-        k1.setGlobalProperties("pageview", { key: "value" });
-        k1.setGlobalProperties({ key: "value" });
-        k1.setGlobalProperties({ user: "098230482034" }, { persist: true }); // fancy!
-      */
+      //console.log('setGlobalProperties', arguments);
       if (!this.client) return _log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
       if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
         this.client.globalProperties = newGlobalProperties;
@@ -419,18 +408,6 @@
         }
       }
       
-      /*  Explicit mapping
-      window.Keen.prototype.configure = Keen.prototype.configure;
-      window.Keen.prototype.addEvent = Keen.prototype.addEvent;
-      window.Keen.prototype.trackExternalLink = Keen.prototype.trackExternalLink;
-      window.Keen.prototype.setGlobalProperties = Keen.prototype.setGlobalProperties;
-      */
-      
-      /*  Bad mapping (dep)
-      client.__proto__ = Keen.prototype;
-      client.configure(client._cf);
-      */
-      
       // Configuration
       if (client._cf) {
         client.configure(client._cf);
@@ -472,102 +449,6 @@
     }
   }
   delete window._KeenCache;
-
-  
-  
-  // -------------------------------
-  // Keen.Query Objects
-  // -------------------------------
-  
-  Keen.Query = function() {};
-  Keen.Query.prototype = {
-    configure: function(eventCollection, options) {
-      this.eventCollection = eventCollection;
-      this.options = options;
-      return this;
-    }
-  };
-  
-  Keen.Count = function(eventCollection, options) {
-    this.configure(eventCollection, options);
-  };
-  Keen.Count.prototype = new Keen.Query();
-  
-
-  // -------------------------------
-  // Keen.query() Method
-  // -------------------------------  
-  Keen.prototype.query = function(query, success, error) {
-    if ( query instanceof Keen ) {
-      console.log('Keen Object!');
-      
-    } else if ( query instanceof Keen.Query ) {
-      console.log('teh Query!', query);
-      
-    } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-      console.log('Saved Query Name!');
-      
-    }
-    return this;
-  };
-  
-  // Private for Keen.Query Objects
-  // --------------------------------
-
-  function _getJSON(url, success, error) {
-    if (this.client.capapble.xhr) {
-      _sendXHR.apply(this, ["GET", url, null, null, this.client.readKey, success, error]);
-    } else {
-      _sendJSONP.apply(this, this.client.readKey, success, error);
-    }
-  };
-
-  function _sendQuery(success, error) {
-    // Keen.BaseQuery
-  };
-  
-  function _getPath() {
-    // builds a query path from arguments
-  };
-  
-  function _getParams() {
-    // builds a param string from arguments
-  };
-  
-  function _getResponse(url, success, error) {
-    // IS THIS THE SAME AS _getJSON??
-    // Keen.BaseQuery.getResponse, 
-    // Keen.getEventCollections,
-    // Keen.getEventCollectionProperties 
-  };
-
-
-
-
-  // -------------------------------
-  // Keen.chart Method
-  // -------------------------------
-  
-  Keen.prototype.chart = function(query, selector, options) {
-    if ( query instanceof Keen ) {
-      console.log('Keen Object!');
-      
-    } else if ( query instanceof Keen.Count ) {
-      console.log('Let\'s Chart a Query!');
-      
-    } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-      console.log('Saved Query Name!');
-      
-    } else if ( Object.prototype.toString.call(query) === '[object Array]' ) {
-      console.log('Array of data objects!');
-      
-    } else if ( Object.prototype.toString.call(query) === '[object Object]' ) {
-      console.log('Data object!');
-      
-    }
-  };
-  
-  
 
   // -------------------------------
   // Private Utils
@@ -848,11 +729,7 @@
       };
     }
   }());
-  
-  /*
-  function keen(config) {
-    return new Keen(config);
-  }*/
-  
+
+
   return Keen;
 });
