@@ -13,8 +13,8 @@
   };
   
   function init(config) {
-    if (config === undefined) return _log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
-    if (config.projectId === undefined) return _log('Please provide a projectId');
+    if (config === undefined) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
+    if (config.projectId === undefined) return Keen.log('Please provide a projectId');
     this.configure(config);
   };
   
@@ -78,7 +78,7 @@
     
     setGlobalProperties: function(newGlobalProperties) {
       //console.log('setGlobalProperties', arguments);
-      if (!this.client) return _log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
+      if (!this.client) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
       if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
         this.client.globalProperties = newGlobalProperties;
       } else {
@@ -144,7 +144,7 @@
         break;
       
       case 'beacon':
-        _log('Image beacons coming soon!');
+        Keen.log('Image beacons coming soon!');
         break;
       
     }
@@ -156,7 +156,7 @@
     // Keen.Client.prototype.uploadEvent
     // Keen.Client.prototype.getJSON
     
-    if (!apiKey) return _log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
+    if (!apiKey) return Keen.log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
     
     console.log(arguments);
     
@@ -168,7 +168,7 @@
           try {
             response = JSON.parse(xhr.responseText);
           } catch (e) {
-            console.log("Could not JSON parse HTTP response: " + xhr.responseText);
+            Keen.log("Could not JSON parse HTTP response: " + xhr.responseText);
             if (error) {
               error(xhr, e);
             }
@@ -180,7 +180,7 @@
             }
           }
         } else {
-          console.log("HTTP request failed.");
+          Keen.log("HTTP request failed.");
           if (error) {
             error(xhr, null);
           }
@@ -210,7 +210,7 @@
     // Keen.Client.prototype.uploadEvent
     // Keen.Client.prototype.getJSON
     
-    if (!apiKey) return _log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
+    if (!apiKey) return Keen.log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
     console.log(arguments);
     
     // Fall back to JSONP for GET and sending data base64 encoded for POST
@@ -454,7 +454,7 @@
   // Private Utils
   // -------------------------------
   
-  function _log(message) {
+  Keen.log = function(message) {
     console.log('[Keen IO]', message)
   };
   
