@@ -12,7 +12,7 @@ module.exports = function(grunt) {
       build: {
         files: {
           'build/<%= pkg.name %>-<%= pkg.version %>.min.js': [ 'src/<%= pkg.name %>.js' ],
-          'build/<%= pkg.name %>.min.js': [ 'src/<%= pkg.name %>.js' ],
+          'build/<%= pkg.name %>-<%= pkg.version %>.track.min.js': [ 'src/<%= pkg.name %>.track.js' ],
           'build/loader.min.js': [ 'src/loader.js' ]          
         }
         // src: 'src/<%= pkg.name %>.js',

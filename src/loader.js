@@ -1,31 +1,30 @@
-var Keen = Keen || {
-    configure:function (config) {
-        this._cf = config;
+if (typeof(Keen) === "undefined") {
+  Keen = function(e) {
+    _KeenCache[e.projectId] = this;
+    this._cf = e;
+  }
+  Keen.prototype = {
+    addEvent: function(e,t,n,i) {
+      this._eq = this._eq || [], this._eq.push([e,t,n,i]);
     },
-    addEvent:function (eventCollection, event, success, error) {
-        this._eq = this._eq || [];
-        this._eq.push([eventCollection, event, success, error]);
-    },
-    setGlobalProperties:function (newGlobalProperties) {
-        this._gp = newGlobalProperties;
-    },
-    onChartsReady:function (handler) {
-        this._ocrq = this._ocrq || [];
-        this._ocrq.push(handler);
+    setGlobalProperties: function(e) {
+      this._gp = e;
     }
-};
+    //, onChartsReady: function(e) { this._ocrq = this._ocrq || [], this._ocrq.push(e) }
+  };
+  window.Keen = Keen;
+  window._KeenCache = {};
+}
 
-(function () {
-    var keen = document.createElement('script');
-    keen.type = 'text/javascript';
-    keen.async = true;
-    keen.src = ('https:' == document.location.protocol ? 'https://' : 'http://') + 'cloudfront.keen.io/code/keen-2.1.1-min.js';
-    var s = document.getElementsByTagName('script')[0];
-    s.parentNode.insertBefore(keen, s);
+(function(){
+  var e = document.createElement("script");
+  e.type = "text/javascript", e.async = !0, e.src = "keen.js";
+  var t = document.getElementsByTagName("script")[0];
+  t.parentNode.insertBefore(e, t);
 })();
 
-Keen.configure({
-    projectId: "your_project_id",
-    writeKey: "your_write_key",
-    readKey: "your_read_key"
+var keen = new Keen({
+  projectId: "your_project_id",
+  writeKey: "your_write_key",
+  readKey: "your_read_key"
 });
