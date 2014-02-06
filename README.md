@@ -34,9 +34,12 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
   * `keenUrl` a complete URL (default: "https://api.keen.io/3.0")
   * `requestType` a string: `xhr` (default), `jsonp`, `beacon`
 
-// **globalProperties** (Method)
 
-// **requestType** xhr, jsonp, beacon
+## Record Events
+
+## Track Links and Forms
+
+## Set Global Properties
 
 ## Multiple Projects
 
