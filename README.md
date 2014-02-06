@@ -2,9 +2,9 @@
 
 A JavaScript library for the Keen IO API.
 
-## Get Project ID & Access Keys
+## Get Project ID & API Keys
 
-If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project) for your app. Once on a Project Details page, note the Project ID and Access Keys listed there. You’ll need them for the next steps!
+If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project) for your app. The Project ID and API Keys are available on the Project Overview page. You will need these for the next steps.
 
 ## Quick Setup
 
@@ -40,7 +40,7 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
 
 ## Multiple Projects
 
-Send events to as many projects as you need. It couldn't be much easier.
+Sending events to multiple projects is easier than ever!
 
 ```
   var one = new Keen({
