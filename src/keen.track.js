@@ -144,9 +144,14 @@
         break;
       
       case 'beacon':
-        Keen.log('Image beacons coming soon!');
+        var jsonBody = JSON.stringify(newEvent);
+        var base64Body = Keen.Base64.encode(jsonBody);
+        url = url + "?api_key=" + encodeURIComponent(this.client.writeKey);
+        url = url + "&data=" + encodeURIComponent(base64Body);
+        url = url + "&modified=" + encodeURIComponent(new Date().getTime());
+        url = url + "&c=clv1";
+        _sendBeacon(url, null, success, error);
         break;
-      
     }
     
   };
@@ -267,6 +272,37 @@
     
   };
   
+  function _sendBeacon(url, apiKey, success, error){
+    // Called by:
+    // Keen.Client.prototype.uploadEvent
+    if (apiKey && url.indexOf("api_key") < 0) {
+      var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
+      url = url + delimiterChar + "api_key=" + apiKey;
+    }
+
+    var loaded = false, img = document.createElement("img");
+
+    img.onload = function() {
+      loaded = true;
+      if ('naturalHeight' in this) {
+        if (this.naturalHeight + this.naturalWidth === 0) {
+          this.onerror(); return;
+        }
+      } else if (this.width + this.height === 0) {
+        this.onerror(); return;
+      }
+      if (success) { success({created: true}); }
+    };
+    
+    img.onerror = function() {
+      loaded = true;
+      if (error) {
+        error();
+      }
+    };
+    
+    img.src = url;
+  };
   
   
   // -------------------------------
