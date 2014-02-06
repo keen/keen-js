@@ -308,127 +308,55 @@
   
   // -------------------------------
   // Keen Base64 transcoding
+  // https://gist.github.com/sgammon/5562296
   // -------------------------------
   
   Keen.Base64 = {
-    
-    // Public encoding
-    encode: function(input) {
-      var output = "";
-      var chr1, chr2, chr3, enc1, enc2, enc3, enc4;
-      var i = 0;
-      input = _utf8_encode(input);
-      
-      while (i < input.length) {
-        
-        chr1 = input.charCodeAt(i++);
-        chr2 = input.charCodeAt(i++);
-        chr3 = input.charCodeAt(i++);
-        
-        enc1 = chr1 >> 2;
-        enc2 = ((chr1 & 3) << 4) | (chr2 >> 4);
-        enc3 = ((chr2 & 15) << 2) | (chr3 >> 6);
-        enc4 = chr3 & 63;
-        
-        if (isNaN(chr2)) {
-          enc3 = enc4 = 64;
-        } else if (isNaN(chr3)) {
-          enc4 = 64;
-        }
-        
-        output = output + 
-          _keyStr.charAt(enc1) + _keyStr.charAt(enc2) +
-          _keyStr.charAt(enc3) + _keyStr.charAt(enc4);
-        
-      }
-      return output;
+    map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
+    encode: function (n) {
+      "use strict";
+      var o = "", i = 0, m = this.map, i1, i2, i3, e1, e2, e3, e4;
+      n = this.utf8.encode(n);
+      while (i < n.length) {
+        i1 = n.charCodeAt(i++); i2 = n.charCodeAt(i++); i3 = n.charCodeAt(i++);
+        e1 = (i1 >> 2); e2 = (((i1 & 3) << 4) | (i2 >> 4)); e3 = (isNaN(i2) ? 64 : ((i2 & 15) << 2) | (i3 >> 6));
+        e4 = (isNaN(i2) || isNaN(i3)) ? 64 : i3 & 63;
+        o = o + m.charAt(e1) + m.charAt(e2) + m.charAt(e3) + m.charAt(e4);
+      } return o;
     },
-    
-    // Public decoding
-    decode: function(input) {
-      var output = "";
-      var chr1, chr2, chr3;
-      var enc1, enc2, enc3, enc4;
-      var i = 0;
-      input = input.replace(/[^A-Za-z0-9\+\/\=]/g, "");
-      
-      while (i < input.length) {
-        
-        enc1 = _keyStr.indexOf(input.charAt(i++));
-        enc2 = _keyStr.indexOf(input.charAt(i++));
-        enc3 = _keyStr.indexOf(input.charAt(i++));
-        enc4 = _keyStr.indexOf(input.charAt(i++));
-        
-        chr1 = (enc1 << 2) | (enc2 >> 4);
-        chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
-        chr3 = ((enc3 & 3) << 6) | enc4;
-        
-        output = output + String.fromCharCode(chr1);
-        
-        if (enc3 != 64) {
-          output = output + String.fromCharCode(chr2);
-        }
-        if (enc4 != 64) {
-          output = output + String.fromCharCode(chr3);
-        }
-        
+    decode: function (n) {
+      "use strict";
+      var o = "", i = 0, m = this.map, cc = String.fromCharCode, e1, e2, e3, e4, c1, c2, c3;
+      n = n.replace(/[^A-Za-z0-9\+\/\=]/g, "");
+      while (i < n.length) {
+        e1 = m.indexOf(n.charAt(i++)); e2 = m.indexOf(n.charAt(i++));
+        e3 = m.indexOf(n.charAt(i++)); e4 = m.indexOf(n.charAt(i++));
+        c1 = (e1 << 2) | (e2 >> 4); c2 = ((e2 & 15) << 4) | (e3 >> 2);
+        c3 = ((e3 & 3) << 6) | e4;
+        o = o + (cc(c1) + ((e3 != 64) ? cc(c2) : "")) + (((e4 != 64) ? cc(c3) : ""));
+      } return this.utf8.decode(o);
+    },
+    utf8: {
+      encode: function (n) {
+        "use strict";
+        var o = "", i = 0, cc = String.fromCharCode, c;
+        while (i < n.length) {
+          c = n.charCodeAt(i++); o = o + ((c < 128) ? cc(c) : ((c > 127) && (c < 2048)) ?
+          (cc((c >> 6) | 192) + cc((c & 63) | 128)) : (cc((c >> 12) | 224) + cc(((c >> 6) & 63) | 128) + cc((c & 63) | 128)));
+          } return o;
+      },
+      decode: function (n) {
+        "use strict";
+        var o = "", i = 0, cc = String.fromCharCode, c2, c;
+        while (i < n.length) {
+          c = n.charCodeAt(i);
+          o = o + ((c < 128) ? [cc(c), i++][0] : ((c > 191) && (c < 224)) ?
+          [cc(((c & 31) << 6) | ((c2 = n.charCodeAt(i + 1)) & 63)), (i += 2)][0] :
+          [cc(((c & 15) << 12) | (((c2 = n.charCodeAt(i + 1)) & 63) << 6) | ((c3 = n.charCodeAt(i + 2)) & 63)), (i += 3)][0]);
+        } return o;
       }
-      output = _utf8_decode(output);
-      return output;
     }
-  
   }
-  
-  // Private for Keen.Base64
-  // -------------------------------
-  
-  var _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
-  
-  function _utf8_encode(string) {
-    string = string.replace(/\r\n/g,"\n");
-    var utftext = "";
-    for (var n = 0; n < string.length; n++) {
-      var c = string.charCodeAt(n);
-      if (c < 128) {
-        utftext += String.fromCharCode(c);
-      }
-      else if((c > 127) && (c < 2048)) {
-        utftext += String.fromCharCode((c >> 6) | 192);
-        utftext += String.fromCharCode((c & 63) | 128);
-      }
-      else {
-        utftext += String.fromCharCode((c >> 12) | 224);
-        utftext += String.fromCharCode(((c >> 6) & 63) | 128);
-        utftext += String.fromCharCode((c & 63) | 128);
-      }
-    }
-    return utftext;
-  };
-  
-  function _utf8_decode(utftext) {
-    var string = "";
-    var i = 0;
-    var c = c1 = c2 = 0;
-    while ( i < utftext.length ) {
-      c = utftext.charCodeAt(i);
-      if (c < 128) {
-        string += String.fromCharCode(c);
-        i++;
-      }
-      else if((c > 191) && (c < 224)) {
-        c2 = utftext.charCodeAt(i+1);
-        string += String.fromCharCode(((c & 31) << 6) | (c2 & 63));
-        i += 2;
-      }
-      else {
-        c2 = utftext.charCodeAt(i+1);
-        c3 = utftext.charCodeAt(i+2);
-        string += String.fromCharCode(((c & 15) << 12) | ((c2 & 63) << 6) | (c3 & 63));
-        i += 3;
-      }
-    }
-    return string;
-  };
   
   
   // Handle Queued Commands
