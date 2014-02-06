@@ -55,19 +55,13 @@ keen.addEvent("purchases", purchase);
 
 Add as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
 
-### Properties
-
-Property names must follow these rules:
+**Property names** must follow these rules:
 
   * Cannot start with the $ character
   * Cannot contain the . character anywhere
   * Cannot be longer than 256 characters
 
-
-### Dates
-
-Dates are always handled in ISO-8601 format. 
-
+**Dates** are always handled in ISO-8601 format. The SDK will automatically stamp every event with `keen.timestamp`. This is the actual time when an event occurs. You can override this value if you would like. Our servers will then set `keen.created_at` once the event is received. This value cannot be overwritten.
 
 
 ## Track Links and Forms
@@ -152,7 +146,8 @@ Parameters:
   keen.setGlobalProperties(myGlobalProperties);
   
 ```
-**Important:** This function is executed prior to uploading each event, so global properties can be overridden by simply assigning a property of the same name when recording an event.
+
+**Important:** This function is executed prior to uploading each event, so global properties can be overwritten by simply assigning a property of the same name when recording an event.
 
 
 ## Multiple Projects
