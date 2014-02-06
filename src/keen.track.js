@@ -3,7 +3,8 @@
   else if (typeof define == 'function' && define.amd) define(definition)
   else context[name] = definition()
 }('Keen', this, function() {
-
+  'use strict';
+  
   // -------------------------------
   // Keen Object (tracker)
   // -------------------------------
@@ -447,13 +448,11 @@
       // Configuration
       if (client._cf) {
         client.configure(client._cf);
-        delete client._cf;
       }
       
       // Global Properties (test!)
       if (client._gp) {
         client.setGlobalProperties(client._gp);
-        delete client._gp;
       }
       
       // Queued Events
@@ -465,11 +464,7 @@
           var success = queue[i].shift();
           var error = queue[i].shift();
           client.addEvent(eventCollection, payload, success, error);
-          delete queue[i];
         }
-        delete queue;
-        delete client._eq;
-        // console.log(client, queue);
       }
       
       // onChartsReady Callbacks (test!)
@@ -479,12 +474,11 @@
           var handler = callback[i];
           Keen.onChartsReady(handler);
         }
-        delete client._ocrq
       }
       
     }
   }
-  delete window._KeenCache;
+  //delete window._KeenCache;
 
   // -------------------------------
   // Private Utils
