@@ -2236,14 +2236,23 @@ window.Keen = window.Keen || {};
             if(_.isUndefined(attributes)) {
                 attributes = {};
             }
+            /*
             this.attributes = _.defaults(attributes, {filters:[]});
-
             this.attributes.eventCollection = eventCollection;
-
             //Get the current client's timezone offset.
             if(_.isUndefined(this.attributes.timezone)){
                 this.attributes.timezone = getTimezoneOffset();
+            }*/
+            
+            var attr = _.defaults(attributes, {filters:[]});
+            attr.eventCollection = eventCollection;
+            
+            if (_.isUndefined(attr.timezone)){
+              attr.timezone = getTimezoneOffset();
             }
+            
+            this.attributes = {};
+            _.extend(this.attributes, attr);
 
             if(client) {
                 this.client = client;
