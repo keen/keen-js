@@ -7,6 +7,9 @@
   "engines": {
     "node": "0.8.x"
   },
+  "scripts": {
+    "start": "node app.js"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.6",
