@@ -1075,7 +1075,11 @@ window.Keen = window.Keen || {};
     // KEEN CLIENT OBJECT
 
     Keen.Client = function (config) {
-        this.projectId = config.projectId;
+        if(typeof config.projectId === "undefined" || !config.projectId) {
+            throw new Error("Configuration must include a valid projectId");
+        } else {
+            this.projectId = config.projectId;
+        }
         this.writeKey = config.writeKey;
         this.readKey = config.readKey;
         this.globalProperties = null;
