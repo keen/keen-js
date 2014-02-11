@@ -93,33 +93,50 @@
   // -------------------------------  
 
   Keen.prototype.query = function(query, success, error) {
+    
+    var queries = [];
+    var requests = 0;
+    var response = [];
+    
     if ( query instanceof Keen.Query ) {
-      _send_query.apply(this, [query, success, error]);
-    
+      queries.push(query);
     } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-      _send_saved_query.apply(this, [query, success, error]);
-    
+      queries.push(query);
     } else if ( Object.prototype.toString.call(query) === '[object Array]' ) {
-      
-      var requests = 0;
-      var response = [];
-      
-      var multiSuccess = function(res){
-        response[res.sequence] = res;
-        requests++;
-        if (success && requests == query.length) success(response);
-      };
-      
-      var multiFailure = function(){
-        if (error) error();
-      };
-      
-      for (var i = 0; i < query.length; i++) {
-        if (query[i] instanceof Keen.Query) {
-          _send_query.apply(this, [query[i], multiSuccess, multiFailure, i]);
-        } else if ( Object.prototype.toString.call(query[i]) === '[object String]' ) {
-          _send_saved_query.apply(this, [query[i], multiSuccess, multiFailure, i]);
+      queries = query;
+    }
+    
+    var handleSuccess = function(res){
+      response[res.sequence] = res; 
+      response[res.sequence]['query'] = queries[res.sequence];
+      requests++;
+      if (success && requests == queries.length){
+        if (queries.length == 1) {
+          success(response[0]);
+        } else {
+          success(response);
         }
+        
+      } 
+    };
+    var handleFailure = function(){
+      if (error) error();
+    };
+
+    for (var i = 0; i < queries.length; i++) {
+      var url = null;
+      if (queries[i] instanceof Keen.Query) {
+        url = _build_url.apply(this, [queries[i].path]);
+        url += "?api_key=" + this.client.readKey;
+        url += _build_query_string.apply(this, [queries[i].params]);
+      } else if ( Object.prototype.toString.call(queries[i]) === '[object String]' ) {
+        url = _build_url.apply(this, ['/saved_queries/' + encodeURIComponent(queries[i]) + '/result']);
+        url += "?api_key=" + this.client.readKey;
+      }
+      if (url) {
+        _send_query.apply(this, [url, i, handleSuccess, handleFailure])
+      } else {
+        Keen.log('Query #' + (i+1) + ' is not a valid query type');
       }
     }
     return this;
@@ -133,7 +150,7 @@
     return new Date().getTimezoneOffset() * -60;
   };
   
-  function _build_query_string(params) {
+  function _build_query_string(params){
     var query = [];
     for (var key in params) {
       if (params[key]) {
@@ -148,11 +165,7 @@
     return "&" + query.join('&');
   };
   
-  function _send_query(query, success, error, sequence) {
-    var url = _build_url.apply(this, [query.path]);
-    url += "?api_key=" + this.client.readKey;
-    url += _build_query_string.apply(this, [query.params]);
-    
+  function _send_query(url, sequence, success, error){
     switch(this.client.requestType){
       case 'xhr':
         _request.xhr.apply(this, ["GET", url, null, null, this.client.readKey, success, error, sequence]);
@@ -164,17 +177,3 @@
     }
   };
   
-  function _send_saved_query(query, success, error, sequence){
-    var url = _build_url.apply(this, ['/saved_queries/' + encodeURIComponent(query) + '/result']);
-    url += "?api_key=" + this.client.readKey;
-    
-    switch(this.client.requestType){
-      case 'xhr':
-        _request.xhr.apply(this, ["GET", url, null, null, this.client.readKey, success, error, sequence]);
-        break;
-      case 'jsonp':
-      case 'beacon':
-        _request.jsonp.apply(this, [url, this.client.readKey, success, error, sequence])
-        break;
-    }
-  };
