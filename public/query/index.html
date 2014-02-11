@@ -36,10 +36,16 @@
 			keen.query(count2, function(res2){
 				console.log('second', res2);
 			});
-		})
+		});
 		
 		keen.query([count, count2], function(response){
 			console.log(response);
+		});
+		
+		keen.query({}, function(response){
+			console.log(response);
+		}, function(error){
+			console.log('*', error);
 		});
 		
 	</script>
