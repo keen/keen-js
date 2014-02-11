@@ -98,14 +98,6 @@
     var requests = 0;
     var response = [];
     
-    if ( query instanceof Keen.Query ) {
-      queries.push(query);
-    } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-      queries.push(query);
-    } else if ( Object.prototype.toString.call(query) === '[object Array]' ) {
-      queries = query;
-    }
-    
     var handleSuccess = function(res){
       response[res.sequence] = res; 
       response[res.sequence]['query'] = queries[res.sequence];
@@ -119,9 +111,18 @@
         
       } 
     };
-    var handleFailure = function(){
-      if (error) error();
+    
+    var handleFailure = function(res){
+      var response = JSON.parse(res.responseText);
+      Keen.log(res.statusText + ' (' + response.error_code + '): ' + response.message);
+      if (error) error(res);
     };
+    
+    if ( Object.prototype.toString.call(query) === '[object Array]' ) {
+      queries = query;
+    } else {
+      queries.push(query);
+    }
 
     for (var i = 0; i < queries.length; i++) {
       var url = null;
@@ -129,15 +130,21 @@
         url = _build_url.apply(this, [queries[i].path]);
         url += "?api_key=" + this.client.readKey;
         url += _build_query_string.apply(this, [queries[i].params]);
+        
       } else if ( Object.prototype.toString.call(queries[i]) === '[object String]' ) {
         url = _build_url.apply(this, ['/saved_queries/' + encodeURIComponent(queries[i]) + '/result']);
         url += "?api_key=" + this.client.readKey;
-      }
-      if (url) {
-        _send_query.apply(this, [url, i, handleSuccess, handleFailure])
+        
       } else {
-        Keen.log('Query #' + (i+1) + ' is not a valid query type');
+        var res = {
+          statusText: 'Bad Request',
+          responseText: { message: 'Error: Query ' + (i+1) + ' of ' + queries.length + ' for project ' + this.client.projectId + ' is not a valid request' }
+        };
+        Keen.log(res.responseText.message);
+        if (error) error(res.responseText.message);
+        
       }
+      if (url) _send_query.apply(this, [url, i, handleSuccess, handleFailure]);
     }
     return this;
   };
