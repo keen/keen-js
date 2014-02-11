@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Keen IO Query JS Test</title>
+
+  <script type="text/javascript" src="../build/keen-3.0.0.track.js"></script>
+
+  <script type="text/javascript">
+
+		var keen = new Keen({
+			projectId: "your_project_id",
+			writeKey: "your_write_key"
+			//requestType: "jsonp"
+		});
+		
+		keen.addEvent('pageview', {page:'this one'});
+		keen.addEvent('pageview', {page:'that one'});
+		
+	</script>
+</head>
+<body></body>
+</html>
+

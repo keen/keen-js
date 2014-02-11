@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Keen IO Query JS Test</title>
+
+  <script type="text/javascript" src="../build/keen-3.0.0.query.js"></script>
+
+  <script type="text/javascript">
+
+		var keen = new Keen({
+			projectId: "your_project_id",
+			readKey: "your_read_key"
+			//requestType: "jsonp"
+		});
+		//keen.addEvent('pageview', {page:'this one'});
+		
+		var count = new Keen.Count('pageView', {
+			targetProperty: 'page',
+			groupBy: 'referrer',
+			timeframe: 'this_21_days',
+			interval: 'daily',
+			timezone: 'US/Pacific'
+		});
+		
+		var count2 = new Keen.Count('pageView', {
+			targetProperty: 'referrer',
+			groupBy: 'page',
+			timeframe: 'this_3_weeks',
+			interval: 'weekly',
+			timezone: 'US/Pacific'
+		});
+		
+		keen.query(count, function(response){
+			console.log(response);
+		})
+		
+		keen.query([count, count2], function(response){
+			console.log(response);
+		});
+		
+	</script>
+</head>
+<body></body>
+</html>
+

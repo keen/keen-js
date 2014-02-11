@@ -13,10 +13,10 @@
   */
 
   function Keen(config) {
-    return init.apply(this, arguments);
+    return _init.apply(this, arguments);
   };
 
-  function init(config) {
+  function _init(config) {
     if (config === undefined) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
     if (config.projectId === undefined) return Keen.log('Please provide a projectId');
     this.configure(config);
@@ -29,11 +29,145 @@
       readKey: config.readKey,
       globalProperties: null,
       keenUrl: (config.keenUrl) ? config.keenUrl : 'https://api.keen.io/3.0',
-      requestType: _setRequestType(config.requestType || 'xhr')
+      requestType: _set_request_type(config.requestType || 'xhr')
     };
     return this;
   };
-
+  
+  function _set_request_type(value) {
+    // Test XMLHttpRequest = function(){};
+    var configured = value; // null, 'xhr', 'jsonp', 'beacon'
+    var capableXHR = typeof new XMLHttpRequest().responseType === 'string';
+    if (configured == null || configured == 'xhr') {
+      if (capableXHR) {
+        return 'xhr';
+      } else {
+        return 'jsonp';
+      }
+    } else {
+      return configured;
+    }
+  }
+  
+  function _build_url(path) {
+    return this.client.keenUrl + '/projects/' + this.client.projectId + path;
+  };
+  
+  // Keen.prototype.request
+  // keen.request('get', url, params, success, error);
+  
+  // keen.get('/events/' + eventCollection, params, function(response){ });
+  // keen.post()
+  // request.get(this, ['GET', '/events/' + eventCollection])
+  
+  var _request = {
+    
+    xhr: function(method, url, headers, body, apiKey, success, error, sequence){
+      if (!apiKey) return Keen.log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
+      var xhr = new XMLHttpRequest();
+      xhr.onreadystatechange = function () {
+        if (xhr.readyState == 4) {
+          if (xhr.status >= 200 && xhr.status < 300) {
+            var response;
+            try {
+              response = JSON.parse(xhr.responseText);
+              if (typeof sequence == 'number') {
+                response.sequence = sequence;
+              }
+            } catch (e) {
+              Keen.log("Could not JSON parse HTTP response: " + xhr.responseText);
+              if (error) error(xhr, e);
+            }
+            if (success && response) success(response);
+          } else {
+            Keen.log("HTTP request failed.");
+            if (error) error(xhr, null);
+          }
+        }
+      };
+      xhr.open(method, url, true);
+      if (apiKey) xhr.setRequestHeader("Authorization", apiKey);
+      if (body) xhr.setRequestHeader("Content-Type", "application/json");
+      if (headers) {
+        for (var headerName in headers) {
+          if (headers.hasOwnProperty(headerName)) xhr.setRequestHeader(headerName, headers[headerName]);
+        }
+      }
+      var toSend = body ? JSON.stringify(body) : null;
+      xhr.send(toSend);
+    },
+    
+    jsonp: function(url, apiKey, success, error, sequence){
+      if (!apiKey) return Keen.log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
+      // Fall back to JSONP for GET and sending data base64 encoded for POST
+      // Add api_key if it's not there
+      if (apiKey && url.indexOf("api_key") < 0) {
+        var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
+        url = url + delimiterChar + "api_key=" + apiKey;
+      }
+      // JSONP
+      var callbackName = "keenJSONPCallback" + new Date().getTime();
+      while (callbackName in window) {
+        callbackName += "a";
+      }
+      var loaded = false;
+      window[callbackName] = function (response) {
+        loaded = true;
+        if (success && response) {
+          if (typeof sequence == 'number') {
+            response.sequence = sequence;
+          }
+          success(response);
+        };
+        // Remove this from the namespace
+        window[callbackName] = undefined;
+      };
+      url = url + "&jsonp=" + callbackName;
+      var script = document.createElement("script");
+      script.id = "keen-jsonp";
+      script.src = url;
+      document.getElementsByTagName("head")[0].appendChild(script);
+      // for early IE w/ no onerror event
+      script.onreadystatechange = function() {
+        if (loaded === false && this.readyState === "loaded") {
+          loaded = true;
+          if (error) error();
+        }
+      }
+      // non-ie, etc
+      script.onerror = function() {
+        if (loaded === false) { // on IE9 both onerror and onreadystatechange are called
+          loaded = true;
+          if (error) error();
+        }
+      }
+    },
+    
+    beacon: function(url, apiKey, success, error){
+      if (apiKey && url.indexOf("api_key") < 0) {
+        var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
+        url = url + delimiterChar + "api_key=" + apiKey;
+      }
+      var loaded = false, img = document.createElement("img");
+      img.onload = function() {
+        loaded = true;
+        if ('naturalHeight' in this) {
+          if (this.naturalHeight + this.naturalWidth === 0) {
+            this.onerror(); return;
+          }
+        } else if (this.width + this.height === 0) {
+          this.onerror(); return;
+        }
+        if (success) success({created: true});
+      };
+      img.onerror = function() {
+        loaded = true;
+        if (error) error();
+      };
+      img.src = url;
+    }
+  }
+  
   // Source: src/track.js
   /*! 
   * -------------------
@@ -98,27 +232,8 @@
   // Private for Keen IO Tracker JS
   // -------------------------------
 
-  function _setRequestType(value) {
-    // Test XMLHttpRequest = function(){};
-    var configured = value; // null, 'xhr', 'jsonp', 'beacon'
-    var capableXHR = typeof new XMLHttpRequest().responseType === 'string';
-    if (configured == null || configured == 'xhr') {
-      if (capableXHR) {
-        return 'xhr';
-      } else {
-        return 'jsonp';
-      }
-    } else {
-      return configured;
-    }
-  }
-
-  function _buildURL(path) {
-    return this.client.keenUrl + '/projects/' + this.client.projectId + path;
-  };
-
   function _uploadEvent(eventCollection, payload, success, error) {
-    var url = _buildURL.apply(this, ['/events/' + eventCollection]);
+    var url = _build_url.apply(this, ['/events/' + eventCollection]);
     var newEvent = {};
   
     // Add properties from client.globalProperties
@@ -132,12 +247,12 @@
         newEvent[property] = payload[property];
       }
     }
-  
+    
     // Send data
     switch(this.client.requestType){
     
       case 'xhr':
-        _sendXHR.apply(this, ["POST", url, null, newEvent, this.client.writeKey, success, error]);
+        _request.xhr.apply(this, ["POST", url, null, newEvent, this.client.writeKey, success, error]);
         break;
     
       case 'jsonp':
@@ -146,7 +261,7 @@
         url = url + "?api_key=" + this.client.writeKey;
         url = url + "&data=" + base64Body;
         url = url + "&modified=" + new Date().getTime();
-        _sendJSONP.apply(this, [url, this.client.writeKey, success, error]);
+        _request.jsonp.apply(this, [url, this.client.writeKey, success, error])
         break;
     
       case 'beacon':
@@ -156,169 +271,22 @@
         url = url + "&data=" + encodeURIComponent(base64Body);
         url = url + "&modified=" + encodeURIComponent(new Date().getTime());
         url = url + "&c=clv1";
-        _sendBeacon(url, null, success, error);
+        _request.beacon.apply(this, [url, null, success, error]);
         break;
     }
   
   };
 
-  function _sendXHR(method, url, headers, body, apiKey, success, error) {
-    // Called by:
-    // Keen.Client.prototype.uploadEvent
-    // Keen.Client.prototype.getJSON
   
-    if (!apiKey) return Keen.log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
-  
-    console.log(arguments);
-  
-    var xhr = new XMLHttpRequest();
-    xhr.onreadystatechange = function () {
-      if (xhr.readyState == 4) {
-        if (xhr.status >= 200 && xhr.status < 300) {
-          var response;
-          try {
-            response = JSON.parse(xhr.responseText);
-          } catch (e) {
-            Keen.log("Could not JSON parse HTTP response: " + xhr.responseText);
-            if (error) {
-              error(xhr, e);
-            }
-          }
-
-          if (response) {
-            if (success) {
-              success(response);
-            }
-          }
-        } else {
-          Keen.log("HTTP request failed.");
-          if (error) {
-            error(xhr, null);
-          }
-        }
-      }
-    };
-    xhr.open(method, url, true);
-    if (apiKey){
-      xhr.setRequestHeader("Authorization", apiKey);
-    }
-    if (body) {
-      xhr.setRequestHeader("Content-Type", "application/json");
-    }
-    if (headers) {
-      for (var headerName in headers) {
-        if (headers.hasOwnProperty(headerName)) {
-          xhr.setRequestHeader(headerName, headers[headerName]);
-        }
-      }
-    }
-    var toSend = body ? JSON.stringify(body) : null;
-    xhr.send(toSend);
-  };
-
-  function _sendJSONP(url, apiKey, success, error) {
-    // Called by:
-    // Keen.Client.prototype.uploadEvent
-    // Keen.Client.prototype.getJSON
-  
-    if (!apiKey) return Keen.log('Please provide a writeKey for https://keen.io/project/' + this.client.projectId);
-    console.log(arguments);
-  
-    // Fall back to JSONP for GET and sending data base64 encoded for POST
-  
-    // Add api_key if it's not there
-    if (apiKey && url.indexOf("api_key") < 0) {
-      var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
-      url = url + delimiterChar + "api_key=" + apiKey;
-    }
-
-    // JSONP
-    var callbackName = "keenJSONPCallback" + new Date().getTime();
-    while (callbackName in window) {
-      callbackName += "a";
-    }
-
-    var loaded = false;
-    window[callbackName] = function (response) {
-      loaded = true;
-
-      if (success && response) {
-        success(response);
-      }
-
-      // Remove this from the namespace
-      window[callbackName] = undefined;
-    };
-
-    url = url + "&jsonp=" + callbackName;
-    var script = document.createElement("script");
-    script.id = "keen-jsonp";
-    script.src = url;
-    document.getElementsByTagName("head")[0].appendChild(script);
-
-    // for early IE w/ no onerror event
-    script.onreadystatechange = function() {
-      if (loaded === false && this.readyState === "loaded") {
-        loaded = true;
-        if (error) {
-          error();
-        }
-      }
-    }
-
-    // non-ie, etc
-    script.onerror = function() {
-      if (loaded === false) { // on IE9 both onerror and onreadystatechange are called
-        loaded = true;
-        if (error) {
-          error();
-        }
-      }
-    }
-  
-  };
-
-  function _sendBeacon(url, apiKey, success, error){
-    // Called by:
-    // Keen.Client.prototype.uploadEvent
-    if (apiKey && url.indexOf("api_key") < 0) {
-      var delimiterChar = url.indexOf("?") > 0 ? "&" : "?";
-      url = url + delimiterChar + "api_key=" + apiKey;
-    }
-
-    var loaded = false, img = document.createElement("img");
-
-    img.onload = function() {
-      loaded = true;
-      if ('naturalHeight' in this) {
-        if (this.naturalHeight + this.naturalWidth === 0) {
-          this.onerror(); return;
-        }
-      } else if (this.width + this.height === 0) {
-        this.onerror(); return;
-      }
-      if (success) { success({created: true}); }
-    };
-  
-    img.onerror = function() {
-      loaded = true;
-      if (error) {
-        error();
-      }
-    };
-  
-    img.src = url;
-  };
-
-
   // Handle Queued Commands
   // -------------------------------
 
+  /*
   Keen.sync = function(cache){
     for (var instance in cache) {
       console.log(instance);
     }
-  }
+  }*/
 
   for (var instance in window._KeenCache) {
     if (window._KeenCache.hasOwnProperty(instance)) {
@@ -372,35 +340,123 @@
   * -----------------
   */
 
-  Keen.Query = function() {};
+  Keen.Query = function(){};
   Keen.Query.prototype = {
     configure: function(eventCollection, options) {
-      this.eventCollection = eventCollection;
-      this.options = options;
+      this.path = '/queries/' + options.analysisType;
+      this.params = {
+        event_collection: eventCollection,
+        target_property: options.targetProperty,
+        group_by: options.groupBy,
+        filters: options.filters,
+        timeframe: options.timeframe,
+        interval: options.interval,
+        timezone: (options.timezone || _build_timezone_offset()),
+        latest: options.latest
+      };
+      return this;
+    },
+    addFilter: function(property, operator, value){
+      this.params.filters.push({
+        "property_name": property,
+        "operator": operator,
+        "property_value": value
+      });
       return this;
     }
   };
-
-  Keen.Count = function(eventCollection, options) {
+  
+  
+  Keen.Sum = function(eventCollection, options){
+    options.analysisType = 'sum';
+    this.configure(eventCollection, options);
+  };
+  Keen.Sum.prototype = new Keen.Query();
+  
+  
+  Keen.Count = function(eventCollection, options){
+    options.analysisType = 'count';
     this.configure(eventCollection, options);
   };
   Keen.Count.prototype = new Keen.Query();
-
+  
+  
+  Keen.CountUnique = function(eventCollection, options){
+    options.analysisType = 'count_unique';
+    this.configure(eventCollection, options);
+  };
+  Keen.CountUnique.prototype = new Keen.Query();
+  
+  
+  Keen.Minimum = function(eventCollection, options){
+    options.analysisType = 'minimum';
+    this.configure(eventCollection, options);
+  };
+  Keen.Minimum.prototype = new Keen.Query();
+  
+  
+  Keen.Maximum = function(eventCollection, options){
+    options.analysisType = 'maximum';
+    this.configure(eventCollection, options);
+  };
+  Keen.Maximum.prototype = new Keen.Query();
+  
+  
+  Keen.Average = function(eventCollection, options){
+    options.analysisType = 'average';
+    this.configure(eventCollection, options);
+  };
+  Keen.Average.prototype = new Keen.Query();
+  
+  
+  Keen.SelectUnique = function(eventCollection, options){
+    options.analysisType = 'select_unique';
+    this.configure(eventCollection, options);
+  };
+  Keen.SelectUnique.prototype = new Keen.Query();
+  
+  
+  Keen.Extraction = function(eventCollection, options){
+    options.analysisType = 'extraction';
+    this.configure(eventCollection, options);
+  };
+  Keen.Extraction.prototype = new Keen.Query();
+  
+  
 
   // -------------------------------
   // Keen.query() Method
   // -------------------------------  
 
   Keen.prototype.query = function(query, success, error) {
-    if ( query instanceof Keen ) {
-      console.log('Keen Object!');
-    
-    } else if ( query instanceof Keen.Query ) {
-      console.log('teh Query!', query);
+    if ( query instanceof Keen.Query ) {
+      _send_query.apply(this, [query, success, error]);
     
     } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-      console.log('Saved Query Name!');
+      _send_saved_query.apply(this, [query, success, error]);
     
+    } else if ( Object.prototype.toString.call(query) === '[object Array]' ) {
+      
+      var requests = 0;
+      var response = [];
+      
+      var multiSuccess = function(res){
+        response[res.sequence] = res;
+        requests++;
+        if (success && requests == query.length) success(response);
+      };
+      
+      var multiFailure = function(){
+        if (error) error();
+      };
+      
+      for (var i = 0; i < query.length; i++) {
+        if (query[i] instanceof Keen.Query) {
+          _send_query.apply(this, [query[i], multiSuccess, multiFailure, i]);
+        } else if ( Object.prototype.toString.call(query[i]) === '[object String]' ) {
+          _send_saved_query.apply(this, [query[i], multiSuccess, multiFailure, i]);
+        }
+      }
     }
     return this;
   };
@@ -409,31 +465,54 @@
   // Private for Keen.Query Objects
   // --------------------------------
 
-  function _getJSON(url, success, error) {
-    if (this.client.capapble.xhr) {
-      _sendXHR.apply(this, ["GET", url, null, null, this.client.readKey, success, error]);
-    } else {
-      _sendJSONP.apply(this, this.client.readKey, success, error);
+  function _build_timezone_offset(){
+    return new Date().getTimezoneOffset() * -60;
+  };
+  
+  function _build_query_string(params) {
+    var query = [];
+    for (var key in params) {
+      if (params[key]) {
+        var value = params[key];
+        if (Object.prototype.toString.call(value) !== '[object String]') {
+          value = JSON.stringify(value);
+        }
+        value = encodeURIComponent(value);
+        query.push(key + '=' + value);
+      }
+    }
+    return "&" + query.join('&');
+  };
+  
+  function _send_query(query, success, error, sequence) {
+    var url = _build_url.apply(this, [query.path]);
+    url += "?api_key=" + this.client.readKey;
+    url += _build_query_string.apply(this, [query.params]);
+    
+    switch(this.client.requestType){
+      case 'xhr':
+        _request.xhr.apply(this, ["GET", url, null, null, this.client.readKey, success, error, sequence]);
+        break;
+      case 'jsonp':
+      case 'beacon':
+        _request.jsonp.apply(this, [url, this.client.readKey, success, error, sequence])
+        break;
     }
   };
-
-  function _sendQuery(success, error) {
-    // Keen.BaseQuery
-  };
-
-  function _getPath() {
-    // builds a query path from arguments
-  };
-
-  function _getParams() {
-    // builds a param string from arguments
-  };
-
-  function _getResponse(url, success, error) {
-    // IS THIS THE SAME AS _getJSON??
-    // Keen.BaseQuery.getResponse, 
-    // Keen.getEventCollections,
-    // Keen.getEventCollectionProperties 
+  
+  function _send_saved_query(query, success, error, sequence){
+    var url = _build_url.apply(this, ['/saved_queries/' + encodeURIComponent(query) + '/result']);
+    url += "?api_key=" + this.client.readKey;
+    
+    switch(this.client.requestType){
+      case 'xhr':
+        _request.xhr.apply(this, ["GET", url, null, null, this.client.readKey, success, error, sequence]);
+        break;
+      case 'jsonp':
+      case 'beacon':
+        _request.jsonp.apply(this, [url, this.client.readKey, success, error, sequence])
+        break;
+    }
   };
 
   // Source: src/visualize.js
