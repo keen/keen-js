@@ -31,61 +31,77 @@
   };
   
   
-  Keen.Sum = function(eventCollection, options){
+  Keen.Sum = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'sum';
+    if (options.targetProperty === undefined) return options;
+    if (!eventCollection || !options.targetProperty) return options;
     this.configure(eventCollection, options);
   };
   Keen.Sum.prototype = new Keen.Query();
   
   
-  Keen.Count = function(eventCollection, options){
+  Keen.Count = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'count';
+    if (!eventCollection) return options;
     this.configure(eventCollection, options);
   };
   Keen.Count.prototype = new Keen.Query();
   
   
-  Keen.CountUnique = function(eventCollection, options){
+  Keen.CountUnique = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'count_unique';
+    if (!eventCollection || !options.targetProperty) return options;
     this.configure(eventCollection, options);
   };
   Keen.CountUnique.prototype = new Keen.Query();
   
   
-  Keen.Minimum = function(eventCollection, options){
+  Keen.Minimum = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'minimum';
+    if (!eventCollection || !options.targetProperty) return options;
     this.configure(eventCollection, options);
   };
   Keen.Minimum.prototype = new Keen.Query();
   
   
-  Keen.Maximum = function(eventCollection, options){
+  Keen.Maximum = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'maximum';
+    if (!eventCollection || !options.targetProperty) return options;
     this.configure(eventCollection, options);
   };
   Keen.Maximum.prototype = new Keen.Query();
   
   
-  Keen.Average = function(eventCollection, options){
+  Keen.Average = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'average';
+    if (!eventCollection || !options.targetProperty) return options;
     this.configure(eventCollection, options);
   };
   Keen.Average.prototype = new Keen.Query();
   
   
-  Keen.SelectUnique = function(eventCollection, options){
+  Keen.SelectUnique = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'select_unique';
+    if (!eventCollection || !options.targetProperty) return options;
     this.configure(eventCollection, options);
   };
   Keen.SelectUnique.prototype = new Keen.Query();
   
   
-  Keen.Extraction = function(eventCollection, options){
+  Keen.Extraction = function(eventCollection, config){
+    var options = (config || {});
     options.analysisType = 'extraction';
+    if (!eventCollection) return options;
     this.configure(eventCollection, options);
   };
   Keen.Extraction.prototype = new Keen.Query();
-  
   
 
   // -------------------------------
@@ -141,8 +157,9 @@
           responseText: { message: 'Error: Query ' + (i+1) + ' of ' + queries.length + ' for project ' + this.client.projectId + ' is not a valid request' }
         };
         Keen.log(res.responseText.message);
+        Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');
+        Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
         if (error) error(res.responseText.message);
-        
       }
       if (url) _send_query.apply(this, [url, i, handleSuccess, handleFailure]);
     }

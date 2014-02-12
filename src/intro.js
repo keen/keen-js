@@ -30,6 +30,18 @@
       keenUrl: (config.keenUrl) ? config.keenUrl : 'https://api.keen.io/3.0',
       requestType: _set_request_type(config.requestType || 'xhr')
     };
+    // to build:
+    // protocol: https/http/auto flag
+    // apiUrl
+    
+    // addons
+        //  + ip-to-geo enabled?
+        //  + us-parsing enabled?
+    // auto-pageviews
+      //  + eventCollection name
+      //  + url params whitelist ['utm_full_param']
+
+    
     return this;
   };
   
