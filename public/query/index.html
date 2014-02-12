@@ -10,10 +10,13 @@
 		var keen = new Keen({
 			projectId: "52f00ec205cd66404b000000",
 			readKey: "f979d53e026bdbf1ba16f01ce168bc7bcf9d5308ba672fb14e1834793a9e705eefa04793f0f87fb76b1d49a6cc2747b96a8abae0e4569d70314099b3f7790f55e98c9ac482e3883aab86a4bb577c295dbbca4867e95e2e4b15038fac5d80957ded3e868e4e6e319d3aa9275abc22b16e"
-			//requestType: "jsonp"
+			//requestType: "jsonp" "beacon" "xhr"
+			// key: "https" | "http" | "auto"
+			
 		});
 		//keen.addEvent('pageview', {page:'this one'});
 		
+		/*
 		var count = new Keen.Count('pageView', {
 			targetProperty: 'page',
 			groupBy: 'referrer',
@@ -21,32 +24,58 @@
 			interval: 'daily',
 			timezone: 'US/Pacific'
 		});
-		// 'saved_query_type'
+		*/
 		
-		var count2 = new Keen.Count('pageView', {
-			targetProperty: 'referrer',
-			groupBy: 'page',
-			timeframe: 'this_3_weeks',
-			interval: 'weekly',
-			timezone: 'US/Pacific'
+		var count = new Keen.Count('purchase');
+		
+		var count_unique = new Keen.CountUnique('purchase', {
+			targetProperty: 'amount'
 		});
 		
-		keen.query(count, function(response){
-			console.log('first', response);
-			keen.query(count2, function(res2){
-				console.log('second', res2);
+		var sum = new Keen.Sum('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var max = new Keen.Maximum('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var min = new Keen.Minimum('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var avg = new Keen.Average('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var select_unique = new Keen.SelectUnique('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var extraction = new Keen.Extraction('purchase');
+		
+		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response){
+			console.log(response);
+		});
+		
+		keen.query(max, function(response){
+			console.log('max', response);
+			keen.query(min, function(res2){
+				console.log('min', res2);
 			});
 		});
 		
-		keen.query([count, count2], function(response){
+		keen.query([min, max, avg], function(response){
 			console.log(response);
 		});
 		
-		keen.query({}, function(response){
-			console.log(response);
-		}, function(error){
-			console.log('*', error);
-		});
+		// Mock Error
+		setTimeout(function(){
+			keen.query({}, function(){}, function(error){
+				console.log('*Error Callback*', error);
+			});
+		}, 2500);
+		
 		
 	</script>
 </head>
