@@ -110,28 +110,31 @@
 
   Keen.prototype.query = function(query, success, error) {
     
-    var queries = [];
-    var requests = 0;
-    var response = [];
+    var queries = [],
+        requests = 0,
+        response = [],
+        meta = [];
     
-    var handleSuccess = function(res){
-      response[res.sequence] = res; 
-      response[res.sequence]['query'] = queries[res.sequence];
+    var handleSuccess = function(res, req){
+      response[req.sequence] = res;
+      meta[req.sequence] = req;
+      meta[req.sequence]['query'] = queries[req.sequence];
       requests++;
+      
       if (success && requests == queries.length){
         if (queries.length == 1) {
-          success(response[0]);
+          success(response[0], meta);
         } else {
-          success(response);
+          success(response, meta);
         }
         
       } 
     };
     
-    var handleFailure = function(res){
+    var handleFailure = function(res, req){
       var response = JSON.parse(res.responseText);
       Keen.log(res.statusText + ' (' + response.error_code + '): ' + response.message);
-      if (error) error(res);
+      if (error) error(res, req);
     };
     
     if ( Object.prototype.toString.call(query) === '[object Array]' ) {

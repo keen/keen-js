@@ -79,17 +79,17 @@
       xhr.onreadystatechange = function () {
         if (xhr.readyState == 4) {
           if (xhr.status >= 200 && xhr.status < 300) {
-            var response;
+            var response, meta = {};
             try {
               response = JSON.parse(xhr.responseText);
               if (typeof sequence == 'number') {
-                response.sequence = sequence;
+                meta.sequence = sequence;
               }
             } catch (e) {
               Keen.log("Could not JSON parse HTTP response: " + xhr.responseText);
               if (error) error(xhr, e);
             }
-            if (success && response) success(response);
+            if (success && response) success(response, meta);
           } else {
             Keen.log("HTTP request failed.");
             if (error) error(xhr, null);
@@ -121,14 +121,14 @@
       while (callbackName in window) {
         callbackName += "a";
       }
-      var loaded = false;
-      window[callbackName] = function (response) {
+      var loaded = false, meta = {};
+      window[callbackName] = function (response, meta) {
         loaded = true;
         if (success && response) {
           if (typeof sequence == 'number') {
-            response.sequence = sequence;
+            meta.sequence = sequence;
           }
-          success(response);
+          success(response, meta);
         };
         // Remove this from the namespace
         window[callbackName] = undefined;

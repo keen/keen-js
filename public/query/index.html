@@ -54,10 +54,14 @@
 		
 		var extraction = new Keen.Extraction('purchase');
 		
-		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response){
-			console.log(response);
+		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response, meta){
+			console.log('-->', response, meta);
+			for (var i = 0; i < response.length; i++){
+				console.log(meta[i].query.path, meta[i].query.params.event_collection, response[i].result);
+			}
 		});
 		
+		/*
 		keen.query(max, function(response){
 			console.log('max', response);
 			keen.query(min, function(res2){
@@ -74,7 +78,7 @@
 			keen.query({}, function(){}, function(error){
 				console.log('*Error Callback*', error);
 			});
-		}, 2500);
+		}, 2500);*/
 		
 		
 	</script>
