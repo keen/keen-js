@@ -3,13 +3,13 @@
 <head>
   <title>Keen IO Query JS Test</title>
 
-  <script type="text/javascript" src="../build/keen-3.0.0.query.js"></script>
+  <script type="text/javascript" src="../../build/keen-3.0.0.query.js"></script>
 
   <script type="text/javascript">
 
 		var keen = new Keen({
-			projectId: "52f00ec205cd66404b000000",
-			readKey: "f979d53e026bdbf1ba16f01ce168bc7bcf9d5308ba672fb14e1834793a9e705eefa04793f0f87fb76b1d49a6cc2747b96a8abae0e4569d70314099b3f7790f55e98c9ac482e3883aab86a4bb577c295dbbca4867e95e2e4b15038fac5d80957ded3e868e4e6e319d3aa9275abc22b16e"
+			projectId: "52f2ae5905cd661a7800000a",
+			readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b"
 			//requestType: "jsonp" "beacon" "xhr"
 			// key: "https" | "http" | "auto"
 			
@@ -59,6 +59,61 @@
 			for (var i = 0; i < response.length; i++){
 				console.log(meta[i].query.path, meta[i].query.params.event_collection, response[i].result);
 			}
+		});
+		
+		
+		/* FUNNEL DEMOS ARE FUN */
+		
+		var funnel = new Keen.Funnel({
+			steps: [
+				{
+					eventCollection: "viewed_twentyfive",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				},
+				{
+					eventCollection: "viewed_fifty",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				},
+				{
+					eventCollection: "viewed_seventyfive",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				},
+				{
+					eventCollection: "viewed_all",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				}
+			],
+			timeframe: 'this_7_days',
+			timezone: 'US/Pacific'
+		});
+		
+		var fun2 = new Keen.Funnel({
+			steps: [
+				{
+					eventCollection: "viewed_twentyfive",
+					actorProperty: "agent"
+				},
+				{
+					eventCollection: "viewed_fifty",
+					actorProperty: "agent"
+				},
+				{
+					eventCollection: "viewed_seventyfive",
+					actorProperty: "agent"
+				},
+				{
+					eventCollection: "viewed_all",
+					actorProperty: "agent"
+				}
+			]
+		});
+		
+		keen.query([funnel, fun2], function(response, meta){
+			console.log(response, meta);
 		});
 		
 		/*

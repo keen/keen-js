@@ -103,6 +103,44 @@
   };
   Keen.Extraction.prototype = new Keen.Query();
   
+  
+  
+  Keen.Funnel = function(config){
+    var options = (config || {});
+    options.analysisType = 'funnel';
+    if (!options.steps) throw Error('Please configure an array of steps for this funnel');
+    this.configure(options);
+  };
+  
+  Keen.Funnel.prototype = {
+    configure: function(options){
+      this.path = '/queries/' + options.analysisType,
+      this.params = {
+        steps: [],
+        timeframe: options.timeframe,
+        timezone: (options.timezone || _build_timezone_offset())
+      };
+      
+      for (var i = 0; i < options.steps.length; i++){
+        var step = {};
+        if (!options.steps[i].eventCollection) throw Error('Please provide an eventCollection value for step #' + (i+1));
+        step.event_collection = options.steps[i].eventCollection;
+        
+        if (!options.steps[i].actorProperty) throw Error('Please provide an actorProperty value for step #' + (i+1));
+        step.actor_property = options.steps[i].actorProperty;
+        
+        if (options.steps[i].filters) step.filters = options.steps[i].filters;
+        if (options.steps[i].timeframe) step.timeframe = options.steps[i].timeframe;
+        if (options.steps[i].timezone) step.timezone = options.steps[i].timezone;
+        
+        this.params.steps.push(step);
+      }
+      
+      console.log('Funnel ready', this);
+      return this;
+    }
+  };
+  
 
   // -------------------------------
   // Keen.query() Method
@@ -145,7 +183,7 @@
 
     for (var i = 0; i < queries.length; i++) {
       var url = null;
-      if (queries[i] instanceof Keen.Query) {
+      if (queries[i] instanceof Keen.Query || queries[i] instanceof Keen.Funnel) {
         url = _build_url.apply(this, [queries[i].path]);
         url += "?api_key=" + this.client.readKey;
         url += _build_query_string.apply(this, [queries[i].params]);
