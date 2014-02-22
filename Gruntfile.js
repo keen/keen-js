@@ -40,7 +40,6 @@ module.exports = function(grunt) {
           "src/query.js", 
           "src/lib/base64.js",
           "src/lib/json2.js",
-          // "src/lib/signals.js",
           "src/outro.js"
         ],
         dest: "build/<%= pkg.name %>-<%= pkg.version %>.query.js"
