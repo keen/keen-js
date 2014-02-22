@@ -54,13 +54,13 @@
 		
 		var extraction = new Keen.Extraction('purchase');
 		
+		
 		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response, meta){
 			console.log('-->', response, meta);
 			for (var i = 0; i < response.length; i++){
 				console.log(meta[i].query.path, meta[i].query.params.event_collection, response[i].result);
 			}
-		});
-		
+		});/**/
 		
 		/* FUNNEL DEMOS ARE FUN */
 		
@@ -112,9 +112,35 @@
 			]
 		});
 		
+		
 		keen.query([funnel, fun2], function(response, meta){
 			console.log(response, meta);
+			console.log(response[0].result[0], response[0].result[1], response[0].result[2], response[0].result[3]);
+			console.log(response[1].result[0], response[1].result[1], response[1].result[2], response[1].result[3]);
 		});
+		
+		
+		
+		
+		
+		/*
+				EVENT LISTENERS
+		*/
+		
+		count.on('done', function(response, meta){
+			console.log(meta.sequence + ' | count is done', response);
+		})
+		//count.trigger('done', {key:'value'});
+		
+		avg.on('done', function(response, meta){
+			console.log(meta.sequence + ' | avg is done', response);
+		});
+		//avg.trigger('done', {key:'value'});
+		
+		funnel.on('done', function(response, meta){
+			console.log('funnel is back', response, meta);
+		});
+		
 		
 		/*
 		keen.query(max, function(response){
