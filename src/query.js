@@ -4,9 +4,11 @@
   * -----------------
   */
 
+
   Keen.Query = function(){};
   Keen.Query.prototype = {
     configure: function(eventCollection, options) {
+      this.listeners = [];
       this.path = '/queries/' + options.analysisType;
       this.params = {
         event_collection: eventCollection,
@@ -20,12 +22,29 @@
       };
       return this;
     },
-    addFilter: function(property, operator, value){
+    addFilter: function(property, operator, value) {
       this.params.filters.push({
         "property_name": property,
         "operator": operator,
         "property_value": value
       });
+      return this;
+    },
+    on: function(eventName, callback) {
+      this.listeners.push({ eventName: eventName, callback: callback });
+      return this;
+    },
+    off: function(eventName, callback) {
+      //removeEvent(eventName);
+      return this;
+    },
+    trigger: function(eventName, data) {
+      if (this.listeners.length < 1) return;
+      for (var i = 0; i < this.listeners.length; i++) {
+        if (this.listeners[i]['eventName'] == eventName) {
+          this.listeners[i]['callback'](data);
+        }
+      }
       return this;
     }
   };
@@ -111,36 +130,34 @@
     if (!options.steps) throw Error('Please configure an array of steps for this funnel');
     this.configure(options);
   };
+  Keen.Funnel.prototype = new Keen.Query();
   
-  Keen.Funnel.prototype = {
-    configure: function(options){
-      this.path = '/queries/' + options.analysisType,
-      this.params = {
-        steps: [],
-        timeframe: options.timeframe,
-        timezone: (options.timezone || _build_timezone_offset())
-      };
+  Keen.Funnel.prototype.configure = function(options){
+    this.listeners = [];
+    this.path = '/queries/' + options.analysisType;
+    this.params = {
+      steps: [],
+      timeframe: options.timeframe,
+      timezone: (options.timezone || _build_timezone_offset())
+    };
+    
+    for (var i = 0; i < options.steps.length; i++){
+      var step = {};
+      if (!options.steps[i].eventCollection) throw Error('Please provide an eventCollection value for step #' + (i+1));
+      step.event_collection = options.steps[i].eventCollection;
       
-      for (var i = 0; i < options.steps.length; i++){
-        var step = {};
-        if (!options.steps[i].eventCollection) throw Error('Please provide an eventCollection value for step #' + (i+1));
-        step.event_collection = options.steps[i].eventCollection;
-        
-        if (!options.steps[i].actorProperty) throw Error('Please provide an actorProperty value for step #' + (i+1));
-        step.actor_property = options.steps[i].actorProperty;
-        
-        if (options.steps[i].filters) step.filters = options.steps[i].filters;
-        if (options.steps[i].timeframe) step.timeframe = options.steps[i].timeframe;
-        if (options.steps[i].timezone) step.timezone = options.steps[i].timezone;
-        
-        this.params.steps.push(step);
-      }
+      if (!options.steps[i].actorProperty) throw Error('Please provide an actorProperty value for step #' + (i+1));
+      step.actor_property = options.steps[i].actorProperty;
       
-      console.log('Funnel ready', this);
-      return this;
+      if (options.steps[i].filters) step.filters = options.steps[i].filters;
+      if (options.steps[i].timeframe) step.timeframe = options.steps[i].timeframe;
+      if (options.steps[i].timezone) step.timezone = options.steps[i].timezone;
+      
+      this.params.steps.push(step);
     }
+    return this;
   };
-  
+
 
   // -------------------------------
   // Keen.query() Method
@@ -159,13 +176,22 @@
       meta[req.sequence]['query'] = queries[req.sequence];
       requests++;
       
+      // Trigger 'done' events when each is completed
+      // console.log('Listeners', req.query.listeners);
+      var listeners = req.query.listeners;
+      for (var i = 0; i < listeners.length; i++) {
+        if (listeners[i]['eventName'] == 'done') {
+          listeners[i]['callback'](response[req.sequence], meta[req.sequence]);
+        }
+      }
+      
+      // Fire callbacks when all are completed
       if (success && requests == queries.length){
         if (queries.length == 1) {
-          success(response[0], meta);
+          success(response[0], meta[0]);
         } else {
           success(response, meta);
         }
-        
       } 
     };
     
