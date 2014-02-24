@@ -1,6 +1,6 @@
 /**
  * Keen IO JavaScript Library
- * Version: 2.1.1
+ * Version: 2.1.2
  */
 
 // Create a JSON object only if one does not already exist. We create the
@@ -888,7 +888,15 @@ window.Keen = window.Keen || {};
      *
      * @returns {Boolean} Returns false to prevent a default action from taking place
      */
-    Keen.trackExternalLink = function(htmlElement, eventCollection, event, timeout, timeoutCallback){
+    Keen.trackExternalLink = function(htmlElementOrEvent, eventCollection, event, timeout, timeoutCallback){
+
+        var htmlElement = htmlElementOrEvent;
+        var jsEvent = null;
+        if (!htmlElementOrEvent.nodeName) {
+          jsEvent = htmlElementOrEvent;
+          htmlElement = jsEvent.target;
+        }
+        var newTab = jsEvent && jsEvent.metaKey;
 
         if(timeout === undefined){
             timeout = 500;
@@ -900,7 +908,7 @@ window.Keen = window.Keen || {};
 
         if( htmlElement.nodeName === "A"){
             callback = function(){
-                if(!triggered){
+                if(!newTab && !triggered){
                     triggered = true;
                     window.location = htmlElement.href;
                 }
@@ -930,7 +938,9 @@ window.Keen = window.Keen || {};
             callback();
         }, timeout);
 
-        return false;
+        if (!newTab) {
+          return false;
+        }
     };
     /**
      * Retrieve an array of event collection names and their properties
