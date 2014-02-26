@@ -22,7 +22,7 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/outro.js"
         ],
-        dest: "build/<%= pkg.name %>-<%= pkg.version %>.js"
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
       },
       track: {
         src: [
@@ -32,7 +32,7 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/outro.js"
         ],
-        dest: "build/<%= pkg.name %>-<%= pkg.version %>.track.js"
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.track.js"
       },
       query: {
         src: [
@@ -42,7 +42,7 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/outro.js"
         ],
-        dest: "build/<%= pkg.name %>-<%= pkg.version %>.query.js"
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.query.js"
       },
       visualize: {
         src: [
@@ -53,11 +53,11 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/outro.js"
         ],
-        dest: "build/<%= pkg.name %>-<%= pkg.version %>.visualize.js"
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js"
       },
       loader: {
         src: "src/loader.js",
-        dest: "build/<%= pkg.name %>-<%= pkg.version %>.loader.js"
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.loader.js"
       }
     },
     
@@ -67,13 +67,13 @@ module.exports = function(grunt) {
           ascii_only : true
         }    
       },
-      build: {
+      dist: {
         files: {
-          "build/<%= pkg.name %>-<%= pkg.version %>.min.js": "build/<%= pkg.name %>-<%= pkg.version %>.js",
-          "build/<%= pkg.name %>-<%= pkg.version %>.track.min.js": "build/<%= pkg.name %>-<%= pkg.version %>.track.js",
-          "build/<%= pkg.name %>-<%= pkg.version %>.query.min.js": "build/<%= pkg.name %>-<%= pkg.version %>.query.js",
-          "build/<%= pkg.name %>-<%= pkg.version %>.visualize.min.js": "build/<%= pkg.name %>-<%= pkg.version %>.visualize.js",
-          "build/<%= pkg.name %>-<%= pkg.version %>.loader.min.js": "build/<%= pkg.name %>-<%= pkg.version %>.loader.js"
+          "dist/<%= pkg.name %>-<%= pkg.version %>.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.track.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.track.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.query.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.query.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.loader.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.loader.js"
         }
       }
     },
