@@ -158,10 +158,10 @@
     return this;
   };
 
-
+  
   // -------------------------------
   // Keen.query() Method
-  // -------------------------------  
+  // -------------------------------
 
   Keen.prototype.query = function(query, success, error) {
     
@@ -231,8 +231,56 @@
       if (url) _send_query.apply(this, [url, i, handleSuccess, handleFailure]);
     }
     
+    //return this;
+    return new Keen.Request(this, queries);
+  };
+  
+  
+  // -------------------------------
+  // Keen.Request
+  // -------------------------------
+  
+  Keen.Request = function(instance, queries){
+    this.configure(instance, queries);
+  };
+  
+  Keen.Request.prototype.configure = function(instance, queries){
+    this.instance = instance;
+    this.queries = queries;
+    this.listeners = [];
+    this.data = null;
     return this;
   };
+  
+  Keen.Request.prototype.fetch = function(){
+    var self = this;
+    this.instance.query(this.queries, function(response){
+      self.data = response;
+      self.trigger('complete', response);
+    });
+    return this;
+  };
+  
+  Keen.Request.prototype.on = function(eventName, callback){
+    this.listeners.push({ eventName: eventName, callback: callback });
+    return this;
+  };
+  
+  Keen.Request.prototype.off = function(eventName, callback){
+    //removeEvent(eventName);
+    return this;
+  };
+  
+  Keen.Request.prototype.trigger = function(eventName, data){
+    if (this.listeners.length < 1) return;
+    for (var i = 0; i < this.listeners.length; i++) {
+      if (this.listeners[i]['eventName'] == eventName) {
+        this.listeners[i]['callback'](data);
+      }
+    }
+    return this;
+  };
+  
 
 
   // Private for Keen.Query Objects

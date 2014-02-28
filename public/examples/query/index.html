@@ -54,10 +54,15 @@
 		
 		var extraction = new Keen.Extraction('purchase');
 		
-		var test = keen.query(count, function(response){
-			console.log('test', response);
+		var req = keen.query(count, function(response){
+			console.log('req callback', response);
 		});
 		
+		req.on('complete', function(response){
+			console.log('req listener', response);
+		});
+		
+		/**/
 		keen.query(count, function(response){
 			console.log('normal', response);
 		});
@@ -135,7 +140,7 @@
 		
 		/*
 				EVENT LISTENERS
-		*/
+		
 		
 		count.on('done', function(response, meta){
 			console.log(meta.sequence + ' | count is done', response);
@@ -149,7 +154,7 @@
 		
 		funnel.on('done', function(response, meta){
 			console.log('funnel is back', response, meta);
-		});
+		});*/
 		
 		
 		/*
