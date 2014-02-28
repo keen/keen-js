@@ -230,6 +230,7 @@
       }
       if (url) _send_query.apply(this, [url, i, handleSuccess, handleFailure]);
     }
+    
     return this;
   };
 
