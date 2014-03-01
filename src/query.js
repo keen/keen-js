@@ -5,6 +5,10 @@
   */
 
 
+  // -------------------------------
+  // Keen.Analysis
+  // -------------------------------
+
   Keen.Analysis = function(){};
   Keen.Analysis.prototype = {
     configure: function(eventCollection, options) {
@@ -49,7 +53,11 @@
     }
   };
   
-  
+
+  // -------------------------------
+  // Keen.Analysis Types
+  // -------------------------------
+
   Keen.Sum = function(eventCollection, config){
     var options = (config || {});
     options.analysisType = 'sum';
@@ -160,7 +168,7 @@
 
   
   // -------------------------------
-  // Keen.query() Method
+  // Inject <client>.query Method
   // -------------------------------
 
   Keen.prototype.query = function(query, success, error) {
@@ -297,7 +305,7 @@
   
 
 
-  // Private for Keen.Analysis
+  // Private for Keen.Query
   // --------------------------------
 
   function _build_timezone_offset(){
