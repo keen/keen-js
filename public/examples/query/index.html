@@ -14,17 +14,6 @@
 			// key: "https" | "http" | "auto"
 			
 		});
-		//keen.addEvent('pageview', {page:'this one'});
-		
-		/*
-		var count = new Keen.Count('pageView', {
-			targetProperty: 'page',
-			groupBy: 'referrer',
-			timeframe: 'this_21_days',
-			interval: 'daily',
-			timezone: 'US/Pacific'
-		});
-		*/
 		
 		var count = new Keen.Count('purchase');
 		
@@ -54,27 +43,38 @@
 		
 		var extraction = new Keen.Extraction('purchase');
 		
-		var req = keen.query(count, function(response){
-			console.log('req callback', response);
+		
+		
+		
+		// Listen for individual analyses' completion
+		count.on('complete', function(res){
+			console.log('>->->------ Count is complete!---------->>>');
 		});
 		
-		req.on('complete', function(response){
-			console.log('req listener', response);
+		
+		var req = keen.query([count, avg], function(response, meta){
+			console.log('req callback', response, meta);
 		});
 		
-		/**/
+		// Listen for query completion
+		req.on('complete', function(response, meta){
+			console.log('req listener', response, meta);
+		});
+		
+		// Anonymous queries
 		keen.query(count, function(response){
 			console.log('normal', response);
 		});
 		
-		
-		/*
 		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response, meta){
 			console.log('-->', response, meta);
 			for (var i = 0; i < response.length; i++){
 				console.log(meta[i].query.path, meta[i].query.params.event_collection, response[i].result);
 			}
-		});*/
+		});
+		
+	
+		
 		
 		/* FUNNEL DEMOS ARE FUN */
 		
@@ -127,13 +127,19 @@
 		});
 		
 		
-		/*
-		keen.query([funnel, fun2], function(response, meta){
+		// Big 'ol funnel callbacks
+		var funtimes = keen.query([funnel, fun2], function(response, meta){
+			console.log('---------FUNNEL---------');
 			console.log(response, meta);
 			console.log(response[0].result[0], response[0].result[1], response[0].result[2], response[0].result[3]);
 			console.log(response[1].result[0], response[1].result[1], response[1].result[2], response[1].result[3]);
+			console.log('------------------------');
 		});
-		*/
+		
+		var morefun = keen.query([funnel, fun2]);
+		morefun.on('complete', function(res, meta){
+			console.log('morefunnnnel', res, meta);
+		});
 		
 		
 		
