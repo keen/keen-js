@@ -15,6 +15,10 @@
 			
 		});
 		
+		/*
+				ANALYSIS TYPES
+		*/
+		
 		var count = new Keen.Count('purchase');
 		
 		var count_unique = new Keen.CountUnique('purchase', {
@@ -44,14 +48,33 @@
 		var extraction = new Keen.Extraction('purchase');
 		
 		
-		
 		// Listen for individual analyses' completion
 		count.on('complete', function(res){
 			console.log('>->->------ Count is complete!---------->>>');
 		});
 		
+		// Listen for lots of individual analyses' completions
+		/*
+		var array = [count, count_unique, sum, max, min, avg, select_unique, extraction];
+		for (var i = 0; i < array.length; i++) {
+			array[i].on('complete', function(response){
+				console.log('This is done: ', array[i], response);
+			})
+		}
+		*/
 		
-		var req = keen.query([count, avg], function(response, meta){
+		
+		// Nested queries
+		keen.query(max, function(response){
+			console.log('max', response);
+			keen.query(min, function(res2){
+				console.log('min', res2);
+			});
+		});
+		
+		
+		// Reference queries for super powers
+		var req = keen.query([min, avg], function(response, meta){
 			console.log('req callback', response, meta);
 		});
 		
@@ -60,11 +83,17 @@
 			console.log('req listener', response, meta);
 		});
 		
+		// Run .refresh() to execute again
+		// req.refresh();
+		
+		
 		// Anonymous queries
 		keen.query(count, function(response){
 			console.log('normal', response);
 		});
 		
+		
+		// Multiple anonymous queries
 		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response, meta){
 			console.log('-->', response, meta);
 			for (var i = 0; i < response.length; i++){
@@ -72,11 +101,8 @@
 			}
 		});
 		
-	
-		
 		
 		/* FUNNEL DEMOS ARE FUN */
-		
 		var funnel = new Keen.Funnel({
 			steps: [
 				{
@@ -126,7 +152,7 @@
 		});
 		
 		
-		// Big 'ol funnel callbacks
+		// Multiple funnels
 		var funtimes = keen.query([funnel, fun2], function(response, meta){
 			console.log('---------FUNNEL---------');
 			console.log(response, meta);
@@ -135,51 +161,20 @@
 			console.log('------------------------');
 		});
 		
+		
+		// Listening is fun
 		var morefun = keen.query([funnel, fun2]);
 		morefun.on('complete', function(res, meta){
 			console.log('morefunnnnel', res, meta);
 		});
 		
 		
-		
-		
-		/*
-				EVENT LISTENERS
-		
-		
-		count.on('done', function(response, meta){
-			console.log(meta.sequence + ' | count is done', response);
-		})
-		//count.trigger('done', {key:'value'});
-		
-		avg.on('done', function(response, meta){
-			console.log(meta.sequence + ' | avg is done', response);
-		});
-		//avg.trigger('done', {key:'value'});
-		
-		funnel.on('done', function(response, meta){
-			console.log('funnel is back', response, meta);
-		});*/
-		
-		
-		/*
-		keen.query(max, function(response){
-			console.log('max', response);
-			keen.query(min, function(res2){
-				console.log('min', res2);
-			});
-		});
-		
-		keen.query([min, max, avg], function(response){
-			console.log(response);
-		});
-		
 		// Mock Error
 		setTimeout(function(){
 			keen.query({}, function(){}, function(error){
 				console.log('*Error Callback*', error);
 			});
-		}, 2500);*/
+		}, 5000);
 		
 		
 	</script>
