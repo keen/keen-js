@@ -6,24 +6,34 @@
   
   
   var Events = Keen.Events = {
-    on: function(eventName, callback) {
-      this.listeners || (this.listeners = []);
-      this.listeners.push({ eventName: eventName, callback: callback });
+    on: function(name, callback) {
+      this.listeners || (this.listeners = {});
+      var events = this.listeners[name] || (this.listeners[name] = []);
+      events.push({callback: callback});
       return this;
     },
-    off: function(eventName, callback) {
-      //removeEvent(eventName);
-      return this;
-    },
-    trigger: function(eventName) {
-      if (!this.listeners) return this;
-      if (this.listeners.length < 1) return;
-      var args = Array.prototype.slice.call(arguments, 1);
-      for (var i = 0; i < this.listeners.length; i++) {
-        if (this.listeners[i]['eventName'] == eventName) {
-          this.listeners[i]['callback'].apply(this, args);
-          //this.listeners[i]['callback'](data);
+    off: function(name, callback) {
+      if (!name && !callback) {
+        this.listeners = void 0;
+        delete this.listeners;
+        return this;
+      }
+      var events = this.listeners[name] || [];
+      for (var i = events.length; i--;) {
+        if (callback && callback == events[i]['callback']) this.listeners[name].splice(i, 1);
+        if (!callback || events.length == 0) {
+          this.listeners[name] = void 0;
+          delete this.listeners[name];
         }
+      }
+      return this;
+    },
+    trigger: function(name) {
+      if (!this.listeners) return this;
+      var args = Array.prototype.slice.call(arguments, 1);
+      var events = this.listeners[name] || [];
+      for (var i = 0; i < events.length; i++) {
+        events[i]['callback'].apply(this, args);
       }
       return this;
     }
