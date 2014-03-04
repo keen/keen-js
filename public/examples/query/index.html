@@ -78,10 +78,17 @@
 			console.log('req callback', response, meta);
 		});
 		
-		// Listen for query completion
-		req.on('complete', function(response, meta){
-			console.log('req listener', response, meta);
-		});
+		// Add/remove event listeners
+		req.on('complete', reqDone);
+		req.on('complete', reqDone);
+		req.on('complete', reqDone);
+		req.on('done', function(){ console.log('still here..'); });
+		req.off('complete', reqDone);
+		console.log('req.listeners should only have 1 for \'done\'', req.listeners);
+		function reqDone(response, meta){ 
+			console.log('req listener', response, meta); 
+		};
+		
 		
 		// Run .refresh() to execute again
 		// req.refresh();
