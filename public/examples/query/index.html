@@ -1,0 +1,191 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Keen IO Query JS Test</title>
+
+  <script type="text/javascript" src="../../dist/keen-3.0.0.query.js"></script>
+
+  <script type="text/javascript">
+
+		var keen = new Keen({
+			projectId: "52f2ae5905cd661a7800000a",
+			readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b"
+			//requestType: "jsonp" "beacon" "xhr"
+			// key: "https" | "http" | "auto"
+			
+		});
+		
+		/*
+				ANALYSIS TYPES
+		*/
+		
+		var count = new Keen.Count('purchase');
+		
+		var count_unique = new Keen.CountUnique('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var sum = new Keen.Sum('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var max = new Keen.Maximum('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var min = new Keen.Minimum('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var avg = new Keen.Average('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var select_unique = new Keen.SelectUnique('purchase', {
+			targetProperty: 'amount'
+		});
+		
+		var extraction = new Keen.Extraction('purchase');
+		
+		
+		// Listen for individual analyses' completion
+		count.on('complete', function(res){
+			console.log('>->->------ Count is complete!---------->>>');
+		});
+		
+		// Listen for lots of individual analyses' completions
+		/*
+		var array = [count, count_unique, sum, max, min, avg, select_unique, extraction];
+		for (var i = 0; i < array.length; i++) {
+			array[i].on('complete', function(response){
+				console.log('This is done: ', array[i], response);
+			})
+		}
+		*/
+		
+		
+		// Nested queries
+		keen.query(max, function(response){
+			console.log('max', response);
+			keen.query(min, function(res2){
+				console.log('min', res2);
+			});
+		});
+		
+		
+		// Reference queries for super powers
+		var req = keen.query([min, avg], function(response, meta){
+			console.log('req callback', response, meta);
+		});
+		
+		// Add/remove event listeners
+		req.on('complete', reqDone);
+		req.on('complete', reqDone);
+		req.on('complete', reqDone);
+		req.on('done', function(){ console.log('still here..'); });
+		req.off('complete', reqDone);
+		console.log('req.listeners should only have 1 for \'done\'', req.listeners);
+		function reqDone(response, meta){ 
+			console.log('req listener', response, meta); 
+		};
+		
+		
+		// Run .refresh() to execute again
+		// req.refresh();
+		
+		
+		// Anonymous queries
+		keen.query(count, function(response){
+			console.log('normal', response);
+		});
+		
+		
+		// Multiple anonymous queries
+		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response, meta){
+			console.log('-->', response, meta);
+			for (var i = 0; i < response.length; i++){
+				console.log(meta[i].query.path, meta[i].query.params.event_collection, response[i].result);
+			}
+		});
+		
+		
+		/* FUNNEL DEMOS ARE FUN */
+		var funnel = new Keen.Funnel({
+			steps: [
+				{
+					eventCollection: "viewed_twentyfive",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				},
+				{
+					eventCollection: "viewed_fifty",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				},
+				{
+					eventCollection: "viewed_seventyfive",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				},
+				{
+					eventCollection: "viewed_all",
+					actorProperty: "agent",
+					timeframe: 'this_7_days'
+				}
+			],
+			timeframe: 'this_7_days',
+			timezone: 'US/Pacific'
+		});
+		
+		var fun2 = new Keen.Funnel({
+			steps: [
+				{
+					eventCollection: "viewed_twentyfive",
+					actorProperty: "agent"
+				},
+				{
+					eventCollection: "viewed_fifty",
+					actorProperty: "agent"
+				},
+				{
+					eventCollection: "viewed_seventyfive",
+					actorProperty: "agent"
+				},
+				{
+					eventCollection: "viewed_all",
+					actorProperty: "agent"
+				}
+			]
+		});
+		
+		
+		// Multiple funnels
+		var funtimes = keen.query([funnel, fun2], function(response, meta){
+			console.log('---------FUNNEL---------');
+			console.log(response, meta);
+			console.log(response[0].result[0], response[0].result[1], response[0].result[2], response[0].result[3]);
+			console.log(response[1].result[0], response[1].result[1], response[1].result[2], response[1].result[3]);
+			console.log('------------------------');
+		});
+		
+		
+		// Listening is fun
+		var morefun = keen.query([funnel, fun2]);
+		morefun.on('complete', function(res, meta){
+			console.log('morefunnnnel', res, meta);
+		});
+		
+		
+		// Mock Error
+		setTimeout(function(){
+			keen.query({}, function(){}, function(error){
+				console.log('*Error Callback*', error);
+			});
+		}, 5000);
+		
+		
+	</script>
+</head>
+<body></body>
+</html>
+
