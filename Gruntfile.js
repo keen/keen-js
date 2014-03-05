@@ -1,30 +1,95 @@
 module.exports = function(grunt) {
-
-  // Project configuration.
+  
   grunt.initConfig({
-    pkg: grunt.file.readJSON('package.json'),
+    pkg: grunt.file.readJSON("package.json"),
+    
+    concat: {
+      options: {
+        stripBanners: true,
+        process: function(src, filepath) {
+          var namespace = (grunt.option("namespace") || false);
+          src = ((namespace) ? src.replace("'Keen'", "'" + namespace + "'") : src);
+          return "  // Source: " + filepath + "\n" + src;
+        }
+      },
+      all: {
+        src: [
+          "src/intro.js", 
+          "src/track.js", 
+          "src/query.js", 
+          "src/visualize.js", 
+          "src/lib/base64.js",
+          "src/lib/json2.js",
+          "src/outro.js"
+        ],
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
+      },
+      track: {
+        src: [
+          "src/intro.js", 
+          "src/track.js", 
+          "src/lib/base64.js",
+          "src/lib/json2.js",
+          "src/outro.js"
+        ],
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.track.js"
+      },
+      query: {
+        src: [
+          "src/intro.js", 
+          "src/query.js", 
+          "src/lib/base64.js",
+          "src/lib/json2.js",
+          "src/outro.js"
+        ],
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.query.js"
+      },
+      visualize: {
+        src: [
+          "src/intro.js", 
+          "src/query.js", 
+          "src/visualize.js", 
+          "src/lib/base64.js",
+          "src/lib/json2.js",
+          "src/outro.js"
+        ],
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js"
+      },
+      loader: {
+        src: "src/loader.js",
+        dest: "dist/<%= pkg.name %>-<%= pkg.version %>.loader.js"
+      }
+    },
+    
     uglify: {
       options : {
         beautify : {
           ascii_only : true
         }    
       },
-      build: {
+      dist: {
         files: {
-          'build/<%= pkg.name %>-<%= pkg.version %>.min.js': [ 'src/<%= pkg.name %>.js' ],
-          'build/<%= pkg.name %>.min.js': [ 'src/<%= pkg.name %>.js' ],
-          'build/loader.min.js': [ 'src/loader.js' ]          
+          "dist/<%= pkg.name %>-<%= pkg.version %>.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.track.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.track.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.query.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.query.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js",
+          "dist/<%= pkg.name %>-<%= pkg.version %>.loader.min.js": "dist/<%= pkg.name %>-<%= pkg.version %>.loader.js"
         }
-        // src: 'src/<%= pkg.name %>.js',
-        // dest: 'build/<%= pkg.name %>.min.js'
+      }
+    },
+
+    watch: {
+      javascript: {
+        files: "src/**/*.js",
+        tasks: [ "concat", "uglify" ]
       }
     }
+
   });
 
-  // Load the plugin that provides the "uglify" task.
-  grunt.loadNpmTasks('grunt-contrib-uglify');
+  grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-watch");
 
-  // Default task(s).
-  grunt.registerTask('default', ['uglify']);
-
+  grunt.registerTask("default", ["concat", "uglify"]);
 };

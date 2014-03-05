@@ -1,0 +1,54 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Keen IO Loader JS Test</title>
+
+  <!--<script type="text/javascript" src="build/keen-3.0.0.js"></script>-->
+
+  <script type="text/javascript">
+
+	var module = {};
+
+	// Source: src/loader.js
+	(function(n,c){
+		if (typeof(c[n]) === "undefined") {
+			c['_'+n] = {};
+			c[n] = function(e) {
+				c['_'+n][e.projectId] = this;
+				this._cf = e;
+			}
+			c[n].prototype = {
+				addEvent: function(e,t,n,i) {
+					this._eq = this._eq || [], this._eq.push([e,t,n,i]);
+				},
+				setGlobalProperties: function(e) {
+					this._gp = e;
+				}
+			};
+			var s = document.createElement("script");
+			s.type = "text/javascript", s.async = !0, s.src = "../dist/keen-3.0.0.js";
+			s.onload = s.onreadystatechange = function(){ 
+				c[n].sync(c['_'+n]);
+				s.onload = s.onreadystatechange = null;
+			};
+			var t = document.getElementsByTagName("script")[0];
+			t.parentNode.insertBefore(s,t);
+		}
+		})('Keen', this);
+		
+		// (function(e,t){if(typeof t[e]==="undefined"){t["_"+e]={};t[e]=function(n){t["_"+e][n.projectId]=this;this._cf=n};t[e].prototype={addEvent:function(e,t,n,r){this._eq=this._eq||[],this._eq.push([e,t,n,r])},setGlobalProperties:function(e){this._gp=e}};var n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src="keen.js";var r=document.getElementsByTagName("script")[0]t.parentNode.insertBefore(s,t);t.parentNode.insertBefore(s,t)}})("Keen",this);
+
+		// var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
+
+		var keen = new Keen({
+			projectId: "your_project_id",
+			writeKey: "your_write_key",
+			readKey: "your_read_key"
+		});
+		keen.addEvent('pageview', {page:'this one'});
+		
+	</script>
+</head>
+<body></body>
+</html>
+
