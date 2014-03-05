@@ -1,6 +1,8 @@
 # keen-js v3.0
 
-A JavaScript library for the Keen IO API.
+A crisp, new JS Library for the Keen IO API.
+
+**Important:** This version is not seaworthy yet – [v2.1.2](https://github.com/keenlabs/keen-js/tree/2.1.2) is the latest stable release.
 
 ## Get Project ID & API Keys
 
