@@ -892,50 +892,57 @@ window.Keen = window.Keen || {};
 
         var htmlElement = htmlElementOrEvent;
         var jsEvent = null;
+        var newTab = false;
+      
         if (!htmlElementOrEvent.nodeName) {
+          // htmlElementOrEvent == event
           jsEvent = htmlElementOrEvent;
           htmlElement = jsEvent.target;
+          newTab = (htmlElementOrEvent.metaKey || false);
+        
+        } else if (window.event && window.event.metaKey == true) {
+          // htmlElementOrEvent == element, new tab == true
+          newTab = true;
         }
-        var newTab = jsEvent && jsEvent.metaKey;
 
-        if(timeout === undefined){
-            timeout = 500;
+        if (timeout === undefined){
+          timeout = 500;
         }
-
+        
         var triggered = false;
         var callback = function(){};
 
 
         if( htmlElement.nodeName === "A"){
-            callback = function(){
-                if(!newTab && !triggered){
-                    triggered = true;
-                    window.location = htmlElement.href;
-                }
-            };
+          callback = function(){
+            if(!newTab && !triggered){
+              triggered = true;
+              window.location = htmlElement.href;
+            }
+          };
         }
         else if (htmlElement.nodeName === "FORM"){
-            callback = function(){
-                if(!triggered){
-                    triggered = true;
-                    htmlElement.submit();
-                }
+          callback = function(){
+            if(!triggered){
+              triggered = true;
+              htmlElement.submit();
             }
+          }
         }
 
         if(timeoutCallback){
-            callback = function(){
-                if(!triggered){
-                    triggered = true;
-                    timeoutCallback();
-                }
+          callback = function(){
+            if(!triggered){
+              triggered = true;
+              timeoutCallback();
             }
+          }
         }
 
         Keen.addEvent(eventCollection, event, callback, callback);
 
         setTimeout(function() {
-            callback();
+          callback();
         }, timeout);
 
         if (!newTab) {
