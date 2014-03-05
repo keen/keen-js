@@ -1,3 +1,3 @@
-# keen-js
+# keen-js v2.1.2 (stable)
 
-A JavaScript library for the Keen IO API.
+This is the latest stable version of the Keen IO JS Library (2012-2013). Get started with the [usage guide](https://keen.io/docs/clients/javascript/usage-guide/), or check out [version 3](https://github.com/keenlabs/keen-js/).
