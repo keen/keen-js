@@ -1,5 +1,5 @@
   // ----------------------
-  // Keen IO Private Utils
+  // Utility Methods
   // ----------------------
 
   Keen.log = function(message) {
