@@ -42,16 +42,7 @@
       requestType: config['requestType']
     };
     
-    console.log(this.client);
-    
-    // addons
-    //  + ip-to-geo enabled?
-    //  + us-parsing enabled?
-    
-    // auto-pageviews
-    //  + eventCollection name
-    //  + url params whitelist ['utm_full_param']
-      
+    Keen.trigger('client:config', this, config);
     return this;
   };
   
@@ -68,8 +59,26 @@
     return target;
   }
   
+  /* function _coalesce(target){ // Deep Extend
+    for (var i = 1; i < arguments.length; i++) {
+      for (var prop in arguments[i]){
+        if ((target[prop] && _type(target[prop]) == 'Object') && (arguments[i][prop] && _type(arguments[i][prop]) == 'Object')){
+          _coalesce(target[prop], arguments[i][prop]);
+        } else {
+          target[prop] = arguments[i][prop];
+        }
+      }
+    }
+    return target;
+  }*/
+  
   function _isUndefined(obj) {
     return obj === void 0;
+  }
+  
+  function _type(obj){
+	  var text = obj.constructor.toString();
+	  return text.match(/function (.*)\(/)[1];
   }
   
   function _set_protocol(value) {
@@ -102,6 +111,15 @@
       return configured;
     }
   }
+  
+  /*
+  function _set_auto_pageviews(config) {
+    var type = _type(config);
+    var options = (type == 'Object') ? config : {};
+    if (type == 'Object' || type == 'Boolean') {
+      console.log('GO', this, type, options);
+    }
+  }*/
   
   function _build_url(path) {
     return this.client.endpoint + '/projects/' + this.client.projectId + path;
@@ -255,4 +273,12 @@
     }
   };
   _extend(Keen.prototype, Events);
+  _extend(Keen, Events);
+  
+  
+  // -------------------------------
+  // Keen.Plugins
+  // -------------------------------
+  
+  var Plugins = Keen.Plugins = {};
   
