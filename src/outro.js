@@ -3,13 +3,6 @@
   // Handle Queued Commands
   // -------------------------------
 
-  /*
-  Keen.sync = function(cache){
-    for (var instance in cache) {
-      console.log(instance);
-    }
-  }*/
-
   for (var instance in window._KeenCache) {
     if (window._KeenCache.hasOwnProperty(instance)) {
       // console.log(window._KeenCache[instance]);

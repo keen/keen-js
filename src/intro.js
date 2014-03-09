@@ -53,24 +53,12 @@
   function _extend(target){
     for (var i = 1; i < arguments.length; i++) {
       for (var prop in arguments[i]){
+        // if ((target[prop] && _type(target[prop]) == 'Object') && (arguments[i][prop] && _type(arguments[i][prop]) == 'Object')){
         target[prop] = arguments[i][prop];
       }
     }
     return target;
   }
-  
-  /* function _coalesce(target){ // Deep Extend
-    for (var i = 1; i < arguments.length; i++) {
-      for (var prop in arguments[i]){
-        if ((target[prop] && _type(target[prop]) == 'Object') && (arguments[i][prop] && _type(arguments[i][prop]) == 'Object')){
-          _coalesce(target[prop], arguments[i][prop]);
-        } else {
-          target[prop] = arguments[i][prop];
-        }
-      }
-    }
-    return target;
-  }*/
   
   function _isUndefined(obj) {
     return obj === void 0;
@@ -111,15 +99,6 @@
       return configured;
     }
   }
-  
-  /*
-  function _set_auto_pageviews(config) {
-    var type = _type(config);
-    var options = (type == 'Object') ? config : {};
-    if (type == 'Object' || type == 'Boolean') {
-      console.log('GO', this, type, options);
-    }
-  }*/
   
   function _build_url(path) {
     return this.client.endpoint + '/projects/' + this.client.projectId + path;
