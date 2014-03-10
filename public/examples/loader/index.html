@@ -3,49 +3,38 @@
 <head>
   <title>Keen IO Loader JS Test</title>
 
-  <!--<script type="text/javascript" src="build/keen-3.0.0.js"></script>-->
-
   <script type="text/javascript">
-
-	var module = {};
-
-	// Source: src/loader.js
-	(function(n,c){
-		if (typeof(c[n]) === "undefined") {
-			c['_'+n] = {};
-			c[n] = function(e) {
-				c['_'+n][e.projectId] = this;
-				this._cf = e;
-			}
-			c[n].prototype = {
-				addEvent: function(e,t,n,i) {
-					this._eq = this._eq || [], this._eq.push([e,t,n,i]);
-				},
-				setGlobalProperties: function(e) {
-					this._gp = e;
-				}
-			};
-			var s = document.createElement("script");
-			s.type = "text/javascript", s.async = !0, s.src = "../dist/keen-3.0.0.js";
-			s.onload = s.onreadystatechange = function(){ 
-				c[n].sync(c['_'+n]);
-				s.onload = s.onreadystatechange = null;
-			};
-			var t = document.getElementsByTagName("script")[0];
-			t.parentNode.insertBefore(s,t);
-		}
-		})('Keen', this);
 		
-		// (function(e,t){if(typeof t[e]==="undefined"){t["_"+e]={};t[e]=function(n){t["_"+e][n.projectId]=this;this._cf=n};t[e].prototype={addEvent:function(e,t,n,r){this._eq=this._eq||[],this._eq.push([e,t,n,r])},setGlobalProperties:function(e){this._gp=e}};var n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src="keen.js";var r=document.getElementsByTagName("script")[0]t.parentNode.insertBefore(s,t);t.parentNode.insertBefore(s,t)}})("Keen",this);
+		!function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a][c.projectId]=this,this._cf=c},b[a].prototype={addEvent:function(a,b,c,d){this._eq=this._eq||[],this._eq.push([a,b,c,d])},setGlobalProperties:function(a){this._gp=a},on:function(a,b){this._on=this._on||[],this._on.push([a,b])}};var c=document.createElement("script");c.type="text/javascript",c.async=!0,c.src="../../dist/keen-3.0.0.min.js";var d=document.getElementsByTagName("script")[0];d.parentNode.insertBefore(c,d)}}("Keen",this);
 
 		// var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"dc8na2hxrj29i.cloudfront.net/code/keen-2.1.0-min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
 
 		var keen = new Keen({
-			projectId: "your_project_id",
-			writeKey: "your_write_key",
-			readKey: "your_read_key"
+			projectId: "52f00ec205cd66404b000000",
+			readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+			writeKey: "554a723d023da6cb24e51c56a9a54555e9dcf8403d4b71ffa37e9112295622e78a10eed43a13c83b14ce171b0f1317bb09aa8df43d50f73b77709ab431af611ea47ed65f4d74c0ea5f2bde8407322ab70559afef294673ee6c224308b1744c9e069508799edefc51264b3f75a1ba9e26"
 		});
+		
 		keen.addEvent('pageview', {page:'this one'});
+		keen.addEvent('pageview', {page:'that one'});
+		
+		var globals = function(collection){
+			var data = {
+				referrer: document.referrer,
+				location: {
+					href: document.location.href,
+					host: document.location.host,
+					path: document.location.pathname,
+					protocol: document.location.protocol
+				}
+			};
+			return data;
+		};
+		keen.setGlobalProperties(globals);
+		
+		keen.on('ready', function(){
+			console.log('here!');
+		});
 		
 	</script>
 </head>

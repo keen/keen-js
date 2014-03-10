@@ -1,38 +1,28 @@
 (function(n,c){
-  if (typeof(c[n]) === "undefined") {
+  if (c[n] === void 0) {
+    
     c['_'+n] = {};
     c[n] = function(e) {
       c['_'+n][e.projectId] = this;
       this._cf = e;
-    }
+    };
+    
     c[n].prototype = {
       addEvent: function(e,t,n,i) {
         this._eq = this._eq || [], this._eq.push([e,t,n,i]);
       },
       setGlobalProperties: function(e) {
         this._gp = e;
+      },
+      on: function(ev, cb) {
+        this._on = this._on || [], this._on.push([ev,cb]);
       }
-      //, onChartsReady: function(e) { this._ocrq = this._ocrq || [], this._ocrq.push(e) }
     };
-    //window.Keen = Keen;
-    //window._KeenCache = {};
+    
     var s = document.createElement("script");
-    s.type = "text/javascript", s.async = !0, s.src = "keen.js";
-    /*s.onload = s.onreadystatechange = function(){ 
-      c[n].sync(c['_'+n]);
-      // IE mem leak bug
-      s.onload = s.onreadystatechange = null;
-    };*/
+    s.type = "text/javascript", s.async = !0, s.src = "keen-3.0.0.min.js";
+    
     var t = document.getElementsByTagName("script")[0];
     t.parentNode.insertBefore(s,t);
   }
 })('Keen', this);
-
-
-/*
-var keen = new Keen({
-  projectId: "your_project_id",
-  writeKey: "your_write_key",
-  readKey: "your_read_key"
-});
-*/
