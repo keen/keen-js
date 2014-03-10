@@ -40,7 +40,7 @@ Read our [Getting Started guide](https://github.com/keenlabs/keen-js/wiki/Gettin
 
 ## Installation
 
-Read our [installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
+Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
 
 
 ## Resources
