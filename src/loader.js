@@ -3,21 +3,29 @@
     
     c['_'+n] = {};
     c[n] = function(e) {
-      c['_'+n][e.projectId] = this;
-      this._cf = e;
+      c['_'+n]['clients'] = c['_'+n]['clients'] || {};
+      c['_'+n]['clients'][e.projectId] = this;
+      this._config = e;
     };
     
-    c[n].prototype = {
-      addEvent: function(e,t,n,i) {
-        this._eq = this._eq || [], this._eq.push([e,t,n,i]);
-      },
-      setGlobalProperties: function(e) {
-        this._gp = e;
-      },
-      on: function(ev, cb) {
-        this._on = this._on || [], this._on.push([ev,cb]);
-      }
+    // Keen.ready(function(){});
+    c[n]['ready'] = function(callback){
+      c['_'+n]['ready'] = c['_'+n]['ready'] || [];
+      c['_'+n]['ready'].push(callback);
     };
+    
+    var methods = ['addEvent', 'setGlobalProperties', 'trackExternalLink', 'on', 'off', 'trigger'];
+    for (var i = 0; i < methods.length; i++){
+     var method = methods[i];
+     var action = function(method){
+       return function() {
+         var args = Array.prototype.slice.call(arguments, 1);
+         this['_'+method] = this['_'+method] || [], this['_'+method].push(args);
+         return this;
+       }
+     };
+     c[n].prototype[method] = action(method);
+    }
     
     var s = document.createElement("script");
     s.type = "text/javascript", s.async = !0, s.src = "keen-3.0.0.min.js";
