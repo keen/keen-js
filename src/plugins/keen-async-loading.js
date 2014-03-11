@@ -1,7 +1,7 @@
   /*! 
   * ----------------------
   * Keen IO Plugin
-  * Auto Pageview Tracker
+  * Async Loader
   * ----------------------
   */
   

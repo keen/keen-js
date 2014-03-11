@@ -42,7 +42,7 @@
       requestType: config['requestType']
     };
     
-    Keen.trigger('client:config', this, config);
+    Keen.trigger('client', this, config);
     this.trigger('ready');
     
     return this;

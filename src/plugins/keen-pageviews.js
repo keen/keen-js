@@ -67,7 +67,7 @@
     }
   }
   
-  Keen.on('client:config', function(response){
+  Keen.on('client', function(response){
     Keen.Plugins.AutoPageviewTracking.configure.apply(this, arguments);
   });
   
