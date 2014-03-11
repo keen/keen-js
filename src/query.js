@@ -5,44 +5,8 @@
   */
   
   
-  var Events = Keen.Events = {
-    on: function(name, callback) {
-      this.listeners || (this.listeners = {});
-      var events = this.listeners[name] || (this.listeners[name] = []);
-      events.push({callback: callback});
-      return this;
-    },
-    off: function(name, callback) {
-      if (!name && !callback) {
-        this.listeners = void 0;
-        delete this.listeners;
-        return this;
-      }
-      var events = this.listeners[name] || [];
-      for (var i = events.length; i--;) {
-        if (callback && callback == events[i]['callback']) this.listeners[name].splice(i, 1);
-        if (!callback || events.length == 0) {
-          this.listeners[name] = void 0;
-          delete this.listeners[name];
-        }
-      }
-      return this;
-    },
-    trigger: function(name) {
-      if (!this.listeners) return this;
-      var args = Array.prototype.slice.call(arguments, 1);
-      var events = this.listeners[name] || [];
-      for (var i = 0; i < events.length; i++) {
-        events[i]['callback'].apply(this, args);
-      }
-      return this;
-    }
-  };
-  _extend(Keen.prototype, Events);
-  
-  
   // -------------------------------
-  // Keen.Query
+  // Inject <client>.query Method
   // -------------------------------
   
   Keen.prototype.query = function(query, success, error) {
@@ -54,6 +18,11 @@
     }
     return new Keen.Query(this, queries, success, error);
   };
+  
+  
+  // -------------------------------
+  // Keen.Query
+  // -------------------------------
   
   Keen.Query = function(instance, queries, success, error){
     this.data = {};
@@ -147,11 +116,10 @@
   };
   
   
-  
   // -------------------------------
   // Keen.Analysis
   // -------------------------------
-
+  
   Keen.Analysis = function(){
     this.data = {};
   };
@@ -180,6 +148,7 @@
     });
     return this;
   };
+  
   
   // -------------------------------
   // Keen.Analysis Types
@@ -293,15 +262,6 @@
   
   // Private
   // --------------------------------
-  
-  function _extend(target){
-    for (var i = 1; i < arguments.length; i++) {
-      for (var prop in arguments[i]){
-        target[prop] = arguments[i][prop];
-      }
-    }
-    return target;
-  };
   
   function _build_timezone_offset(){
     return new Date().getTimezoneOffset() * -60;

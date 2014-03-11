@@ -10,44 +10,86 @@
   * Keen IO Core JS
   * ----------------
   */
-
+  
   function Keen(config) {
     return _init.apply(this, arguments);
-  };
-
+  }
+  
   function _init(config) {
-    if (config === undefined) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
-    if (config.projectId === undefined) return Keen.log('Please provide a projectId');
+    if (_isUndefined(config)) {
+      throw new Error("Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/");
+    }
+    if (_isUndefined(config.projectId)) {
+      throw new Error("Please provide a projectId");
+    }
+    
     this.configure(config);
-  };
-
+  }
+  
   Keen.prototype.configure = function(config){
+    
+    config['host'] = (_isUndefined(config['host'])) ? 'api.keen.io/3.0' : config['host'].replace(/.*?:\/\//g, '');
+    config['protocol'] = _set_protocol(config['protocol']);
+    config['requestType'] = _set_request_type(config['requestType']);
+    
     this.client = {
       projectId: config.projectId,
       writeKey: config.writeKey,
       readKey: config.readKey,
       globalProperties: null,
-      keenUrl: (config.keenUrl) ? config.keenUrl : 'https://api.keen.io/3.0',
-      requestType: _set_request_type(config.requestType || 'xhr')
+      
+      endpoint: config['protocol'] + "://" + config['host'],
+      requestType: config['requestType']
     };
-    // to build:
-    // protocol: https/http/auto flag
-    // apiUrl
     
-    // addons
-        //  + ip-to-geo enabled?
-        //  + us-parsing enabled?
-    // auto-pageviews
-      //  + eventCollection name
-      //  + url params whitelist ['utm_full_param']
-
+    Keen.trigger('client', this, config);
+    this.trigger('ready');
     
     return this;
   };
   
+  
+  // Private
+  // --------------------------------
+  
+  function _extend(target){
+    for (var i = 1; i < arguments.length; i++) {
+      for (var prop in arguments[i]){
+        // if ((target[prop] && _type(target[prop]) == 'Object') && (arguments[i][prop] && _type(arguments[i][prop]) == 'Object')){
+        target[prop] = arguments[i][prop];
+      }
+    }
+    return target;
+  }
+  
+  function _isUndefined(obj) {
+    return obj === void 0;
+  }
+  
+  function _type(obj){
+	  var text = obj.constructor.toString();
+	  return text.match(/function (.*)\(/)[1];
+  }
+  
+  function _set_protocol(value) {
+    switch(value) {
+      case 'http':
+        return 'http';
+        break;
+      case 'auto':
+        return location.protocol.replace(/:/g, '');
+        break;
+      case 'https':
+      case undefined:
+      default:
+        return 'https';
+        break;
+    }
+  }
+  
   function _set_request_type(value) {
     // Test XMLHttpRequest = function(){};
-    var configured = value; // null, 'xhr', 'jsonp', 'beacon'
+    var configured = value || 'xhr'; // null, 'xhr', 'jsonp', 'beacon'
     var capableXHR = typeof new XMLHttpRequest().responseType === 'string';
     if (configured == null || configured == 'xhr') {
       if (capableXHR) {
@@ -61,15 +103,9 @@
   }
   
   function _build_url(path) {
-    return this.client.keenUrl + '/projects/' + this.client.projectId + path;
-  };
+    return this.client.endpoint + '/projects/' + this.client.projectId + path;
+  }
   
-  // Keen.prototype.request
-  // keen.request('get', url, params, success, error);
-  
-  // keen.get('/events/' + eventCollection, params, function(response){ });
-  // keen.post()
-  // request.get(this, ['GET', '/events/' + eventCollection])
   
   var _request = {
     
@@ -121,9 +157,9 @@
       while (callbackName in window) {
         callbackName += "a";
       }
-      var loaded = false, meta = {};
-      window[callbackName] = function (response, meta) {
-        loaded = true;
+      var loaded = false, meta;
+      window[callbackName] = function (response) {
+        loaded = true, meta = {};
         if (success && response) {
           if (typeof sequence == 'number') {
             meta.sequence = sequence;
@@ -177,5 +213,57 @@
       };
       img.src = url;
     }
+  };
+  
+  
+  // -------------------------------
+  // Keen.Events
+  // -------------------------------
+  
+  var Events = Keen.Events = {
+    on: function(name, callback) {
+      this.listeners || (this.listeners = {});
+      var events = this.listeners[name] || (this.listeners[name] = []);
+      events.push({callback: callback});
+      return this;
+    },
+    off: function(name, callback) {
+      if (!name && !callback) {
+        this.listeners = void 0;
+        delete this.listeners;
+        return this;
+      }
+      var events = this.listeners[name] || [];
+      for (var i = events.length; i--;) {
+        if (callback && callback == events[i]['callback']) this.listeners[name].splice(i, 1);
+        if (!callback || events.length == 0) {
+          this.listeners[name] = void 0;
+          delete this.listeners[name];
+        }
+      }
+      return this;
+    },
+    trigger: function(name) {
+      if (!this.listeners) return this;
+      var args = Array.prototype.slice.call(arguments, 1);
+      var events = this.listeners[name] || [];
+      for (var i = 0; i < events.length; i++) {
+        events[i]['callback'].apply(this, args);
+      }
+      return this;
+    }
+  };
+  _extend(Keen.prototype, Events);
+  _extend(Keen, Events);
+  
+  
+  Keen.ready = function(callback){
+    Keen.on('ready', callback);
   }
+  
+  // -------------------------------
+  // Keen.Plugins
+  // -------------------------------
+  
+  var Plugins = Keen.Plugins = {};
   
