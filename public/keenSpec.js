@@ -11,7 +11,8 @@ describe("addEvent using CORS and fake Server", function() {
         projectId: this.projectId,
         writeKey: this.writeKey, 
         readKey: this.readKey,
-        keenUrl: this.keenUrl,
+        protocol: this.protocol,
+        host: this.host,
         requestType: 'xhr'
       });
       this.server = sinon.fakeServer.create();
@@ -57,7 +58,8 @@ describe("addEvent using CORS and fake Server", function() {
         projectId: this.projectId,
         writeKey: this.writeKey, 
         readKey: this.readKey,
-        keenUrl: this.keenUrl,
+        protocol: this.protocol,
+        host: this.host,
         requestType: 'jsonp'
       });
       this.server = sinon.fakeServer.create();
