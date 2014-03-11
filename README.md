@@ -35,12 +35,12 @@ keen.addEvent('pageview', data);
 
 ## Getting Started
 
-Read our [Getting Started guide](./wiki/Getting-Started) to learn about connecting to projects from your Keen IO account.
+Read our [Getting Started guide](https://github.com/keenlabs/keen-js/wiki/Getting-Started) to learn about connecting to projects from your Keen IO account.
 
 
 ## Installation
 
-Read our [installation guide](./wiki/Installation) to learn about all the ways this library can fit into your workflow.
+Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
 
 
 ## Resources
