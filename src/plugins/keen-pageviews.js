@@ -4,8 +4,8 @@
   * Auto Pageview Tracker
   * ----------------------
   */
-	
-	var AutoTracking = Keen.Plugins.AutoPageviewTracking = {
+  
+  var AutoTracking = Keen.Plugins.AutoPageviewTracking = {
     configure: function(instance, configuration){
       var client = (instance instanceof Keen) ? instance : false,
           config = configuration['pageviews'] || false,
@@ -18,8 +18,6 @@
       defaults = {
         collection: 'pageview',
         params: ['utm_content', 'utm_source', 'utm_medium', 'utm_term', 'utm_campaign'],
-        ip_to_geo: false,
-        ua_parser: false,
         data: {
           referrer: document.referrer,
           page: {
@@ -61,36 +59,6 @@
       // ---------------------------------------
       options['data']['keen'] = options['data']['keen'] || {};
       options['data']['keen']['timestamp'] = options['data']['keen']['timestamp'] || new Date().toISOString();
-      
-      // Configure add-ons
-      // ----------------------------------
-      override_addons = (options['data']['keen']['addons']) ? true : false; 
-      
-      // Configure Addons
-      // ----------------------------------
-      if (!override_addons) {
-        _configure_addon(options['ip_to_geo'], 'keen:ip_to_geo', 'ip', '${keen.ip}');
-        _configure_addon(options['ua_parser'], 'keen:ua_parser', 'ua_string', '${keen.user_agent}');
-      }
-      
-      function _configure_addon(property, name, inputKey, placeholder) {
-        if (!property || _type(property) !== 'Object') {
-          return;
-        }
-        var input = property['input'],
-            output = property['output'],
-            addon = { name: name, input: {}, output: output };
-        
-        options['data'][input] = options['data'][input] || placeholder;
-        
-        if (input && output) {
-          options['data']['keen']['addons'] = options['data']['keen']['addons'] || [];
-          addon['input'][inputKey] = input;
-          options['data']['keen']['addons'].push(addon);
-        } else {
-          throw new Error('Addon ' + name + ' requires both input and output properties');
-        }
-      };
       
       // Send pageview event
       // ----------------------------------
