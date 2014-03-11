@@ -17,6 +17,7 @@ module.exports = function(grunt) {
           "src/intro.js", 
           "src/track.js", 
           "src/plugins/keen-pageviews.js",
+          "src/plugins/keen-async-loading.js",
           "src/query.js", 
           "src/visualize.js", 
           "src/lib/base64.js",
@@ -30,6 +31,7 @@ module.exports = function(grunt) {
           "src/intro.js", 
           "src/track.js", 
           "src/plugins/keen-pageviews.js", 
+          "src/plugins/keen-async-loading.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/outro.js"

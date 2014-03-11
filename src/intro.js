@@ -10,11 +10,11 @@
   * Keen IO Core JS
   * ----------------
   */
-
+  
   function Keen(config) {
     return _init.apply(this, arguments);
   }
-
+  
   function _init(config) {
     if (_isUndefined(config)) {
       throw new Error("Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/");
@@ -43,6 +43,8 @@
     };
     
     Keen.trigger('client:config', this, config);
+    this.trigger('ready');
+    
     return this;
   };
   
@@ -254,6 +256,10 @@
   _extend(Keen.prototype, Events);
   _extend(Keen, Events);
   
+  
+  Keen.ready = function(callback){
+    Keen.on('ready', callback);
+  }
   
   // -------------------------------
   // Keen.Plugins

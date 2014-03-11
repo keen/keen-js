@@ -14,17 +14,17 @@
       c['_'+n]['ready'].push(callback);
     };
     
-    var methods = ['addEvent', 'setGlobalProperties', 'trackExternalLink', 'on', 'off', 'trigger'];
+    var methods = ['addEvent', 'setGlobalProperties', 'trackExternalLink', 'on'];
     for (var i = 0; i < methods.length; i++){
-     var method = methods[i];
-     var action = function(method){
-       return function() {
-         var args = Array.prototype.slice.call(arguments, 1);
-         this['_'+method] = this['_'+method] || [], this['_'+method].push(args);
-         return this;
-       }
-     };
-     c[n].prototype[method] = action(method);
+      var method = methods[i];
+      var action = function(method){
+        return function() {
+          this['_'+method] = this['_'+method] || [];
+          this['_'+method].push(arguments);
+          return this;
+        }
+      };
+      c[n].prototype[method] = action(method);
     }
     
     var s = document.createElement("script");
