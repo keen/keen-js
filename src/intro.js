@@ -42,16 +42,7 @@
       requestType: config['requestType']
     };
     
-    console.log(this.client);
-    
-    // addons
-    //  + ip-to-geo enabled?
-    //  + us-parsing enabled?
-    
-    // auto-pageviews
-    //  + eventCollection name
-    //  + url params whitelist ['utm_full_param']
-      
+    Keen.trigger('client:config', this, config);
     return this;
   };
   
@@ -62,6 +53,7 @@
   function _extend(target){
     for (var i = 1; i < arguments.length; i++) {
       for (var prop in arguments[i]){
+        // if ((target[prop] && _type(target[prop]) == 'Object') && (arguments[i][prop] && _type(arguments[i][prop]) == 'Object')){
         target[prop] = arguments[i][prop];
       }
     }
@@ -70,6 +62,11 @@
   
   function _isUndefined(obj) {
     return obj === void 0;
+  }
+  
+  function _type(obj){
+	  var text = obj.constructor.toString();
+	  return text.match(/function (.*)\(/)[1];
   }
   
   function _set_protocol(value) {
@@ -255,4 +252,12 @@
     }
   };
   _extend(Keen.prototype, Events);
+  _extend(Keen, Events);
+  
+  
+  // -------------------------------
+  // Keen.Plugins
+  // -------------------------------
+  
+  var Plugins = Keen.Plugins = {};
   
