@@ -6,6 +6,7 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks("grunt-contrib-concat");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
+  
   grunt.loadNpmTasks('grunt-saucelabs');
   
   grunt.initConfig({
@@ -24,7 +25,7 @@ module.exports = function(grunt) {
         src: [
           "src/intro.js", 
           "src/track.js", 
-          "src/plugins/keen-pageviews.js",
+          //"src/plugins/keen-pageviews.js",
           "src/plugins/keen-async-loading.js",
           "src/query.js", 
           "src/visualize.js", 
@@ -38,7 +39,7 @@ module.exports = function(grunt) {
         src: [
           "src/intro.js", 
           "src/track.js", 
-          "src/plugins/keen-pageviews.js", 
+          //"src/plugins/keen-pageviews.js", 
           "src/plugins/keen-async-loading.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
@@ -100,13 +101,14 @@ module.exports = function(grunt) {
     connect: {
 			server: {
 				options: {
-					base: 'public',
+					base: 'test',
 					port: 9999
 				}
 			}
 		},
+		
     
-    'saucelabs-jasmine': {
+    'saucelabs-mocha': {
       all: {
         options: {
           username: saucelabs.username,
@@ -121,6 +123,6 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', ['concat', 'uglify']);
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
-  grunt.registerTask('test', ['build', 'connect', 'saucelabs-jasmine']);
+  grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
   grunt.registerTask('default', ['build']);
 };
