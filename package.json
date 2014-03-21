@@ -8,7 +8,8 @@
     "node": "0.10.x"
   },
   "scripts": {
-    "start": "node app.js"
+    "start": "grunt",
+    "test": "grunt test"
   },
   "dependencies": {
     "express": "3.1.0"
@@ -16,8 +17,10 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.6",
+    "grunt-contrib-connect": "^0.7.1",
     "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-uglify": "~0.2.0",
-    "grunt-contrib-watch": "~0.5.3"
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-saucelabs": "^5.1.0"
   }
 }

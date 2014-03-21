@@ -1,4 +1,12 @@
+var saucelabs = require('./config/saucelabs')();
+
 module.exports = function(grunt) {
+	
+	grunt.loadNpmTasks("grunt-contrib-connect");
+	grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks("grunt-contrib-uglify");
+  grunt.loadNpmTasks("grunt-contrib-watch");
+  grunt.loadNpmTasks('grunt-saucelabs');
   
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
@@ -87,13 +95,32 @@ module.exports = function(grunt) {
         files: "src/**/*.js",
         tasks: [ "concat", "uglify" ]
       }
+    },
+    
+    connect: {
+			server: {
+				options: {
+					base: 'public',
+					port: 9999
+				}
+			}
+		},
+    
+    'saucelabs-jasmine': {
+      all: {
+        options: {
+          username: saucelabs.username,
+          key: saucelabs.key,
+          urls: saucelabs.urls,
+          browsers: saucelabs.browsers
+        }
+      }
     }
 
   });
 
-  grunt.loadNpmTasks("grunt-contrib-concat");
-  grunt.loadNpmTasks("grunt-contrib-uglify");
-  grunt.loadNpmTasks("grunt-contrib-watch");
-
-  grunt.registerTask("default", ["concat", "uglify"]);
+  grunt.registerTask('build', ['concat', 'uglify']);
+  grunt.registerTask('dev', ['build', 'connect', 'watch']);
+  grunt.registerTask('test', ['build', 'connect', 'saucelabs-jasmine']);
+  grunt.registerTask('default', ['build']);
 };

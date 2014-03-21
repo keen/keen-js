@@ -4,18 +4,20 @@
   <title>Keen IO JS SDK Test</title>
 
   <link rel="stylesheet" type="text/css" href="lib/jasmine.css">
-  <script type="text/javascript" src="lib/jasmine.js"></script>
-  <script type="text/javascript" src="lib/jasmine-html.js"></script>
-  <script type="text/javascript" src="lib/sinon.js"></script>
-  <script type="text/javascript" src="lib/sinon-ie.js"></script>
-  <script type="text/javascript" src="lib/jasmine-sinon.js"></script>
+  <script src="lib/jasmine.js" type="text/javascript"></script>
+  <script src="lib/jasmine-html.js" type="text/javascript"></script>
+  <script src="lib/sinon.js" type="text/javascript"></script>
+  <script src="lib/sinon-ie.js" type="text/javascript"></script>
+  <script src="lib/jasmine-sinon.js" type="text/javascript"></script>
 
-  <script type="text/javascript" src="dist/keen-3.0.0.js"></script>
-  <!-- <script type="text/javascript" src="build/keen.min.js"></script> -->
+	<!-- Jasmine JSReporter for SauceLabs reporting -->
+	<script src="lib/jasmine-jsreporter.js" type="text/javascript"></script>
 
-  <script type="text/javascript" src="specHelper.js"></script>
+  <script src="dist/keen-3.0.0.js" type="text/javascript"></script>
 
-  <script type="text/javascript" src="keenSpec.js"></script>
+  <script src="specHelper.js" type="text/javascript"></script>
+
+  <script src="keenSpec.js" type="text/javascript"></script>
   <!--<script type="text/javascript" src="keenIntegrationSpec.js"></script>-->
 
   <script type="text/javascript">
@@ -25,7 +27,8 @@
 
       var htmlReporter = new jasmine.HtmlReporter();
 
-      jasmineEnv.addReporter(htmlReporter);
+      jasmineEnv.addReporter(new jasmine.HtmlReporter());
+			jasmineEnv.addReporter(new jasmine.JSReporter());
 
       jasmineEnv.specFilter = function(spec) {
         return htmlReporter.specFilter(spec);
