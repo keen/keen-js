@@ -20,12 +20,16 @@ describe("Keen Client", function() {
   beforeEach(function() {
     this.keen = new Keen({
       projectId: keenHelper.projectId,
-      readKey: keenHelper.readyKey,
+      readKey: keenHelper.readKey,
       writeKey: keenHelper.writeKey
     });
   });
   
   describe("constructor", function() {
+    
+    it("should create a new Keen instance", function(){
+      expect(this.keen).to.be.an.instanceof(Keen);
+    });
     
     it("should error if no configuration object", function() {
       expect(function() {
@@ -33,11 +37,11 @@ describe("Keen Client", function() {
       }).to.throw(Error);
     });
     
-    it("should create a new client instance", function(){
+    it("should create a new client object", function(){
       expect(this.keen.client).to.be.ok;
     });
     
-    describe("validate projectId", function(){
+    describe("validates projectId", function(){
       
       it("should error if projectId is absent", function() {
 
@@ -79,31 +83,116 @@ describe("Keen Client", function() {
         
       });
       
-      it("should set the projectId correctly", function() {
+      it("should set the projectId (string)", function() {
         
-        expect(this.keen.client.projectId).to.equal(keenHelper.projectId);
+        expect(this.keen.client)
+          .to.have.property('projectId')
+          .that.is.a('string')
+          .that.equals(keenHelper.projectId);
         
       });
       
     });
     
-    describe("validate readKey", function(){
+    describe("validates readKey", function(){
       
-      it("should set the readKey", function() {
-        expect(this.keen.client.readyKey).to.equal(keenHelper.readyKey);
+      it("should set the readKey (string)", function() {
+        expect(this.keen.client)
+          .to.have.property('readKey')
+          .that.is.a('string')
+          .that.equals(keenHelper.readKey);
+          
       });
       
     });
     
-    describe("validate readKey", function(){
+    describe("validates readKey", function(){
       
-      it("should set the writeKey", function() {
-        expect(this.keen.client.writeKey).to.equal(keenHelper.writeKey);
+      it("should set the writeKey (string)", function() {
+        expect(this.keen.client)
+          .to.have.property('writeKey')
+          .that.is.a('string')
+          .that.equals(keenHelper.writeKey);
+        
       });
       
     });
     
+    describe("validates endpoint", function(){
+      
+      it("should default to \"https\" if protocol is absent or of incorrect type", function(){
+        
+        // Empty
+        var keen_empty = new Keen({ projectId: '123', protocol: '' });
+        expect(keen_empty.client.endpoint.indexOf('https://')).to.equal(0);
+        
+        // Number
+        var keen_number = new Keen({ projectId: '123', protocol: 0 });
+        expect(keen_number.client.endpoint.indexOf('https://')).to.equal(0);
+        
+        // Boolean
+        var keen_boolean = new Keen({ projectId: '123', protocol: true });
+        expect(keen_boolean.client.endpoint.indexOf('https://')).to.equal(0);
+        
+        // Array
+        var keen_array = new Keen({ projectId: '123', protocol: [] });
+        expect(keen_array.client.endpoint.indexOf('https://')).to.equal(0);
+        
+        // Object
+        var keen_object = new Keen({ projectId: '123', protocol: {} });
+        expect(keen_object.client.endpoint.indexOf('https://')).to.equal(0);
+        
+      });
+      
+      it("should set protocol to \"https\" if designated", function(){
+        
+        var keen = new Keen({ projectId: '123', protocol: 'https' });
+        expect(keen.client.endpoint.indexOf('https://')).to.equal(0);
+        
+      });
+      
+      it("should set protocol to \"http\" if designated", function(){
+        
+        var keen = new Keen({ projectId: '123', protocol: 'http' });
+        expect(keen.client.endpoint.indexOf('http://')).to.equal(0);
+        
+      });
+      
+    });
     
+    describe("validates request type", function(){
+      
+      it("should set request type to \"xhr\" by default", function(){
+
+        var keen = new Keen({ projectId: '123', requestType: 'xhr' });
+        expect(keen.client)
+          .to.have.property('requestType')
+          .that.is.a('string')
+          .that.equals('xhr');
+        
+      });
+      
+      it("should set request type to \"jsonp\" if designated", function(){
+        
+        var keen = new Keen({ projectId: '123', requestType: 'jsonp' });
+        expect(keen.client)
+          .to.have.property('requestType')
+          .that.is.a('string')
+          .that.equals('jsonp');
+        
+      });
+      
+      it("should set request type to \"beacon\" if designated", function(){
+        
+        var keen = new Keen({ projectId: '123', requestType: 'beacon' });
+        expect(keen.client)
+          .to.have.property('requestType')
+          .that.is.a('string')
+          .that.equals('beacon');
+        
+      });
+      
+    });
     
   });
 });
