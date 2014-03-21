@@ -24,21 +24,33 @@ module.exports = function(){
     }, 
     
     {
+      browserName: 'internet explorer',
+      platform: 'Windows 2012',
+      version: '10'
+    },
+    
+    {
       browserName: "internet explorer",
       platform: "WIN8",
       version: "10"
     }, 
     
     {
+      browserName: 'internet explorer',
+      platform: 'WIN7',
+      version: '10'
+    },
+    
+    {
       browserName: "internet explorer",
       platform: "VISTA",
-      version: "9"
+      version: "10"
     },
     
     {
       browserName: "internet explorer",
       platform: "WINDOWS XP",
-      version: "8"
+      version: "10"
     }
   ];
   

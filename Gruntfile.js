@@ -111,6 +111,7 @@ module.exports = function(grunt) {
     'saucelabs-mocha': {
       all: {
         options: {
+          testname: 'KeenJS v3 @ ' + new Date().toISOString(),
           username: saucelabs.username,
           key: saucelabs.key,
           urls: saucelabs.urls,
