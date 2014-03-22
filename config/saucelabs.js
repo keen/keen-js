@@ -1,6 +1,6 @@
 module.exports = function(){
   
-  this.username = 'larimer';
+  this.username = 'keen-js';
   this.urls = ['http://127.0.0.1:9999/index.html'];
   
   if (typeof process.env.SAUCE_ACCESS_KEY !== "undefined") {

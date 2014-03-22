@@ -113,6 +113,7 @@ module.exports = function(grunt) {
           testname: new Date().toISOString(),
           username: saucelabs.username,
           key: saucelabs.key,
+          build: process.env.TRAVIS_JOB_ID,
           urls: saucelabs.urls,
           browsers: saucelabs.browsers
         }
