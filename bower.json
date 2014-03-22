@@ -1,0 +1,27 @@
+{
+  "name": "keen-js",
+  "version": "3.0.0",
+  "homepage": "https://github.com/keenlabs/keen-js",
+  "authors": [
+    "Dustin Larimer <dustin@keen.io>"
+  ],
+  "description": "JS Library for the Keen IO API",
+  "keywords": [
+    "analytics",
+    "metrics",
+    "keen-io"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "config",
+    "src",
+    "test"
+  ],
+  "devDependencies": {
+    "mocha": "~1.18.2",
+    "chai": "~1.9.1",
+    "sinon": "http://sinonjs.org/releases/sinon-1.9.0.js"
+  }
+}

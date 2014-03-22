@@ -4,6 +4,12 @@ A crisp, new JS Library for the Keen IO API.
 
 **Important:** This version is not seaworthy yet – [v2.1.2](https://github.com/keenlabs/keen-js/tree/2.1.2) is the latest stable release.
 
+[![Build Status](https://api.travis-ci.org/keenlabs/keen-js.png?branch=master)](https://travis-ci.org/keenlabs/keen-js)
+[![Selenium Test Status](https://saucelabs.com/buildstatus/keen-js)](https://saucelabs.com/u/keen-js)
+
+[![Selenium Test Status](https://saucelabs.com/browser-matrix/keen-js.svg)](https://saucelabs.com/u/keen-js)
+
+
 ## Get Project ID & API Keys
 
 If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project) for your app. The Project ID and API Keys are available on the Project Overview page. You will need these for the next steps.

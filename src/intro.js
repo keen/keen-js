@@ -19,7 +19,7 @@
     if (_isUndefined(config)) {
       throw new Error("Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/");
     }
-    if (_isUndefined(config.projectId)) {
+    if (_isUndefined(config.projectId) || typeof config.projectId !== 'string' || config.projectId.length < 1) {
       throw new Error("Please provide a projectId");
     }
     
