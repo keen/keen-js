@@ -119,11 +119,12 @@ module.exports = function(){
       platform: 'Windows 7',
       version: '10'
     },
-    /*{
+    {
       browserName: "internet explorer",
       platform: "WINDOWS 7",
       version: "9"
     },
+    /*
     {
       browserName: "internet explorer",
       platform: "WINDOWS 7",

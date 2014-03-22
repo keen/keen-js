@@ -88,9 +88,8 @@
   }
   
   function _set_request_type(value) {
-    // Test XMLHttpRequest = function(){};
-    var configured = value || 'xhr'; // null, 'xhr', 'jsonp', 'beacon'
-    var capableXHR = typeof new XMLHttpRequest().responseType === 'string';
+    var configured = value || 'xhr';
+    var capableXHR = ('withCredentials' in new XMLHttpRequest());
     if (configured == null || configured == 'xhr') {
       if (capableXHR) {
         return 'xhr';
