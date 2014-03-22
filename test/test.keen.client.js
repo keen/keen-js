@@ -162,13 +162,37 @@ describe("Keen Client", function() {
     
     describe("validates request type", function(){
       
-      it("should set request type to \"xhr\" by default", function(){
-
+      it("should set request type to \"xhr\" by default if CORS is supported, otherwise fall back to \"JSONP\"", function(){
+        
+        var keen = new Keen({ projectId: '123' });
+        if ('withCredentials' in new XMLHttpRequest()) {
+          expect(keen.client)
+            .to.have.property('requestType')
+            .that.is.a('string')
+            .that.equals('xhr');
+        } else {
+          expect(keen.client)
+            .to.have.property('requestType')
+            .that.is.a('string')
+            .that.equals('jsonp');
+        }
+        
+      });
+      
+      it("should set request type to \"xhr\" if designated and CORS supported, otherwise fall back \"JSONP\"", function(){
+        
         var keen = new Keen({ projectId: '123', requestType: 'xhr' });
-        expect(keen.client)
-          .to.have.property('requestType')
-          .that.is.a('string')
-          .that.equals('xhr');
+        if ('withCredentials' in new XMLHttpRequest()) {
+          expect(keen.client)
+            .to.have.property('requestType')
+            .that.is.a('string')
+            .that.equals('xhr');
+        } else {
+          expect(keen.client)
+            .to.have.property('requestType')
+            .that.is.a('string')
+            .that.equals('jsonp');
+        }
         
       });
       

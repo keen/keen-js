@@ -1,0 +1,14 @@
+{
+  "name": "sinon-ie",
+  "_cacheHeaders": {
+    "ETag": "\"2081a9-e11-4f3f5f98ac180\"",
+    "Last-Modified": "Thu, 06 Mar 2014 20:28:06 GMT",
+    "Content-Length": "3601",
+    "Content-Type": "application/javascript"
+  },
+  "_release": "e-tag:2081a9-e1",
+  "main": "index.js",
+  "_source": "http://sinonjs.org/releases/sinon-ie-1.9.0.js",
+  "_target": "*",
+  "_originalSource": "http://sinonjs.org/releases/sinon-ie-1.9.0.js"
+}

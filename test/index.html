@@ -2,25 +2,29 @@
 <html>
 <head>
   <title>Keen IO JS SDK Test</title>
-
+	
 	<!-- Test Framework Assets -->
 	<link rel="stylesheet" href="./lib/mocha/mocha.css" />
 	<script src="./lib/mocha/mocha.js"></script>
 	<script src="./lib/chai/chai.js"></script>
 	<script src="./lib/sinon/index.js"></script>
+	<script src="./lib/sinon-ie/index.js"></script>
 	
 	<!-- File(s) to be tested -->
 	<script src="./dist/keen-3.0.0.js" type="text/javascript"></script>
 	
 	<!-- Setup -->
 	<script>mocha.setup('bdd')</script>
+	<script src="./test.keen.helper.js" type="text/javascript"></script>
 	
-	<script src="./test.keen.js" type="text/javascript"></script>
-
+	<!-- Load Tests -->
+	<script src="./test.keen.client.js" type="text/javascript"></script>
+	<script src="./test.keen.tracking.js" type="text/javascript"></script>
+	
+	<!-- Initialize -->
 	<script>
-		onload = function(){
-			//mocha.checkLeaks();
-			//mocha.globals(['foo']);
+		var init = function(){
+			
 			var runner = mocha.run();
 
 			var failedTests = [];
@@ -45,46 +49,19 @@
 				failedTests.push({name: test.title, result: false, message: err.message, stack: err.stack, titles: flattenTitles(test) });
 			};
 		};
+		
+		if ( window.addEventListener ) { 
+			window.addEventListener( "load", init, false );
+		}
+		else if ( window.attachEvent ) { 
+			window.attachEvent( "onload", init );
+		} else if ( window.onLoad ) {
+			window.onload = init;
+		}
+		
 	</script>
-	
-	
-	<!--
-  <script src="specHelper.js" type="text/javascript"></script>
-	<script src="keenSpec.js" type="text/javascript"></script>
-	<script type="text/javascript" src="keenIntegrationSpec.js"></script>
-  <script type="text/javascript">
-    (function() {
-      var jasmineEnv = jasmine.getEnv();
-      jasmineEnv.updateInterval = 1000;
-
-      var htmlReporter = new jasmine.HtmlReporter();
-
-      jasmineEnv.addReporter(new jasmine.HtmlReporter());
-			jasmineEnv.addReporter(new jasmine.JSReporter());
-
-      jasmineEnv.specFilter = function(spec) {
-        return htmlReporter.specFilter(spec);
-      };
-
-      var currentWindowOnload = window.onload;
-
-      window.onload = function() {
-        if (currentWindowOnload) {
-          currentWindowOnload();
-        }
-        execJasmine();
-      };
-
-      function execJasmine() {
-        jasmineEnv.execute();
-      }
-
-    })();
-	</script>
-	-->
 </head>
 <body>
 	<div id="mocha"></div>
 </body>
 </html>
-
