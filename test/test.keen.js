@@ -13,7 +13,7 @@ var keenHelper = {
     error: '{\"error\": true }'
   }
 };
-console.log(keenHelper);
+//console.log(keenHelper);
 
 describe("Keen Client", function() {
   
