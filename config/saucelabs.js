@@ -10,10 +10,10 @@ module.exports = function(){
   this.browsers = [
   
     /* FIREFOX */
-    {
+    /*{
       browserName: "firefox",
       platform: "OS X 10.9"
-    },
+    },*/
     {
       browserName: "firefox",
       platform: "OS X 10.6"
@@ -42,10 +42,10 @@ module.exports = function(){
     
     
     /* CHROME */
-    {
+    /*{
       browserName: "chrome",
       platform: "OS X 10.9"
-    },
+    },*/
     {
       browserName: "chrome",
       platform: "OS X 10.8"
@@ -77,11 +77,11 @@ module.exports = function(){
     
     
     /* SAFARI */
-    {
+    /*{
       browserName: "safari",
       platform: "OS X 10.9",
       version: "7"
-    },
+    },*/
     {
       browserName: "safari",
       platform: "OS X 10.8",
