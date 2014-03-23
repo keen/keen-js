@@ -18,6 +18,7 @@ env:
       WcCm45Wptqf9dypvhm28KG6O4y5Gpp5ltXeFlwjBQ2C/qf4J7RfYq72FBv11
       n8Gp7vzmTbtDVGIWvmHsmRsKtwd2CxGqwxqVOjOokQoeLTyNlXQ8J3em7nug
       sAJyAuWVLrVc8aAqoAhBUKCD40xoqHS4wdiyyeIQy+uTMAgw+RM=
+  - LOGS_DIR=/tmp/keen-build/logs
 
 install:
   - npm install -g grunt-cli
