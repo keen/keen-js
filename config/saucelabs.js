@@ -24,19 +24,23 @@ module.exports = function(){
     },
     {
       browserName: 'firefox',
-      platform: 'Windows 8.1'
+      platform: 'Windows 8.1',
+      version: '27'
     },
     {
       browserName: 'firefox',
-      platform: 'Windows 8'
+      platform: 'Windows 8',
+      version: '27'
     },
     {
       browserName: "firefox",
-      platform: "Windows 7"
+      platform: "Windows 7",
+      version: '27'
     },
     {
       browserName: "firefox",
-      platform: "Windows XP"
+      platform: "Windows XP",
+      version: '27'
     }, 
     
     
