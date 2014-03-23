@@ -9,6 +9,8 @@ A crisp, new JS Library for the Keen IO API.
 
 [![Selenium Test Status](https://saucelabs.com/browser-matrix/keen-js.svg)](https://saucelabs.com/u/keen-js)
 
+Tracking is manually tested and validated on Internet Explorer 6, 7, and 8.
+
 
 ## Get Project ID & API Keys
 
