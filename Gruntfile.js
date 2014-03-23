@@ -1,9 +1,9 @@
 var saucelabs = require('./config/saucelabs')();
 
 module.exports = function(grunt) {
-	
-	grunt.loadNpmTasks("grunt-contrib-connect");
-	grunt.loadNpmTasks("grunt-contrib-concat");
+  
+  grunt.loadNpmTasks("grunt-contrib-connect");
+  grunt.loadNpmTasks("grunt-contrib-concat");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   
@@ -99,13 +99,13 @@ module.exports = function(grunt) {
     },
     
     connect: {
-			server: {
-				options: {
-					base: 'test',
-					port: 9999
-				}
-			}
-		},
+      server: {
+        options: {
+          base: 'test',
+          port: 9999
+        }
+      }
+    },
     
     'saucelabs-mocha': {
       all: {

@@ -89,7 +89,7 @@
   
   function _set_request_type(value) {
     var configured = value || 'xhr';
-    var capableXHR = ('withCredentials' in new XMLHttpRequest());
+    var capableXHR = (typeof XMLHttpRequest === 'function' && 'withCredentials' in new XMLHttpRequest());
     if (configured == null || configured == 'xhr') {
       if (capableXHR) {
         return 'xhr';
