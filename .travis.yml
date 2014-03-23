@@ -24,6 +24,7 @@ install:
   - npm install
 
 before_script:
+  - mkdir -p $LOGS_DIR
   - ./config/sauce_connect_setup.sh
 
 notifications:
