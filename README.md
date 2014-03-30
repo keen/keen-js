@@ -4,10 +4,9 @@ A crisp, new JS Library for the Keen IO API.
 
 **Important:** This version is not seaworthy yet – [v2.1.2](https://github.com/keenlabs/keen-js/tree/2.1.2) is the latest stable release.
 
+[![RepoStats](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIlJFQURNRS5tZCJ9&redirect=http://img.shields.io/badge/Stats-Keen%20IO-blue.svg)](https://github.com/keenlabs/keen-js)
 [![Build Status](https://api.travis-ci.org/keenlabs/keen-js.png?branch=master)](https://travis-ci.org/keenlabs/keen-js)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/keen-js)](https://saucelabs.com/u/keen-js)
-
-[![Selenium Test Status](https://saucelabs.com/browser-matrix/keen-js.svg)](https://saucelabs.com/u/keen-js)
 
 Tracking is manually tested and validated on Internet Explorer 6, 7, and 8.
 
@@ -66,5 +65,3 @@ Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installat
 ## Support
 
 Need a hand with something? Join us in [HipChat](http://users.keen.io/), [IRC](http://webchat.freenode.net/?channels=keen-io), or shoot us an email at [contact@keen.io](mailto:contact@keen.io)
-
-[![RepoStats](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIlJFQURNRS5tZCJ9&pixel)](https://github.com/keenlabs/keen-js)
