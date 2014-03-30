@@ -57,11 +57,11 @@ Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installat
 
 ## Resources
 
-[Data Modeling Guide](https://keen.io/docs/event-data-modeling/event-data-intro/)
+[Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://keen.io/docs/event-data-modeling/event-data-intro/)
 
-[API Technical Reference](https://keen.io/docs/api/reference/)
+[API Technical Reference](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://keen.io/docs/api/reference/)
 
-[API Status](http://status.keen.io/)
+[API Status](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=http://status.keen.io/)
 
 
 ## Support
