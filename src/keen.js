@@ -2257,7 +2257,7 @@ window.Keen = window.Keen || {};
             });
 
             rows.forEach(function (r) {
-                var row = body.appendChild(document.createElement("tr"));
+                var row = tbody.appendChild(document.createElement("tr"));
 
                 r.forEach(function (val) {
                     var td = row.appendChild(document.createElement("td"));
