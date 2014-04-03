@@ -2178,6 +2178,103 @@ window.Keen = window.Keen || {};
         }
     };
 
+
+    /**
+     * Table - A class to display the results of an extraction
+     *
+     * @param {Keen.Extraction|Keen.SavedQuery} query The query you'd like to visualize.
+     * @param {Object} options The options used to style the visualization (defaults are provided)
+     * @param {Array} [options.skip=['keen']] Property names to skip in creating the table
+     * @param {Array} [options.classes="['table']"] Classes to apply to the created table element.
+     */
+    Keen.Table = Keen.BaseVisualization.extend({
+        constructor: function (query, options) {
+            this.query = query;
+
+            //These are the supported options and their default values.
+            this.options = {
+                skip: ['keen'],
+                classes: ['table']
+            };
+
+            this.options = _.extend(this.options, options);
+        }
+    });
+
+    /**
+     * Draws a Table
+     *
+     * @param element the HTML element in which to put the visualization
+     * @param response an optional param to pass the results of a Query directly into a visualization
+     */
+
+    Keen.Table.prototype.draw = function (element, response) {
+
+        var table = element.appendChild(document.createElement("table")),
+          thead = table.appendChild(document.createElement("thead")),
+          tbody = table.appendChild(document.createElement("tbody"));
+
+        this.options.classes.forEach(function (className) {
+            if(!~table.className.split(' ').indexOf(className)) {
+                table.className += ' ' + className;
+            }
+        });
+
+        var drawIt = _.bind(function(response){
+            var columns = [],
+                options = this.options,
+                rows = [];
+
+            this.data = response.result;
+
+            if(this.data == null){
+                this.data = [];
+            }
+
+            this.data.forEach(function (record) {
+            for(var p in record) {
+                if(
+                    record.hasOwnProperty(p) &&
+                    !~columns.indexOf(p) &&
+                    !~options.skip.indexOf(p)
+                ) {
+                    columns.push(p);
+                }
+            }
+            });
+
+            this.data.forEach(function (record) {
+                rows.push(columns.map(function (col) {
+                  return record[col];
+                }));
+            });
+
+            var row = thead.appendChild(document.createElement("tr"));
+
+            columns.forEach(function (col) {
+                var th = row.appendChild(document.createElement("th"));
+                th.appendChild(document.createTextNode(col));
+            });
+
+            rows.forEach(function (r) {
+                var row = body.appendChild(document.createElement("tr"));
+
+                r.forEach(function (val) {
+                    var td = row.appendChild(document.createElement("td"));
+                    td.appendChild(document.createTextNode(val));
+                });
+            });
+
+        }, this);
+
+        if(_.isUndefined(response)){
+          this.query.getResponse(drawIt);
+        }
+        else{
+          drawIt(response);
+        }
+    };
+
     /**
      * BaseQuery - the base class for all queries
      */
