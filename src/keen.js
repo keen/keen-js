@@ -2232,15 +2232,15 @@ window.Keen = window.Keen || {};
             }
 
             this.data.forEach(function (record) {
-            for(var p in record) {
-                if(
-                    record.hasOwnProperty(p) &&
-                    !~columns.indexOf(p) &&
-                    !~options.skip.indexOf(p)
-                ) {
-                    columns.push(p);
+                for(var p in record) {
+                    if(
+                        record.hasOwnProperty(p) &&
+                        !~columns.indexOf(p) &&
+                        !~options.skip.indexOf(p)
+                    ) {
+                        columns.push(p);
+                    }
                 }
-            }
             });
 
             this.data.forEach(function (record) {
@@ -2268,10 +2268,10 @@ window.Keen = window.Keen || {};
         }, this);
 
         if(_.isUndefined(response)){
-          this.query.getResponse(drawIt);
+            this.query.getResponse(drawIt);
         }
         else{
-          drawIt(response);
+            drawIt(response);
         }
     };
 
