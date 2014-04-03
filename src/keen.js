@@ -2693,6 +2693,40 @@ window.Keen = window.Keen || {};
         return this;
     };
 
+    /**
+     * Extraction - A class to represent a Keen Extraction
+     */
+    Keen.Extraction = Keen.AdHocQuery.extend({
+        constructor: function (eventCollection, attributes, client) {
+            if(_.isUndefined(attributes)) {
+                attributes = {};
+            }
+
+            var attr = _.defaults(attributes, {filters:[]});
+            attr.eventCollection = eventCollection;
+
+            if (_.isUndefined(attr.timezone)){
+                attr.timezone = getTimezoneOffset();
+            }
+
+            _.extend(attr, {analysisType: 'extraction'});
+
+            this.attributes = {};
+            _.extend(this.attributes, attr);
+
+            if(client) {
+                this.client = client;
+            }
+            else {
+                this.client = Keen.client;
+            }
+        },
+        draw: function(element, options){
+            var table = new Keen.Table(this, options);
+            table.draw(element);
+        }
+    });
+
     Keen.showLoading = function(element) {
         var spinner = new Spinner().spin(element);
     };
