@@ -47,6 +47,14 @@
 		
 		var extraction = new Keen.Extraction('purchase');
 		
+		var median = new Keen.Median('play', {
+	      targetProperty: 'currentTime'
+	    });
+
+	    var percentile = new Keen.Percentile('play', {
+	      targetProperty: 'currentTime',
+	      percentile: '99'
+	    });
 		
 		// Listen for individual analyses' completion
 		count.on('complete', function(res){
@@ -101,7 +109,7 @@
 		
 		
 		// Multiple anonymous queries
-		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction], function(response, meta){
+		keen.query([count, count_unique, sum, max, min, avg, select_unique, extraction, median, percentile], function(response, meta){
 			console.log('-->', response, meta);
 			for (var i = 0; i < response.length; i++){
 				console.log(meta[i].query.path, meta[i].query.params.event_collection, response[i].result);

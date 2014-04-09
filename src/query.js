@@ -135,7 +135,8 @@
       timeframe: options.timeframe,
       interval: options.interval,
       timezone: (options.timezone || _build_timezone_offset()),
-      latest: options.latest
+      latest: options.latest,
+      percentile: options.percentile
     };
     return this;
   };
@@ -259,6 +260,24 @@
   };
   
   
+  Keen.Percentile = function(eventCollection, config){
+    var options = (config || {});
+    options.analysisType = 'percentile';
+    if (!options.percentile) throw Error('Please pass in a percentile to calculate');
+    if (!eventCollection || !options.targetProperty) return options;
+    this.configure(eventCollection, options);
+  };
+  Keen.Percentile.prototype = new Keen.Analysis();
+
+
+  Keen.Median = function(eventCollection, config){
+    var options = (config || {});
+    options.analysisType = 'median';
+    if (!eventCollection || !options.targetProperty) return options;
+    this.configure(eventCollection, options);
+  };
+  Keen.Median.prototype = new Keen.Analysis();
+
   
   // Private
   // --------------------------------
