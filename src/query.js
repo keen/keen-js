@@ -1,146 +1,145 @@
-  /*! 
+  /*!
   * -----------------
   * Keen IO Query JS
   * -----------------
   */
-  
-  
+
+
   // -------------------------------
   // Inject <client>.query Method
   // -------------------------------
-  
-  Keen.prototype.query = function(query, success, error) {
+
+  Keen.prototype.run = function(query, success, error) {
     var queries = [];
     if ( Object.prototype.toString.call(query) === '[object Array]' ) {
       queries = query;
     } else {
       queries.push(query);
     }
-    return new Keen.Query(this, queries, success, error);
+    return new Keen.Request(this, queries, success, error);
   };
-  
-  
+
+
   // -------------------------------
-  // Keen.Query
+  // Keen.Request
   // -------------------------------
-  
-  Keen.Query = function(instance, queries, success, error){
+
+  Keen.Request = function(instance, queries, success, error){
     this.data = {};
     this.configure(instance, queries, success, error);
   };
-  _extend(Keen.Query.prototype, Events);
-    
-  Keen.Query.prototype.configure = function(instance, queries, success, error){
+  _extend(Keen.Request.prototype, Events);
+
+  Keen.Request.prototype.configure = function(instance, queries, success, error){
     this.instance = instance;
     this.queries = queries;
     this.success = success;
     this.error = error;
-    
+
     this.refresh();
     return this;
   };
-  
-  Keen.Query.prototype.refresh = function(){
-    
+
+  Keen.Request.prototype.refresh = function(){
+
     var self = this,
         completions = 0,
         response = [],
         meta = [];
-    
-    var handleSuccess = function(res, req){
-      response[req.sequence] = res;
-      meta[req.sequence] = req;
-      meta[req.sequence]['query'] = self.queries[req.sequence];
-      
-      // Attach response/meta data to each analysis 
-      req.query.data.response = res;
-      req.query.data.meta = { query: req.query };
-      
+
+    var handleSuccess = function(res, index){
+
+      response[index] = res;
+      //meta[index]['query'] = self.queries[index];
+
+      // Attach response/meta data to each analysis
+      self.queries[index].data = res;
+
       // Trigger completion event
-      req.query.trigger('complete', req.query.data.response, req.query.data.meta);
-      
+      self.queries[index].trigger('complete', self.queries[index].data);
+
       // Increment completion count
       completions++;
-      
+
       if (completions == self.queries.length) {
-        
+
         // Attach response/meta data to query
         if (self.queries.length == 1) {
-          self.data.response = response[0];
-          self.data.meta = meta[0];
+          self.data = response[0];
         } else {
-          self.data.response = response;
-          self.data.meta = meta;
+          self.data = response;
         }
-        
+
         // Trigger completion event on query
-        self.trigger('complete', self.data.response, self.data.meta); 
-        
+        self.trigger('complete', self.data);
+
         // Fire callback
-        if (self.success) self.success(self.data.response, self.data.meta);
+        if (self.success) self.success(self.data);
       }
-       
+
     };
-    
+
     var handleFailure = function(res, req){
       var response = JSON.parse(res.responseText);
       Keen.log(res.statusText + ' (' + response.error_code + '): ' + response.message);
       if (self.error) self.error(res, req);
     };
-    
-    for (var i = 0; i < this.queries.length; i++) {
-      var url = null;
-      if (this.queries[i] instanceof Keen.Analysis || this.queries[i] instanceof Keen.Funnel) {
-        url = _build_url.apply(this.instance, [this.queries[i].path]);
-        url += "?api_key=" + this.instance.client.readKey;
-        url += _build_query_string.apply(this.instance, [this.queries[i].params]);
-        
-      } else if ( Object.prototype.toString.call(this.queries[i]) === '[object String]' ) {
-        url = _build_url.apply(this.instance, ['/saved_queries/' + encodeURIComponent(this.queries[i]) + '/result']);
-        url += "?api_key=" + this.instance.client.readKey;
-        
-      } else {
-        var res = {
-          statusText: 'Bad Request',
-          responseText: { message: 'Error: Query ' + (i+1) + ' of ' + this.queries.length + ' for project ' + this.instance.client.projectId + ' is not a valid request' }
+
+    for (var i = 0; i < self.queries.length; i++) {
+      (function(query, index){
+        var url = null;
+        var successSequencer = function(res){
+          handleSuccess(res, index);
         };
-        Keen.log(res.responseText.message);
-        Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');
-        Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
-        if (this.error) this.error(res.responseText.message);
-      }
-      if (url) _send_query.apply(this.instance, [url, i, handleSuccess, handleFailure]);
+        var failureSequencer = function(res){
+          handleFailure(res, index);
+        };
+
+        if (query instanceof Keen.Query || query instanceof Keen.Query) {
+          url = _build_url.call(self.instance, query.path);
+          url += "?api_key=" + self.instance.client.readKey;
+          url += _build_query_string.call(self.instance, query.params);
+
+        } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
+          url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
+          url += "?api_key=" + self.instance.client.readKey;
+
+        } else {
+          var res = {
+            statusText: 'Bad Request',
+            responseText: { message: 'Error: Query ' + (i+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
+          };
+          Keen.log(res.responseText.message);
+          Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');
+          Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
+          if (self.error) self.error(res.responseText.message);
+        }
+        if (url) _send_query.call(self.instance, url, i, successSequencer, failureSequencer);
+
+      })(self.queries[i], i);
     }
-    
     return this;
   };
-  
-  
+
+
   // -------------------------------
-  // Keen.Analysis
+  // Keen.Query
   // -------------------------------
-  
-  Keen.Analysis = function(){
+
+  Keen.Query = function(){
     this.data = {};
+    this.configure.apply(this, arguments);
   };
-  _extend(Keen.Analysis.prototype, Events);
-  
-  Keen.Analysis.prototype.configure = function(eventCollection, options) {
-    this.path = '/queries/' + options.analysisType;
-    this.params = {
-      event_collection: eventCollection,
-      target_property: options.targetProperty,
-      group_by: options.groupBy,
-      filters: options.filters,
-      timeframe: options.timeframe,
-      interval: options.interval,
-      timezone: (options.timezone || _build_timezone_offset()),
-      latest: options.latest
-    };
+  _extend(Keen.Query.prototype, Events);
+
+  Keen.Query.prototype.configure = function(analysisType, params) {
+    this.path = '/queries/' + analysisType;
+    this.params = params || {};
+    this.params.timezone = this.params.timezone || _build_timezone_offset();
     return this;
   };
-  
-  Keen.Analysis.prototype.addFilter = function(property, operator, value) {
+
+  Keen.Query.prototype.addFilter = function(property, operator, value) {
     this.params.filters.push({
       "property_name": property,
       "operator": operator,
@@ -148,125 +147,15 @@
     });
     return this;
   };
-  
-  
-  // -------------------------------
-  // Keen.Analysis Types
-  // -------------------------------
 
-  Keen.Sum = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'sum';
-    if (options.targetProperty === undefined) return options;
-    if (!eventCollection || !options.targetProperty) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.Sum.prototype = new Keen.Analysis();
-  
-  
-  Keen.Count = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'count';
-    if (!eventCollection) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.Count.prototype = new Keen.Analysis();
-  
-  
-  Keen.CountUnique = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'count_unique';
-    if (!eventCollection || !options.targetProperty) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.CountUnique.prototype = new Keen.Analysis();
-  
-  
-  Keen.Minimum = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'minimum';
-    if (!eventCollection || !options.targetProperty) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.Minimum.prototype = new Keen.Analysis();
-  
-  
-  Keen.Maximum = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'maximum';
-    if (!eventCollection || !options.targetProperty) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.Maximum.prototype = new Keen.Analysis();
-  
-  
-  Keen.Average = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'average';
-    if (!eventCollection || !options.targetProperty) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.Average.prototype = new Keen.Analysis();
-  
-  
-  Keen.SelectUnique = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'select_unique';
-    if (!eventCollection || !options.targetProperty) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.SelectUnique.prototype = new Keen.Analysis();
-  
-  
-  Keen.Extraction = function(eventCollection, config){
-    var options = (config || {});
-    options.analysisType = 'extraction';
-    if (!eventCollection) return options;
-    this.configure(eventCollection, options);
-  };
-  Keen.Extraction.prototype = new Keen.Analysis();
-  
-  
-  Keen.Funnel = function(config){
-    var options = (config || {});
-    options.analysisType = 'funnel';
-    if (!options.steps) throw Error('Please configure an array of steps for this funnel');
-    this.configure(options);
-  };
-  Keen.Funnel.prototype = new Keen.Analysis();
-  Keen.Funnel.prototype.configure = function(options){
-    this.path = '/queries/' + options.analysisType;
-    this.params = {
-      steps: [],
-      timeframe: options.timeframe,
-      timezone: (options.timezone || _build_timezone_offset())
-    };
-    for (var i = 0; i < options.steps.length; i++){
-      var step = {};
-      if (!options.steps[i].eventCollection) throw Error('Please provide an eventCollection value for step #' + (i+1));
-      step.event_collection = options.steps[i].eventCollection;
-      
-      if (!options.steps[i].actorProperty) throw Error('Please provide an actorProperty value for step #' + (i+1));
-      step.actor_property = options.steps[i].actorProperty;
-      
-      if (options.steps[i].filters) step.filters = options.steps[i].filters;
-      if (options.steps[i].timeframe) step.timeframe = options.steps[i].timeframe;
-      if (options.steps[i].timezone) step.timezone = options.steps[i].timezone;
-      
-      this.params.steps.push(step);
-    }
-    return this;
-  };
-  
-  
-  
+
   // Private
   // --------------------------------
-  
+
   function _build_timezone_offset(){
     return new Date().getTimezoneOffset() * -60;
   };
-  
+
   function _build_query_string(params){
     var query = [];
     for (var key in params) {
@@ -281,7 +170,7 @@
     }
     return "&" + query.join('&');
   };
-  
+
   function _send_query(url, sequence, success, error){
     switch(this.client.requestType){
       case 'xhr':
@@ -293,4 +182,3 @@
         break;
     }
   };
-  
