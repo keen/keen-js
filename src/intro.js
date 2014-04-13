@@ -19,7 +19,7 @@
     if (_isUndefined(config)) {
       throw new Error("Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/");
     }
-    if (_isUndefined(config.projectId)) {
+    if (_isUndefined(config.projectId) || typeof config.projectId !== 'string' || config.projectId.length < 1) {
       throw new Error("Please provide a projectId");
     }
     
@@ -88,9 +88,13 @@
   }
   
   function _set_request_type(value) {
-    // Test XMLHttpRequest = function(){};
-    var configured = value || 'xhr'; // null, 'xhr', 'jsonp', 'beacon'
-    var capableXHR = typeof new XMLHttpRequest().responseType === 'string';
+    var configured = value || 'xhr';
+    var capableXHR = false;
+    if ((typeof XMLHttpRequest === 'object' || typeof XMLHttpRequest === 'function') && 'withCredentials' in new XMLHttpRequest()) {
+      capableXHR = true;
+    }
+    //var capableXHR = (void 0 !== XMLHttpRequest && 'withCredentials' in new XMLHttpRequest());
+    
     if (configured == null || configured == 'xhr') {
       if (capableXHR) {
         return 'xhr';

@@ -4,6 +4,13 @@ A crisp, new JS Library for the Keen IO API.
 
 **Important:** This version is not seaworthy yet – [v2.1.2](https://github.com/keenlabs/keen-js/tree/2.1.2) is the latest stable release.
 
+[![RepoStats](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjoiUkVBRE1FLm1kIiwidmlzaXRvciI6eyJpcF9hZGRyZXNzIjoiJHtrZWVuLmlwfSIsInVzZXJfYWdlbnQiOiIke2tlZW4udXNlcl9hZ2VudH0ifSwia2VlbiI6eyJhZGRvbnMiOlt7Im5hbWUiOiJrZWVuOmlwX3RvX2dlbyIsImlucHV0Ijp7ImlwIjoidmlzaXRvci5pcF9hZGRyZXNzIn0sIm91dHB1dCI6InZpc2l0b3IuZ2VvIn0seyJuYW1lIjoia2Vlbjp1YV9wYXJzZXIiLCJpbnB1dCI6eyJ1YV9zdHJpbmciOiJ2aXNpdG9yLnVzZXJfYWdlbnQifSwib3V0cHV0IjoidmlzaXRvci50ZWNoIn1dfX0=&redirect=http://img.shields.io/badge/Stats-Keen%20IO-blue.svg)](https://github.com/keenlabs/keen-js)
+[![Build Status](https://api.travis-ci.org/keenlabs/keen-js.png?branch=master)](https://travis-ci.org/keenlabs/keen-js)
+[![Selenium Test Status](https://saucelabs.com/buildstatus/keen-js)](https://saucelabs.com/u/keen-js)
+
+Tracking is manually tested and validated on Internet Explorer 6, 7, and 8.
+
+
 ## Get Project ID & API Keys
 
 If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project) for your app. The Project ID and API Keys are available on the Project Overview page. You will need these for the next steps.
@@ -49,12 +56,11 @@ Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installat
 
 ## Resources
 
-[Data Modeling Guide](https://keen.io/docs/event-data-modeling/event-data-intro/)
+[Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkRhdGEgTW9kZWxpbmcgR3VpZGUiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://keen.io/docs/event-data-modeling/event-data-intro/)
 
-[API Technical Reference](https://keen.io/docs/api/reference/)
+[API Technical Reference](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkFQSSBUZWNobmljYWwgUmVmZXJlbmNlIiwicmVmZXJyZXIiOiAiUkVBRE1FLm1kIn0=&redirect=https://keen.io/docs/api/reference/)
 
-[API Status](http://status.keen.io/)
-
+[API Status](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkFQSSBTdGF0dXMiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=http://status.keen.io/)
 
 ## Support
 

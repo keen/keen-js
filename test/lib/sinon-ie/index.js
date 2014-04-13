@@ -1,12 +1,12 @@
 /**
- * Sinon.JS 1.6.0, 2013/02/18
+ * Sinon.JS 1.9.0, 2014/03/05
  *
  * @author Christian Johansen (christian@cjohansen.no)
  * @author Contributors: https://github.com/cjohansen/Sinon.JS/blob/master/AUTHORS
  *
  * (The BSD License)
  * 
- * Copyright (c) 2010-2013, Christian Johansen, christian@cjohansen.no
+ * Copyright (c) 2010-2014, Christian Johansen, christian@cjohansen.no
  * All rights reserved.
  * 
  * Redistribution and use in source and binary forms, with or without modification,
@@ -49,6 +49,8 @@
  */
 function setTimeout() {}
 function clearTimeout() {}
+function setImmediate() {}
+function clearImmediate() {}
 function setInterval() {}
 function clearInterval() {}
 function Date() {}
@@ -57,6 +59,8 @@ function Date() {}
 // should be true. Hackish, I know, but it works.
 setTimeout = sinon.timers.setTimeout;
 clearTimeout = sinon.timers.clearTimeout;
+setImmediate = sinon.timers.setImmediate;
+clearImmediate = sinon.timers.clearImmediate;
 setInterval = sinon.timers.setInterval;
 clearInterval = sinon.timers.clearInterval;
 Date = sinon.timers.Date;
