@@ -9,17 +9,24 @@
   "keywords": [
     "analytics",
     "metrics",
+    "tracking",
+    "logging",
+    "stats",
+    "pageviews",
+    "keen",
+    "keen.io",
     "keen-io"
   ],
   "license": "MIT",
   "ignore": [
     "**/.*",
-    "node_modules",
     "config",
+    "node_modules",
     "src",
     "test"
   ],
   "devDependencies": {
+    "chartstack": "git@github.com:keenlabs/chartstack.git#~0.0.6",
     "mocha": "~1.18.2",
     "chai": "~1.9.1",
     "sinon": "http://sinonjs.org/releases/sinon-1.9.0.js",

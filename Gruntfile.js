@@ -1,17 +1,17 @@
 var saucelabs = require('./config/saucelabs')();
 
 module.exports = function(grunt) {
-  
+
   grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-contrib-concat");
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
-  
+
   grunt.loadNpmTasks('grunt-saucelabs');
-  
+
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
-    
+
     concat: {
       options: {
         stripBanners: true,
@@ -23,12 +23,12 @@ module.exports = function(grunt) {
       },
       all: {
         src: [
-          "src/intro.js", 
-          "src/track.js", 
+          "src/intro.js",
+          "src/track.js",
           //"src/plugins/keen-pageviews.js",
           "src/plugins/keen-async-loading.js",
-          "src/query.js", 
-          "src/visualize.js", 
+          "src/query.js",
+          "src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/outro.js"
@@ -37,9 +37,9 @@ module.exports = function(grunt) {
       },
       track: {
         src: [
-          "src/intro.js", 
-          "src/track.js", 
-          //"src/plugins/keen-pageviews.js", 
+          "src/intro.js",
+          "src/track.js",
+          //"src/plugins/keen-pageviews.js",
           "src/plugins/keen-async-loading.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
@@ -49,8 +49,8 @@ module.exports = function(grunt) {
       },
       query: {
         src: [
-          "src/intro.js", 
-          "src/query.js", 
+          "src/intro.js",
+          "src/query.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/outro.js"
@@ -59,12 +59,14 @@ module.exports = function(grunt) {
       },
       visualize: {
         src: [
-          "src/intro.js", 
-          "src/query.js", 
-          "src/visualize.js", 
+          "src/intro.js",
+          "src/query.js",
+          //"src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
-          "src/outro.js"
+          "src/outro.js",
+          "lib/chartstack/dist/chartstack.min.js",
+          "src/plugins/keen-chartstack.js",
         ],
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js"
       },
@@ -73,12 +75,12 @@ module.exports = function(grunt) {
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.loader.js"
       }
     },
-    
+
     uglify: {
       options : {
         beautify : {
           ascii_only : true
-        }    
+        }
       },
       dist: {
         files: {
@@ -97,7 +99,7 @@ module.exports = function(grunt) {
         tasks: [ "concat", "uglify" ]
       }
     },
-    
+
     connect: {
       server: {
         options: {
@@ -106,7 +108,7 @@ module.exports = function(grunt) {
         }
       }
     },
-    
+
     'saucelabs-mocha': {
       all: {
         options: {

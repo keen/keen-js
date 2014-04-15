@@ -1,5 +1,5 @@
 dist/*
 node_modules
-src/lib/bower_components/
+lib
 *.log
 .DS_Store
