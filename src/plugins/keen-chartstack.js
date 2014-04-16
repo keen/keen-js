@@ -19,8 +19,12 @@
     // -------------------------------
 
     Keen.Request.prototype.draw = function(selector, config) {
-      if (void 0 == this.visual || (config.library !== this.visual.library || config.type !== this.visual.type)) {
+      if (!this.visual) {
         this.visual = new Keen.Visualization(this, selector, config);
+        this.on("complete", function(){
+          this.visual.dataset.responses = [this.data];
+          this.visual.dataset.transform();
+        })
       }
       return this;
     };
@@ -30,53 +34,65 @@
     // -------------------------------
 
     Keen.Visualization = function(req, selector, config){
-      var options = (config || {});
+      var options = (config || {}), recommended;
+      var library = chartstack.libraries[options.library] || chartstack.library;
 
-      if (req.queries[0].params.interval) { // Series
-        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
-        if (void 0 == options.chartType) {
-          options.chartType = 'linechart';
-        }
-      } else {
-        if (req.queries[0].params.group_by) { // Static
-          options.capable = ['piechart', 'table'];
-          if (void 0 == options.chartType) {
-            options.chartType = 'piechart';
-          }
-        } else { // Metric
-          options.capable = ['text'];
-          if (void 0 == options.chartType) {
-            options.chartType = 'text';
-          }
-        }
-      }
-
-      // if (options.chartType && this.capable.indexOf(options.chartType)) -> request is going to work
-
-      var KeenDatasetConfig = {
+      var datasetConfig = {
         adapter: "keen-io",
         url: req.instance.client.endpoint + '/projects/' + req.instance.client.projectId + req.queries[0].path,
         dateformat: config.dateFormat || "",
         params: req.queries[0].params
+        /*
+        format: {
+          index: { type: 'date', sort: 'desc', format: 'MMM DDD' }
+        },
+        map: {
+          root: "result",
+          each: {
+            index
+          },
+          sort: {
+            index: 'asc',
+            label: 'desc'
+          }
+        }
+        */
       };
-      chartstack.extend(KeenDatasetConfig.params, {
-        api_key: req.instance.client.readKey
-      })
+      datasetConfig.params.api_key = req.instance.client.readKey;
 
-      var KeenViewConfig = {
-        el: document.getElementById("chart"),
-        title: config.title || "",
-        height: config.height || 300,
-        width: config.width,
-        options: config.chartOptions || {}
+      var viewConfig = {
+        el: selector,
+        chartOptions: config.chartOptions || {}
       };
 
-      if (chartstack.Libraries[options.library]) {
-        if (chartstack.Libraries[options.library][options.chartType]) {
 
+
+      if (req.queries[0].params.interval) { // Series
+        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+        recommended = 'linechart';
+      } else {
+        if (req.queries[0].params.group_by) { // Static
+          options.capable = ['piechart', 'table'];
+          recommended = 'piechart';
+        } else { // Metric
+          options.capable = ['metric'];
+          recommended = 'metric';
+        }
+      }
+      options.chartType = options.chartType || recommended;
+      // if (options.chartType && this.capable.indexOf(options.chartType)) -> request is going to work
+
+      if (options.chartType == 'metric') {
+        library = 'widgets';
+        // return new Keen.Number(selector, config);
+        // return new chartstack.Widgets.Number({ });
+      }
+
+      if (library) {
+        if (chartstack.libraries[library][options.chartType]) {
           return new chartstack.Chart({
-            dataset: new chartstack.Dataset(KeenDatasetConfig),
-            view: new chartstack.Libraries[options.library][options.chartType](KeenViewConfig)
+            dataset: new chartstack.Dataset(datasetConfig),
+            view: new chartstack.libraries[library][options.chartType](viewConfig)
           })
 
         } else {
@@ -88,6 +104,4 @@
 
       return this;
     };
-
-
   }('Keen', this);
