@@ -146,7 +146,6 @@
         key = k.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });
       }
       self.params[key] = value;
-      //console.log(_type(value));
       if (_type(value)==="Array") {
         _each(value, function(dv, index){
           if (_type(dv)==="Object") {

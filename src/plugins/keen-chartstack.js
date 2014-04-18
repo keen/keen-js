@@ -137,7 +137,7 @@
           Keen.log('The visualization type you requested is not available for this library');
         }
       } else {
-        console.log(req.queries[0].params.group_by instanceof Array);
+        //console.log(req.queries[0].params.group_by instanceof Array);
         Keen.log('The visualization library you requested is not present');
       }
 
