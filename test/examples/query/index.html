@@ -10,16 +10,16 @@
 		var keen = new Keen({
 			projectId: "52f2ae5905cd661a7800000a",
 			readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
-			protocol: "https",
+			protocol: "https"
 			//host: 'analytics.yourdomain.com',
-			requestType: "xhr" // "jsonp" "beacon"
+			//requestType: "xhr" // "jsonp" "beacon"
 		});
 
 		/*
 				ANALYSIS TYPES
 		*/
 
-		var count = new Keen.Query("count", { event_collection: "purchase" });
+		var count = new Keen.Query("count", { eventCollection: "purchase" });
     keen.run(count, function(){
       console.log("count (cb)", this.data);
     });
@@ -29,8 +29,8 @@
 
 
 		var count_unique = new Keen.Query('count_unique', {
-      event_collection: "purchase",
-			target_property: 'amount'
+      eventCollection: "purchase",
+			targetProperty: 'amount'
 		});
     keen.run(count_unique, function(){
       console.log(this.data);
@@ -38,8 +38,8 @@
 
 
 		var sum = new Keen.Query('sum', {
-      event_collection: "purchase",
-			target_property: 'amount'
+      eventCollection: "purchase",
+			targetProperty: 'amount'
 		});
     keen.run(sum, function(){
       console.log(this.data);
@@ -47,8 +47,8 @@
 
 
 		var max = new Keen.Query('maximum', {
-      event_collection: "purchase",
-			target_property: 'amount'
+      eventCollection: "purchase",
+			targetProperty: 'amount'
 		});
     keen.run(max, function(){
       console.log(this.data);
@@ -56,8 +56,8 @@
 
 
 		var min = new Keen.Query('minimum', {
-      event_collection: "purchase",
-			target_property: 'amount'
+      eventCollection: "purchase",
+			targetProperty: 'amount'
 		});
     keen.run(min, function(){
       console.log(this.data);
@@ -65,8 +65,8 @@
 
 
 		var avg = new Keen.Query('average', {
-      event_collection: "purchase",
-			target_property: 'amount'
+      eventCollection: "purchase",
+			targetProperty: 'amount'
 		});
     keen.run(avg, function(){
       console.log(this.data);
@@ -74,15 +74,15 @@
 
 
 		var select_unique = new Keen.Query('select_unique', {
-      event_collection: "purchase",
-			target_property: 'amount'
+      eventCollection: "purchase",
+			targetProperty: 'amount'
 		});
     keen.run(select_unique, function(){
       console.log(this.data);
     });
 
 
-		var extraction = new Keen.Query('extraction', { event_collection: "purchase" });
+		var extraction = new Keen.Query('extraction', { eventCollection: "purchase" });
     keen.run(extraction, function(){
       console.log(this.data);
     });
@@ -123,23 +123,23 @@
 		var funnel = new Keen.Query("funnel", {
 			steps: [
 				{
-					event_collection: "viewed_twentyfive",
-					actor_property: "agent",
+					eventCollection: "viewed_twentyfive",
+					actorProperty: "agent",
 					timeframe: 'this_7_days'
 				},
 				{
-					event_collection: "viewed_fifty",
-					actor_property: "agent",
+					eventCollection: "viewed_fifty",
+					actorProperty: "agent",
 					timeframe: 'this_7_days'
 				},
 				{
-					event_collection: "viewed_seventyfive",
-					actor_property: "agent",
+					eventCollection: "viewed_seventyfive",
+					actorProperty: "agent",
 					timeframe: 'this_7_days'
 				},
 				{
-					event_collection: "viewed_all",
-					actor_property: "agent",
+					eventCollection: "viewed_all",
+					actorProperty: "agent",
 					timeframe: 'this_7_days'
 				}
 			],
@@ -150,20 +150,20 @@
 		var fun2 = new Keen.Query("funnel", {
 			steps: [
 				{
-					event_collection: "viewed_twentyfive",
-					actor_property: "agent"
+					eventCollection: "viewed_twentyfive",
+					actorProperty: "agent"
 				},
 				{
-					event_collection: "viewed_fifty",
-					actor_property: "agent"
+					eventCollection: "viewed_fifty",
+					actorProperty: "agent"
 				},
 				{
-					event_collection: "viewed_seventyfive",
-					actor_property: "agent"
+					eventCollection: "viewed_seventyfive",
+					actorProperty: "agent"
 				},
 				{
-					event_collection: "viewed_all",
-					actor_property: "agent"
+					eventCollection: "viewed_all",
+					actorProperty: "agent"
 				}
 			]
 		});
