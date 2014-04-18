@@ -1,0 +1,163 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+  <title>Keen IO Visualization JS Test</title>
+  <style>
+    /*body .cs-widget {
+      background: #000;
+    }*/
+  </style>
+</head>
+<body>
+
+  <div id="funnel"></div>
+
+  <metric title="Total Pageviews" width="300" adapter="keen-io"
+    dataset="https://api.keen.io/3.0/projects/52f2ae5905cd661a7800000a/queries/count
+      ?api_key=
+      &event_collection=pageview
+      &timezone=-28800"></metric>
+  <br/>
+  <div id="gbx2-js"></div>
+  <div id="metric-js"></div>
+  <div id="chart1"></div>
+  <div id="chart2"></div>
+  <div id="pie-js"></div>
+
+  <script src="https://www.google.com/jsapi"></script>
+  <script type="text/javascript" src="../../dist/keen-3.0.0.visualize.js"></script>
+  <script>
+
+    var keen = new Keen({
+      projectId: "",
+      readKey: "",
+      requestType: "jsonp"
+    });
+
+    var num = new Keen.Query("count", {
+      event_collection: "pageview"
+    });
+
+    var pie = new Keen.Query("count", {
+      event_collection: "pageview",
+      group_by: "page"
+    });
+
+    var line = new Keen.Query("count", {
+      event_collection: "pageview",
+      group_by: "page",
+      timeframe: "this_5_months",
+      interval: "monthly"
+    });
+
+    var funnel = new Keen.Query("funnel", {
+      steps: [
+        {
+          event_collection: "pageview",
+          actor_property: "page"
+        },
+        {
+          event_collection: "viewed_twentyfive",
+          actor_property: "page"
+        },
+        {
+          event_collection: "viewed_fifty",
+          actor_property: "page"
+        },
+        {
+          event_collection: "viewed_seventyfive",
+          actor_property: "page"
+        },
+        {
+          event_collection: "viewed_all",
+          actor_property: "page"
+        }
+      ]
+    });
+
+    keen.run([num, pie, line, funnel], function(){
+      // this.data = [{}, {}, {}, {}];
+    });
+
+
+
+    Keen.ready(function(){
+
+      var widget = keen.run(funnel, function(res){
+        console.log('funnel', this.data);
+        this.draw(document.getElementById("funnel"), {
+          chartOptions: {
+            title: "Funfunfunnel",
+            bar: {groupWidth:'97%'}
+          }
+        })
+      });
+
+
+
+      widget.queries[0].set({ groupBy: 'page' });
+      widget.refresh();
+
+      pieq = keen.run(pie);
+      pieq.on("complete", function(){
+        this.draw(document.getElementById("pie-js"), {
+          /*labelMap: {
+            'http://mysite.com/': 'One',
+            'http://mysite.com/': 'Two',
+            '': 'N/A'
+          },
+          colorMap: {
+
+          },*/
+          chartType: 'piechart',
+          chartOptions: {
+            title: "Chart",
+            //legend: { position: 'none' },
+            //chartArea: { left: '10%', width: '85%' },
+            height: 270
+          }
+        });
+      });
+
+
+      query = keen.run(line);
+      query.on("complete", function(){
+
+        this.draw(document.getElementById("chart1"), {
+          //library: "google",
+          dateFormat: "MMMM DD",
+          chartOptions: {
+            title: "Chart via this.draw",
+            height: 270,
+            pieHole: 0.35
+          }
+        });
+
+      });
+
+      var chart = new Keen.Visualization(query, document.getElementById("chart2"), {
+        //library: "google",
+        chartType: 'barchart',
+        dateFormat: "MMM DD",
+        chartOptions: {
+          title: "Chart via pointer var",
+          height: 270,
+          width: 500,
+          isStacked: true
+        }
+      });
+
+      keen.run(num, function(){
+        this.draw(document.getElementById("metric-js"), {
+          chartOptions: {
+            title: "Subtitle in a fixed-width metric!",
+            width: 500
+          }
+        });
+      });
+
+    });
+
+  </script>
+</body>
+</html>
