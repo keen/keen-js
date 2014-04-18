@@ -21,8 +21,13 @@
     ];
 
     // -------------------------------
-    // Inject <query>.draw Method
+    // Inject Draw Methods
     // -------------------------------
+
+    Keen.prototype.draw = function(query, selector, config) {
+      var stub = new Keen.Request(this, [query]);
+      return new Keen.Visualization(stub, selector, config);
+    };
 
     Keen.Request.prototype.draw = function(selector, config) {
       if (!this.visual) {
