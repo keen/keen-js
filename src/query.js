@@ -11,7 +11,7 @@
 
   Keen.prototype.run = function(query, success, error) {
     var queries = [];
-    if ( Object.prototype.toString.call(query) === '[object Array]' ) {
+    if ( _type(query) === 'Array' ) {
       queries = query;
     } else {
       queries.push(query);
@@ -44,23 +44,15 @@
 
     var self = this,
         completions = 0,
-        response = [],
-        meta = [];
+        response = [];
 
     var handleSuccess = function(res, index){
-
       response[index] = res;
-      //meta[index]['query'] = self.queries[index];
-
-      // Attach response/meta data to each analysis
       self.queries[index].data = res;
-
-      // Trigger completion event
       self.queries[index].trigger('complete', self.queries[index].data);
 
       // Increment completion count
       completions++;
-
       if (completions == self.queries.length) {
 
         // Attach response/meta data to query
@@ -114,7 +106,7 @@
           Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
           if (self.error) self.error(res.responseText.message);
         }
-        if (url) _send_query.call(self.instance, url, i, successSequencer, failureSequencer);
+        if (url) _send_query.call(self.instance, url, successSequencer, failureSequencer);
 
       })(self.queries[i], i);
     }
@@ -134,9 +126,42 @@
 
   Keen.Query.prototype.configure = function(analysisType, params) {
     this.path = '/queries/' + analysisType;
-    this.params = params || {};
+    this.params = this.params || {};
+    this.set(params);
     this.params.timezone = this.params.timezone || _build_timezone_offset();
     return this;
+  };
+
+  Keen.Query.prototype.get = function(attribute) {
+    if (this.params) {
+      return this.params[attribute] || null;
+    }
+  };
+
+  Keen.Query.prototype.set = function(attributes) {
+    var self = this;
+    _each(attributes, function(v, k){
+      var key = k, value = v;
+      if (k.match(new RegExp("[A-Z]"))) {
+        key = k.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });
+      }
+      self.params[key] = value;
+      //console.log(_type(value));
+      if (_type(value)==="Array") {
+        _each(value, function(dv, index){
+          if (_type(dv)==="Object") {
+            _each(dv, function(deepValue, deepKey){
+              if (deepKey.match(new RegExp("[A-Z]"))) {
+                var _deepKey = deepKey.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });
+                delete self.params[key][index][deepKey];
+                self.params[key][index][_deepKey] = deepValue;
+              }
+            });
+          }
+        });
+      }
+    });
+    return self;
   };
 
   Keen.Query.prototype.addFilter = function(property, operator, value) {
@@ -171,14 +196,10 @@
     return "&" + query.join('&');
   };
 
-  function _send_query(url, sequence, success, error){
-    switch(this.client.requestType){
-      case 'xhr':
-        _request.xhr.apply(this, ["GET", url, null, null, this.client.readKey, success, error, sequence]);
-        break;
-      case 'jsonp':
-      case 'beacon':
-        _request.jsonp.apply(this, [url, this.client.readKey, success, error, sequence])
-        break;
+  function _send_query(url, success, error){
+    if ((_type(XMLHttpRequest)==='Object'||_type(XMLHttpRequest)==='Function') && 'withCredentials' in new XMLHttpRequest()) {
+      _request.xhr.call(this, "GET", url, null, null, this.client.readKey, success, error);
+    } else {
+      _request.jsonp.call(this, url, this.client.readKey, success, error);
     }
   };
