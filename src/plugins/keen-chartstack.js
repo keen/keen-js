@@ -13,6 +13,7 @@
       return new Keen.vis.Chart(obj);
     };
     Keen.ready = Keen.vis.ready;
+    Keen.vis.addAdapter('default', Keen.vis.adapters['keen-io']);
     Keen.palette = [
       '#00afd7', // blue
       '#49c5b1', // green
