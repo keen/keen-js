@@ -14,7 +14,9 @@
     };
     Keen.ready = Keen.vis.ready;
     Keen.vis.addAdapter('default', Keen.vis.adapters['keen-io']);
-    Keen.palette = [
+
+    Keen.vis.defaults = Keen.vis.defaults || {};
+    Keen.vis.defaults.colors = [
       '#00afd7', // blue
       '#49c5b1', // green
       '#e6b449', // gold
@@ -61,7 +63,7 @@
         el: selector,
         chartOptions: config.chartOptions || {}
       };
-      viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.palette;
+      viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
 
       if (req.queries[0].params.interval) { // Series
         options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
