@@ -53,6 +53,13 @@ Read our [Getting Started guide](https://github.com/keenlabs/keen-js/wiki/Gettin
 
 Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
 
+## Tracking events
+
+Read our [Tracking guide](https://github.com/keenlabs/keen-js/wiki/Track) to learn how to start tracking events with Keen IO.
+
+## Querying events
+
+Read our [Query guide](https://github.com/keenlabs/keen-js/wiki/Query) to learn how to query your data fro, Keen IO.
 
 ## Resources
 
