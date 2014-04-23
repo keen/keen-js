@@ -125,6 +125,7 @@
   _extend(Keen.Query.prototype, Events);
 
   Keen.Query.prototype.configure = function(analysisType, params) {
+    this.analysis = analysisType;
     this.path = '/queries/' + analysisType;
     this.params = this.params || {};
     this.set(params);

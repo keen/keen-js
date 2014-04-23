@@ -65,7 +65,7 @@ module.exports = function(grunt) {
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/outro.js",
-          "lib/chartstack/dist/chartstack.min.js",
+          "lib/chartstack/dist/chartstack.js",
           "src/plugins/keen-chartstack.js"
         ],
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js"

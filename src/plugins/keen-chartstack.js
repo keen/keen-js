@@ -124,6 +124,9 @@
 
 
       options.chartType = options.chartType || recommended;
+      if (viewConfig.chartOptions.title == void 0) {
+        viewConfig.chartOptions.title = req.queries[0].analysis.toUpperCase() + ': ' + req.queries[0].get('event_collection').toUpperCase();
+      }
 
       if (options.chartType == 'metric') {
         library = 'keen-io';

@@ -117,7 +117,7 @@
           },*/
           chartType: 'piechart',
           chartOptions: {
-            title: "Chart",
+            //title: "Chart",
             //legend: { position: 'none' },
             //chartArea: { left: '10%', width: '85%' },
             height: 270
@@ -153,14 +153,7 @@
         }
       });
 
-      keen.run(num, function(){
-        this.draw(document.getElementById("metric-js"), {
-          chartOptions: {
-            title: "Subtitle in a fixed-width metric!",
-            width: 500
-          }
-        });
-      });
+      keen.draw(num, document.getElementById("metric-js"));
 
     });
 
