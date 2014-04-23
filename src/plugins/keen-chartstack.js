@@ -28,24 +28,18 @@
     // -------------------------------
 
     Keen.prototype.draw = function(query, selector, config) {
-      var stub = new Keen.Request(this, [query]);
-      return new Keen.Visualization(stub, selector, config);
+      return new Keen.Request(this, [query], function(){
+        this.draw(selector, config);
+      });
+      //return new Keen.Visualization(stub, selector, config);
     };
 
     Keen.Request.prototype.draw = function(selector, config) {
-      if (!this.visual) {
-        this.visual = new Keen.Visualization(this, selector, config);
-        this.on("complete", function(){
-          this.visual.dataset.resources[0].url = this.instance.client.endpoint + '/projects/' + this.instance.client.projectId + this.queries[0].path;
-          this.visual.dataset.resources[0].dateformat = config.dateFormat || "";
-          this.visual.dataset.resources[0].params = this.queries[0].params;
-          this.visual.dataset.resources[0].params.api_key = this.instance.client.readKey;
-          
-          this.visual.dataset.responses = [this.data];
-          this.visual.dataset.transform();
-        });
+      var self = this;
+      if (!self.visual) {
+        self.visual = new Keen.Visualization(self, selector, config);
       }
-      return this;
+      return self;
     };
 
     // -------------------------------
@@ -53,19 +47,36 @@
     // -------------------------------
 
     Keen.Visualization = function(req, selector, config){
-      var options = (config || {}), recommended;
+      var self = this, options = (config || {}), recommended;
       var library = Keen.vis.libraries[options.library] || Keen.vis.library;
+
+      // Configure Dataset
+      // -------------------------------
       var datasetConfig = {
         adapter: "keen-io",
+        url: req.instance.client.endpoint + '/projects/' + req.instance.client.projectId + req.queries[0].path,
+        params: req.queries[0].params,
         dateformat: options.dateFormat || ""
       };
+      datasetConfig.params.api_key = req.instance.client.readKey;
 
+      // Trigger Dataset request if not
+      // built from #draw/#run methods
+      // -------------------------------
+      if (req.data !== void 0) {
+        datasetConfig.response = req.data;
+      }
+
+      // Configure View
+      // -------------------------------
       var viewConfig = {
         el: selector,
         chartOptions: options.chartOptions || {}
       };
       viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
 
+      // Select a default chart type
+      // -------------------------------
       if (req.queries[0].params.interval) { // Series
         options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
         recommended = 'linechart';
@@ -79,7 +90,11 @@
         }
       }
 
-      // 2x Group_by handler
+      // Custom Dataset schema for
+      // complex query/response types
+      // -------------------------------
+
+      // 2x GroupBy
       if (req.queries[0].params.group_by instanceof Array) {
         options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
         recommended = 'columnchart';
@@ -106,42 +121,31 @@
         }
       }
 
+      // Funnels
       if (req.queries[0].params.steps) {
         options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
         recommended = 'columnchart';
-        /*datasetConfig.map = {
-          root: '',
-          each: {
-            //index: 'steps -> event_collection',
-            label: 'steps -> event_collection',
-            value: 'result'
-          },
-          sort: {
-            index: 'asc'
-            //label: 'desc'
-          }
-        };*/
       }
 
-
+      // Set default view attributes
+      // -------------------------------
       options.chartType = options.chartType || recommended;
 
-      if (viewConfig.title == void 0) {
-        viewConfig.title = (function(){
-          var output = req.queries[0].analysis.toUpperCase();
-          if (req.queries[0].get('event_collection') !== null) {
-            output += ': ' + req.queries[0].get('event_collection').toUpperCase();
-          }
-          return output;
-        })()
-        //console.log(req.queries[0].params);
-        //viewConfig.chartOptions.title =  + req.queries[0].get('event_collection').toUpperCase();
-      }
+      // if (viewConfig.title == void 0) {}
+      viewConfig.title = viewConfig.title || (function(){
+        var output = req.queries[0].analysis.toUpperCase();
+        if (req.queries[0].get('event_collection') !== null) {
+          output += ': ' + req.queries[0].get('event_collection').toUpperCase();
+        }
+        return output;
+      })();
 
       if (options.chartType == 'metric') {
         library = 'keen-io';
       }
 
+      // Put it all together
+      // -------------------------------
       if (library) {
         if (Keen.vis.libraries[library][options.chartType]) {
           return new Keen.Chart({

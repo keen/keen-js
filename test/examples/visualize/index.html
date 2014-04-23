@@ -84,15 +84,38 @@
       ]
     });
 
-    keen.run([num, pie, line, funnel], function(){
+    /*keen.run([num, pie, line, funnel], function(){
       // this.data = [{}, {}, {}, {}];
-    });
+    });*/
 
 
 
     Keen.ready(function(){
 
-      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), { title: "DEMO" });
+      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
+        title: "Funnel in #client-dot-draw-demo"
+      });
+
+      window.count = keen.run(line, function(){
+        this.draw(document.getElementById("chart1"), {
+          title: "Line via query#draw"
+        });
+      });
+      window.chart = new Keen.Visualization(window.count, document.getElementById("chart2"), {
+        //library: "google",
+        chartType: 'barchart',
+        dateFormat: "MMM DD",
+        title: "Line via new var",
+        height: 270,
+        width: 500,
+        chartOptions: {
+          isStacked: true
+        }
+      });
+
+      return false;
+
+
 
       var widget = keen.run(funnel, function(res){
         console.log('funnel', this.data);
@@ -104,22 +127,12 @@
         })
       });
 
-
-
       widget.queries[0].set({ groupBy: 'page' });
       widget.refresh();
 
       pieq = keen.run(pie);
       pieq.on("complete", function(){
         this.draw(document.getElementById("pie-js"), {
-          /*labelMap: {
-            'http://mysite.com/': 'One',
-            'http://mysite.com/': 'Two',
-            '': 'N/A'
-          },
-          colorMap: {
-
-          },*/
           chartType: 'piechart',
           title: "Chart",
           height: 270
@@ -142,7 +155,7 @@
 
       });
 
-      var chart = new Keen.Visualization(query, document.getElementById("chart2"), {
+      window.chart = new Keen.Visualization(query, document.getElementById("chart2"), {
         //library: "google",
         chartType: 'barchart',
         dateFormat: "MMM DD",

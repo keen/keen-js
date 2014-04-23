@@ -25,7 +25,7 @@
   // -------------------------------
 
   Keen.Request = function(instance, queries, success, error){
-    this.data = {};
+    this.data;
     this.configure(instance, queries, success, error);
   };
   _extend(Keen.Request.prototype, Events);
@@ -119,7 +119,6 @@
   // -------------------------------
 
   Keen.Query = function(){
-    this.data = {};
     this.configure.apply(this, arguments);
   };
   _extend(Keen.Query.prototype, Events);
