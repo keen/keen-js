@@ -113,6 +113,24 @@
         }
       });
 
+
+      keen.run(line, function(res){
+        // console.log(res);
+        var newData = res;
+        for (var i = 0; i < res.result.length; i++) {
+          for (var j = 0; j < res.result[i].value.length; j++) {
+            newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+          }
+        }
+        this.data = newData;
+        this.draw(document.getElementById("table-js"), {
+          title: "test!"
+        })
+        //console.log('newData', newData);
+      });
+
+
+
       return false;
 
 
