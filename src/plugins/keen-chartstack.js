@@ -124,8 +124,17 @@
 
 
       options.chartType = options.chartType || recommended;
-      if (viewConfig.chartOptions.title == void 0) {
-        viewConfig.chartOptions.title = req.queries[0].analysis.toUpperCase() + ': ' + req.queries[0].get('event_collection').toUpperCase();
+
+      if (viewConfig.title == void 0) {
+        viewConfig.title = (function(){
+          var output = req.queries[0].analysis.toUpperCase();
+          if (req.queries[0].get('event_collection') !== null) {
+            output += ': ' + req.queries[0].get('event_collection').toUpperCase();
+          }
+          return output;
+        })()
+        //console.log(req.queries[0].params);
+        //viewConfig.chartOptions.title =  + req.queries[0].get('event_collection').toUpperCase();
       }
 
       if (options.chartType == 'metric') {

@@ -85,15 +85,13 @@
 
     Keen.ready(function(){
 
-      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
-        chartOptions: { title: "DEMO" }
-      });
+      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), { title: "DEMO" });
 
       var widget = keen.run(funnel, function(res){
         console.log('funnel', this.data);
         this.draw(document.getElementById("funnel"), {
+          title: "Funfunfunnel",
           chartOptions: {
-            title: "Funfunfunnel",
             bar: {groupWidth:'97%'}
           }
         })
@@ -116,12 +114,8 @@
 
           },*/
           chartType: 'piechart',
-          chartOptions: {
-            //title: "Chart",
-            //legend: { position: 'none' },
-            //chartArea: { left: '10%', width: '85%' },
-            height: 270
-          }
+          title: "Chart",
+          height: 270
         });
       });
 
@@ -132,9 +126,9 @@
         this.draw(document.getElementById("chart1"), {
           //library: "google",
           dateFormat: "MMMM DD",
+          title: "Chart via this.draw",
+          height: 270,
           chartOptions: {
-            title: "Chart via this.draw",
-            height: 270,
             pieHole: 0.35
           }
         });
@@ -145,10 +139,10 @@
         //library: "google",
         chartType: 'barchart',
         dateFormat: "MMM DD",
+        title: "Chart via pointer var",
+        height: 270,
+        width: 500,
         chartOptions: {
-          title: "Chart via pointer var",
-          height: 270,
-          width: 500,
           isStacked: true
         }
       });
