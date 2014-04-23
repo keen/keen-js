@@ -1,9 +1,9 @@
   /*!
   * ----------------------
-  * Keen IO + Chartstack
+  * Keen IO Plugin
+  * Data Visualization
   * ----------------------
   */
-
 
   !function(name, context){
     var Keen = context[name] || {};
@@ -54,14 +54,14 @@
       var datasetConfig = {
         adapter: "keen-io",
         url: req.instance.client.endpoint + '/projects/' + req.instance.client.projectId + req.queries[0].path,
-        dateformat: config.dateFormat || "",
+        dateformat: options.dateFormat || "",
         params: req.queries[0].params
       };
       datasetConfig.params.api_key = req.instance.client.readKey;
 
       var viewConfig = {
         el: selector,
-        chartOptions: config.chartOptions || {}
+        chartOptions: options.chartOptions || {}
       };
       viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
 
