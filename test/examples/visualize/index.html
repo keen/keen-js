@@ -25,6 +25,7 @@
   <div id="chart1"></div>
   <div id="chart2"></div>
   <div id="pie-js"></div>
+  <div id="table-js"></div>
 
   <script src="https://www.google.com/jsapi"></script>
   <script type="text/javascript" src="../../dist/keen-3.0.0.visualize.js"></script>
@@ -50,6 +51,12 @@
       group_by: "page",
       timeframe: "this_5_months",
       interval: "monthly"
+    });
+
+    var ext = new Keen.Query("extraction", {
+      eventCollection: "pageview",
+      latest: 10,
+      property_names: ["page", "referrer"]
     });
 
     var funnel = new Keen.Query("funnel", {
@@ -148,6 +155,24 @@
       });
 
       keen.draw(num, document.getElementById("metric-js"));
+
+      keen.run(line, function(res){
+        console.log(res);
+        var newData = res;
+        for (var i = 0; i < res.result.length; i++) {
+          for (var j = 0; j < res.result[i].value.length; j++) {
+            newData.result[i].value[j].result = res.result[i].value[j].result * 100;
+          }
+        }
+        this.data = newData;
+        this.draw(document.getElementById("table-js"), {
+          title: "test!"
+        })
+        console.log('newData', newData);
+      })
+      /*keen.draw(ext, document.getElementById("table-js"), {
+        chartType: "datatable"
+      });*/
 
     });
 

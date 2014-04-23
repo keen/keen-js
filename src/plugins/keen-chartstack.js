@@ -36,9 +36,14 @@
       if (!this.visual) {
         this.visual = new Keen.Visualization(this, selector, config);
         this.on("complete", function(){
+          this.visual.dataset.resources[0].url = this.instance.client.endpoint + '/projects/' + this.instance.client.projectId + this.queries[0].path;
+          this.visual.dataset.resources[0].dateformat = config.dateFormat || "";
+          this.visual.dataset.resources[0].params = this.queries[0].params;
+          this.visual.dataset.resources[0].params.api_key = this.instance.client.readKey;
+          
           this.visual.dataset.responses = [this.data];
           this.visual.dataset.transform();
-        })
+        });
       }
       return this;
     };
@@ -50,14 +55,10 @@
     Keen.Visualization = function(req, selector, config){
       var options = (config || {}), recommended;
       var library = Keen.vis.libraries[options.library] || Keen.vis.library;
-
       var datasetConfig = {
         adapter: "keen-io",
-        url: req.instance.client.endpoint + '/projects/' + req.instance.client.projectId + req.queries[0].path,
-        dateformat: options.dateFormat || "",
-        params: req.queries[0].params
+        dateformat: options.dateFormat || ""
       };
-      datasetConfig.params.api_key = req.instance.client.readKey;
 
       var viewConfig = {
         el: selector,
