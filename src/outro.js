@@ -3,11 +3,11 @@
   // Utility Methods
   // ----------------------
 
-  Keen.log = function(message) {
-    console.log('[Keen IO]', message)
-  };
-
-  Keen.trigger('ready');
+  setTimeout(function(){
+    if (Keen.loaded) {
+      Keen.trigger("ready");
+    }
+  }, 0);
 
   return Keen;
 });

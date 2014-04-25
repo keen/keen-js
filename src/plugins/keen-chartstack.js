@@ -12,7 +12,7 @@
     Keen.Chart = function(obj){
       return new Keen.vis.Chart(obj);
     };
-    Keen.ready = Keen.vis.ready;
+    //Keen.ready = Keen.vis.ready;
     Keen.vis.addAdapter('default', Keen.vis.adapters['keen-io']);
 
     Keen.vis.defaults = Keen.vis.defaults || {};
@@ -27,12 +27,12 @@
     // Inject Draw Methods
     // -------------------------------
 
-    Keen.prototype.draw = function(query, selector, config) {
+    /*Keen.prototype.draw = function(query, selector, config) {
       return new Keen.Request(this, [query], function(){
         this.draw(selector, config);
       });
       //return new Keen.Visualization(stub, selector, config);
-    };
+    };*/
 
     Keen.Request.prototype.draw = function(selector, config) {
       var self = this;
@@ -163,4 +163,9 @@
 
       return this;
     };
+
+    Keen.vis.ready(function(){
+      Keen.trigger('ready');
+    });
+
   }('Keen', this);
