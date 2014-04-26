@@ -16,6 +16,8 @@
     Keen.vis.addAdapter('default', Keen.vis.adapters['keen-io']);
 
     Keen.vis.defaults = Keen.vis.defaults || {};
+    Keen.vis.defaults.height = 400;
+    Keen.vis.defaults.width = 600;
     Keen.vis.defaults.colors = [
       '#00afd7', // blue
       '#49c5b1', // green
@@ -69,10 +71,11 @@
 
       // Configure View
       // -------------------------------
-      var viewConfig = {
+      var viewConfig = Keen.vis.extend({
         el: selector,
-        chartOptions: options.chartOptions || {}
-      };
+        chartOptions: {}
+      }, options);
+
       viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
 
       // Select a default chart type
