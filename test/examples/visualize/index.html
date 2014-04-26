@@ -27,7 +27,10 @@
   <div id="pie-js"></div>
   <div id="table-js"></div>
 
-  <script src="https://www.google.com/jsapi"></script>
+  <!-- PORT INTO CHARTSTACK -->
+  <!--<script src="https://www.google.com/jsapi"></script>-->
+  <script src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+
   <script type="text/javascript" src="../../dist/keen-3.0.0.visualize.js"></script>
   <script>
 
@@ -37,60 +40,69 @@
       requestType: "jsonp"
     });
 
-    var num = new Keen.Query("count", {
-      event_collection: "pageview"
-    });
-
-    var pie = new Keen.Query("count", {
-      event_collection: "pageview",
-      group_by: "page"
-    });
-
-    var line = new Keen.Query("count", {
-      event_collection: "pageview",
-      group_by: "page",
-      timeframe: "this_5_months",
-      interval: "monthly"
-    });
-
-    var ext = new Keen.Query("extraction", {
-      eventCollection: "pageview",
-      latest: 10,
-      property_names: ["page", "referrer"]
-    });
-
-    var funnel = new Keen.Query("funnel", {
-      steps: [
-        {
-          event_collection: "pageview",
-          actor_property: "page"
-        },
-        {
-          event_collection: "viewed_twentyfive",
-          actor_property: "page"
-        },
-        {
-          event_collection: "viewed_fifty",
-          actor_property: "page"
-        },
-        {
-          event_collection: "viewed_seventyfive",
-          actor_property: "page"
-        },
-        {
-          event_collection: "viewed_all",
-          actor_property: "page"
-        }
-      ]
-    });
-
-    /*keen.run([num, pie, line, funnel], function(){
-      // this.data = [{}, {}, {}, {}];
-    });*/
-
-
+    var num, pie, line, ext, funnel;
 
     Keen.ready(function(){
+      //console.log(Keen.Query);
+
+      num = new Keen.Query("count", {
+        event_collection: "pageview"
+      });
+
+      pie = new Keen.Query("count", {
+        event_collection: "pageview",
+        group_by: "page"
+      });
+
+      line = new Keen.Query("count", {
+        event_collection: "pageview",
+        group_by: "page",
+        timeframe: "this_5_months",
+        interval: "monthly"
+      });
+
+      ext = new Keen.Query("extraction", {
+        eventCollection: "pageview",
+        latest: 10,
+        property_names: ["page", "referrer"]
+      });
+
+      funnel = new Keen.Query("funnel", {
+        steps: [
+          {
+            event_collection: "pageview",
+            actor_property: "page"
+          },
+          {
+            event_collection: "viewed_twentyfive",
+            actor_property: "page"
+          },
+          {
+            event_collection: "viewed_fifty",
+            actor_property: "page"
+          },
+          {
+            event_collection: "viewed_seventyfive",
+            actor_property: "page"
+          },
+          {
+            event_collection: "viewed_all",
+            actor_property: "page"
+          }
+        ]
+      });
+
+      keen.run([num, pie, line, funnel], function(){
+        // this.data = [{}, {}, {}, {}];
+      });
+
+      //return;
+
+      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
+        title: "Funnel in #client-dot-draw-demo",
+        width: ""
+      });
+
 
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel in #client-dot-draw-demo"
@@ -101,17 +113,18 @@
           title: "Line via query#draw"
         });
       });
+
       window.chart = new Keen.Visualization(window.count, document.getElementById("chart2"), {
         //library: "google",
         chartType: 'barchart',
         dateFormat: "MMM DD",
         title: "Line via new var",
-        height: 270,
         width: 500,
         chartOptions: {
           isStacked: true
         }
       });
+
 
 
       keen.run(line, function(res){

@@ -2,25 +2,54 @@
 <html>
 <head>
   <title>Keen IO Loader JS Test</title>
-
-	<!--
-	<script src="../../dist/keen-3.0.0.js"></script>
-	<script src="../../dist/keen-3.0.0.track.js"></script>
-	<script src="../../dist/keen-3.0.0.query.js"></script>
-	-->
-	
   <script type="text/javascript">
-		!function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="../../dist/keen-3.0.0.min.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
-		
+		// Source: src/loader.js
+    !function(n,c){
+      if (c[n] === void 0) {
+
+        c['_'+n] = {};
+        c[n] = function(e) {
+          c['_'+n]['clients'] = c['_'+n]['clients'] || {};
+          c['_'+n]['clients'][e.projectId] = this;
+          this._config = e;
+        };
+
+        // Keen.ready(function(){});
+        c[n]['ready'] = function(callback){
+          c['_'+n]['ready'] = c['_'+n]['ready'] || [];
+          c['_'+n]['ready'].push(callback);
+        };
+
+        var methods = ['addEvent', 'setGlobalProperties', 'trackExternalLink', 'on'];
+        for (var i = 0; i < methods.length; i++){
+          var method = methods[i];
+          var action = function(method){
+            return function() {
+              this['_'+method] = this['_'+method] || [];
+              this['_'+method].push(arguments);
+              return this;
+            }
+          };
+          c[n].prototype[method] = action(method);
+        }
+
+        var s = document.createElement("script");
+        s.type = "text/javascript", s.async = !0, s.src = "../../dist/keen-3.0.0.js";
+
+        var t = document.getElementsByTagName("script")[0];
+        t.parentNode.insertBefore(s,t);
+      }
+    }('Keen', this);
+
 		var keen = new Keen({
 			projectId: "52f00ec205cd66404b000000",
 			readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
 			writeKey: "554a723d023da6cb24e51c56a9a54555e9dcf8403d4b71ffa37e9112295622e78a10eed43a13c83b14ce171b0f1317bb09aa8df43d50f73b77709ab431af611ea47ed65f4d74c0ea5f2bde8407322ab70559afef294673ee6c224308b1744c9e069508799edefc51264b3f75a1ba9e26"
 		});
-		
+
 		keen.addEvent('pageview', {page:'this one'});
 		keen.addEvent('pageview', {page:'that one'});
-		
+
 		var globals = function(collection){
 			var data = {
 				referrer: document.referrer,
@@ -34,21 +63,24 @@
 			return data;
 		};
 		keen.setGlobalProperties(globals);
-		
+
 		keen.on('ready', function(){
 			console.log('client is ready!');
-			var count = new Keen.Count('pageviews', {});
+			var count = new Keen.Query("count", {
+        eventCollection: "pageviews"
+      });
 			console.log(count);
 		});
-		
+
 		Keen.ready(function(){
 			console.log('Library is ready!');
-			var count = new Keen.Count('pageviews', {});
+			var count = new Keen.Query("count", {
+        eventCollection: "pageviews"
+      });
 			console.log(count);
 		});
-		
+
 	</script>
 </head>
 <body></body>
 </html>
-

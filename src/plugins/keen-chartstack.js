@@ -12,10 +12,12 @@
     Keen.Chart = function(obj){
       return new Keen.vis.Chart(obj);
     };
-    Keen.ready = Keen.vis.ready;
+    //Keen.ready = Keen.vis.ready;
     Keen.vis.addAdapter('default', Keen.vis.adapters['keen-io']);
 
     Keen.vis.defaults = Keen.vis.defaults || {};
+    Keen.vis.defaults.height = 400;
+    Keen.vis.defaults.width = 600;
     Keen.vis.defaults.colors = [
       '#00afd7', // blue
       '#49c5b1', // green
@@ -27,12 +29,12 @@
     // Inject Draw Methods
     // -------------------------------
 
-    Keen.prototype.draw = function(query, selector, config) {
+    /*Keen.prototype.draw = function(query, selector, config) {
       return new Keen.Request(this, [query], function(){
         this.draw(selector, config);
       });
       //return new Keen.Visualization(stub, selector, config);
-    };
+    };*/
 
     Keen.Request.prototype.draw = function(selector, config) {
       var self = this;
@@ -69,10 +71,11 @@
 
       // Configure View
       // -------------------------------
-      var viewConfig = {
+      var viewConfig = Keen.vis.extend({
         el: selector,
-        chartOptions: options.chartOptions || {}
-      };
+        chartOptions: {}
+      }, options);
+
       viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
 
       // Select a default chart type
@@ -163,4 +166,9 @@
 
       return this;
     };
+
+    Keen.vis.ready(function(){
+      Keen.trigger('ready');
+    });
+
   }('Keen', this);

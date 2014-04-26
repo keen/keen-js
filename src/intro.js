@@ -279,10 +279,14 @@
   _extend(Keen.prototype, Events);
   _extend(Keen, Events);
 
-
+  Keen.loaded = true;
   Keen.ready = function(callback){
     Keen.on('ready', callback);
-  }
+  };
+
+  Keen.log = function(message) {
+    console.log('[Keen IO]', message)
+  };
 
   // -------------------------------
   // Keen.Plugins
