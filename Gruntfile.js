@@ -26,13 +26,13 @@ module.exports = function(grunt) {
           "src/intro.js",
           "src/track.js",
           "src/query.js",
-          "src/async.js",
+          "src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
-          "src/outro.js"
-          //"src/plugins/keen-pageviews.js",
-          //"lib/chartstack/dist/chartstack.min.js",
-          //"src/plugins/keen-chartstack.js"
+          "src/async.js",
+          "src/outro.js",
+          "lib/chartstack/dist/chartstack.js",
+          "src/plugins/keen-chartstack.js"
         ],
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
       },
@@ -40,9 +40,9 @@ module.exports = function(grunt) {
         src: [
           "src/intro.js",
           "src/track.js",
-          "src/async.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
+          "src/async.js",
           "src/outro.js"
           //"src/plugins/keen-pageviews.js"
         ],
@@ -52,9 +52,9 @@ module.exports = function(grunt) {
         src: [
           "src/intro.js",
           "src/query.js",
-          "src/async.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
+          "src/async.js",
           "src/outro.js"
         ],
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.query.js"
@@ -65,9 +65,9 @@ module.exports = function(grunt) {
           "src/track.js",
           "src/query.js",
           "src/visualize.js",
-          "src/async.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
+          "src/async.js",
           "src/outro.js",
           "lib/chartstack/dist/chartstack.js",
           "src/plugins/keen-chartstack.js"
