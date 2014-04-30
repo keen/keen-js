@@ -31,7 +31,7 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/async.js",
           "src/outro.js",
-          "lib/chartstack/dist/chartstack.js",
+          "src/lib/chartstack.js",
           "src/plugins/keen-chartstack.js"
         ],
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.js"
@@ -69,7 +69,7 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/async.js",
           "src/outro.js",
-          "lib/chartstack/dist/chartstack.js",
+          "src/lib/chartstack.js",
           "src/plugins/keen-chartstack.js"
         ],
         dest: "dist/<%= pkg.name %>-<%= pkg.version %>.visualize.js"
