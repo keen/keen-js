@@ -131,6 +131,11 @@
       if (req.queries[0].params.steps) {
         options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
         recommended = 'columnchart';
+        //viewConfig.title = viewConfig.title | "Funnel";
+        if (library == 'google') {
+          viewConfig.chartOptions.legend = { position: 'none' };
+        }
+        //
       }
 
       // ---------------------------------------------------------
