@@ -26,10 +26,7 @@
   <div id="chart2"></div>
   <div id="pie-js"></div>
   <div id="table-js"></div>
-
-  <!-- PORT INTO CHARTSTACK -->
-  <!--<script src="https://www.google.com/jsapi"></script>-->
-  <script src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+  <div id="ext-js"></div>
 
   <script type="text/javascript" src="../../dist/keen-3.0.0.visualize.js"></script>
   <script>
@@ -62,9 +59,9 @@
       });
 
       ext = new Keen.Query("extraction", {
-        eventCollection: "pageview",
-        latest: 10,
-        property_names: ["page", "referrer"]
+        eventCollection: "pageview"
+        //latest: 10,
+        //property_names: ["page", "referrer"]
       });
 
       funnel = new Keen.Query("funnel", {
@@ -99,16 +96,10 @@
       //return;
 
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
-        title: "Funnel in #client-dot-draw-demo",
-        width: ""
-      });
-
-
-      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel in #client-dot-draw-demo"
       });
 
-      window.count = keen.run(line, function(){
+      window.count = keen.run([line, line], function(){
         this.draw(document.getElementById("chart1"), {
           title: "Line via query#draw"
         });
@@ -137,11 +128,14 @@
         }
         this.data = newData;
         this.draw(document.getElementById("table-js"), {
-          title: "test!"
+          title: "test!",
+          height: 500
         })
         //console.log('newData', newData);
       });
 
+
+      keen.draw(ext, document.getElementById("ext-js"));
 
 
       return false;
@@ -200,7 +194,7 @@
 
       keen.draw(num, document.getElementById("metric-js"));
 
-      keen.run(line, function(res){
+      /*keen.run(line, function(res){
         console.log(res);
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
@@ -213,10 +207,9 @@
           title: "test!"
         })
         console.log('newData', newData);
-      })
-      /*keen.draw(ext, document.getElementById("table-js"), {
-        chartType: "datatable"
       });*/
+
+
 
     });
 

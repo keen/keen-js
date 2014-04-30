@@ -66,7 +66,7 @@
       // built from #draw/#run methods
       // -------------------------------
       if (req.data !== void 0) {
-        datasetConfig.response = req.data;
+        datasetConfig.response = (req.data instanceof Array) ? req.data[0] : req.data;
       }
 
       // Configure View
@@ -81,11 +81,11 @@
       // Select a default chart type
       // -------------------------------
       if (req.queries[0].params.interval) { // Series
-        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
         recommended = 'linechart';
       } else {
         if (req.queries[0].params.group_by) { // Static
-          options.capable = ['piechart', 'barchart', 'columnchart', 'table'];
+          options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
           recommended = 'barchart';
         } else { // Metric
           options.capable = ['metric'];
@@ -97,44 +97,70 @@
       // complex query/response types
       // -------------------------------
 
+      // ---------------------------------------------------------
       // 2x GroupBy
+      // ---------------------------------------------------------
       if (req.queries[0].params.group_by instanceof Array) {
-        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
         recommended = 'columnchart';
-        datasetConfig.map = {
-          root: 'result',
-          //each: {},
+        datasetConfig.schema = {
+          collection: 'result',
           sort: {
             index: 'asc',
             label: 'desc'
           }
         };
         if (req.queries[0].params.interval) {
-          datasetConfig.map.each = {
-            label: 'value -> ' + req.queries[0].params.group_by[0],
+          datasetConfig.schema.unpack = {
             index: 'timeframe -> start',
+            label: 'value -> ' + req.queries[0].params.group_by[0],
             value: 'value -> result'
           };
         } else {
-          datasetConfig.map.each = {
-            label: req.queries[0].params.group_by[1],
+          datasetConfig.schema.unpack = {
             index: req.queries[0].params.group_by[0],
+            label: req.queries[0].params.group_by[1],
             value: 'result'
           };
         }
       }
 
+      // ---------------------------------------------------------
       // Funnels
+      // ---------------------------------------------------------
       if (req.queries[0].params.steps) {
-        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+        options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
         recommended = 'columnchart';
+        //viewConfig.title = viewConfig.title | "Funnel";
+        if (library == 'google') {
+          viewConfig.chartOptions.legend = { position: 'none' };
+        }
+        //
+      }
+
+      // ---------------------------------------------------------
+      // Extractions
+      // ---------------------------------------------------------
+      if (req.queries[0].analysis == 'extraction') {
+        datasetConfig.schema = {
+          collection: "result",
+          select: true
+        };
+        if (req.queries[0].params.property_names) {
+          datasetConfig.schema.select = [];
+          for (var i = 0; i < req.queries[0].params.property_names.length; i++) {
+            datasetConfig.schema.select.push({ path: req.queries[0].params.property_names[i] });
+          }
+        }
+        options.capable = ['datatable'];
+        recommended = 'datatable';
+        //console.log(datasetConfig.schema.select);
       }
 
       // Set default view attributes
       // -------------------------------
       options.chartType = options.chartType || recommended;
 
-      // if (viewConfig.title == void 0) {}
       viewConfig.title = viewConfig.title || (function(){
         var output = req.queries[0].analysis.toUpperCase();
         if (req.queries[0].get('event_collection') !== null) {
@@ -154,13 +180,11 @@
           return new Keen.Chart({
             dataset: new Keen.vis.Dataset(datasetConfig),
             view: new Keen.vis.libraries[library][options.chartType](viewConfig)
-          })
-
+          });
         } else {
           Keen.log('The visualization type you requested is not available for this library');
         }
       } else {
-        //console.log(req.queries[0].params.group_by instanceof Array);
         Keen.log('The visualization library you requested is not present');
       }
 
