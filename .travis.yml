@@ -2,22 +2,21 @@ language: node_js
 
 node_js:
   - "0.10"
-  
+
 branches:
   only:
     - master
-    - develop
 
 env:
   global:
   - secure: |-
-      U0n1ai8SVJkSGRwV6O/V9E/yYD/o47/MJ62cZRBIvKdog7SOMs2fX27WlxcF
-      w77EZtHcKM62Sg+bCkSF3oBjpN4O9NNAeimPNpIB0k8I2tdlzft1lxBuLpSY
-      84t8bNdwT75smXex6T0zhN/YlMDwSd3djpkt8Q7hnSWH+ACuigc=
+      Gz4y8zxEhPJVGfAq7UROzXS0qo9RyKFfc4hsJHy5hWBbTVCoe7BvcxtOfHkF
+      6DG246MPtxvkZsqaqPUJ55eg+ED+GTyG7lWsKJb9TA/8QtqKlHSyaW9pKZgi
+      Nwx1a9i7wGMCQ2GQ58KOHVAx33wpf3TVvXyEdxXNeLxDhAqlA1U=
   - secure: |-
-      WcCm45Wptqf9dypvhm28KG6O4y5Gpp5ltXeFlwjBQ2C/qf4J7RfYq72FBv11
-      n8Gp7vzmTbtDVGIWvmHsmRsKtwd2CxGqwxqVOjOokQoeLTyNlXQ8J3em7nug
-      sAJyAuWVLrVc8aAqoAhBUKCD40xoqHS4wdiyyeIQy+uTMAgw+RM=
+      AjvRPOjPEuDl8qwEUOk2V1HH6C5AoE8V0/1+twsnaEcgfHWGDk3g7oPfMOW3
+      ArybZFvN+wpvWfwoJAhRV7yQv9yoGT1fEtMtn3GB9mQiCFO70L/MrqXePJAr
+      ajs3LH0wqhj1zW8UUmhTxBSLvzRyW++W5yx2hYr92EkrlpFZZUg=
   - LOGS_DIR=/tmp/keen-build/logs
 
 install:

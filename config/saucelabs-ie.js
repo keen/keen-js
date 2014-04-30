@@ -1,15 +1,15 @@
 module.exports = function(){
-  
-  this.username = 'keen-js';
+
+  this.username = 'keenlabs-js';
   this.urls = [
     'http://127.0.0.1:9999/ie-legacy/',
     'http://127.0.0.1:9999/ie-legacy/'
   ];
-  
+
   if (typeof process.env.SAUCE_ACCESS_KEY !== "undefined") {
     this.key = process.env.SAUCE_ACCESS_KEY;
   }
-	  
+
   this.browsers = [
     {
       browserName: "internet explorer",
@@ -32,6 +32,6 @@ module.exports = function(){
       version: "6"
     }
   ];
-  
+
   return this;
 };
