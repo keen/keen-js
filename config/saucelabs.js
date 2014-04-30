@@ -1,14 +1,15 @@
 module.exports = function(){
-  
-  this.username = 'keen-js';
+
+  this.username = 'keenlabs-js';
   this.urls = ['http://127.0.0.1:9999/index.html'];
-  
+  this.concurrency = 3;
+
   if (typeof process.env.SAUCE_ACCESS_KEY !== "undefined") {
     this.key = process.env.SAUCE_ACCESS_KEY;
   }
-	  
+
   this.browsers = [
-  
+
     /* FIREFOX */
     /*{
       browserName: "firefox",
@@ -41,10 +42,10 @@ module.exports = function(){
       browserName: "firefox",
       platform: "Windows XP",
       version: '27'
-    }, 
-    
-    
-    
+    },
+
+
+
     /* CHROME */
     /*{
       browserName: "chrome",
@@ -69,17 +70,17 @@ module.exports = function(){
     {
       browserName: "chrome",
       platform: "Windows 7"
-    }, 
+    },
     {
       browserName: "chrome",
       platform: "XP"
-    }, 
+    },
     {
       browserName: "chrome",
       platform: "linux"
-    }, 
-    
-    
+    },
+
+
     /* SAFARI */
     /*{
       browserName: "safari",
@@ -96,23 +97,23 @@ module.exports = function(){
       platform: "OS X 10.6",
       version: "5"
     },
-    
-    
-    
+
+
+
     /* Internet Explorer */
-    
+
     {
       browserName: "internet explorer",
       platform: "Windows 8.1",
       version: "11"
-    }, 
+    },
     {
       browserName: "internet explorer",
       platform: "Windows 8",
       version: "10"
-    }, 
-    
-    
+    },
+
+
     {
       browserName: "internet explorer",
       platform: "WINDOWS 7",
@@ -134,19 +135,19 @@ module.exports = function(){
       platform: "WINDOWS 7",
       version: "8"
     },*/
-    
+
     {
       browserName: "internet explorer",
       platform: "VISTA",
       version: "10"
     }
-    
-    
+
+
     /*
     Errors
-    
+
     // IE on XP
-    
+
     {
       browserName: "internet explorer",
       platform: "WINDOWS XP",
@@ -162,9 +163,9 @@ module.exports = function(){
       platform: "WINDOWS XP",
       version: "6"
     }
-    
+
     */
   ];
-  
+
   return this;
 };
