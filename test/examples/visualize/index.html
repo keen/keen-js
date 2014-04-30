@@ -26,10 +26,7 @@
   <div id="chart2"></div>
   <div id="pie-js"></div>
   <div id="table-js"></div>
-
-  <!-- PORT INTO CHARTSTACK -->
-  <!--<script src="https://www.google.com/jsapi"></script>-->
-  <script src='https://www.google.com/jsapi?autoload={"modules":[{"name":"visualization","version":"1","packages":["corechart","table"]}]}'></script>
+  <div id="ext-js"></div>
 
   <script type="text/javascript" src="../../dist/keen-3.0.0.visualize.js"></script>
   <script>
@@ -62,9 +59,9 @@
       });
 
       ext = new Keen.Query("extraction", {
-        eventCollection: "pageview",
-        latest: 10,
-        property_names: ["page", "referrer"]
+        eventCollection: "pageview"
+        //latest: 10,
+        //property_names: ["page", "referrer"]
       });
 
       funnel = new Keen.Query("funnel", {
@@ -144,6 +141,8 @@
       });
 
 
+      keen.draw(ext, document.getElementById("ext-js"));
+
 
       return false;
 
@@ -201,7 +200,7 @@
 
       keen.draw(num, document.getElementById("metric-js"));
 
-      keen.run(line, function(res){
+      /*keen.run(line, function(res){
         console.log(res);
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
@@ -214,10 +213,9 @@
           title: "test!"
         })
         console.log('newData', newData);
-      })
-      /*keen.draw(ext, document.getElementById("table-js"), {
-        chartType: "datatable"
       });*/
+
+
 
     });
 
