@@ -2,6 +2,7 @@ module.exports = function(){
 
   this.username = 'keenlabs-js';
   this.urls = ['http://127.0.0.1:9999/index.html'];
+  this.concurrency = 3;
 
   if (typeof process.env.SAUCE_ACCESS_KEY !== "undefined") {
     this.key = process.env.SAUCE_ACCESS_KEY;

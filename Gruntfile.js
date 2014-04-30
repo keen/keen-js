@@ -121,7 +121,8 @@ module.exports = function(grunt) {
           key: saucelabs.key,
           build: process.env.TRAVIS_JOB_ID,
           urls: saucelabs.urls,
-          browsers: saucelabs.browsers
+          browsers: saucelabs.browsers,
+          concurrency: saucelabs.concurrency
         }
       }
     }
