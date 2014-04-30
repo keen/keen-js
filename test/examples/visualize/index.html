@@ -99,7 +99,7 @@
         title: "Funnel in #client-dot-draw-demo"
       });
 
-      window.count = keen.run(line, function(){
+      window.count = keen.run([line, line], function(){
         this.draw(document.getElementById("chart1"), {
           title: "Line via query#draw"
         });

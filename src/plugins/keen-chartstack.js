@@ -66,7 +66,7 @@
       // built from #draw/#run methods
       // -------------------------------
       if (req.data !== void 0) {
-        datasetConfig.response = req.data;
+        datasetConfig.response = (req.data instanceof Array) ? req.data[0] : req.data;
       }
 
       // Configure View
