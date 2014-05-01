@@ -100,8 +100,10 @@
       });
 
       window.count = keen.run([line, line], function(){
+        //console.log(this.data);
         this.draw(document.getElementById("chart1"), {
-          title: "Line via query#draw"
+          //title: "Line via query#draw"
+          title: "Count for \"pageview\""
         });
       });
 

@@ -52,6 +52,11 @@
       var self = this, options = (config || {}), recommended;
       var library = Keen.vis.libraries[options.library] || Keen.vis.library;
 
+
+      if (req instanceof Keen.Request == false) {
+        console.log("RAW data");
+      }
+
       // Configure Dataset
       // -------------------------------
       var datasetConfig = {
@@ -83,6 +88,9 @@
       if (req.queries[0].params.interval) { // Series
         options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
         recommended = 'linechart';
+        if (library == 'google' && req.queries[0].params.group_by == void 0) {
+          viewConfig.chartOptions.legend = { position: 'none' };
+        }
       } else {
         if (req.queries[0].params.group_by) { // Static
           options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
