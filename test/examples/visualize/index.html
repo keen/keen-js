@@ -66,9 +66,9 @@
       });
 
       ext = new Keen.Query("extraction", {
-        eventCollection: "pageview"
-        //latest: 10,
-        //property_names: ["page", "referrer"]
+        eventCollection: "pageview",
+        latest: 2,
+        property_names: ["page", "referrer"]
       });
 
       funnel = new Keen.Query("funnel", {
@@ -115,16 +115,12 @@
       });
 
       // window.count
-      /*window.chart = new Keen.Visualization({ result: 2450 }, document.getElementById("chart2"), {
-        library: "keen-io",
+      window.chart = new Keen.Visualization({ result: 2450 }, document.getElementById("chart2"), {
         chartType: 'metric',
         dateFormat: "MMM DD",
-        title: "Line via new var",
-        width: 500,
-        chartOptions: {
-          isStacked: true
-        }
-      });*/
+        title: "Manual!",
+        width: 500
+      });
 
       keen.run(line, function(res){
         var newData = res;

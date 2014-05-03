@@ -449,6 +449,12 @@
       if (options.dataset instanceof chartstack.Dataset) {
         $chart.dataset = options.dataset;
 
+      } else if (typeof options.dataset == 'string') {
+        $chart.dataset = new chartstack.Dataset(options.dataset.replace(/(\r\n|\n|\r|\ )/g,""));
+        $chart.dataset.resources[0].adapter = options.adapter || 'default';
+        $chart.dataset.resources[0].dataformat = options.dataformat || 'json';
+        $chart.dataset.resources[0].dateformat = options.dateformat || false;
+
       } else if (typeof setupData.dataset == 'string'){
         $chart.dataset = new chartstack.Dataset(setupData.dataset.replace(/(\r\n|\n|\r|\ )/g,""));
         $chart.dataset.resources[0].adapter = setupData.adapter || 'default';

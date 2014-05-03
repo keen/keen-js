@@ -44,6 +44,8 @@
       var self = this, data;
       var schema = self.schema || false;
 
+      console.log(response);
+
       if (schema) {
         return new Keen.vis.Dataform(response, schema);
       }
@@ -187,22 +189,15 @@
     // Keen.Visualization
     // -------------------------------
     Keen.Visualization = function(req, selector, config){
-      var self = this, options = (config || {}), recommended;
-      var library = Keen.vis.libraries[options.library] || Keen.vis.library;
-
-      var datasetConfig = {},
-          viewConfig = {
-            el: selector,
-            chartOptions: {}
-          };
-          viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
-
-      var isMetric = false,
-          isFunnel = false,
-          isInterval = false,
-          isGroupBy = false,
-          is2xGroupBy = false,
-          isExtraction = false;
+      var self = this, options = (config || {});
+      var library = Keen.vis.libraries[options.library] || Keen.vis.library, recommended;
+      var isMetric = isFunnel = isInterval = isGroupBy = is2xGroupBy = isExtraction = false;
+      var datasetConfig = {};
+      var viewConfig = {
+        el: selector,
+        chartOptions: {}
+      };
+      viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
 
       if (req instanceof Keen.Request) {
 
@@ -243,8 +238,10 @@
         })();
 
       } else {
-        datasetConfig = JSON.stringify(response);
-        //console.log("RAW data");
+        datasetConfig = {
+          response: (req instanceof Array) ? req[0] : req
+        }
+        //console.log("RAW data", datasetConfig);
       }
 
 
