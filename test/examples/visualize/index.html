@@ -22,6 +22,7 @@
   <br/>
   <div id="gbx2-js"></div>
   <div id="metric-js"></div>
+  <div id="multi-js"></div>
   <div id="chart1"></div>
   <div id="chart2"></div>
   <div id="pie-js"></div>
@@ -52,6 +53,12 @@
       });
 
       line = new Keen.Query("count", {
+        event_collection: "pageview",
+        timeframe: "this_5_months",
+        interval: "monthly"
+      });
+
+      multiline = new Keen.Query("count", {
         event_collection: "pageview",
         group_by: "page",
         timeframe: "this_5_months",
@@ -107,21 +114,19 @@
         });
       });
 
-      window.chart = new Keen.Visualization(window.count, document.getElementById("chart2"), {
-        //library: "google",
-        chartType: 'barchart',
+      // window.count
+      /*window.chart = new Keen.Visualization({ result: 2450 }, document.getElementById("chart2"), {
+        library: "keen-io",
+        chartType: 'metric',
         dateFormat: "MMM DD",
         title: "Line via new var",
         width: 500,
         chartOptions: {
           isStacked: true
         }
-      });
-
-
+      });*/
 
       keen.run(line, function(res){
-        // console.log(res);
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
           for (var j = 0; j < res.result[i].value.length; j++) {
@@ -133,9 +138,11 @@
           title: "test!",
           height: 500
         })
-        //console.log('newData', newData);
       });
 
+      keen.draw(multiline, document.getElementById("multi-js"), {
+        chartType: "columnchart"
+      })
 
       keen.draw(ext, document.getElementById("ext-js"));
 

@@ -200,9 +200,9 @@
     transform: function() {
       var self = this;
       each(self.resources, function(resource, index){
-        var adapter = resource.adapter || 'default'; //chartstack.adapters.default;
+        var adapter = resource.adapter || 'default';
         var response = self.responses[index];
-        if (adapter) {
+        if (adapter && chartstack.adapters[adapter]) {
           self.data[index] = chartstack.adapters[adapter].call(resource, response);
         } else {
           self.data[index] = response.data;
@@ -451,7 +451,7 @@
 
       } else if (typeof setupData.dataset == 'string'){
         $chart.dataset = new chartstack.Dataset(setupData.dataset.replace(/(\r\n|\n|\r|\ )/g,""));
-        $chart.dataset.resources[0].adapter = setupData.adapter || false;
+        $chart.dataset.resources[0].adapter = setupData.adapter || 'default';
         $chart.dataset.resources[0].dataformat = setupData.dataformat || 'json';
         $chart.dataset.resources[0].dateformat = setupData.dateformat || false;
       }
@@ -3657,12 +3657,12 @@
 
       each(args, function(el){
 
-        //console.log('here', (target == ""), el, root[el]);
-        if (target == "" && typeof el == "number") {
-          //console.log('here', typeof(el), el);
-          return result.push(el);
+        // Grab the numbers and nulls
+        if (target == "") {
+          if (typeof el == "number" || el == null) {
+            return result.push(el);
+          }
         }
-        //
 
         if (el[target] || el[target] === 0 || el[target] !== void 0) {
           // Easy grab!
@@ -3797,7 +3797,7 @@ Dataform.prototype.format = function(opts){
 
     var defaults = {
       'number': {
-        format: '1,000.00',
+        format: '0', // 1,000.00
         prefix: '',
         suffix: ''
         //modifier: '*1'
@@ -3931,6 +3931,14 @@ function _applyFormat(value, opts){
     }
   }
 
+  if (options.replace) {
+    each(options.replace, function(value, key){
+      if (output == key || String(output) == String(key) || parseFloat(output) == parseFloat(key)) {
+        output = value;
+      }
+    });
+  }
+
   if (options.type && options.type == 'date') {
 
     if (options.format && moment && moment(value).isValid()) {
@@ -3962,18 +3970,13 @@ function _applyFormat(value, opts){
       }
     }
 
-    if (options.replace) {
-      each(options.replace, function(value, key){
-        if (output == key) {
-          output = value;
-        }
-      });
-    }
-
   }
 
   if (options.type && options.type == 'number') {
-    if (options.format) {
+
+    if (options.format && !isNaN(parseFloat(output))) {
+
+      output = parseFloat(output);
 
       // Set decimals
       if (options.format.indexOf('.') !== -1) {
@@ -3987,10 +3990,11 @@ function _applyFormat(value, opts){
       // Set commas
       if (options.format.indexOf(',') !== -1) {
         output = (function(num){
-          while (/(\d+)(\d{3})/.test(num.toString())){
-            num = num.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2');
+          var split = String(num).split(".");
+          while (/(\d+)(\d{3})/.test(split[0])){
+            split[0] = split[0].replace(/(\d+)(\d{3})/, '$1'+','+'$2');
           }
-          return num;
+          return split.join(".");
         })(output);
       }
 
@@ -4147,110 +4151,6 @@ Dataform.prototype.sort = function(opts){
 // Source: src/lib/_outro.js
   return Dataform;
 });
-
-/* global chartstack */
-// Data normalizing adaper for keen.io API.
-(function(cs){
-  var each = cs.each;
-
-  cs.addAdapter('keen-io', function(response){
-    var self = this, data;
-    var schema = self.schema || false;
-
-    // Default Response Map
-    if (!schema) {
-
-      schema = {
-        collection: "result",
-        unpack: {}
-      };
-
-      if (response.result instanceof Array) {
-
-        if (response.result.length > 0 && response.result[0]['value'] !== void 0){
-
-          if (response.result[0]['value'] instanceof Array) {
-            // Interval + Group_by
-
-            // Get value (interval result)
-            schema.unpack.value = "value -> result";
-
-            // Get label (group_by field)
-            for (var key in response.result[0]['value'][0]){
-              if (key !== "result") {
-                schema.unpack.label = "value -> " + key;
-                break;
-              }
-            }
-
-          } else {
-            // Interval, no Group_by
-            // Get value
-            schema.unpack.value = "value";
-          }
-        }
-
-        if (response.result.length > 0 && response.result[0]['timeframe']) {
-          // Get index (start time)
-          schema.unpack.index = {
-            path: "timeframe -> start",
-            type: "date",
-            //format: "MMM DD"
-            method: "moment"
-          };
-        }
-
-        if (response.result.length > 0 && response.result[0]['result']) {
-          // Get value (group_by)
-          schema.unpack.value = "result";
-          for (var key in response.result[0]){
-            if (key !== "result") {
-              schema.unpack.index = key;
-              break;
-            }
-          }
-        }
-
-        if (response.result.length > 0 && typeof response.result[0] == "number") {
-          schema.collection = "";
-          schema.unpack.index = "steps -> event_collection";
-          schema.unpack.value = "result -> ";
-        }
-
-        if (response.result.length == 0) {
-          schema = false;
-          //data
-        }
-
-
-      } else {
-        // Metric: { result: 2450 } -> [['result'],[2450]]
-        delete schema.unpack;
-        schema = {
-          collection: "",
-          select: [
-            {
-              path: "result",
-              type: "number",
-              label: "Metric",
-              format: "1,000"
-            }
-          ]
-        }
-      }
-
-    }
-
-    if (schema) {
-      data = new cs.Dataform(response, schema);
-    } else {
-      data = { table: [] };
-    }
-
-    return data;
-  });
-
-})(chartstack);
 
 /* global google, chartstack */
 (function(cs){
