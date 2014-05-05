@@ -100,10 +100,11 @@
         this.url = config;
       }
     } else {
-      for (var option in config) {
-        this[option] = config[option];
-      }
+      extend(this, config);
     }
+    this.adapter = this.adapter || 'default';
+    this.dataformat = this.dataformat || 'json';
+    this.dateformat = this.dateformat || false;
     this.state = 'initialized';
     this.configure();
   };
@@ -153,12 +154,17 @@
   chartstack.Dataset.prototype = {
 
     fetch: function(){
-      var self = this, completions = 0;
+      var self = this, completions = 0, error, finish;
 
       self.data = [];
       self.responses = [];
 
-      var finish = function(response, index){
+      error = function(){
+        //console.log('error');
+        return false;
+      };
+
+      finish = function(response, index){
         self.resources[index].response = (is(response, 'string')) ? JSON.parse(response) : response;
         self.resources[index].state = 'synced';
         self.responses[index] = self.resources[index].response;
@@ -168,33 +174,16 @@
         }
       };
 
-      var error = function(){
-        //console.log('error');
-        return false;
-      };
-
       each(self.resources, function(resource, index){
-
         if (resource.state == 'initialized' && resource.response !== void 0) {
           return finish(resource.response, index);
-
         } else if (resource.url) {
           var url = resource.url + buildQueryString(resource.params);
           var successSequencer = function(response){
             finish(response, index);
           };
-
-          if (resource.state == 'initialized' && resource.response !== void 0) {
-            //finish(resource.response, index);
-          } else {
-            chartstack.getAjax(url, successSequencer, error);
-          }
-
-          //chartstack.getAjax(url, successSequencer, error);
-          //chartstack.getJSONP(url, successSequencer);
-
-        } else {
-          error();
+          chartstack.getAjax(url, successSequencer, error);
+          // getJSONP
         }
       });
 
@@ -211,7 +200,6 @@
         } else {
           self.data[index] = response.data;
         }
-
       });
       self.trigger("complete", self.data[0]);
       return self;
@@ -351,9 +339,9 @@
         // Our made up HTML nodes are display: inline so we need to make
         // them block;
         setupVis.el.style.display = "block";
-        setupVis.style = {
+        /*setupVis.style = {
           display: "inline-block"
-        };
+        };*/
       };
 
       setupJS = function(){
@@ -450,20 +438,14 @@
       // assume it's a URL to fetch.  We do not check for http anymore
       // as it can be a local/relative file.
 
-      if (options.dataset instanceof chartstack.Dataset) {
-        $chart.dataset = options.dataset;
-
-      } else if (typeof options.dataset == 'string') {
-        $chart.dataset = new chartstack.Dataset(options.dataset.replace(/(\r\n|\n|\r|\ )/g,""));
-        $chart.dataset.resources[0].adapter = options.adapter || 'default';
-        $chart.dataset.resources[0].dataformat = options.dataformat || 'json';
-        $chart.dataset.resources[0].dateformat = options.dateformat || false;
-
+      if (setupData.dataset instanceof chartstack.Dataset) {
+        $chart.dataset = setupData.dataset;
       } else if (typeof setupData.dataset == 'string'){
         $chart.dataset = new chartstack.Dataset(setupData.dataset.replace(/(\r\n|\n|\r|\ )/g,""));
-        $chart.dataset.resources[0].adapter = setupData.adapter || 'default';
-        $chart.dataset.resources[0].dataformat = setupData.dataformat || 'json';
-        $chart.dataset.resources[0].dateformat = setupData.dateformat || false;
+      } else {
+        $chart.dataset = new chartstack.Dataset({
+          response: setupData.dataset
+        });
       }
 
       $chart.dataset.on("complete", function(data){
@@ -471,10 +453,11 @@
         $chart.view.data = this.data;
         $chart.view.trigger("update", data);
       });
+
       if (options.autoFetch || options.autoFetch == void 0) {
         $chart.dataset.fetch();
       }
-      //
+
     }
 
     setup();
@@ -741,7 +724,6 @@
 
     }else{
       namespace.loaded = true;
-      console.log('namespace', namespace);
     }
   }
 
@@ -4294,66 +4276,34 @@ Dataform.prototype.sort = function(opts){
 
 /* global google, chartstack */
 (function(cs){
-  var each = cs.each;
-  var extend = cs.extend;
-
-  // -----------------------------
-  // Library Namespace
-  // -----------------------------
-
-  cs.Keen = cs.Keen || {};
-
-  // -----------------------------
-  // Type: Number
-  // -----------------------------
-
-  cs.Keen.Metric = cs.Visualization.extend({
-    initialize: function(){
-      var css = document.createElement("style");
-      css.type = "text/css";
-      css.innerHTML = ".cs-widget { \
-          background: #49c5b1; \
-          border-radius: 4px; \
-          color: #fff; \
-          font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; \
-          padding: 10px 0; \
-          text-align: center; \
-        } \
-        .cs-widget-title { \
-          display: block; \
-          font-size: 84px; \
-          font-weight: 700; \
-          line-height: 84px; \
-        } \
-        .cs-widget-subtitle { \
-          display: block; \
-          font-size: 24px; \
-          font-weight: 200; \
-        }";
-        // margin: 0 auto; \
-      document.body.appendChild(css);
-
-      this.render();
-    },
-    //render: function(){},
-    update: function(){
-      this.el.innerHTML = '' +
-        '<div class="cs-widget cs-number" style="width:' + parseInt(this.width) + 'px;">' +
-          '<span class="cs-widget-title">' + this.data[0].table[1] + '</span>' +
-          '<span class="cs-widget-subtitle">' + (this.title || 'Result') + '</span>' +
-        '</div>';
-    }
+  cs.registerLibrary({
+    name: 'Keen',
+    namespace: 'keen-io',
+    charts: [{
+      type : 'Metric',
+      events: {
+        initialize: function(){
+          var css = document.createElement("style");
+          css.id = "cs-styles-keen-io";
+          css.type = "text/css";
+          css.innerHTML = "\
+.cs-widget { \n  background: #49c5b1; \n  border-radius: 4px; \n  color: #fff; \n  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; \n  padding: 10px 0; \n  text-align: center; \n} \
+.cs-widget-value { \n  display: block; \n  font-size: 84px; \n  font-weight: 700; \n  line-height: 84px; \n} \
+.cs-widget-title { \n  display: block; \n  font-size: 24px; \n  font-weight: 200; \n}";
+          if (!document.getElementById("cs-styles-keen-io")) {
+            document.body.appendChild(css);
+          }
+        },
+        update: function(){
+          this.el.innerHTML = '' +
+            '<div class="cs-widget cs-number" style="width:' + parseInt(this.width) + 'px;">' +
+            '<span class="cs-widget-value">' + this.data[0].table[1] + '</span>' +
+            '<span class="cs-widget-title">' + (this.title || 'Result') + '</span>' +
+            '</div>';
+        }
+      }
+    }]
   });
-
-
-  // -----------------------------
-  // Register Methods
-  // -----------------------------
-
-  cs.Visualization.register("keen-io", {
-    "metric": cs.Keen.Metric
-  });
-
 })(chartstack);
 
 /* global google, chartstack */

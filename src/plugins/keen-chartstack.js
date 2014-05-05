@@ -204,6 +204,13 @@
 
       if (req instanceof Keen.Request) {
 
+        req.on("complete", function(){
+          if (this.visual) {
+            this.visual.dataset.responses[0] = (this.data instanceof Array) ? this.data[0] : this.data;
+            this.visual.dataset.transform();
+          }
+        });
+
         isMetric = (typeof req.result == "number") ? true : false,
         isFunnel = (req.queries[0].get('steps')) ? true : false,
         isInterval = (req.queries[0].get('interval')) ? true : false,
@@ -214,11 +221,11 @@
         if (req.instance.client) {
           datasetConfig = {
             //adapter: "keen-io",
-            url: req.instance.client.endpoint + '/projects/' + req.instance.client.projectId + req.queries[0].path,
-            params: req.queries[0].params,
+            //url: req.instance.client.endpoint + '/projects/' + req.instance.client.projectId + req.queries[0].path,
+            //params: req.queries[0].params,
             dateformat: options.dateFormat || ""
           };
-          datasetConfig.params.api_key = req.instance.client.readKey;
+          //datasetConfig.params.api_key = req.instance.client.readKey;
         }
 
         if (req.data !== void 0) {
@@ -241,9 +248,7 @@
         })();
 
       } else {
-        datasetConfig = {
-          response: (req instanceof Array) ? req[0] : req
-        }
+        datasetConfig = (req instanceof Array) ? req[0] : req;
       }
 
 
