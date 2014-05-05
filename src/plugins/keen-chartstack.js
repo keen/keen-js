@@ -12,6 +12,9 @@
     Keen.Chart = function(obj){
       return new Keen.vis.Chart(obj);
     };
+    Keen.Dataform = function(data, schema){
+      return new Keen.vis.Dataform(data, schema);
+    };
 
     // -------------------------------
     // Inject Request Draw Method
@@ -44,16 +47,16 @@
       var self = this, data;
       var schema = self.schema || false;
 
-      console.log(response);
+      //console.log(response);
 
       if (schema) {
-        return new Keen.vis.Dataform(response, schema);
+        return new Keen.Dataform(response, schema);
       }
 
       // Metric
       // -------------------------------
       if (typeof response.result == "number"){
-        //return new Keen.vis.Dataform(response, {
+        //return new Keen.Dataform(response, {
         schema = {
           collection: "",
           select: [{
@@ -75,7 +78,7 @@
         // Interval w/ single value
         // -------------------------------
         if (response.result[0].timeframe && typeof response.result[0].value == "number") {
-          //return new Keen.vis.Dataform(response, {
+          //return new Keen.Dataform(response, {
           schema = {
             collection: "result",
             select: [
@@ -115,7 +118,7 @@
             path: "result",
             type: "number"
           });
-          /*return new Keen.vis.Dataform(response, {
+          /*return new Keen.Dataform(response, {
             collection: "result",
             select: true
           });*/
@@ -150,8 +153,8 @@
             }
           }
           //console.log("Grouped Interval", output);
-          //console.log(new Keen.vis.Dataform(response, output));
-          //return new Keen.vis.Dataform(response, output);
+          //console.log(new Keen.Dataform(response, output));
+          //return new Keen.Dataform(response, output);
         }
 
         // Funnel
@@ -172,17 +175,17 @@
           }
         }
 
-        // Extend ?
       }
 
-      if (schema) {
-        return new Keen.vis.Dataform(response, schema);
-      } else {
-        console.log("No schema");
+      if (!schema) {
+        schema = {
+          collection: "",
+          select: true
+        }
       }
 
+      return new Keen.Dataform(response, schema);
     });
-    //Keen.vis.addAdapter('default', Keen.vis.adapters['keen-io']);
 
 
     // -------------------------------
@@ -241,7 +244,6 @@
         datasetConfig = {
           response: (req instanceof Array) ? req[0] : req
         }
-        //console.log("RAW data", datasetConfig);
       }
 
 
