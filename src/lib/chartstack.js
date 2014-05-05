@@ -175,20 +175,24 @@
 
       each(self.resources, function(resource, index){
 
-        if (resource.url) {
+        if (resource.state == 'initialized' && resource.response !== void 0) {
+          return finish(resource.response, index);
+
+        } else if (resource.url) {
           var url = resource.url + buildQueryString(resource.params);
           var successSequencer = function(response){
             finish(response, index);
           };
 
           if (resource.state == 'initialized' && resource.response !== void 0) {
-            finish(resource.response, index);
+            //finish(resource.response, index);
           } else {
             chartstack.getAjax(url, successSequencer, error);
           }
 
           //chartstack.getAjax(url, successSequencer, error);
           //chartstack.getJSONP(url, successSequencer);
+
         } else {
           error();
         }
