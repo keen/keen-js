@@ -20,12 +20,11 @@
       &event_collection=pageview
       &timezone=-28800"></metric>
   <br/>
-  <div id="gbx2-js"></div>
-  <div id="metric-js"></div>
+
   <div id="multi-js"></div>
+  <div id="pie-js"></div>
   <div id="chart1"></div>
   <div id="chart2"></div>
-  <div id="pie-js"></div>
   <div id="table-js"></div>
   <div id="ext-js"></div>
 
@@ -96,25 +95,18 @@
         ]
       });
 
-      keen.run([num, pie, line, funnel], function(){
-        // this.data = [{}, {}, {}, {}];
-      });
-
-      //return;
+      // keen.run([num, pie, line, funnel], function(){});
 
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel in #client-dot-draw-demo"
       });
 
+      keen.draw(pie, document.getElementById("pie-js"), { chartType: "piechart" });
+
       window.count = keen.run([line, line], function(){
-        //console.log(this.data);
-        this.draw(document.getElementById("chart1"), {
-          //title: "Line via query#draw"
-          title: "Count for \"pageview\""
-        });
+        this.draw(document.getElementById("chart1"));
       });
 
-      // window.count
       window.chart = new Keen.Visualization({ result: 2450 }, document.getElementById("chart2"), {
         chartType: 'metric',
         dateFormat: "MMM DD",
@@ -141,80 +133,6 @@
       })
 
       keen.draw(ext, document.getElementById("ext-js"));
-
-
-      return false;
-
-
-
-      var widget = keen.run(funnel, function(res){
-        console.log('funnel', this.data);
-        this.draw(document.getElementById("funnel"), {
-          title: "Funfunfunnel",
-          chartOptions: {
-            bar: {groupWidth:'97%'}
-          }
-        })
-      });
-
-      widget.queries[0].set({ groupBy: 'page' });
-      widget.refresh();
-
-      pieq = keen.run(pie);
-      pieq.on("complete", function(){
-        this.draw(document.getElementById("pie-js"), {
-          chartType: 'piechart',
-          title: "Chart",
-          height: 270
-        });
-      });
-
-
-      query = keen.run(line);
-      query.on("complete", function(){
-
-        this.draw(document.getElementById("chart1"), {
-          //library: "google",
-          dateFormat: "MMMM DD",
-          title: "Chart via this.draw",
-          height: 270,
-          chartOptions: {
-            pieHole: 0.35
-          }
-        });
-
-      });
-
-      window.chart = new Keen.Visualization(query, document.getElementById("chart2"), {
-        //library: "google",
-        chartType: 'barchart',
-        dateFormat: "MMM DD",
-        title: "Chart via pointer var",
-        height: 270,
-        width: 500,
-        chartOptions: {
-          isStacked: true
-        }
-      });
-
-      keen.draw(num, document.getElementById("metric-js"));
-
-      /*keen.run(line, function(res){
-        console.log(res);
-        var newData = res;
-        for (var i = 0; i < res.result.length; i++) {
-          for (var j = 0; j < res.result[i].value.length; j++) {
-            newData.result[i].value[j].result = res.result[i].value[j].result * 100;
-          }
-        }
-        this.data = newData;
-        this.draw(document.getElementById("table-js"), {
-          title: "test!"
-        })
-        console.log('newData', newData);
-      });*/
-
-
 
     });
 

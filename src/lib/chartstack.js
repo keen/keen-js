@@ -551,7 +551,7 @@
     buildQueryString: buildQueryString,
     getAjax : getAjax,
     getJSONP: getJSONP,
-    addLibrary: addLibrary,
+    registerLibrary: registerLibrary,
     // Attach event for every chart we have.
     on: function(){
       var args = arguments;
@@ -627,6 +627,16 @@
     }
   }
 
+/*
+  function preBootstrap(){
+    setTimeout(function(){
+      //console.log('chartstack.libraries', chartstack.libraries);
+    },0);
+    // TODO: Hard-coded support for Google Analytics for now.
+    // document.addEventListener("DOMContentLoaded", bootstrap);
+  }
+*/
+
   // Called when DOM and chart libs are loaded and ready.
   function bootstrap (){
     // If graph library isn't set in defaults, match provider to the first graph
@@ -695,25 +705,44 @@
     }
   }
 
-  // Add a chart rendering library.
-  function addLibrary(obj){
+  // Register library to viz and data components.
+  function registerLibrary(obj){
     // Create new chart namespace.
-    var namespace = chartstack[obj.namespace] = {};
-    var libList = {};
+    var namespace = chartstack[obj.name] = {};
+    var vizCharts = {};
 
     // For each chart type add it to the namespace.
     each(obj.charts, function(chart){
-      var chartType = chart.type.toLowerCase();
+      var chartLow = chart.type.toLowerCase();
       var obj = extend(chart.events,{
-        type: chartType
+        type: chartLow
       });
+      // Instantiate new visualization object per chart.
       namespace[chart.type] = chartstack.Visualization.extend(obj);
-      libList[chartType] = namespace[chart.type];
+      // Queue chart types to create new Visualization.
+      vizCharts[chartLow] = namespace[chart.type];
     });
 
-    chartstack.Visualization.register(obj.windowNamespace, libList, {
+    // Register Visualization.
+    chartstack.Visualization.register(obj.namespace, vizCharts, {
       attributes: obj.attributes
     });
+
+    // If loadLib method exists it is called to load the graphic library.
+    // Must execute passed callback when the library is loaded.
+    // If loadLib does not exist, we assume the user loaded the library before
+    // chartstack.js already (most cases).
+    if ('loadLib' in obj){
+      namespace.loaded = false;
+      obj.loadLib(function(){
+        namespace.loaded = true;
+        chartstack.bootstrap();
+      });
+
+    }else{
+      namespace.loaded = true;
+      console.log('namespace', namespace);
+    }
   }
 
   function loadScript(url, cb) {
@@ -873,10 +902,7 @@
     };
   }
 
-  // TODO: Hard-coded support for Google Analytics for now.
-  // document.addEventListener("DOMContentLoaded", bootstrap);
-  document.write('\x3Cscript type="text/javascript" src="https://www.google.com/jsapi?autoload=' + encodeURIComponent('{"modules":[{"name":"visualization","version":"1","packages":["corechart","table"],callback: chartstack.bootstrap}]}') + '">\x3C/script>');
-
+  // preBootstrap();
 })(this);
 
 //! moment.js
@@ -4162,6 +4188,110 @@ Dataform.prototype.sort = function(opts){
   return Dataform;
 });
 
+/* global chartstack */
+// Data normalizing adaper for keen.io API.
+(function(cs){
+  var each = cs.each;
+
+  cs.addAdapter('keen-io', function(response){
+    var self = this, data;
+    var schema = self.schema || false;
+
+    // Default Response Map
+    if (!schema) {
+
+      schema = {
+        collection: "result",
+        unpack: {}
+      };
+
+      if (response.result instanceof Array) {
+
+        if (response.result.length > 0 && response.result[0]['value'] !== void 0){
+
+          if (response.result[0]['value'] instanceof Array) {
+            // Interval + Group_by
+
+            // Get value (interval result)
+            schema.unpack.value = "value -> result";
+
+            // Get label (group_by field)
+            for (var key in response.result[0]['value'][0]){
+              if (key !== "result") {
+                schema.unpack.label = "value -> " + key;
+                break;
+              }
+            }
+
+          } else {
+            // Interval, no Group_by
+            // Get value
+            schema.unpack.value = "value";
+          }
+        }
+
+        if (response.result.length > 0 && response.result[0]['timeframe']) {
+          // Get index (start time)
+          schema.unpack.index = {
+            path: "timeframe -> start",
+            type: "date",
+            //format: "MMM DD"
+            method: "moment"
+          };
+        }
+
+        if (response.result.length > 0 && response.result[0]['result']) {
+          // Get value (group_by)
+          schema.unpack.value = "result";
+          for (var key in response.result[0]){
+            if (key !== "result") {
+              schema.unpack.index = key;
+              break;
+            }
+          }
+        }
+
+        if (response.result.length > 0 && typeof response.result[0] == "number") {
+          schema.collection = "";
+          schema.unpack.index = "steps -> event_collection";
+          schema.unpack.value = "result -> ";
+        }
+
+        if (response.result.length == 0) {
+          schema = false;
+          //data
+        }
+
+
+      } else {
+        // Metric: { result: 2450 } -> [['result'],[2450]]
+        delete schema.unpack;
+        schema = {
+          collection: "",
+          select: [
+            {
+              path: "result",
+              type: "number",
+              label: "Metric",
+              format: "1,000"
+            }
+          ]
+        }
+      }
+
+    }
+
+    if (schema) {
+      data = new cs.Dataform(response, schema);
+    } else {
+      data = { table: [] };
+    }
+
+    return data;
+  });
+
+})(chartstack);
+
 /* global google, chartstack */
 (function(cs){
   var each = cs.each;
@@ -4228,27 +4358,21 @@ Dataform.prototype.sort = function(opts){
 
 /* global google, chartstack */
 (function(cs){
-  var each = cs.each;
-  var extend = cs.extend;
-
-  cs.addLibrary({
-    namespace: 'GoogleCharts',
-    windowNamespace: 'google',
-    attributes: [
-      "animation",
-      "backgroundColor",
-      "bar",
-      "chartArea",
-      "fontName",
-      "fontSize",
-      "isStacked",
-      "hAxis",
-      "legend",
-      "orientation",
-      "titleTextStyle",
-      "tooltip",
-      "vAxis"
-    ],
+  cs.registerLibrary({
+    name: 'GoogleCharts',
+    namespace: 'google',
+    attributes: ['animation', 'backgroundColor', 'bar', 'chartArea', 'fontName', 'fontSize', 'isStacked', 'hAxis', 'legend', 'orientation', 'titleTextStyle', 'tooltip', 'vAxis'],
+    // If loadLib exists it is called to load the graphic library.
+    // Must execute passed callback when the library is loaded.
+    // If loadLib does not exist, we assume the user loaded the library before
+    // chartstack.js already (most cases).
+    loadLib: function(cb){
+      cs.googleLoaded = function(){
+        cb();
+        delete cs.googleLoaded;
+      }
+      document.write('\x3Cscript type="text/javascript" src="https://www.google.com/jsapi?autoload=' + encodeURIComponent('{"modules":[{"name":"visualization","version":"1","packages":["corechart","table"],callback: chartstack.googleLoaded}]}') + '">\x3C/script>');
+    },
     charts: [{
       type : 'AreaChart',
       events: {
@@ -4261,7 +4385,7 @@ Dataform.prototype.sort = function(opts){
         },
         update: function(){
           var data = google.visualization.arrayToDataTable(this.data[0].table);
-          var options = extend(this.chartOptions, {
+          var options = cs.extend(this.chartOptions, {
             title: this.title || '',
             height: parseInt(this.height),
             width: parseInt(this.width)
@@ -4281,7 +4405,7 @@ Dataform.prototype.sort = function(opts){
         },
         update: function(){
           var data = google.visualization.arrayToDataTable(this.data[0].table);
-          var options = extend(this.chartOptions, {
+          var options = cs.extend(this.chartOptions, {
             title: this.title || '',
             height: parseInt(this.height),
             width: parseInt(this.width)
@@ -4302,7 +4426,7 @@ Dataform.prototype.sort = function(opts){
         },
         update: function(){
           var data = google.visualization.arrayToDataTable(this.data[0].table);
-          var options = extend(this.chartOptions, {
+          var options = cs.extend(this.chartOptions, {
             title: this.title || '',
             height: parseInt(this.height),
             width: parseInt(this.width)
@@ -4321,7 +4445,7 @@ Dataform.prototype.sort = function(opts){
         },
         update: function(){
           var data = google.visualization.arrayToDataTable(this.data[0].table);
-          var options = extend(this.chartOptions, {
+          var options = cs.extend(this.chartOptions, {
             title: this.title || '',
             height: parseInt(this.height),
             width: parseInt(this.width)
@@ -4340,7 +4464,7 @@ Dataform.prototype.sort = function(opts){
         },
         update: function(){
           var data = google.visualization.arrayToDataTable(this.data[0].table);
-          var options = extend(this.chartOptions, {
+          var options = cs.extend(this.chartOptions, {
             title: this.title || '',
             height: parseInt(this.height),
             width: parseInt(this.width)
@@ -4360,7 +4484,7 @@ Dataform.prototype.sort = function(opts){
         },
         update: function(){
           var data = google.visualization.arrayToDataTable(this.data[0].table);
-          var options = extend(this.chartOptions, {
+          var options = cs.extend(this.chartOptions, {
             title: this.title || '',
             height: parseInt(this.height),
             width: parseInt(this.width)
