@@ -63,7 +63,7 @@ Read our [Query guide](https://github.com/keenlabs/keen-js/wiki/Query) to learn 
 
 ## Visualization
 
-Read our [Visualization guide](https://github.com/keenlabs/keen-js/wiki/Query) to build charts from query responses.
+Read our [Visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization) to build charts from query responses.
 
 ## Resources
 
