@@ -61,6 +61,10 @@ Read our [Tracking guide](https://github.com/keenlabs/keen-js/wiki/Track) to lea
 
 Read our [Query guide](https://github.com/keenlabs/keen-js/wiki/Query) to learn how to query your data fro, Keen IO.
 
+## Visualization
+
+Read our [Visualization guide](https://github.com/keenlabs/keen-js/wiki/Query) to build charts from query responses.
+
 ## Resources
 
 [Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkRhdGEgTW9kZWxpbmcgR3VpZGUiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://keen.io/docs/event-data-modeling/event-data-intro/)

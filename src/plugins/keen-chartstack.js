@@ -47,8 +47,6 @@
       var self = this, data;
       var schema = self.schema || false;
 
-      //console.log(response);
-
       if (schema) {
         return new Keen.Dataform(response, schema);
       }
@@ -94,7 +92,11 @@
                   null: 0
                 }
               }
-            ]
+            ],
+            sort: {
+              column: 0,
+              order: 'asc'
+            }
           }
         }
 
@@ -141,6 +143,9 @@
                   null: 0
                 }
               }
+            },
+            sort: {
+              value: "desc"
             }
           }
           for (var key in response.result[0].value[0]){
@@ -278,11 +283,7 @@
       }
 
       // GroupBy Interval
-      if (isInterval && isGroupBy) {
-        if (library == 'google') {
-          viewConfig.chartOptions.legend = { position: 'none' };
-        }
-      }
+      if (isInterval && isGroupBy) {}
 
       // Custom Dataset schema for
       // complex query/response types
@@ -357,7 +358,11 @@
       // -------------------------------
       // Configure View
       // -------------------------------
-      viewConfig = Keen.vis.extend(viewConfig, options);
+      //viewConfig = Keen.vis.extend(viewConfig, options);
+      Keen.vis.extend(viewConfig.chartOptions, options.chartOptions);
+      viewConfig.height = options.height || Keen.vis.defaults.height;
+      viewConfig.width = options.width || Keen.vis.defaults.width;
+      viewConfig.title = options.title || viewConfig.title || null;
       options.chartType = options.chartType || recommended;
       if (options.chartType == 'metric') {
         library = 'keen-io';

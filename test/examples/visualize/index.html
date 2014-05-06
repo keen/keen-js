@@ -10,6 +10,8 @@
 </head>
 <body>
 
+  <div id="percentile"></div>
+
   <div id="client-dot-draw-demo"></div>
 
   <div id="funnel"></div>
@@ -133,6 +135,39 @@
       })
 
       keen.draw(ext, document.getElementById("ext-js"));
+
+
+      window.percentile = new Keen.Chart({
+        dataset: new Keen.vis.Dataset({
+          url: "./percentile.json",
+          schema: {
+            collection: "result",
+            select: [
+              {
+                path: "percentile",
+                type: "string"
+              },
+              {
+                path: "value",
+                type: "number"
+              }
+            ]
+          }
+        }),
+        view: new Keen.vis.GoogleCharts.ColumnChart({
+          title: "Toby",
+          el: document.getElementById("percentile"),
+          chartOptions: {
+            bar: {
+              groupWidth: "90%"
+            },
+            legend: { position: "none" },
+            titleTextStyle: {
+              fontSize: 24
+            }
+          }
+        })
+      });
 
     });
 

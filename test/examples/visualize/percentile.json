@@ -1,0 +1,9 @@
+{
+  "result": [
+    { "value": 9, "percentile": "10th" },
+    { "value": 11, "percentile": "25th" },
+    { "value": 13, "percentile": "50th" },
+    { "value": 15, "percentile": "90th" },
+    { "value": 900, "percentile": "99.9th" }
+  ]
+}
