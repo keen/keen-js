@@ -184,7 +184,7 @@
 
       if (!schema) {
         schema = {
-          collection: "",
+          collection: "result",
           select: true
         }
       }
