@@ -3,7 +3,7 @@
 <head>
   <title>Keen IO Query JS Test</title>
 
-  <script type="text/javascript" src="../../dist/keen-3.0.0.track.js"></script>
+  <script type="text/javascript" src="../../dist/keen-track.js"></script>
 
   <script type="text/javascript">
 
@@ -13,7 +13,7 @@
 			protocol: "https",
 			//host: 'analytics.yourdomain.com',
 			requestType: "xhr",
-			
+
 			// pageviews: true
 			pageviews: {
 				collection: 'test-auto-pageviews',
@@ -33,17 +33,17 @@
 						addons: []
 					}
 				}*/
-				
+
 			}
-			
-			
-			
+
+
+
 		});
-		
+
 		/*
 		keen.addEvent('pageview', {page:'this one'});
 		keen.addEvent('pageview', {page:'that one'});
-		
+
 		keen.addEvent('purchase', {amount: 32.55});
 		keen.addEvent('purchase', {amount: 2342.87});
 		keen.addEvent('purchase', {amount: 1231.12});
@@ -53,4 +53,3 @@
 </head>
 <body></body>
 </html>
-
