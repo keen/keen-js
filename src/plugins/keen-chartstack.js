@@ -216,7 +216,7 @@
           }
         });
 
-        isMetric = (typeof req.result == "number") ? true : false,
+        isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
         isFunnel = (req.queries[0].get('steps')) ? true : false,
         isInterval = (req.queries[0].get('interval')) ? true : false,
         isGroupBy = (req.queries[0].get('group_by')) ? true : false,
@@ -363,7 +363,7 @@
       viewConfig.height = options.height || Keen.vis.defaults.height;
       viewConfig.width = options.width || Keen.vis.defaults.width;
       viewConfig.title = options.title || viewConfig.title || null;
-      options.chartType = options.chartType || recommended;
+        options.chartType = options.chartType || recommended;
       if (options.chartType == 'metric') {
         library = 'keen-io';
       }
@@ -377,10 +377,12 @@
             view: new Keen.vis.libraries[library][options.chartType](viewConfig)
           });
         } else {
-          Keen.log('The visualization type you requested is not available for this library');
+          //console.log(library, options.chartType);
+          throw new Error('The visualization type you requested is not available for this library');
         }
       } else {
-        Keen.log('The visualization library you requested is not present');
+        //console.log(library);
+        throw new Error('The visualization library you requested is not present');
       }
 
       return this;
