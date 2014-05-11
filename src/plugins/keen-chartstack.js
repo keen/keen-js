@@ -81,7 +81,7 @@
             collection: "result",
             select: [
               {
-                path: "timeframe -> start",
+                path: "timeframe -> end",
                 type: "date"
               },
               {
@@ -133,7 +133,7 @@
             collection: "result",
             unpack: {
               index: {
-                path: "timeframe -> start",
+                path: "timeframe -> end",
                 type: "date"
               },
               value: {
@@ -319,7 +319,7 @@
         };
         if (isInterval) {
           datasetConfig.schema.unpack = {
-            index: 'timeframe -> start',
+            index: 'timeframe -> end',
             label: 'value -> ' + req.queries[0].params.group_by[0],
             value: 'value -> result'
           };

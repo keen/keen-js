@@ -4231,7 +4231,7 @@ Dataform.prototype.sort = function(opts){
         if (response.result.length > 0 && response.result[0]['timeframe']) {
           // Get index (start time)
           schema.unpack.index = {
-            path: "timeframe -> start",
+            path: "timeframe -> end",
             type: "date",
             //format: "MMM DD"
             method: "moment"
