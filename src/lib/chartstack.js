@@ -4335,8 +4335,18 @@ Dataform.prototype.sort = function(opts){
       cs.googleLoaded = function(){
         cb();
         delete cs.googleLoaded;
-      }
-      document.write('\x3Cscript type="text/javascript" src="https://www.google.com/jsapi?autoload=' + encodeURIComponent('{"modules":[{"name":"visualization","version":"1","packages":["corechart","table"],callback: chartstack.googleLoaded}]}') + '">\x3C/script>');
+      };
+      cs.loadScript("https://www.google.com/jsapi", function() {
+        if(typeof google === 'undefined'){
+          console.log("Problem loading visualizations.  Please contact us!");
+        } else {
+          google.load('visualization', '1.0', {
+              packages: ['corechart', 'table'],
+              callback: cs.googleLoaded
+          });
+        }
+      });
+      //document.write('\x3Cscript type="text/javascript" src="https://www.google.com/jsapi?autoload=' + encodeURIComponent('{"modules":[{"name":"visualization","version":"1","packages":["corechart","table"],callback: chartstack.googleLoaded}]}') + '">\x3C/script>');
     },
     charts: [{
       type : 'AreaChart',
