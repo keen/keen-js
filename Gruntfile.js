@@ -38,7 +38,7 @@ module.exports = function(grunt) {
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
-      track: {
+      tracker: {
         src: [
           "src/intro.js",
           "src/track.js",
@@ -48,33 +48,7 @@ module.exports = function(grunt) {
           "src/outro.js"
           //"src/plugins/keen-pageviews.js"
         ],
-        dest: "dist/<%= pkg.name %>-track.js"
-      },
-      query: {
-        src: [
-          "src/intro.js",
-          "src/query.js",
-          "src/lib/base64.js",
-          "src/lib/json2.js",
-          "src/async.js",
-          "src/outro.js"
-        ],
-        dest: "dist/<%= pkg.name %>-query.js"
-      },
-      visualize: {
-        src: [
-          "src/intro.js",
-          "src/track.js",
-          "src/query.js",
-          "src/visualize.js",
-          "src/lib/base64.js",
-          "src/lib/json2.js",
-          "src/async.js",
-          "src/outro.js",
-          "src/lib/chartstack.js",
-          "src/plugins/keen-chartstack.js"
-        ],
-        dest: "dist/<%= pkg.name %>-visualize.js"
+        dest: "dist/<%= pkg.name %>-tracker.js"
       },
       loader: {
         src: "src/loader.js",
@@ -91,9 +65,7 @@ module.exports = function(grunt) {
       dist: {
         files: {
           "dist/<%= pkg.name %>.min.js": "dist/<%= pkg.name %>.js",
-          "dist/<%= pkg.name %>-track.min.js": "dist/<%= pkg.name %>-track.js",
-          "dist/<%= pkg.name %>-query.min.js": "dist/<%= pkg.name %>-query.js",
-          "dist/<%= pkg.name %>-visualize.min.js": "dist/<%= pkg.name %>-visualize.js",
+          "dist/<%= pkg.name %>-tracker.min.js": "dist/<%= pkg.name %>-tracker.js",
           "dist/<%= pkg.name %>-loader.min.js": "dist/<%= pkg.name %>-loader.js"
         }
       }
@@ -143,6 +115,12 @@ module.exports = function(grunt) {
         gzip: true
       },
       deploy: {
+        upload: [
+          {
+            src: 'dist/*',
+            dest: 'latest/'
+          }
+        ],
         sync: [
           {
             src: 'dist/*',
