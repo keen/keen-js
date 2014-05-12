@@ -164,6 +164,7 @@
   };
 
   Keen.Query.prototype.addFilter = function(property, operator, value) {
+    this.params.filters = this.params.filters || [];
     this.params.filters.push({
       "property_name": property,
       "operator": operator,
@@ -202,4 +203,3 @@
       _request.jsonp.call(this, url, this.client.readKey, success, error);
     }
   };
-  
