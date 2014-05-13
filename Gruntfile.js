@@ -25,14 +25,15 @@ module.exports = function(grunt) {
       },
       all: {
         src: [
-          "src/intro.js",
+          "src/_intro.js",
+          "src/core.js",
           "src/track.js",
           "src/query.js",
           "src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/async.js",
-          "src/outro.js",
+          "src/_outro.js",
           "src/lib/chartstack.js",
           "src/plugins/keen-chartstack.js"
         ],
@@ -40,12 +41,13 @@ module.exports = function(grunt) {
       },
       tracker: {
         src: [
-          "src/intro.js",
+          "src/_intro.js",
+          "src/core.js",
           "src/track.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/async.js",
-          "src/outro.js"
+          "src/_outro.js"
           //"src/plugins/keen-pageviews.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
@@ -108,7 +110,7 @@ module.exports = function(grunt) {
         bucket: aws.bucket,
         access: 'public-read',
         headers: {
-          // Two Year cache policy (1000 * 60 * 60 * 24 * 730)
+          // Two Year cache policy (1000 * 60 * 60 * 24 * 1) // temp: 1 day
           "Cache-Control": "max-age=630720000, public",
           "Expires": new Date(Date.now() + 63072000000).toUTCString()
         },

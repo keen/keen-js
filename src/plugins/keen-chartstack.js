@@ -7,13 +7,15 @@
 
   !function(name, context){
     var Keen = context[name] || {};
-    var cs = context.chartstack;
-    Keen.vis = cs; //.noConflict();
-    Keen.Chart = function(obj){
-      return new Keen.vis.Chart(obj);
-    };
+    var CS = context.chartstack;
+    //Keen.vis = cs; //.noConflict();
+
+    function visualize(obj){
+      return new CS.Chart(obj);
+    }
+
     Keen.Dataform = function(data, schema){
-      return new Keen.vis.Dataform(data, schema);
+      return new CS.Dataform(data, schema);
     };
 
     // -------------------------------
@@ -30,10 +32,10 @@
     // -------------------------------
     // Set Visual Defaults
     // -------------------------------
-    Keen.vis.defaults = Keen.vis.defaults || {};
-    Keen.vis.defaults.height = 400;
-    Keen.vis.defaults.width = 600;
-    Keen.vis.defaults.colors = [
+    CS.defaults = CS.defaults || {};
+    CS.defaults.height = 400;
+    CS.defaults.width = 600;
+    CS.defaults.colors = [
       '#00afd7', // blue
       '#49c5b1', // green
       '#e6b449', // gold
@@ -43,7 +45,7 @@
     // -------------------------------
     // Keen IO Data Adapter
     // -------------------------------
-    Keen.vis.addAdapter('default', function(response){
+    CS.addAdapter('default', function(response){
       var self = this, data;
       var schema = self.schema || false;
 
@@ -198,14 +200,14 @@
     // -------------------------------
     Keen.Visualization = function(req, selector, config){
       var self = this, options = (config || {});
-      var library = Keen.vis.libraries[options.library] || Keen.vis.library, recommended;
+      var library = CS.libraries[options.library] || CS.library, recommended;
       var isMetric = isFunnel = isInterval = isGroupBy = is2xGroupBy = isExtraction = false;
       var datasetConfig = {};
       var viewConfig = {
         el: selector,
         chartOptions: {}
       };
-      viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || Keen.vis.defaults.colors;
+      viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || CS.defaults.colors;
 
       if (req instanceof Keen.Request) {
 
@@ -252,8 +254,10 @@
           return output;
         })();
 
+      } else if (typeof req === "string") {
+        datasetConfig.url = req;
       } else {
-        datasetConfig = (req instanceof Array) ? req[0] : req;
+        datasetConfig.response = (req instanceof Array) ? req[0] : req;
       }
 
 
@@ -358,12 +362,16 @@
       // -------------------------------
       // Configure View
       // -------------------------------
-      //viewConfig = Keen.vis.extend(viewConfig, options);
-      Keen.vis.extend(viewConfig.chartOptions, options.chartOptions);
-      viewConfig.height = options.height || Keen.vis.defaults.height;
-      viewConfig.width = options.width || Keen.vis.defaults.width;
-      viewConfig.title = options.title || viewConfig.title || null;
-        options.chartType = options.chartType || recommended;
+      //viewConfig = CS.extend(viewConfig, options);
+      CS.extend(viewConfig.chartOptions, options.chartOptions);
+      viewConfig.height = options.height || CS.defaults.height;
+      viewConfig.width = options.width || CS.defaults.width;
+
+      if (options.title !== void 0) {
+        viewConfig.title = options.title;
+      }
+
+      options.chartType = options.chartType || recommended;
       if (options.chartType == 'metric') {
         library = 'keen-io';
       }
@@ -371,10 +379,10 @@
       // Put it all together
       // -------------------------------
       if (library) {
-        if (Keen.vis.libraries[library][options.chartType]) {
-          return new Keen.Chart({
-            dataset: new Keen.vis.Dataset(datasetConfig),
-            view: new Keen.vis.libraries[library][options.chartType](viewConfig)
+        if (CS.libraries[library][options.chartType]) {
+          return new CS.Chart({
+            dataset: new CS.Dataset(datasetConfig),
+            view: new CS.libraries[library][options.chartType](viewConfig)
           });
         } else {
           //console.log(library, options.chartType);
@@ -388,7 +396,7 @@
       return this;
     };
 
-    Keen.vis.ready(function(){
+    CS.ready(function(){
       Keen.trigger('ready');
     });
 
