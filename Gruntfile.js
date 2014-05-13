@@ -25,14 +25,15 @@ module.exports = function(grunt) {
       },
       all: {
         src: [
-          "src/intro.js",
+          "src/_intro.js",
+          "src/core.js",
           "src/track.js",
           "src/query.js",
           "src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/async.js",
-          "src/outro.js",
+          "src/_outro.js",
           "src/lib/chartstack.js",
           "src/plugins/keen-chartstack.js"
         ],
@@ -40,12 +41,13 @@ module.exports = function(grunt) {
       },
       tracker: {
         src: [
-          "src/intro.js",
+          "src/_intro.js",
+          "src/core.js",
           "src/track.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/async.js",
-          "src/outro.js"
+          "src/_outro.js"
           //"src/plugins/keen-pageviews.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"

@@ -1,10 +1,3 @@
-!function (name, context, definition) {
-  if (typeof module != 'undefined' && module.exports) module.exports = definition()
-  else if (typeof define == 'function' && define.amd) define(definition)
-  else context[name] = definition()
-}('Keen', this, function() {
-  'use strict';
-
   /*!
   * ----------------
   * Keen IO Core JS
@@ -280,6 +273,13 @@
   _extend(Keen, Events);
 
   Keen.loaded = true;
+
+  // Expose utils
+  _extend(Keen, {
+    each: _each,
+    extend: _extend
+  });
+
   Keen.ready = function(callback){
     Keen.on('ready', callback);
   };
