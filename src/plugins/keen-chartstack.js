@@ -7,13 +7,8 @@
 
   !function(name, context){
     var Keen = context[name] || {};
-    var CS = context.chartstack;
-    //Keen.vis = cs; //.noConflict();
-
-    function visualize(obj){
-      return new CS.Chart(obj);
-    }
-
+    var CS = context.chartstack; //.noConflict();
+    Keen.parseParams = CS.parseParams;
     Keen.Dataform = function(data, schema){
       return new CS.Dataform(data, schema);
     };
