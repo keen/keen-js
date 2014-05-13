@@ -8,7 +8,7 @@
   !function(name, context){
     var Keen = context[name] || {};
     var CS = context.chartstack; //.noConflict();
-    Keen.parseParams = CS.parseParams;
+    Keen.utils.parseParams = CS.parseParams;
     Keen.Dataform = function(data, schema){
       return new CS.Dataform(data, schema);
     };

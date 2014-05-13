@@ -275,10 +275,10 @@
   Keen.loaded = true;
 
   // Expose utils
-  _extend(Keen, {
+  Keen.utils = {
     each: _each,
     extend: _extend
-  });
+  };
 
   Keen.ready = function(callback){
     Keen.on('ready', callback);
