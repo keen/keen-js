@@ -252,8 +252,10 @@
           return output;
         })();
 
+      } else if (typeof req === "string") {
+        datasetConfig.url = req;
       } else {
-        datasetConfig = (req instanceof Array) ? req[0] : req;
+        datasetConfig.response = (req instanceof Array) ? req[0] : req;
       }
 
 

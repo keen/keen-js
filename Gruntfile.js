@@ -108,7 +108,7 @@ module.exports = function(grunt) {
         bucket: aws.bucket,
         access: 'public-read',
         headers: {
-          // Two Year cache policy (1000 * 60 * 60 * 24 * 730)
+          // Two Year cache policy (1000 * 60 * 60 * 24 * 1) // temp: 1 day
           "Cache-Control": "max-age=630720000, public",
           "Expires": new Date(Date.now() + 63072000000).toUTCString()
         },
