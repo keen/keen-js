@@ -15,59 +15,138 @@ Tracking is manually tested and validated on Internet Explorer 6, 7, and 8.
 
 If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project) for your app. The Project ID and API Keys are available on the Project Overview page. You will need these for the next steps.
 
+Read our [Installation guide](./Installation) to learn about all the ways this library can fit into your workflow.
 
 ## Quick Setup
 
+Install the Keen JS SDK on your page by copy/pasting this snippet of JavaScript above the `</head>` tag of your page.
+
+```javascript
+<script type="text/javascript">
+  !function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="https://d26b395fwzu5fz.cloudfront.net/3.0.0/keen.min.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
+</script>
 ```
-// Load the library asynchronously:
-!function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="https://d26b395fwzu5fz.cloudfront.net/3.0.0/keen.min.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
 
-// Connect to your project(s):
-var client = new Keen({
- projectId: "your_project_id",
- writeKey: "your_write_key",
- readKey: "your_read_key"
-});
+The Keen IO JS Library is built around instances of your project(s). Once configured, these objects take on super powers, allowing you to send and query data with minimal effort.
 
-// Create a data object
-var data = {
-  page: window.location.href,
+```javascript
+<script>
+  var client = new Keen({
+    projectId: "your_project_id",
+    writeKey: "your_write_key",
+    readKey: "your_read_key"
+  });
+</script>
+```
+
+You can configure new instances for as many projects as necessary. [Read more about configuration here](https://github.com/keenlabs/keen-js/wiki/Configuration).
+
+
+## Tracking Events
+
+Let's record some data! Here is a basic example for tracking events in your app:
+
+```javascript
+// Configure an instance for your project
+var client = new Keen({...});
+
+// Create a data object with the properties you want to send
+var purchase = {
+  item: "golden gadget",  
+  price: 25.50,
   referrer: document.referrer,
-  agent: window.navigator.userAgent,
   keen: {
     timestamp: new Date().toISOString()
   }
 };
 
-// Send it to Keen IO
-client.addEvent('pageview', data);
+// Send it to the "purchases" collection
+client.addEvent("purchases", purchase);
 ```
 
+Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
 
-## Getting Started
+Read more about all the ways you can track events in our [tracking guide](https://github.com/keenlabs/keen-js/wiki/Track).
 
-Read our [Getting Started guide](https://github.com/keenlabs/keen-js/wiki/Getting-Started) to learn about connecting to projects from your Keen IO account.
+Wondering what else you should track? Browse our [data modeling guide](https://github.com/keenlabs/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
 
-
-## Installation
-
-Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
-
-## Tracking events
-
-Read our [Tracking guide](https://github.com/keenlabs/keen-js/wiki/Track) to learn how to start tracking events with Keen IO.
 
 ## Querying events
 
-Read our [Query guide](https://github.com/keenlabs/keen-js/wiki/Query) to learn how to query your data fro, Keen IO.
+Queries are first-class citizens, complete with parameter getters and setters.
+
+The `<Client>.run` method is available on each configured client instance to run one or many analyses on a given project. Read more about running multiple analyses below.
+
+```
+var your_analysis = new Keen.Query(analysisType, params);
+```
+
+### Example Usage
+
+```
+var client = new Keen({
+  projectId: "your_project_id",
+  readKey: "your_read_key"
+});
+
+var count = new Keen.Query("count", {
+  eventCollection: "pageviews",
+  groupBy: "property",
+  timeframe: "this_7_days"
+});
+
+// Send query
+client.run(count, function(response){
+  // response.result
+});
+```
+
+Read more about advanced queries in our [query guide](https://github.com/keenlabs/keen-js/wiki/Query).
 
 ## Visualization
 
-Read our [Visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization) to build charts from query responses.
+Building charts from queries is easier than ever.
+
+Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
+
+```
+client.draw(query, selector, config);
+```
+
+Requests also have a draw method. The query is already known in this case, so you can omit the query from the method signature:
+
+```
+var request = keen.run(query, function(){
+  this.draw(document.getElementById(“chart-wrapper”), {
+    title: “Custom chart title”
+  });
+});
+```
+
+A future release will add the ability to plot multiple query responses on a single chart, but for the time being only the first query response will be visualized.
+
+### Example usage
+
+```
+var count = new Keen.Query(“count”, {
+  eventCollection: “pageviews”,
+  groupBy: “visitor.geo.country”
+  interval: “daily”,
+  timeframe: “this_21_days”
+});
+var request = client.run(count, function(){
+  this.draw(document.getElementById(“chart-wrapper”), {
+    title: “Custom chart title”,
+    chartType: “columnchart”
+  });
+});
+```
+
+Read more about building charts from query responses in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization).
 
 ## Resources
 
-[Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkRhdGEgTW9kZWxpbmcgR3VpZGUiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://keen.io/docs/event-data-modeling/event-data-intro/)
+[Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkRhdGEgTW9kZWxpbmcgR3VpZGUiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://github.com/keenlabs/data-modeling-guide/)
 
 [API Technical Reference](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkFQSSBUZWNobmljYWwgUmVmZXJlbmNlIiwicmVmZXJyZXIiOiAiUkVBRE1FLm1kIn0=&redirect=https://keen.io/docs/api/reference/)
 
