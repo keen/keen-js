@@ -1,18 +1,19 @@
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <html>
 <head>
   <title>Keen IO Query JS Test</title>
 
-  <script type="text/javascript" src="../../dist/keen-tracker.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
+  <script src="../../dist/keen-tracker.js"></script>
 
-  <script type="text/javascript">
+  <script>
 
-		var keen = new Keen({
+		var client = new Keen({
 			projectId: "52f00ec205cd66404b000000",
 			writeKey: "554a723d023da6cb24e51c56a9a54555e9dcf8403d4b71ffa37e9112295622e78a10eed43a13c83b14ce171b0f1317bb09aa8df43d50f73b77709ab431af611ea47ed65f4d74c0ea5f2bde8407322ab70559afef294673ee6c224308b1744c9e069508799edefc51264b3f75a1ba9e26",
-			protocol: "https",
+			//protocol: "https"
 			//host: 'analytics.yourdomain.com',
-			requestType: "xhr",
+			//requestType: "xhr",
 
 			// pageviews: true
 			pageviews: {
@@ -41,15 +42,51 @@
 		});
 
 		/*
-		keen.addEvent('pageview', {page:'this one'});
-		keen.addEvent('pageview', {page:'that one'});
+		client.addEvent('pageview', {page:'this one'});
+		client.addEvent('pageview', {page:'that one'});
 
-		keen.addEvent('purchase', {amount: 32.55});
-		keen.addEvent('purchase', {amount: 2342.87});
-		keen.addEvent('purchase', {amount: 1231.12});
-		keen.addEvent('purchase', {amount: 544.43});
+		client.addEvent('purchase', {amount: 32.55});
+		client.addEvent('purchase', {amount: 2342.87});
+		client.addEvent('purchase', {amount: 1231.12});
+		client.addEvent('purchase', {amount: 544.43});
 		*/
+    $(function(){
+      // Links
+      $("#a-ext").on("click", function(e){
+        client.trackExternalLink(e, "link_clicked", { key: "value" }, 500, function(){ return false });
+        return false;
+      });
+      document.getElementById("a-ext").onclick = function(e){
+        // return client.trackExternalLink(e, "link_clicked", { key: "value" });
+      };
+
+      // FORMS
+      $("form#form-ext1").on("submit", function(e){
+        client.trackExternalLink(e, "form_submitted", {}, 500, function(){ return false });
+        return false;
+      });
+      document.getElementById("form-ext1").onsubmit = function(e){
+        // return client.trackExternalLink(e, "form_submitted", {});
+      };
+    });
+
 	</script>
 </head>
-<body></body>
+<body>
+  <a id="a-ext" href="https://keen.io">External Link</a>
+  <hr>
+  <a id="a-ext2" href="https://keen.io" onclick="return client.trackExternalLink(event, 'inline_js', {'user_id' : 12345});">External Link with inline method</a>
+  <hr>
+  <button id="btn-ext">Button</button>
+  <hr>
+  <form action="./" id="form-ext1" method="GET">
+    <input name="mode" type="text" value="JS">
+    <input type="submit" value="Submit">
+  </form>
+  <hr>
+  <form action="./" id="form-ext2" method="GET" onsubmit="return client.trackExternalLink(event, 'form_submitted', { 'inline': true });">
+    <input name="mode" type="text" value="Inline">
+    <input type="submit" value="Submit">
+  </form>
+</body>
 </html>

@@ -8,30 +8,35 @@
     _uploadEvent.apply(this, arguments);
   };
 
-  Keen.prototype.trackExternalLink = function(htmlElement, eventCollection, event, timeout, timeoutCallback) {
-    //console.log('trackExternalLink', arguments);
-    if (timeout === undefined){
+  Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
+
+    var evt = jsEvent,
+        newTab = evt.metaKey,
+        target = evt.target,
+        triggered = false,
+        callback = function(){};
+
+    if (timeout === undefined) {
       timeout = 500;
     }
-    var triggered = false;
-    var callback = function(){};
-    if( htmlElement.nodeName === "A"){
+
+    if (target.nodeName === "A") {
       callback = function(){
-        if(!triggered){
+        if(!newTab && !triggered){
           triggered = true;
-          window.location = htmlElement.href;
+          window.location = target.href;
         }
       };
-    }
-    else if (htmlElement.nodeName === "FORM"){
+    } else if (target.nodeName === "FORM") {
       callback = function(){
         if(!triggered){
           triggered = true;
-          htmlElement.submit();
+          target.submit();
         }
       }
     }
-    if(timeoutCallback){
+
+    if (timeoutCallback) {
       callback = function(){
         if(!triggered){
           triggered = true;
@@ -39,13 +44,15 @@
         }
       }
     }
-
-    _uploadEvent.apply(this, arguments);
+    _uploadEvent.call(this, eventCollection, payload, callback, callback);
 
     setTimeout(function() {
       callback();
-      }, timeout);
+    }, timeout);
+
+    if (!newTab) {
       return false;
+    }
   };
 
   Keen.prototype.setGlobalProperties = function(newGlobalProperties) {
