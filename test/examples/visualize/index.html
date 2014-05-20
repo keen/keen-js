@@ -10,6 +10,8 @@
 </head>
 <body>
 
+  <div id="string-js"></div>
+
   <div id="percentile"></div>
 
   <div id="client-dot-draw-demo"></div>
@@ -138,6 +140,11 @@
       })
 
       keen.draw(ext, document.getElementById("ext-js"));
+
+      window.local = new Keen.Visualization('./grouped_bools.json', document.getElementById("string-js"), {
+        title: "string test!",
+        chartType: "columnchart"
+      });
 
     });
 
