@@ -269,7 +269,7 @@
       // GroupBy
       if (!isInterval && isGroupBy) {
         options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
-        recommended = 'barchart';
+        recommended = 'piechart';
       }
 
       // Single Interval
