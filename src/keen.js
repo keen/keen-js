@@ -2297,7 +2297,8 @@ window.Keen = window.Keen || {};
                 timezone: this.attributes.timezone,
                 target_property: this.attributes.targetProperty,
                 group_by: this.attributes.groupBy,
-                latest: this.attributes.latest
+                latest: this.attributes.latest,
+                property_names: this.attributes.propertyNames
             };
         }
     });
