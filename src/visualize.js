@@ -29,11 +29,10 @@
   // Inject Request Draw Method
   // -------------------------------
   Keen.Request.prototype.draw = function(selector, config) {
-    var self = this;
-    if (!self.visual) {
-      self.visual = new Keen.Visualization(self, selector, config);
+    if (!this.visual) {
+      this.visual = new Keen.Visualization(this, selector, config);
     }
-    return self;
+    return this;
   };
 
 
@@ -41,7 +40,17 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(req, selector, config){
-    var self = this, options = (config || {});
+    /*
+      title ""
+      width #
+      height #
+      chartOptions {}
+    */
+
+    var self = this,
+        options = (config || {}),
+        data;
+
     var library = Keen.Visualization.libraries[options.library] || 'google',
         recommended;
 
@@ -53,6 +62,7 @@
         isExtraction = false;
 
     var datasetConfig = {};
+    
     var viewConfig = {
       el: selector,
       chartOptions: {}
@@ -61,12 +71,12 @@
 
     if (req instanceof Keen.Request) {
 
-      req.on("complete", function(){
+      /*req.on("complete", function(){
         if (this.visual) {
           this.visual.dataset.responses[0] = (this.data instanceof Array) ? this.data[0] : this.data;
           this.visual.dataset.transform();
         }
-      });
+      });*/
 
       isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
       isFunnel = (req.queries[0].get('steps')) ? true : false,
@@ -74,17 +84,6 @@
       isGroupBy = (req.queries[0].get('group_by')) ? true : false,
       is2xGroupBy = (req.queries[0].get('group_by') instanceof Array) ? true : false;
       isExtraction = (req.queries[0].analysis == 'extraction') ? true : false;
-
-      if (req.instance.client) {
-        datasetConfig = {
-          dateformat: options.dateFormat || ""
-        };
-        //datasetConfig.params.api_key = req.instance.client.readKey;
-      }
-
-      if (req.data !== void 0) {
-        datasetConfig.response = (req.data instanceof Array) ? req.data[0] : req.data;
-      }
 
       viewConfig.title = (function(){
         var analysis = req.queries[0].analysis.replace("_", " "),
@@ -107,6 +106,7 @@
 
     } else {
       // _transform() and handle as usual
+
     }
 
 
@@ -255,9 +255,11 @@
     var self = this;
     _extend(self, config);
 
+    self.data = [[],[]];
+
     self.chartOptions = self.chartOptions || {};
-    self.height = self.height || DEFAULTS.height;
-    self.width = self.width || DEFAULTS.width; // || self.el.offsetWidth;
+    //self.height = self.height || DEFAULTS.height;
+    //self.width = self.width || DEFAULTS.width; // || self.el.offsetWidth;
 
     // Set default event handlers
     self.on("error", function(){
@@ -575,6 +577,6 @@
     loadScript: _load_script
   });
 
-  Keen.loaded = false;
+  // Keen.loaded = false;
   // Set false to bypass trigger
   // in src/outro.js
