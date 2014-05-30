@@ -4,17 +4,6 @@
   * ----------------------
   */
 
-  var DEFAULTS = {
-    height: 400,
-    width: 600,
-    colors: [
-      '#00afd7', // blue
-      '#49c5b1', // green
-      '#e6b449', // gold
-      '#f35757'  // red
-    ]
-  };
-
   Keen.prototype.draw = function(query, selector, config) {
     // Find DOM element, set height, build spinner
     var config = config || {};
@@ -48,8 +37,8 @@
     }).spin(placeholder);
 
     return new Keen.Request(this, [query], function(){
-      // spinner.stop();
-      // el.removeChild(placeholder);
+      spinner.stop();
+      el.removeChild(placeholder);
       this.draw(selector, config);
     });
   };
@@ -157,6 +146,9 @@
     if (!isInterval && isGroupBy) {
       options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
       defaultType = 'piechart';
+      if (options.chartType == 'barchart') {
+        options.chartOptions.legend = { position: 'none' };
+      }
     }
 
     // Single Interval

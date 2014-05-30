@@ -147,6 +147,7 @@
 
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel with a custom title",
+        chartType: "barchart",
         labels: {
           "pageview"           : "Start",
           "viewed_twentyfive"  : "25%",
@@ -157,9 +158,9 @@
       });
 
       keen.draw(pie, document.getElementById("pie-js"), {
-        chartType: "piechart",
+        chartType: "barchart",
         labels: {
-          null: '',
+          null: 'N/A',
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Video page"
         }
@@ -173,8 +174,8 @@
         chartType: 'metric',
         dateFormat: "MMM DD",
         title: "Manual!",
-        width: 500,
-        colors: ['#000']
+        width: 300
+        //colors: ['#000']
       });
 
       keen.run(line, function(res){
@@ -193,7 +194,7 @@
 
       keen.draw(multiline, document.getElementById("multi-js"), {
         chartType: "columnchart",
-        width: 1200,
+        width: 800,
         labels: {
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Video",
