@@ -275,7 +275,7 @@
     }
   };
 
-
+  Keen.Visualization.visuals = [];
   var baseVisualization = function(config){
     var self = this;
     _extend(self, config);
@@ -289,7 +289,8 @@
     });
 
     // Let's kick it off!
-    this.initialize();
+    self.initialize();
+    Keen.Visualization.visuals.push(self);
   };
 
   baseVisualization.prototype = {
@@ -612,6 +613,25 @@
     }
   }
 
+
+  Keen.Visualization.find = function(target){
+    var el, match;
+    if (target) {
+      el = target.nodeName ? target : document.querySelector(target);
+      _each(Keen.Visualization.visuals, function(visual){
+        if (el == visual.el){
+          match = visual;
+          return false;
+        }
+      });
+      if (match) {
+        return match;
+      }
+      throw("Visualization not found");
+    } else {
+      return Keen.Visualization.visuals;
+    }
+  };
 
   // Expose utils
   _extend(Keen.utils, {
