@@ -46,6 +46,7 @@ module.exports = function(grunt) {
           "src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
+          "src/lib/ready.js",
           "src/async.js",
           "src/_outro.js",
           "src/plugins/keen-googlecharts.js",
@@ -60,6 +61,7 @@ module.exports = function(grunt) {
           "src/track.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
+          "src/lib/ready.js",
           "src/async.js",
           "src/_outro.js"
         ],

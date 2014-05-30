@@ -18,6 +18,8 @@
   Keen.prototype.draw = function(query, selector, config) {
 
     // Find DOM element, set height, build spinner
+    var el = selector;
+    console.log(el);
 
     return new Keen.Request(this, [query], function(){
       this.draw(selector, config);
@@ -584,7 +586,3 @@
     prettyNumber: _pretty_number,
     loadScript: _load_script
   });
-
-  // Keen.loaded = false;
-  // Set false to bypass trigger
-  // in src/outro.js

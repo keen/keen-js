@@ -4,9 +4,9 @@
   // ----------------------
 
   setTimeout(function(){
-    if (Keen.loaded) {
-      Keen.trigger("ready");
-    }
+    Keen.domready(function(){
+      Keen.trigger('ready');
+    });
   }, 0);
 
   return Keen;
