@@ -33,28 +33,25 @@
   });
 
   function setColors(){
-    var self = this, output;
-    if (self.colors instanceof Array == false) {
-      output = [];
+    var self = this;
+    if (self.colorMapping) {
       if (self.data.table[0].length > 2) {
         // map to labels
         Keen.utils.each(self.data.table[0], function(cell, i){
-          if (i > 0 && self.colors[cell]) {
-            output.push(self.colors[cell]);
+          if (i > 0 && self.colorMapping[cell]) {
+            self.colors.splice(i-1, 0, self.colorMapping[cell]);
           }
         });
       } else {
         // map to indices
         Keen.utils.each(self.data.table, function(row, i){
-          if (i > 0 && self.colors[row[0]]) {
-            output.push(self.colors[row[0]]);
+          if (i > 0 && self.colorMapping[row[0]]) {
+            self.colors.splice(i-1, 0, self.colorMapping[row[0]]);
           }
         });
       }
-    } else {
-      output = self.colors;
     }
-    return output;
+    return self.colors;
   }
 
   function handleErrors(stack){

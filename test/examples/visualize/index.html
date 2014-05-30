@@ -2,34 +2,31 @@
 <html>
 <head>
   <title>Keen IO Visualization JS Test</title>
-  <style>
-    /*body .cs-widget {
-      background: #000;
-    }*/
-  </style>
 </head>
 <body>
 
   <div id="string-js"></div>
-
+  <br>
   <div id="percentile"></div>
-
+  <br>
   <div id="client-dot-draw-demo"></div>
-
+  <br>
   <div id="funnel"></div>
-
-  <metric title="Total Pageviews" width="300"
-    dataset="https://api.keen.io/3.0/projects/52f2ae5905cd661a7800000a/queries/count
-      ?api_key=4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b
-      &event_collection=pageview
-      &timezone=-28800"></metric>
   <br/>
-
   <div id="multi-js"></div>
+  <br>
+  <div id="random-single-js"></div>
+  <br>
+  <div id="random-multi-js"></div>
+  <br>
   <div id="pie-js"></div>
+  <br>
   <div id="chart1"></div>
+  <br>
   <div id="chart2"></div>
+  <br>
   <div id="table-js"></div>
+  <br>
   <div id="ext-js"></div>
 
   <!--<script type="text/javascript" src="../../dist/keen.js"></script>-->
@@ -73,7 +70,7 @@
       var t = document.getElementsByTagName("script")[0];
       setTimeout(function(){
         t.parentNode.insertBefore(s,t);
-      }, 1000);
+      }, 2000);
     }
   })('Keen', this);
   </script>
@@ -96,8 +93,8 @@
 
       pie = new Keen.Query("count", {
         event_collection: "pageview",
-        group_by: "page",
-        timeframe: "this_2_minutes"
+        group_by: "page"
+        //timeframe: "this_2_minutes"
       });
 
       line = new Keen.Query("count", {
@@ -149,7 +146,7 @@
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel with a custom title",
         chartType: "barchart",
-        labels: {
+        labelMapping: {
           "pageview"           : "Start",
           "viewed_twentyfive"  : "25%",
           "viewed_fifty"       : "50%",
@@ -160,20 +157,23 @@
 
       keen.draw(pie, document.getElementById("pie-js"), {
         //chartType: "barchart",
-        labels: {
+        labelMapping: {
           null: 'N/A',
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Video page"
         },
-        colors: {
-          "N/A": "#ccc",
-          "Home": "blue",
-          "Video page": "red"
+        colors: ['#444', '#777'],
+        colorMapping: {
+          "N/A": "#ccc"
+          //"Home": "blue",
+          //"Video page": "red"
         }
       });
 
       window.count = keen.run([line, line], function(){
-        this.draw(document.getElementById("chart1"));
+        this.draw(document.getElementById("chart1"), {
+          colors: ['pink']
+        });
       });
 
       window.chart = new Keen.Visualization({ result: 24450 }, document.getElementById("chart2"), {
@@ -184,7 +184,25 @@
         //colors: ['#000']
       });
 
+
       keen.run(line, function(res){
+        var newData = res;
+        Keen.utils.each(res.result, function(record, index){
+          Keen.utils.each(record, function(value, key){
+            newData.result[index]['value'] = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+          });
+        });
+        this.data = newData;
+        this.draw(document.getElementById("random-single-js"), {
+          title: "Random single",
+          height: 500,
+          colorMapping: {
+            "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "pink"
+          }
+        });
+      });
+
+      keen.run(multiline, function(res){
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
           for (var j = 0; j < res.result[i].value.length; j++) {
@@ -192,24 +210,35 @@
           }
         }
         this.data = newData;
-        this.draw(document.getElementById("table-js"), {
-          title: "test!",
-          height: 500
-        })
+        this.draw(document.getElementById("random-multi-js"), {
+          title: "Random multi",
+          height: 500,
+          labelMapping: {
+            "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Page",
+            "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Index",
+            "": "N/A"
+          },
+          colorMapping: {
+            "Page": "pink"
+          },
+          chartOptions: {
+            isStacked: true
+          }
+        });
       });
 
       keen.draw(multiline, document.getElementById("multi-js"), {
         chartType: "columnchart",
         width: 800,
-        labels: {
+        labelMapping: {
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
-          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Video",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Page",
           "": "N/A"
         },
-        colors: {
-          "N/A": "#ccc",
-          "Home": "pink",
-          "Video": "yellow"
+        colorMapping: {
+          //"N/A": "#ccc",
+          //"Home": "pink",
+          "Page": "pink"
         }
       });
 

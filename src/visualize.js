@@ -59,15 +59,6 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(req, selector, config){
-    /*
-      title ""
-      width #
-      height #
-      chartOptions {}
-      colors [] || {}
-      labels [] || {}
-    */
-
     var self = this, data, defaults, options, library, defaultType, dataformSchema;
 
     // Backwoods cloning facility
@@ -240,6 +231,9 @@
       options.library = 'keen-io';
     }
 
+    // Re-apply our defaults
+    options.chartOptions.lineWidth = options.chartOptions.lineWidth || 4;
+
     //_extend(self, options);
     options['data'] = (data) ? _transform.call(options, data, dataformSchema) : [];
 
@@ -300,16 +294,13 @@
 
   baseVisualization.prototype = {
     initialize: function(){
-      // Sets listeners and prepares data
+      // Set listeners and prepare data
     },
     render: function(){
-      // Builds artifacts
+      // Build artifacts
     },
     update: function(){
-      // Optional: handles data updates
-    },
-    remove: function(){
-      // Cleanup and DOM removal
+      // Handle data updates
     }
   };
   _extend(baseVisualization.prototype, Events);
@@ -361,12 +352,12 @@
   // -------------------------------
   // Dataform Configuration
   // -------------------------------
+  // Handles arbitrary raw data for
+  // scenarios where originating
+  // queries are not known
+  // -------------------------------
   function _transform(response, config){
     var self = this, schema = config || {};
-
-    // apply labels
-
-    // if (schema) { return new Keen.Dataform(response, schema); }
 
     // Metric
     // -------------------------------
@@ -492,21 +483,21 @@
 
     }
 
-    //if (self.labels) console.log(self.labels, self);
 
-    // Apply formatting
-    if (self.labels && schema.unpack) {
+    // Apply formatting options
+    // -------------------------------
+    if (self.labelMapping && schema.unpack) {
       if (schema.unpack['index']) {
-        schema.unpack['index'].replace = schema.unpack['index'].replace || self.labels;
+        schema.unpack['index'].replace = schema.unpack['index'].replace || self.labelMapping;
       }
       if (schema.unpack['label']) {
-        schema.unpack['label'].replace = schema.unpack['label'].replace || self.labels;
+        schema.unpack['label'].replace = schema.unpack['label'].replace || self.labelMapping;
       }
     }
 
-    if (self.labels && schema.select) {
+    if (self.labelMapping && schema.select) {
       _each(schema.select, function(v, i){
-        schema.select[i].replace = self.labels;
+        schema.select[i].replace = self.labelMapping;
       });
     }
 
@@ -526,9 +517,9 @@
 
     if(input >= 1 || input <= -1) {
       if(input < 0){
-          //Pull off the negative side and stash that.
-          input = -input;
-          prefix = "-";
+        //Pull off the negative side and stash that.
+        input = -input;
+        prefix = "-";
       }
       return prefix + recurse(input, 0);
     } else {
