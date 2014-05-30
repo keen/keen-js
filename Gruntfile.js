@@ -5,6 +5,7 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-contrib-concat");
+  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-s3');
@@ -13,6 +14,18 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
+
+    copy: {
+      build: {
+        src: "bower_components/dataform/dist/dataform.js",
+        dest: "src/lib/keen-dataform.js",
+        options: {
+          process: function (content, path) {
+            return content.replace("\'Dataform\', this", "\'Dataform\', Keen");
+          }
+        }
+      }
+    },
 
     concat: {
       options: {
@@ -29,13 +42,14 @@ module.exports = function(grunt) {
           "src/core.js",
           "src/track.js",
           "src/query.js",
+          "src/lib/keen-dataform.js",
           "src/visualize.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
           "src/async.js",
           "src/_outro.js",
-          "src/lib/chartstack.js",
-          "src/plugins/keen-chartstack.js"
+          "src/plugins/keen-googlecharts.js",
+          "src/plugins/keen-widgets.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
@@ -48,7 +62,6 @@ module.exports = function(grunt) {
           "src/lib/json2.js",
           "src/async.js",
           "src/_outro.js"
-          //"src/plugins/keen-pageviews.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
@@ -134,7 +147,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['concat', 'uglify']);
+  grunt.registerTask('build', ['copy', 'concat', 'uglify']);
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
   grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
   grunt.registerTask('default', ['build']);
