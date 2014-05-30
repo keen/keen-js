@@ -6,7 +6,7 @@
   if (typeof module != 'undefined' && module.exports) module.exports = definition()
   else if (typeof define == 'function' && define.amd) define(definition)
   else context[name] = definition()
-}('domready', Keen, function(ready) {
+}('domready', Keen.utils, function(ready) {
 
   var fns = [], fn, f = false
     , doc = document

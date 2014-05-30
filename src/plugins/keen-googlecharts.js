@@ -14,6 +14,20 @@
       PieChart,
       Table;
 
+  Keen.utils.loadScript("https://www.google.com/jsapi", function() {
+    if(typeof google === 'undefined'){
+      throw new Error("Problem loading Google Charts library. Please contact us!");
+    } else {
+      google.load('visualization', '1.0', {
+          packages: ['corechart', 'table'],
+          callback: function(){
+            Keen.loaded = true;
+            Keen.trigger('ready');
+          }
+      });
+    }
+  });
+
   AreaChart = Keen.Visualization.extend({
     initialize: function(){
       console.log("AreaChart", this);
