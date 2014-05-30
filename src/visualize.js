@@ -11,7 +11,7 @@
     var el = document.getElementById(id);
 
     var placeholder = document.createElement("div");
-    placeholder.style.background = "#f2f2f2";
+    //placeholder.style.background = "#f2f2f2";
     placeholder.style.height = (config.height || Keen.Visualization.defaults.height) + "px";
     placeholder.style.position = "relative";
     placeholder.style.width = (config.width || Keen.Visualization.defaults.width) + "px";

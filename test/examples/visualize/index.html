@@ -158,11 +158,16 @@
       });
 
       keen.draw(pie, document.getElementById("pie-js"), {
-        chartType: "barchart",
+        //chartType: "barchart",
         labels: {
           null: 'N/A',
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Video page"
+        },
+        colors: {
+          "N/A": "#ccc",
+          "Home": "blue",
+          "Video page": "red"
         }
       });
 
@@ -199,6 +204,11 @@
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Video",
           "": "N/A"
+        },
+        colors: {
+          "N/A": "#ccc",
+          "Home": "pink",
+          "Video": "yellow"
         }
       })
 

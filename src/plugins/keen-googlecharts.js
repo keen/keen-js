@@ -28,6 +28,40 @@
     }
   });
 
+  function setColors(){
+    //console.log(this);
+    var self = this, output;
+    if (self.colors instanceof Array == false) {
+      output = [];
+      console.log(self.data.table);
+
+      if (self.data.table[0].length > 2) {
+        // map to labels
+        Keen.utils.each(self.data.table[0], function(cell, i){
+          if (i > 0 && self.colors[cell]) {
+            output.push(self.colors[cell]);
+          }
+          //console.log(cell, self.colors[cell]);
+        });
+
+      } else {
+        // map to indices
+        Keen.utils.each(self.data.table, function(row, i){
+          if (i > 0 && self.colors[row[0]]) {
+            output.push(self.colors[row[0]]);
+          }
+        });
+      }
+
+      Keen.utils.each(self.colors, function(color, label){
+        //output.push(color);
+      });
+    } else {
+      output = self.colors;
+    }
+    return output;
+  }
+
   AreaChart = Keen.Visualization.extend({
     initialize: function(){
       //console.log("AreaChart", this);
@@ -43,7 +77,7 @@
         title: this.title || '',
         height: parseInt(this.height),
         width: parseInt(this.width),
-        colors: this.colors
+        colors: setColors.call(this)
       });
       this._chart.draw(data, options);
     }
@@ -64,7 +98,7 @@
         title: this.title || '',
         height: parseInt(this.height),
         width: parseInt(this.width),
-        colors: this.colors
+        colors: setColors.call(this)
       });
       this._chart.draw(data, options);
     }
@@ -85,7 +119,7 @@
         title: this.title || '',
         height: parseInt(this.height),
         width: parseInt(this.width),
-        colors: this.colors
+        colors: setColors.call(this)
       });
       this._chart.draw(data, options);
     }
@@ -106,7 +140,7 @@
         title: this.title || '',
         height: parseInt(this.height),
         width: parseInt(this.width),
-        colors: this.colors
+        colors: setColors.call(this)
       });
       this._chart.draw(data, options);
     }
@@ -127,7 +161,7 @@
         title: this.title || '',
         height: parseInt(this.height),
         width: parseInt(this.width),
-        colors: this.colors
+        colors: setColors.call(this)
       });
       this._chart.draw(data, options);
     }
@@ -148,7 +182,7 @@
         title: this.title || '',
         height: parseInt(this.height),
         width: parseInt(this.width),
-        colors: this.colors
+        colors: setColors.call(this)
       });
       this._chart.draw(data, options);
     }
