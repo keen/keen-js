@@ -45,47 +45,28 @@
       width #
       height #
       chartOptions {}
+      colors [] || {}
+      labels [] || {}
     */
 
-    var self = this,
-        options = (config || {}),
-        data;
+    var self = this, data, defaults, options, library, defaultType, dataformSchema;
 
-    var library = Keen.Visualization.libraries[options.library] || 'google',
-        recommended;
+    // Backwoods cloning facility
+    defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
 
-    var isMetric = false,
-        isFunnel = false,
-        isInterval = false,
-        isGroupBy = false,
-        is2xGroupBy = false,
-        isExtraction = false;
+    options = _extend(defaults, config || {});
+    library = Keen.Visualization.libraries[options.library];
 
-    var datasetConfig = {};
-    
-    var viewConfig = {
-      el: selector,
-      chartOptions: {}
-    };
-    viewConfig.chartOptions.colors = viewConfig.chartOptions.colors || DEFAULTS.colors;
+    options.el = selector;
 
-    if (req instanceof Keen.Request) {
+    dataformSchema = {
+      collection: 'result',
+      select: true
+    }
 
-      /*req.on("complete", function(){
-        if (this.visual) {
-          this.visual.dataset.responses[0] = (this.data instanceof Array) ? this.data[0] : this.data;
-          this.visual.dataset.transform();
-        }
-      });*/
-
-      isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
-      isFunnel = (req.queries[0].get('steps')) ? true : false,
-      isInterval = (req.queries[0].get('interval')) ? true : false,
-      isGroupBy = (req.queries[0].get('group_by')) ? true : false,
-      is2xGroupBy = (req.queries[0].get('group_by') instanceof Array) ? true : false;
-      isExtraction = (req.queries[0].analysis == 'extraction') ? true : false;
-
-      viewConfig.title = (function(){
+    // Build default title if necessary to do so
+    if (!options.title && req instanceof Keen.Request) {
+      options.title = (function(){
         var analysis = req.queries[0].analysis.replace("_", " "),
             collection = req.queries[0].get('event_collection'),
             output;
@@ -99,14 +80,36 @@
         }
         return output;
       })();
+    }
+
+    var isMetric = false,
+        isFunnel = false,
+        isInterval = false,
+        isGroupBy = false,
+        is2xGroupBy = false,
+        isExtraction = false;
+
+    if (req instanceof Keen.Request) {
+      //console.log("req", req.data);
+      // Handle known scenarios
+      isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
+      isFunnel = (req.queries[0].get('steps')) ? true : false,
+      isInterval = (req.queries[0].get('interval')) ? true : false,
+      isGroupBy = (req.queries[0].get('group_by')) ? true : false,
+      is2xGroupBy = (req.queries[0].get('group_by') instanceof Array) ? true : false;
+      isExtraction = (req.queries[0].analysis == 'extraction') ? true : false;
+
+      data = (req.data instanceof Array) ? req.data[0] : req.data;
 
     } else if (typeof req === "string") {
+      // Fetch a new resource
       // _request.jsonp()
       // _transform()
 
     } else {
+      // Handle raw data
       // _transform() and handle as usual
-
+      data = (req instanceof Array) ? req[0] : req;
     }
 
 
@@ -117,21 +120,21 @@
     // Metric
     if (isMetric) {
       options.capable = ['metric'];
-      recommended = 'metric';
+      defaultType = 'metric';
     }
 
     // GroupBy
     if (!isInterval && isGroupBy) {
       options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
-      recommended = 'piechart';
+      defaultType = 'piechart';
     }
 
     // Single Interval
     if (isInterval) { // Series
       options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
-      recommended = 'areachart';
-      if (!isGroupBy && library == 'google') {
-        viewConfig.chartOptions.legend = { position: 'none' };
+      defaultType = 'areachart';
+      if (!isGroupBy && options.library == 'google') {
+        options.chartOptions.legend = { position: 'none' };
       }
     }
 
@@ -142,28 +145,26 @@
     // complex query/response types
     // -------------------------------
 
-    // ---------------------------------------------------------
     // Funnels
-    // ---------------------------------------------------------
     if (isFunnel) {
       options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
-      recommended = 'columnchart';
-      if (library == 'google') {
-        viewConfig.chartOptions.legend = { position: 'none' };
+      defaultType = 'columnchart';
+      if (options.library == 'google') {
+        options.chartOptions.legend = { position: 'none' };
       }
     }
 
-    // ---------------------------------------------------------
     // 2x GroupBy
-    // ---------------------------------------------------------
     if (is2xGroupBy) {
       options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
-      recommended = 'columnchart';
+      defaultType = 'columnchart';
     }
 
+
     // Dataform schema
+    // ---------------------------------------------------------
     if (is2xGroupBy) {
-      datasetConfig.schema = {
+      dataformSchema = {
         collection: 'result',
         sort: {
           index: 'asc',
@@ -171,13 +172,13 @@
         }
       };
       if (isInterval) {
-        datasetConfig.schema.unpack = {
+        dataformSchema.unpack = {
           index: 'timeframe -> start',
           label: 'value -> ' + req.queries[0].params.group_by[0],
           value: 'value -> result'
         };
       } else {
-        datasetConfig.schema.unpack = {
+        dataformSchema.unpack = {
           index: req.queries[0].params.group_by[0],
           label: req.queries[0].params.group_by[1],
           value: 'result'
@@ -185,61 +186,69 @@
       }
     }
 
-    // ---------------------------------------------------------
     // Extractions
-    // ---------------------------------------------------------
     if (isExtraction) {
       options.capable = ['datatable'];
-      recommended = 'datatable';
+      defaultType = 'datatable';
     }
 
     // Dataform schema
+    // ---------------------------------------------------------
     if (isExtraction) {
-      datasetConfig.schema = {
+      dataformSchema = {
         collection: "result",
         select: true
       };
       if (req.queries[0].get('property_names')) {
-        datasetConfig.schema.select = [];
+        dataformSchema.select = [];
         for (var i = 0; i < req.queries[0].get('property_names').length; i++) {
-          datasetConfig.schema.select.push({ path: req.queries[0].get('property_names')[i] });
+          dataformSchema.select.push({ path: req.queries[0].get('property_names')[i] });
         }
       }
     }
 
 
+    // A few last details
     // -------------------------------
-    // Configure View
-    // -------------------------------
-    //viewConfig = Keen.extend(viewConfig, options);
-    _extend(viewConfig.chartOptions, options.chartOptions);
-    viewConfig.height = options.height || DEFAULTS.height;
-    viewConfig.width = options.width || DEFAULTS.width;
-
-    if (options.title !== void 0) {
-      viewConfig.title = options.title;
+    if (!options.chartType) {
+      options.chartType = defaultType;
     }
 
-    options.chartType = options.chartType || recommended;
     if (options.chartType == 'metric') {
-      library = 'keen-io';
+      options.library = 'keen-io';
     }
+
+    //_extend(self, options);
+    options['data'] = (data) ? _transform.call(options, data, dataformSchema) : [];
 
     // Put it all together
     // -------------------------------
-    if (library) {
-      if (Keen.Visualization.libraries[library][options.chartType]) {
-        return new Keen.Visualization.libraries[library][options.chartType]({});
+    if (options.library) {
+      if (Keen.Visualization.libraries[options.library][options.chartType]) {
+        return new Keen.Visualization.libraries[options.library][options.chartType](options);
       } else {
-        throw new Error('The visualization type you requested is not available for this library');
+        throw new Error('The library you selected does not support this chartType');
       }
     } else {
-      throw new Error('The visualization library you requested is not present');
+      throw new Error('The library you selected is not present');
     }
 
     return this;
   };
 
+  // Visual defaults
+  Keen.Visualization.defaults = {
+    library: 'google',
+    height: 400,
+    width: 600,
+    colors: [
+      '#00afd7', // blue
+      '#49c5b1', // green
+      '#e6b449', // gold
+      '#f35757'  // red
+    ],
+    chartOptions: {}
+  };
 
   // Collect and manage libraries
   Keen.Visualization.libraries = {};
@@ -251,15 +260,9 @@
   };
 
 
-  var vizAdapter = function(config){
+  var baseVisualization = function(config){
     var self = this;
     _extend(self, config);
-
-    self.data = [[],[]];
-
-    self.chartOptions = self.chartOptions || {};
-    //self.height = self.height || DEFAULTS.height;
-    //self.width = self.width || DEFAULTS.width; // || self.el.offsetWidth;
 
     // Set default event handlers
     self.on("error", function(){
@@ -273,7 +276,7 @@
     this.initialize();
   };
 
-  vizAdapter.prototype = {
+  baseVisualization.prototype = {
     initialize: function(){
       // Sets listeners and prepares data
     },
@@ -287,10 +290,10 @@
       // Cleanup and DOM removal
     }
   };
-  _extend(vizAdapter.prototype, Events);
+  _extend(baseVisualization.prototype, Events);
 
   Keen.Visualization.extend = function(protoProps, staticProps){
-    var parent = vizAdapter, Visualization;
+    var parent = baseVisualization, Visualization;
     if (protoProps && protoProps.hasOwnProperty('constructor')) {
       Visualization = protoProps.constructor;
     } else {
@@ -315,13 +318,12 @@
   // -------------------------------
   // Dataform Configuration
   // -------------------------------
-  function _transform(response){
-    var self = this, data;
-    var schema = self.schema || false;
+  function _transform(response, config){
+    var self = this, schema = config || {};
 
-    if (schema) {
-      return new Keen.Dataform(response, schema);
-    }
+    // apply labels
+
+    // if (schema) { return new Keen.Dataform(response, schema); }
 
     // Metric
     // -------------------------------
@@ -349,7 +351,6 @@
       // Interval w/ single value
       // -------------------------------
       if (response.result[0].timeframe && typeof response.result[0].value == "number") {
-        //return new Keen.Dataform(response, {
         schema = {
           collection: "result",
           select: [
@@ -393,10 +394,6 @@
           path: "result",
           type: "number"
         });
-        /*return new Keen.Dataform(response, {
-          collection: "result",
-          select: true
-        });*/
       }
 
       // Grouped Interval
@@ -430,9 +427,6 @@
             break;
           }
         }
-        //console.log("Grouped Interval", output);
-        //console.log(new Keen.Dataform(response, output));
-        //return new Keen.Dataform(response, output);
       }
 
       // Funnel
@@ -455,11 +449,22 @@
 
     }
 
-    if (!schema) {
-      schema = {
-        collection: "result",
-        select: true
+    //if (self.labels) console.log(self.labels, self);
+
+    // Apply formatting
+    if (self.labels && schema.unpack) {
+      if (schema.unpack['index']) {
+        schema.unpack['index'].replace = schema.unpack['index'].replace || self.labels;
       }
+      if (schema.unpack['label']) {
+        schema.unpack['label'].replace = schema.unpack['label'].replace || self.labels;
+      }
+    }
+
+    if (self.labels && schema.select) {
+      _each(schema.select, function(v, i){
+        schema.select[i].replace = self.labels;
+      });
     }
 
     return new Keen.Dataform(response, schema);
@@ -467,65 +472,68 @@
 
   function _pretty_number(input) {
     // If it has 3 or fewer sig figs already, just return the number.
-    var sciNo = input.toPrecision(3),
+    var input = Number(input),
+        sciNo = input.toPrecision(3),
         prefix = "",
-        suffixes = ["", "k", "M", "B", "T"],
-        recurse;
+        suffixes = ["", "k", "M", "B", "T"];
+
     if (Number(sciNo) == input && String(input).length <= 4) {
       return String(input);
     }
+
     if(input >= 1 || input <= -1) {
       if(input < 0){
           //Pull off the negative side and stash that.
           input = -input;
           prefix = "-";
       }
-      recurse = function(input, iteration) {
-        var input = String(input);
-        split = input.split(".");
-        // If there's a dot
-        if(split.length > 1) {
-          // Keep the left hand side only
-          input = split[0];
-          var rhs = split[1];
-          // If the left-hand side is too short, pad until it has 3 digits
-          if (input.length == 2 && rhs.length > 0) {
-            // Pad with right-hand side if possible
-            if (rhs.length > 0) {
-              input = input + "." + rhs.charAt(0);
-            }
-            // Pad with zeroes if you must
-            else {
-              input += "0";
-            }
-          }
-          else if (input.length == 1 && rhs.length > 0) {
-            input = input + "." + rhs.charAt(0);
-            // Pad with right-hand side if possible
-            if(rhs.length > 1) {
-              input += rhs.charAt(1);
-            }
-            // Pad with zeroes if you must
-            else {
-              input += "0";
-            }
-          }
-        }
-        var numNumerals = input.length;
-        // if it has a period, then numNumerals is 1 smaller than the string length:
-        if (input.split(".").length > 1) {
-          numNumerals--;
-        }
-        if(numNumerals <= 3) {
-          return String(input) + suffixes[iteration];
-        }
-        else {
-          return recurse(Number(input) / 1000, iteration + 1);
-        }
-      };
       return prefix + recurse(input, 0);
     } else {
       return input.toPrecision(3);
+    }
+
+    function recurse(input, iteration) {
+      var input = String(input);
+      var split = input.split(".");
+      // If there's a dot
+      if(split.length > 1) {
+        // Keep the left hand side only
+        input = split[0];
+        var rhs = split[1];
+        // If the left-hand side is too short, pad until it has 3 digits
+        if (input.length == 2 && rhs.length > 0) {
+          // Pad with right-hand side if possible
+          if (rhs.length > 0) {
+            input = input + "." + rhs.charAt(0);
+          }
+          // Pad with zeroes if you must
+          else {
+            input += "0";
+          }
+        }
+        else if (input.length == 1 && rhs.length > 0) {
+          input = input + "." + rhs.charAt(0);
+          // Pad with right-hand side if possible
+          if(rhs.length > 1) {
+            input += rhs.charAt(1);
+          }
+          // Pad with zeroes if you must
+          else {
+            input += "0";
+          }
+        }
+      }
+      var numNumerals = input.length;
+      // if it has a period, then numNumerals is 1 smaller than the string length:
+      if (input.split(".").length > 1) {
+        numNumerals--;
+      }
+      if(numNumerals <= 3) {
+        return String(input) + suffixes[iteration];
+      }
+      else {
+        return recurse(Number(input) / 1000, iteration + 1);
+      }
     }
   }
 

@@ -16,37 +16,37 @@
 
   AreaChart = Keen.Visualization.extend({
     initialize: function(){
-      console.log("AreaChart");
+      console.log("AreaChart", this);
     }
   });
 
   BarChart = Keen.Visualization.extend({
     initialize: function(){
-      console.log("BarChart");
+      console.log("BarChart", this);
     }
   });
 
   ColumnChart = Keen.Visualization.extend({
     initialize: function(){
-      console.log("ColumnChart");
+      console.log("ColumnChart", this);
     }
   });
 
   LineChart = Keen.Visualization.extend({
     initialize: function(){
-      console.log("LineChart");
+      console.log("LineChart", this);
     }
   });
 
   PieChart = Keen.Visualization.extend({
     initialize: function(){
-      console.log("PieChart");
+      console.log("PieChart", this);
     }
   });
-  
+
   Table = Keen.Visualization.extend({
     initialize: function(){
-      console.log("Table");
+      console.log("Table", this);
     }
   });
 

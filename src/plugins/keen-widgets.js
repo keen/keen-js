@@ -11,6 +11,7 @@
 
   Metric = Keen.Visualization.extend({
     initialize: function(){
+      //console.log(Keen.utils.prettyNumber(this.data.table[1][0]));
       console.log("Metric", this);
     }
   });

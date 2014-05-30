@@ -105,10 +105,24 @@
       // keen.run([num, pie, line, funnel], function(){});
 
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
-        title: "Funnel with a custom title"
+        title: "Funnel with a custom title",
+        labels: {
+          "pageview"           : "Start",
+          "viewed_twentyfive"  : "25%",
+          "viewed_fifty"       : "50%",
+          "viewed_seventyfive" : "75%",
+          "viewed_all"         : "100%"
+        }
       });
 
-      keen.draw(pie, document.getElementById("pie-js"), { chartType: "piechart" });
+      keen.draw(pie, document.getElementById("pie-js"), {
+        chartType: "piechart",
+        labels: {
+          null: '',
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Video page"
+        }
+      });
 
       window.count = keen.run([line, line], function(){
         this.draw(document.getElementById("chart1"));
@@ -118,7 +132,8 @@
         chartType: 'metric',
         dateFormat: "MMM DD",
         title: "Manual!",
-        width: 500
+        width: 500,
+        colors: ['#000']
       });
 
       keen.run(line, function(res){
@@ -136,15 +151,21 @@
       });
 
       keen.draw(multiline, document.getElementById("multi-js"), {
-        chartType: "columnchart"
+        chartType: "columnchart",
+        width: 1200,
+        labels: {
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Video",
+          "": "N/A"
+        }
       })
 
       keen.draw(ext, document.getElementById("ext-js"));
 
-      window.local = new Keen.Visualization('./grouped_bools.json', document.getElementById("string-js"), {
+      /*window.local = new Keen.Visualization('./grouped_bools.json', document.getElementById("string-js"), {
         title: "string test!",
         chartType: "columnchart"
-      });
+      });*/
 
     });
 

@@ -170,7 +170,6 @@
       var labels = (label_set) ? parse.apply(self, [record].concat(label_set)) : [];
       if (labels) {
         discovered_labels = labels;
-        console.log(discovered_labels);
       }
     });
 
