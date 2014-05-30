@@ -96,7 +96,8 @@
 
       pie = new Keen.Query("count", {
         event_collection: "pageview",
-        group_by: "page"
+        group_by: "page",
+        timeframe: "this_2_minutes"
       });
 
       line = new Keen.Query("count", {
@@ -210,7 +211,7 @@
           "Home": "pink",
           "Video": "yellow"
         }
-      })
+      });
 
       keen.draw(ext, document.getElementById("ext-js"));
 

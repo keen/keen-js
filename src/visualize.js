@@ -81,7 +81,7 @@
     dataformSchema = {
       collection: 'result',
       select: true
-    }
+    };
 
     // Build default title if necessary to do so
     if (!options.title && req instanceof Keen.Request) {
@@ -332,8 +332,29 @@
     return Visualization;
   };
 
-  function visualErrorHandler(){
-    console.log("Error!", arguments);
+  function visualErrorHandler(msg){
+    //console.log("Error!", message, this);
+
+    var errorPlaceholder = document.createElement("div");
+    //errorPlaceholder.style.background = "#f7f7f7";
+    errorPlaceholder.style.borderRadius = "8px";
+    errorPlaceholder.style.height = this.height + "px";
+    errorPlaceholder.style.width = this.width + "px";
+
+    var errorMessage = document.createElement("span");
+    errorMessage.style.color = "#ccc";
+    errorMessage.style.display = "block";
+    errorMessage.style.paddingTop = (this.height / 2 - 15) + "px";
+    errorMessage.style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
+    errorMessage.style.fontSize = "21px";
+    errorMessage.style.fontWeight = "light";
+    errorMessage.style.textAlign = "center";
+
+    errorMessage.innerHTML = msg;
+    errorPlaceholder.appendChild(errorMessage);
+
+    this.el.innerHTML = "";
+    this.el.appendChild(errorPlaceholder);
   }
 
 

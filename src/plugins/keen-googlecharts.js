@@ -14,6 +14,10 @@
       PieChart,
       Table;
 
+  var errors = {
+    "google-visualization-errors-0": "No results to visualize"
+  }
+
   Keen.utils.loadScript("https://www.google.com/jsapi", function() {
     if(typeof google === 'undefined'){
       throw new Error("Problem loading Google Charts library. Please contact us!");
@@ -29,21 +33,16 @@
   });
 
   function setColors(){
-    //console.log(this);
     var self = this, output;
     if (self.colors instanceof Array == false) {
       output = [];
-      console.log(self.data.table);
-
       if (self.data.table[0].length > 2) {
         // map to labels
         Keen.utils.each(self.data.table[0], function(cell, i){
           if (i > 0 && self.colors[cell]) {
             output.push(self.colors[cell]);
           }
-          //console.log(cell, self.colors[cell]);
         });
-
       } else {
         // map to indices
         Keen.utils.each(self.data.table, function(row, i){
@@ -52,15 +51,20 @@
           }
         });
       }
-
-      Keen.utils.each(self.colors, function(color, label){
-        //output.push(color);
-      });
     } else {
       output = self.colors;
     }
     return output;
   }
+
+  function handleErrors(stack){
+    var message = errors[stack['id']] || stack['message'] || "An error occurred";
+    this.trigger('error', message);
+  }
+
+
+  // Create chart types
+  // -------------------------------
 
   AreaChart = Keen.Visualization.extend({
     initialize: function(){
@@ -68,7 +72,11 @@
       this.render();
     },
     render: function(){
-      this._chart = this._chart || new google.visualization.AreaChart(this.el);
+      var self = this;
+      self._chart = self._chart || new google.visualization.AreaChart(self.el);
+      google.visualization.events.addListener(self._chart, 'error', function(stack){
+        handleErrors.call(self, stack);
+      });
       this.update();
     },
     update: function(){
@@ -89,8 +97,12 @@
       this.render();
     },
     render: function(){
-      this._chart = this._chart || new google.visualization.BarChart(this.el);
-      this.update();
+      var self = this;
+      self._chart = self._chart || new google.visualization.BarChart(self.el);
+      google.visualization.events.addListener(self._chart, 'error', function(stack){
+        handleErrors.call(self, stack);
+      });
+      self.update();
     },
     update: function(){
       var data = google.visualization.arrayToDataTable(this.data.table);
@@ -110,8 +122,12 @@
       this.render();
     },
     render: function(){
-      this._chart = this._chart || new google.visualization.ColumnChart(this.el);
-      this.update();
+      var self = this;
+      self._chart = self._chart || new google.visualization.ColumnChart(self.el);
+      google.visualization.events.addListener(self._chart, 'error', function(stack){
+        handleErrors.call(self, stack);
+      });
+      self.update();
     },
     update: function(){
       var data = google.visualization.arrayToDataTable(this.data.table);
@@ -131,8 +147,12 @@
       this.render();
     },
     render: function(){
-      this._chart = this._chart || new google.visualization.LineChart(this.el);
-      this.update();
+      var self = this;
+      self._chart = self._chart || new google.visualization.LineChart(self.el);
+      google.visualization.events.addListener(self._chart, 'error', function(stack){
+        handleErrors.call(self, stack);
+      });
+      self.update();
     },
     update: function(){
       var data = google.visualization.arrayToDataTable(this.data.table);
@@ -152,8 +172,12 @@
       this.render();
     },
     render: function(){
-      this._chart = this._chart || new google.visualization.PieChart(this.el);
-      this.update();
+      var self = this;
+      self._chart = self._chart || new google.visualization.PieChart(self.el);
+      google.visualization.events.addListener(self._chart, 'error', function(stack){
+        handleErrors.call(self, stack);
+      });
+      self.update();
     },
     update: function(){
       var data = google.visualization.arrayToDataTable(this.data.table);
@@ -173,8 +197,12 @@
       this.render();
     },
     render: function(){
-      this._chart = this._chart || new google.visualization.Table(this.el);
-      this.update();
+      var self = this;
+      self._chart = self._chart || new google.visualization.Table(self.el);
+      google.visualization.events.addListener(self._chart, 'error', function(stack){
+        handleErrors.call(self, stack);
+      });
+      self.update();
     },
     update: function(){
       var data = google.visualization.arrayToDataTable(this.data.table);
@@ -187,6 +215,10 @@
       this._chart.draw(data, options);
     }
   });
+
+
+  // Register library + types
+  // -------------------------------
 
   Keen.Visualization.register('google', {
     'areachart': AreaChart,
