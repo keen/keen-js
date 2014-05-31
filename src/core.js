@@ -301,7 +301,9 @@
   };
 
   Keen.log = function(message) {
-    console.log('[Keen IO]', message)
+    if (typeof console == "object") {
+      console.log('[Keen IO]', message);
+    }
   };
 
   // -------------------------------
