@@ -48,11 +48,16 @@
   // Inject Request Draw Method
   // -------------------------------
   Keen.Request.prototype.draw = function(selector, config) {
-    if (!this.visual) {
-      this.visual = new Keen.Visualization(this, selector, config);
-    }
+    _build_visual.call(this, selector, config);
+    this.on('complete', function(){
+      _build_visual.call(this, selector, config);
+    });
     return this;
   };
+
+  function _build_visual(selector, config){
+    this.visual = new Keen.Visualization(this, selector, config);
+  }
 
 
   // -------------------------------
@@ -285,6 +290,7 @@
       visualErrorHandler.apply(this, arguments);
     });
     self.on("update", function(){
+      console.log('updated!');
       self.update.apply(this, arguments);
     });
 
