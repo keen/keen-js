@@ -236,8 +236,17 @@
       options.library = 'keen-io';
     }
 
-    // Re-apply our defaults
-    options.chartOptions.lineWidth = options.chartOptions.lineWidth || 4;
+    if (options.chartOptions.lineWidth == void 0) {
+      options.chartOptions.lineWidth = 4;
+    }
+
+    if (options.chartOptions.hAxis == void 0) {
+      if (options.chartType == 'columnchart' || options.chartType == 'areachart' || options.chartType == 'linechart') {
+        options.chartOptions.hAxis = {
+          gridlines: { color: 'transparent' }
+        };
+      }
+    }
 
     //_extend(self, options);
     options['data'] = (data) ? _transform.call(options, data, dataformSchema) : [];
