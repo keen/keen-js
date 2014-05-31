@@ -56,7 +56,6 @@
   };
 
   Keen.prototype.setGlobalProperties = function(newGlobalProperties) {
-    //console.log('setGlobalProperties', arguments);
     if (!this.client) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
     if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
       this.client.globalProperties = newGlobalProperties;

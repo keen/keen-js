@@ -65,7 +65,6 @@
 
   AreaChart = Keen.Visualization.extend({
     initialize: function(){
-      //console.log("AreaChart", this);
       this.render();
     },
     render: function(){
@@ -90,7 +89,6 @@
 
   BarChart = Keen.Visualization.extend({
     initialize: function(){
-      //console.log("AreaChart", this);
       this.render();
     },
     render: function(){
@@ -115,7 +113,6 @@
 
   ColumnChart = Keen.Visualization.extend({
     initialize: function(){
-      //console.log("AreaChart", this);
       this.render();
     },
     render: function(){
@@ -140,7 +137,6 @@
 
   LineChart = Keen.Visualization.extend({
     initialize: function(){
-      //console.log("AreaChart", this);
       this.render();
     },
     render: function(){
@@ -165,7 +161,6 @@
 
   PieChart = Keen.Visualization.extend({
     initialize: function(){
-      //console.log("AreaChart", this);
       this.render();
     },
     render: function(){
@@ -190,7 +185,6 @@
 
   Table = Keen.Visualization.extend({
     initialize: function(){
-      //console.log("AreaChart", this);
       this.render();
     },
     render: function(){

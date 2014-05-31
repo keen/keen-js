@@ -105,7 +105,6 @@
         isExtraction = false;
 
     if (req instanceof Keen.Request) {
-      //console.log("req", req.data);
       // Handle known scenarios
       isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
       isFunnel = (req.queries[0].get('steps')) ? true : false,
@@ -299,7 +298,6 @@
       visualErrorHandler.apply(this, arguments);
     });
     self.on("update", function(){
-      console.log('updated!');
       self.update.apply(this, arguments);
     });
 
@@ -340,7 +338,6 @@
   };
 
   function visualErrorHandler(msg){
-    //console.log("Error!", message, this);
 
     var errorPlaceholder = document.createElement("div");
     //errorPlaceholder.style.background = "#f7f7f7";
