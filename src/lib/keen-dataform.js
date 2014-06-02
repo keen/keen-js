@@ -101,6 +101,7 @@
     if (target_set.length == 0) {
       each(root, function(record, interval){
         var flat = flatten(record);
+        //console.log('flat', flat);
         for (var key in flat) {
           if (flat.hasOwnProperty(key) && unique_keys.indexOf(key) == -1) {
             unique_keys.push(key);
@@ -169,6 +170,13 @@
       var labels = (label_set) ? parse.apply(self, [record].concat(label_set)) : [];
       if (labels) {
         discovered_labels = labels;
+      }
+    });
+
+    // Temp: turn booleans into strings
+    each(discovered_labels, function(label, index){
+      if (typeof label === 'boolean') {
+        discovered_labels[index] = String(label);
       }
     });
 
@@ -364,13 +372,13 @@
   // Utilities
   // --------------------------------------
 
-  // Awesomeness in code form, by Will Rayner (penguinboy)
+  // Pure awesomeness by Will Rayner (penguinboy)
   // https://gist.github.com/penguinboy/762197
   function flatten(ob) {
     var toReturn = {};
     for (var i in ob) {
       if (!ob.hasOwnProperty(i)) continue;
-      if ((typeof ob[i]) == 'object') {
+      if ((typeof ob[i]) == 'object' && ob[i] !== null) {
         var flatObject = flatten(ob[i]);
         for (var x in flatObject) {
           if (!flatObject.hasOwnProperty(x)) continue;
@@ -381,6 +389,16 @@
       }
     }
     return toReturn;
+    /*each(ob, function(value, i){
+      if (typeof value == 'object' && value !== null) {
+        var flatObject = flatten(ob[i]);
+        each(flatObject, function(v2, i2){
+          toReturn[i + '.' + i2] = v2;
+        });
+      } else {
+        toReturn[i] = value;
+      }
+    });*/
   }
 
   // via: https://github.com/spocke/punymce
@@ -449,9 +467,9 @@ Dataform.prototype.format = function(opts){
 
     var defaults = {
       'number': {
-        format: '0', // 1,000.00
-        prefix: '',
-        suffix: ''
+        //format: '0', // 1,000.00
+        //prefix: '',
+        //suffix: ''
         //modifier: '*1'
       },
       'date': {

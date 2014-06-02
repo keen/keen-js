@@ -15,7 +15,6 @@ module.exports = function(grunt) {
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
 
-    // Disabled
     copy: {
       build: {
         src: "bower_components/dataform/dist/dataform.js",
@@ -151,7 +150,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['concat', 'uglify']); // 'copy',
+  grunt.registerTask('build', ['copy', 'concat', 'uglify']);
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
   grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
   grunt.registerTask('default', ['build']);
