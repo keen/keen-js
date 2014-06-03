@@ -36,11 +36,14 @@
       left: '50%' // Left position relative to parent
     }).spin(placeholder);
 
-    return new Keen.Request(this, [query], function(){
+    var request = new Keen.Request(this, [query]);
+    request.on("complete", function(){
       spinner.stop();
       el.removeChild(placeholder);
       this.draw(selector, config);
     });
+
+    return request;
   };
 
 
