@@ -10,7 +10,7 @@ https://d26b395fwzu5fz.cloudfront.net/2.1.2/keen.min.js
 
 ### Install
 
-Copy and paste the following code into your HTML page in the <head/> section of your page:
+Copy and paste the following code into your HTML page in the `<head/>` section of your page:
 
 ```
 var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"d26b395fwzu5fz.cloudfront.net/2.1.2/keen.min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
