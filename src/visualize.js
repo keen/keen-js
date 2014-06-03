@@ -11,6 +11,7 @@
     var el = document.getElementById(id);
 
     var placeholder = document.createElement("div");
+    placeholder.className = "keen-loading";
     //placeholder.style.background = "#f2f2f2";
     placeholder.style.height = (config.height || Keen.Visualization.defaults.height) + "px";
     placeholder.style.position = "relative";
@@ -343,6 +344,7 @@
   function visualErrorHandler(msg){
 
     var errorPlaceholder = document.createElement("div");
+    errorPlaceholder.className = "keen-error";
     //errorPlaceholder.style.background = "#f7f7f7";
     errorPlaceholder.style.borderRadius = "8px";
     errorPlaceholder.style.height = this.height + "px";
