@@ -90,6 +90,21 @@
     return 1;
   }
 
+  function _parse_params(str){
+    // via http://stackoverflow.com/a/2880929/2511985
+    var urlParams = {},
+        match,
+        pl     = /\+/g,  // Regex for replacing addition symbol with a space
+        search = /([^&=]+)=?([^&]*)/g,
+        decode = function (s) { return decodeURIComponent(s.replace(pl, " ")); },
+        query  = str.split("?")[1];
+
+    while (!!(match=search.exec(query))) {
+      urlParams[decode(match[1])] = decode(match[2]);
+    }
+    return urlParams;
+  }
+
   function _set_protocol(value) {
     switch(value) {
       case 'http':
@@ -277,7 +292,8 @@
   // Expose utils
   Keen.utils = {
     each: _each,
-    extend: _extend
+    extend: _extend,
+    parseParams: _parse_params
   };
 
   Keen.ready = function(callback){
@@ -285,7 +301,9 @@
   };
 
   Keen.log = function(message) {
-    console.log('[Keen IO]', message)
+    if (typeof console == "object") {
+      console.log('[Keen IO]', message);
+    }
   };
 
   // -------------------------------
