@@ -60,8 +60,8 @@
   }
 
   function _type(obj){
-	  var text = obj.constructor.toString();
-	  return text.match(/function (.*)\(/)[1];
+    var text = (obj && obj.constructor) ? obj.constructor.toString() : void 0;
+	  return (text) ? text.match(/function (.*)\(/)[1] : "Null";
   }
 
   function _each(o, cb, s){
