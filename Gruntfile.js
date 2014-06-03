@@ -114,7 +114,10 @@ module.exports = function(grunt) {
           build: process.env.TRAVIS_JOB_ID,
           urls: saucelabs.urls,
           browsers: saucelabs.browsers,
-          concurrency: saucelabs.concurrency
+          concurrency: saucelabs.concurrency,
+          sauceConfig: {
+            'video-upload-on-pass': false
+          }
         }
       }
     },
