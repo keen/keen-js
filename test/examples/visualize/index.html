@@ -93,8 +93,8 @@
 
       pie = new Keen.Query("count", {
         event_collection: "pageview",
-        group_by: "page"
-        //timeframe: "this_2_minutes"
+        group_by: "page",
+        timeframe: null // "this_2_minutes"
       });
 
       line = new Keen.Query("count", {
