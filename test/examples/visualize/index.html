@@ -85,6 +85,12 @@
     var num, pie, line, ext, funnel;
 
     Keen.ready(function(){
+      
+      setTimeout(function(){
+        Keen.ready(function(){
+          console.log("Should fire automatically, and not append");
+        });
+      }, 5000);
 
       //console.log(document.getElementById('client-dot-draw-demo'));
 

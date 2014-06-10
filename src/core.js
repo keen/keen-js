@@ -297,7 +297,11 @@
   };
 
   Keen.ready = function(callback){
-    Keen.on('ready', callback);
+    if (Keen.loaded) {
+      callback();
+    } else {
+      Keen.on('ready', callback);
+    }
   };
 
   Keen.log = function(message) {
