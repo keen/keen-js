@@ -85,6 +85,7 @@
     var num, pie, line, ext, funnel;
 
     Keen.ready(function(){
+
       //console.log(document.getElementById('client-dot-draw-demo'));
 
       num = new Keen.Query("count", {
@@ -241,7 +242,12 @@
         }
       });
 
-      keen.draw(ext, document.getElementById("ext-js"));
+      keen.draw(ext, document.getElementById("ext-js"), {
+        labelMapping: {
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "At home in a table",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Localhost"
+        }
+      });
 
       /*window.local = new Keen.Visualization('./grouped_bools.json', document.getElementById("string-js"), {
         title: "string test!",
