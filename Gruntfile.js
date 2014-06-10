@@ -135,7 +135,7 @@ module.exports = function(grunt) {
         },
         gzip: true
       },
-      deploy: {
+      release: {
         upload: [
           {
             src: 'dist/*',
@@ -152,6 +152,20 @@ module.exports = function(grunt) {
             dest: '<%= pkg.version %>/'
           }
         ]*/
+      },
+      staging: {
+        upload: [
+          {
+            src: 'dist/*',
+            dest: 'staging/',
+            options: {
+              headers: {
+                "Cache-Control": "max-age=1000, public",
+                "Expires": new Date(Date.now() + 1000).toUTCString()
+              }
+            }
+          }
+        ]
       }
     }
 
