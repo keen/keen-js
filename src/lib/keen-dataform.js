@@ -120,7 +120,12 @@
         if (interval == 0) {
           self.table[0].push(flat_target);
         }
-        self.table[interval+1].push(flat[flat_target] || null)
+        if (typeof(flat[flat_target]) || typeof flat[flat_target] == 'boolean') {
+          self.table[interval+1].push(flat[flat_target]);
+        } else {
+          self.table[interval+1].push(null);
+        }
+
       });
     });
 
@@ -174,11 +179,11 @@
     });
 
     // Temp: turn booleans into strings
-    each(discovered_labels, function(label, index){
+    /*each(discovered_labels, function(label, index){
       if (typeof label === 'boolean') {
         discovered_labels[index] = String(label);
       }
-    });
+    });*/
 
     // Parse each record
     each(root, function(record, interval){
@@ -592,19 +597,26 @@ function _applyFormat(value, opts){
       options = opts || {};
 
   if (options.method) {
-    var copy = output;
-    try {
-      output = eval(options.method).apply(null, [output, options]);
-    }
-    catch (e) {
-      output = copy;
+    var copy = output, method = window;
+    each(options.method.split("."), function(str, i){
+      if (method[str]){
+        method = method[str];
+      }
+    });
+    if (typeof method === 'function') {
+      try {
+        output = method.apply(null, [output, options]);
+      }
+      catch (e) {
+        output = copy;
+      }
     }
   }
 
   if (options.replace) {
-    each(options.replace, function(value, key){
+    each(options.replace, function(val, key){
       if (output == key || String(output) == String(key) || parseFloat(output) == parseFloat(key)) {
-        output = value;
+        output = val;
       }
     });
   }
@@ -612,14 +624,16 @@ function _applyFormat(value, opts){
   if (options.type && options.type == 'date') {
 
     if (options.format && moment && moment(value).isValid()) {
-      output = moment(value).format(options.format);
+      output = moment(output).format(options.format);
     } else {
-      output = new Date(value); //.toISOString();
+      output = new Date(output); //.toISOString();
     }
 
   }
 
   if (options.type && options.type == 'string') {
+
+    output = String(output);
 
     if (options.format) {
       switch (options.format) {
@@ -642,11 +656,11 @@ function _applyFormat(value, opts){
 
   }
 
-  if (options.type && options.type == 'number') {
+  if (options.type && options.type == 'number' && !isNaN(parseFloat(output))) {
 
-    if (options.format && !isNaN(parseFloat(output))) {
+    output = parseFloat(output);
 
-      output = parseFloat(output);
+    if (options.format) {
 
       // Set decimals
       if (options.format.indexOf('.') !== -1) {
@@ -681,8 +695,6 @@ function _applyFormat(value, opts){
 
   return output;
 }
-
-// dataform.format(index, options);
 
 // Source: src/lib/sort.js
 Dataform.prototype.sort = function(opts){
