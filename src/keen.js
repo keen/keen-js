@@ -893,13 +893,13 @@ window.Keen = window.Keen || {};
         var htmlElement = htmlElementOrEvent;
         var jsEvent = null;
         var newTab = false;
-      
+
         if (!htmlElementOrEvent.nodeName) {
           // htmlElementOrEvent == event
           jsEvent = htmlElementOrEvent;
           htmlElement = jsEvent.target;
           newTab = (htmlElementOrEvent.metaKey || false);
-        
+
         } else if (window.event && window.event.metaKey == true) {
           // htmlElementOrEvent == element, new tab == true
           newTab = true;
@@ -908,7 +908,7 @@ window.Keen = window.Keen || {};
         if (timeout === undefined){
           timeout = 500;
         }
-        
+
         var triggered = false;
         var callback = function(){};
 
@@ -2361,14 +2361,14 @@ window.Keen = window.Keen || {};
             if(_.isUndefined(this.attributes.timezone)){
                 this.attributes.timezone = getTimezoneOffset();
             }*/
-            
+
             var attr = _.defaults(attributes, {filters:[]});
             attr.eventCollection = eventCollection;
-            
+
             if (_.isUndefined(attr.timezone)){
               attr.timezone = getTimezoneOffset();
             }
-            
+
             this.attributes = {};
             _.extend(this.attributes, attr);
 
@@ -2390,10 +2390,12 @@ window.Keen = window.Keen || {};
                 event_collection: this.attributes.eventCollection,
                 filters: this.attributes.filters,
                 timeframe: this.attributes.timeframe,
+                interval: this.attributes.interval,
                 timezone: this.attributes.timezone,
                 target_property: this.attributes.targetProperty,
                 group_by: this.attributes.groupBy,
-                latest: this.attributes.latest
+                latest: this.attributes.latest,
+                property_names: this.attributes.propertyNames
             };
         }
     });
@@ -2425,8 +2427,8 @@ window.Keen = window.Keen || {};
         this.attributes.timeframe = timeframe;
         return this;
     };
-    
-    
+
+
         /**
      * Set the latest property for your ad hoc query
      *
@@ -2836,11 +2838,11 @@ window.Keen = window.Keen || {};
             //var hours = parseInt(dt.slice(dt.length-6, dt.length).slice(1,3));
             //var hours = parseInt(dt.slice(11,13));
             var hours = d.getUTCHours();
-            
+
             //var minutes = parseInt(dt.slice(dt.length-6, dt.length).slice(4,6));
             //var minutes = parseInt(dt.slice(14,16));
             var minutes = d.getUTCMinutes();
-            
+
             var sign = dt.slice(dt.length-6, dt.length).slice(0, 1);
 
             var totalMinutes = (hours * 60) + minutes;
