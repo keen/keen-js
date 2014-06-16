@@ -10,7 +10,7 @@ Quick overview of the JavaScript SDK:
   * [Keen.Metric](#keenmetric-eventcollection---options--client--)
   * [Keen.Series](#keenseries-eventcollection---options--client--)
   * [Keen.Funnel](#keenfunnel-steps---options-client--)
-  * [Keen.Extraction](#keen-extraction)
+  * [Keen.Extraction](#keenextraction)
 * [Data Visualization](#data-visualization)
   * [Keen.Number](#keennumber)
   * [Keen.LineChart](#keenlinechart)
