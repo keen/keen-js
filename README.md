@@ -23,7 +23,7 @@ If you haven't done so already, login to Keen IO to `create a project <https://k
 
 Installing and configuring the SDK should be a breeze. If it's not, please [let us know](mailto:team@keen.io)!
 
-Copy and paste the following code into your HTML page in the <head/> section of your page:
+Copy and paste the following code into your HTML page in the `<head/>` section of your page:
 
 ```
 <script type="text/javascript">
