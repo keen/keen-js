@@ -1,9 +1,6 @@
-# keen-js v2.1.2
-
-This is the latest stable version of the Keen IO JS Library (2012-2013). Get started with the [usage guide](https://keen.io/docs/clients/javascript/usage-guide/), or check out [version 3](https://github.com/keenlabs/keen-js/).
-
-
 # JavaScript SDK v2.1.x Usage Guide
+
+This version is no longer supported, please use [version 3](https://github.com/keenlabs/keen-js/).
 
 ## Introduction
 
@@ -47,12 +44,7 @@ If you’re configuring the SDK in a closure, make sure to export the Keen objec
 window.Keen = Keen;
 ```
 
-
 Now you're ready to configure the SDK to work with your Keen IO project!
-
-```
-https://d26b395fwzu5fz.cloudfront.net/2.1.2/keen.min.js
-```
 
 
 ## Configuration
