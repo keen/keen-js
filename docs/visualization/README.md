@@ -8,8 +8,6 @@ Check out our [Usage Guide](https://github.com/keenlabs/keen-js/blob/2.1.2/READM
 
 Want a totally custom look and feel? Because all of our query capabilities are exposed by API, you can use Keen IO with any charting library.
 
-One more thing... there are lots of other great data exploration tools out there.
-
 
 ## Number
 
@@ -48,9 +46,9 @@ Check out the SDK reference for [Keen.FunnelChart](https://github.com/keenlabs/k
 
 ## Custom Visualizations
 
-If you want to create custom visualizations with our SDK, then read on! All of our query capabilities are exposed by API, so you can use Keen IO with any charting library.
+There are lots of other great data exploration tools out there. All of our query capabilities are exposed by API, so you can use Keen IO with any charting library to create custom visualizations.
 
-It's super easy to [extract your Keen IO data](https://keen.io/docs/data-analysis/extractions/#extraction-to-file), or a filtered set of data, into a CSV file that you can work with in Excel, Tableau, [Data Hero](https://datahero.com/blog/2013/10/24/analyzing-keen-io-events-in-datahero/), or any other tool of your choice.
+It's also super easy to [extract your Keen IO data](https://keen.io/docs/data-analysis/extractions/#extraction-to-file), or a filtered set of data, into a CSV file that you can work with in Excel, Tableau, [Data Hero](https://datahero.com/blog/2013/10/24/analyzing-keen-io-events-in-datahero/), or any other tool of your choice.
 
 Below are examples to help you create:
 
