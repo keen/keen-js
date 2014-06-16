@@ -978,7 +978,7 @@ Keen.getEventCollectionProperties("purchases", function(properties){
 });
 ```
 
-### Keen Extraction
+### Keen.Extraction
 
 You can use the Keen IO JavaScript library to get raw query results so that you can do custom analysis with it.
 For example you might need to get an extraction of full events using the [extractions](https://keen.io/docs/data-analysis/extractions/)  query type. You can use Keen.Metric to construct your query, then use the getResponse method to get the query results. Note that the `draw` method won't work on these types of queries.
