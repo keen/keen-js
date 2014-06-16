@@ -11,13 +11,13 @@ The Keen IO JavaScript SDK is designed to be simple to develop with, yet incredi
 * [Add Events](#add-events): How to add an event with the Keen IO JavaScript SDK.
 * [Analyze and Visualize](#analyze-and-visualize): How to analyze and visualize your data with the Keen IO JavaScript SDK.
 
-Got questions or feedback? Come hang out with us in the `Keen IO User Chat`_.
+Got questions or feedback? Come hang out with us in the [Keen IO User Chat](https://users.keen.io).
 
-If you'd like to learn more about the various methods, check out the [javascript reference](https://github.com/keenlabs/keen-js/tree/2.1.2/reference).
+If you'd like to learn more about the various methods, check out the [javascript reference](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference).
 
 ### Get Project ID & Access Keys
 
-If you haven't done so already, login to Keen IO to `create a project <https://keen.io/add-project>`_ for your app.  Once on a Project page, note the Project ID and Access Keys listed there.  You'll need them for the next steps!
+If you haven't done so already, login to Keen IO to [create a project](https://keen.io/add-project) for your app.  Once on a Project page, note the Project ID and Access Keys listed there.  You'll need them for the next steps!
 
 ## Install Guide
 
@@ -51,7 +51,7 @@ Now you're ready to configure the SDK to work with your Keen IO project!
 
 The last line of the code you copy/pasted in the installation step needs to contain the Project ID and API Key of your project.  Simply replace what's in there with yours!
 
-If you're only doing data collection, you don't need to provide a Read Key.  That is only needed to [analyze and visualize](#analyze-and-visualize).
+If you're only doing data collection, you don't need to provide a Read Key.  That is only needed to [analyze and visualize](#analyze-and-visualize-data).
 
 ```
 Keen.configure({
