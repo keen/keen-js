@@ -50,7 +50,7 @@ It's also super easy to [extract your Keen IO data](https://keen.io/docs/data-an
 
 Below are examples to help you create:
 
-* [Combined multi-line chart](#combined-multiline-chart)
+* [Combined multi-line chart](#combined-multi-line-chart)
 * [Line chart with cumulative data](#line-chart-with-cumulative-data)
 * [Number with divided query results](#number-with-divided-query-results)
 
