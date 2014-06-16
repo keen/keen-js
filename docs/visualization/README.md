@@ -6,8 +6,6 @@ We have a great set of tools to turn your data into charts that you can embed on
 
 Check out our [Usage Guide](https://github.com/keenlabs/keen-js/blob/2.1.2/README.md) and [JS SDK Reference](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference) to learn more!
 
-Want a totally custom look and feel? Because all of our query capabilities are exposed by API, you can use Keen IO with any charting library.
-
 
 ## Number
 
