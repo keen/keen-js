@@ -116,7 +116,7 @@ client.draw(query, selector, config);
 Requests also have a draw method. The query is already known in this case, so you can omit the query from the method signature:
 
 ```
-var request = keen.run(query, function(){
+var request = client.run(query, function(){
   this.draw(document.getElementById(“chart-wrapper”), {
     title: “Custom chart title”
   });
