@@ -117,8 +117,8 @@ Requests also have a draw method. The query is already known in this case, so yo
 
 ```
 var request = client.run(query, function(){
-  this.draw(document.getElementById(“chart-wrapper”), {
-    title: “Custom chart title”
+  this.draw(document.getElementById("chart-wrapper"), {
+    title: "Custom chart title"
   });
 });
 ```
@@ -128,16 +128,16 @@ A future release will add the ability to plot multiple query responses on a sing
 ### Example usage
 
 ```
-var count = new Keen.Query(“count”, {
-  eventCollection: “pageviews”,
-  groupBy: “visitor.geo.country”
-  interval: “daily”,
-  timeframe: “this_21_days”
+var count = new Keen.Query("count", {
+  eventCollection: "pageviews",
+  groupBy: "visitor.geo.country"
+  interval: "daily",
+  timeframe: "this_21_days"
 });
 var request = client.run(count, function(){
-  this.draw(document.getElementById(“chart-wrapper”), {
-    title: “Custom chart title”,
-    chartType: “columnchart”
+  this.draw(document.getElementById("chart-wrapper"), {
+    title: "Custom chart title",
+    chartType: "columnchart"
   });
 });
 ```
