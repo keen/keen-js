@@ -385,7 +385,7 @@
         collection: "",
         select: [{
           path: "result",
-          type: "number",
+          type: "string",
           label: "Metric",
           format: false,
           method: "Keen.utils.prettyNumber",
@@ -522,9 +522,9 @@
     return new Keen.Dataform(response, schema);
   }
 
-  function _pretty_number(input) {
+  function _pretty_number(_input) {
     // If it has 3 or fewer sig figs already, just return the number.
-    var input = Number(input),
+    var input = Number(_input),
         sciNo = input.toPrecision(3),
         prefix = "",
         suffixes = ["", "k", "M", "B", "T"];
