@@ -240,13 +240,27 @@
     }
 
     if (options.chartOptions.lineWidth == void 0) {
-      options.chartOptions.lineWidth = 4;
+      options.chartOptions.lineWidth = 2;
     }
 
-    if (options.chartOptions.hAxis == void 0) {
-      if (options.chartType == 'columnchart' || options.chartType == 'areachart' || options.chartType == 'linechart') {
+    if (options.chartType == 'piechart') {
+      if (options.chartOptions.sliceVisibilityThreshold == void 0) {
+        options.chartOptions.sliceVisibilityThreshold = 0.01;
+      }
+    }
+
+    if (options.chartType == 'columnchart' || options.chartType == 'areachart' || options.chartType == 'linechart') {
+
+      if (options.chartOptions.hAxis == void 0) {
         options.chartOptions.hAxis = {
+          baselineColor: 'transparent',
           gridlines: { color: 'transparent' }
+        };
+      }
+
+      if (options.chartOptions.vAxis == void 0) {
+        options.chartOptions.vAxis = {
+          viewWindow: { min: 0 }
         };
       }
     }
@@ -402,7 +416,7 @@
 
       // Interval w/ single value
       // -------------------------------
-      if (response.result[0].timeframe && typeof response.result[0].value == "number") {
+      if (response.result[0].timeframe && (typeof response.result[0].value == "number" || response.result[0].value == null)) {
         schema = {
           collection: "result",
           select: [
