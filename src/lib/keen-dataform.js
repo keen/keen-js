@@ -178,13 +178,6 @@
       }
     });
 
-    // Temp: turn booleans into strings
-    /*each(discovered_labels, function(label, index){
-      if (typeof label === 'boolean') {
-        discovered_labels[index] = String(label);
-      }
-    });*/
-
     // Parse each record
     each(root, function(record, interval){
       //console.log('record', record);
@@ -330,7 +323,7 @@
         if (el[target] || el[target] === 0 || el[target] !== void 0) {
           // Easy grab!
           if (el[target] === null) {
-            return result.push('');
+            return result.push(null);
           } else {
             return result.push(el[target]);
           }
