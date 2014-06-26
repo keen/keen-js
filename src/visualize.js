@@ -143,7 +143,7 @@
 
     // GroupBy
     if (!isInterval && isGroupBy) {
-      options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
+      options.capable = ['piechart', 'barchart', 'columnchart', 'table'];
       defaultType = 'piechart';
       if (options.chartType == 'barchart') {
         options.chartOptions.legend = { position: 'none' };
@@ -152,7 +152,7 @@
 
     // Single Interval
     if (isInterval) { // Series
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'areachart';
       if (!isGroupBy && options.library == 'google') {
         options.chartOptions.legend = { position: 'none' };
@@ -168,7 +168,7 @@
 
     // Funnels
     if (isFunnel) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'columnchart';
       if (options.library == 'google') {
         options.chartOptions.legend = { position: 'none' };
@@ -177,7 +177,7 @@
 
     // 2x GroupBy
     if (is2xGroupBy) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'columnchart';
     }
 
@@ -209,8 +209,8 @@
 
     // Extractions
     if (isExtraction) {
-      options.capable = ['datatable'];
-      defaultType = 'datatable';
+      options.capable = ['table'];
+      defaultType = 'table';
     }
 
     // Dataform schema
