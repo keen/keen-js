@@ -152,16 +152,22 @@
     }
 
     // Single Interval
-    if (isInterval) { // Series
+    if (isInterval && !isGroupBy) { // Series
       options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'areachart';
-      if (!isGroupBy && options.library == 'google') {
-        options.chartOptions.legend = { position: 'none' };
+      if (options.library == 'google') {
+        if (options.chartOptions.legend == void 0) {
+          options.chartOptions.legend = { position: 'none' };
+        }
       }
+
     }
 
     // GroupBy Interval
-    if (isInterval && isGroupBy) {}
+    if (isInterval && isGroupBy) {
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      defaultType = 'linechart';
+    }
 
     // Custom Dataset schema for
     // complex query/response types
