@@ -110,7 +110,7 @@
 
     if (req instanceof Keen.Request) {
       // Handle known scenarios
-      isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
+      isMetric = (typeof req.data.result === "number" || req.data.result === null) ? true : false,
       isFunnel = (req.queries[0].get('steps')) ? true : false,
       isInterval = (req.queries[0].get('interval')) ? true : false,
       isGroupBy = (req.queries[0].get('group_by')) ? true : false,
@@ -128,6 +128,7 @@
       // Handle raw data
       // _transform() and handle as usual
       data = (req instanceof Array) ? req[0] : req;
+      isMetric = (typeof data.result === "number" || data.result === null) ? true : false
     }
 
 
