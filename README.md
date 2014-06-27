@@ -15,7 +15,7 @@ Tracking is manually tested and validated on Internet Explorer 6, 7, and 8.
 
 If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project) for your app. The Project ID and API Keys are available on the Project Overview page. You will need these for the next steps.
 
-Read our [Installation guide](./Installation) to learn about all the ways this library can fit into your workflow.
+Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
 
 ## Quick Setup
 
