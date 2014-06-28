@@ -296,10 +296,15 @@
     height: 400,
     width: 600,
     colors: [
-      '#00afd7', // blue
-      '#49c5b1', // green
-      '#e6b449', // gold
-      '#f35757'  // red
+      "#00afd7",
+      "#f35757",
+      "#f0ad4e",
+      "#8383c6",
+      "#f9845b",
+      "#49c5b1",
+      "#2a99d1",
+      "#aacc85",
+      "#ba7fab"
     ],
     chartOptions: {}
   };

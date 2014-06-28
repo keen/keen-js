@@ -27,7 +27,7 @@
     },
 
     render: function(){
-      var bgColor = (this.colors.length) ? this.colors[0] : "inherit",
+      var bgColor = (this.colors.length == 1) ? this.colors[0] : "#49c5b1",
           prefix = "",
           suffix = "",
           title = this.title || "Result",
