@@ -18,13 +18,17 @@
     "keen-io"
   ],
   "license": "MIT",
+  "main": "./dist/keen.min.js",
   "ignore": [
     "**/.*",
     "config",
     "bower_components",
     "node_modules",
     "src",
-    "test"
+    "test",
+    "Gruntfile.js",
+    "*.json",
+    "*.md"
   ],
   "devDependencies": {
     "dataform": "0.0.7",
