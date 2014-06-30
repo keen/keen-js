@@ -457,7 +457,11 @@
       if (typeof response.result[0].result == "number"){
         schema = {
           collection: "result",
-          select: []
+          select: [],
+          sort: {
+            column: 1,
+            order: "desc"
+          }
         };
         for (var key in response.result[0]){
           if (response.result[0].hasOwnProperty(key) && key !== "result"){
