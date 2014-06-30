@@ -120,7 +120,7 @@
         if (interval == 0) {
           self.table[0].push(flat_target);
         }
-        if (typeof(flat[flat_target]) || typeof flat[flat_target] == 'boolean') {
+        if (flat[flat_target] !== void 0 || typeof flat[flat_target] == 'boolean') {
           self.table[interval+1].push(flat[flat_target]);
         } else {
           self.table[interval+1].push(null);
@@ -793,31 +793,32 @@ Dataform.prototype.sort = function(opts){
       order: false
     }, opts);
 
-    !function(){
-      var header = self.table[0],
-          body = self.table.splice(1);
+    if (options.order != false) {
+      !function(){
+        var header = self.table[0],
+            body = self.table.splice(1);
 
-      body.sort(function(a, b){
-        //console.log(a[options.column], b[options.column]);
-        if (options.order == 'asc') {
-          if (a[options.column] > b[options.column]) {
-            return 1;
-          } else {
-            return -1
+        body.sort(function(a, b){
+          var _a = (a[options.column] === null || a[options.column] === void 0) ? "" : a[options.column],
+              _b = (b[options.column] === null || b[options.column] === void 0) ? "" : b[options.column];
+          if (options.order == 'asc') {
+            if (_a > _b) {
+              return 1;
+            } else {
+              return -1
+            }
+          } else if (options.order == 'desc') {
+            if (_a > _b) {
+              return -1;
+            } else {
+              return 1
+            }
           }
-        } else if (options.order == 'desc') {
-          if (a[options.column] > b[options.column]) {
-            return -1;
-          } else {
-            return 1
-          }
-        }
-        return false;
-      });
-
-      self.table = [header].concat(body);
-
-    }();
+          return 0;
+        });
+        self.table = [header].concat(body);
+      }();
+    }
   }
 
   return self;

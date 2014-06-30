@@ -31,6 +31,8 @@
   <br>
   <div id="ext-js"></div>
 
+  <div id="test-table-sort"></div>
+
   <!--<script type="text/javascript" src="../../dist/keen.js"></script>-->
   <script>
   //!function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="../../dist/keen.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
@@ -151,7 +153,6 @@
       });
 
       // keen.run([num, pie, line, funnel], function(){});
-
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel with a custom title",
         chartType: "barchart",
@@ -270,10 +271,23 @@
         }
       });
 
-      /*window.local = new Keen.Visualization('./grouped_bools.json', document.getElementById("string-js"), {
-        title: "string test!",
-        chartType: "columnchart"
-      });*/
+
+      var test_rows = [];
+      var test_max = 11;
+      for ( var i = 0; i <= test_max; i++) {
+          test_rows.push({
+              col1 : i,
+              col2 : Math.floor(test_max / 2) - i
+          });
+      }
+      var testsort = new Keen.Visualization({
+          result : test_rows
+      }, document.getElementById('test-table-sort'), {
+          chartType : 'table',
+          title : "test table",
+          width : "auto"
+      });
+      //console.log(testsort.data);
 
     });
 
