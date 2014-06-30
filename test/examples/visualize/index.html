@@ -25,6 +25,8 @@
   <br>
   <div id="chart2"></div>
   <br>
+  <div id="metric2"></div>
+  <br>
   <div id="table-js"></div>
   <br>
   <div id="ext-js"></div>
@@ -186,8 +188,21 @@
       window.chart = new Keen.Visualization({ result: 24450 }, document.getElementById("chart2"), {
         chartType: 'metric',
         title: "Manual!",
-        width: 400,
+        width: 600,
+        chartOptions: {
+          prefix: "$",
+          suffix: " /mo"
+        },
         colors: ['#222']
+      });
+
+      window.chart = new Keen.Visualization({ result: 78524450 }, document.getElementById("metric2"), {
+        chartType: 'metric',
+        title: "Two!",
+        width: "auto",
+        chartOptions: {
+          suffix: " each"
+        }
       });
 
 

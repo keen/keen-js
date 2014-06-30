@@ -217,7 +217,7 @@
     'columnchart': ColumnChart,
     'linechart': LineChart,
     'piechart': PieChart,
-    'datatable': Table
+    'table': Table
   });
 
 }('Keen', this);

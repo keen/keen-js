@@ -110,7 +110,7 @@
 
     if (req instanceof Keen.Request) {
       // Handle known scenarios
-      isMetric = (typeof req.data.result == "number" || req.data.result == null) ? true : false,
+      isMetric = (typeof req.data.result === "number" || req.data.result === null) ? true : false,
       isFunnel = (req.queries[0].get('steps')) ? true : false,
       isInterval = (req.queries[0].get('interval')) ? true : false,
       isGroupBy = (req.queries[0].get('group_by')) ? true : false,
@@ -128,6 +128,7 @@
       // Handle raw data
       // _transform() and handle as usual
       data = (req instanceof Array) ? req[0] : req;
+      isMetric = (typeof data.result === "number" || data.result === null) ? true : false
     }
 
 
@@ -143,7 +144,7 @@
 
     // GroupBy
     if (!isInterval && isGroupBy) {
-      options.capable = ['piechart', 'barchart', 'columnchart', 'datatable'];
+      options.capable = ['piechart', 'barchart', 'columnchart', 'table'];
       defaultType = 'piechart';
       if (options.chartType == 'barchart') {
         options.chartOptions.legend = { position: 'none' };
@@ -151,16 +152,22 @@
     }
 
     // Single Interval
-    if (isInterval) { // Series
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
+    if (isInterval && !isGroupBy) { // Series
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'areachart';
-      if (!isGroupBy && options.library == 'google') {
-        options.chartOptions.legend = { position: 'none' };
+      if (options.library == 'google') {
+        if (options.chartOptions.legend == void 0) {
+          options.chartOptions.legend = { position: 'none' };
+        }
       }
+
     }
 
     // GroupBy Interval
-    if (isInterval && isGroupBy) {}
+    if (isInterval && isGroupBy) {
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      defaultType = 'linechart';
+    }
 
     // Custom Dataset schema for
     // complex query/response types
@@ -168,7 +175,7 @@
 
     // Funnels
     if (isFunnel) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'columnchart';
       if (options.library == 'google') {
         options.chartOptions.legend = { position: 'none' };
@@ -177,7 +184,7 @@
 
     // 2x GroupBy
     if (is2xGroupBy) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'datatable'];
+      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'columnchart';
     }
 
@@ -209,8 +216,8 @@
 
     // Extractions
     if (isExtraction) {
-      options.capable = ['datatable'];
-      defaultType = 'datatable';
+      options.capable = ['table'];
+      defaultType = 'table';
     }
 
     // Dataform schema
@@ -289,10 +296,15 @@
     height: 400,
     width: 600,
     colors: [
-      '#00afd7', // blue
-      '#49c5b1', // green
-      '#e6b449', // gold
-      '#f35757'  // red
+      "#00afd7",
+      "#f35757",
+      "#f0ad4e",
+      "#8383c6",
+      "#f9845b",
+      "#49c5b1",
+      "#2a99d1",
+      "#aacc85",
+      "#ba7fab"
     ],
     chartOptions: {}
   };
