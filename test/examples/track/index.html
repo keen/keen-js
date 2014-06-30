@@ -53,11 +53,21 @@
     $(function(){
       // Links
       $("#a-ext").on("click", function(e){
-        client.trackExternalLink(e, "link_clicked", { key: "value" }, 500, function(){ return false });
-        return false;
+        return client.trackExternalLink(e, "link_clicked", { key: "value" }, 500);
+        // function(){ return false }
+        //return false;
       });
       document.getElementById("a-ext").onclick = function(e){
         // return client.trackExternalLink(e, "link_clicked", { key: "value" });
+      };
+
+      /*$("#a-ext3").on("click", function(e){
+        client.trackExternalLink(e, "link_clicked", { key: "value" }, 500, function(){ return false });
+        return false;
+      });*/
+      document.getElementById("a-ext3").onclick = function(e){
+        return client.trackExternalLink(e, "link_clicked", { key: "value" }, 500);
+        // , function(){ return false }
       };
 
       // FORMS
@@ -77,6 +87,15 @@
   <hr>
   <a id="a-ext2" href="https://keen.io" onclick="return client.trackExternalLink(event, 'inline_js', {'user_id' : 12345});">External Link with inline method</a>
   <hr>
+  <a id="a-ext3" href="https://keen.io" target="_blank">External Link (target=_blank)</a>
+  <hr>
+  <a id="a-ext4" href="https://keen.io" onclick="return client.trackExternalLink(event, 'inline_targetblank_js', {'user_id' : 12345});" target="_blank">External Link w/ inline (target=_blank)</a>
+  <hr>
+
+  <!-- NESTED SPANS -->
+  <a id="a-ext5" href="https://keen.io" onclick="return client.trackExternalLink(event, 'inline_nested_tags', {'user_id' : 12345});" target="_blank"><span>External Link `span` w/ inline (target=_blank)</span></a>
+  <hr>
+
   <button id="btn-ext">Button</button>
   <hr>
   <form action="./" id="form-ext1" method="GET">

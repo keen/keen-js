@@ -11,18 +11,23 @@
   Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
 
     var evt = jsEvent,
-        newTab = evt.metaKey,
-        target = evt.target,
+        target = evt.currentTarget || evt.srcElement || evt.target,
+        timer = timeout || 500,
         triggered = false,
-        callback = function(){};
+        targetAttr,
+        callback,
+        win;
 
-    if (timeout === undefined) {
-      timeout = 500;
+    targetAttr = target.getAttribute("target") || target.target || "";
+
+    if (targetAttr == "_blank" && !evt.metaKey) {
+      win = window.open("about:blank");
+      win.document.location = target.href;
     }
 
     if (target.nodeName === "A") {
       callback = function(){
-        if(!newTab && !triggered){
+        if(!triggered && !evt.metaKey && targetAttr !== "_blank"){
           triggered = true;
           window.location = target.href;
         }
@@ -33,7 +38,7 @@
           triggered = true;
           target.submit();
         }
-      }
+      };
     }
 
     if (timeoutCallback) {
@@ -42,15 +47,13 @@
           triggered = true;
           timeoutCallback();
         }
-      }
+      };
     }
     _uploadEvent.call(this, eventCollection, payload, callback, callback);
 
-    setTimeout(function() {
-      callback();
-    }, timeout);
+    setTimeout(callback, timer);
 
-    if (!newTab) {
+    if (!evt.metaKey) {
       return false;
     }
   };
