@@ -1,4 +1,4 @@
-# keen-js v3.0
+# keen-js v3.0.2
 
 A crisp, new JS Library for the Keen IO API.
 
