@@ -31,6 +31,9 @@
   <br>
   <div id="ext-js"></div>
 
+  <p>Intentional error:</p>
+  <div id="error-js"></div>
+
   <div id="test-table-sort"></div>
 
   <!--<script type="text/javascript" src="../../dist/keen.js"></script>-->
@@ -92,7 +95,7 @@
 
       setTimeout(function(){
         Keen.ready(function(){
-          console.log("Should fire automatically, and not append");
+          console.log("Should fire automatically, since the library is loaded.");
         });
       }, 5000);
 
@@ -123,8 +126,12 @@
 
       ext = new Keen.Query("extraction", {
         eventCollection: "pageview",
-        latest: 2,
-        property_names: ["page", "referrer"]
+        //latest: 2,
+        property_names: ["keen.timestamp", "page", "referrer"]
+      });
+
+      error = new Keen.Query("count_unique", {
+        eventCollection: "pageview"
       });
 
       funnel = new Keen.Query("funnel", {
@@ -151,6 +158,8 @@
           }
         ]
       });
+
+      keen.draw(error, document.getElementById("error-js"));
 
       // keen.run([num, pie, line, funnel], function(){});
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
