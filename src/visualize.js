@@ -43,6 +43,17 @@
       el.removeChild(placeholder);
       this.draw(selector, config);
     });
+    request.on("error", function(response){
+      var errorConfig, error;
+      spinner.stop();
+      el.removeChild(placeholder);
+
+      errorConfig = Keen.utils.extend({
+        error: response,
+        el: el
+      }, Keen.Visualization.defaults);
+      error = new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
+    });
 
     return request;
   };
@@ -325,7 +336,11 @@
 
     // Set default event handlers
     self.on("error", function(){
-      visualErrorHandler.apply(this, arguments);
+      var errorConfig, error;
+      errorConfig = Keen.utils.extend({
+        error: { message: arguments[0] }
+      }, config);
+      error = new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
     });
     self.on("update", function(){
       self.update.apply(this, arguments);
@@ -367,30 +382,36 @@
     return Visualization;
   };
 
-  function visualErrorHandler(msg){
+  var ErrorMessage = Keen.Visualization.extend({
+    initialize: function(){
+      var errorPlaceholder, errorMessage;
 
-    var errorPlaceholder = document.createElement("div");
-    errorPlaceholder.className = "keen-error";
-    //errorPlaceholder.style.background = "#f7f7f7";
-    errorPlaceholder.style.borderRadius = "8px";
-    errorPlaceholder.style.height = this.height + "px";
-    errorPlaceholder.style.width = this.width + "px";
+      errorPlaceholder = document.createElement("div");
+      errorPlaceholder.className = "keen-error";
+      errorPlaceholder.style.borderRadius = "8px";
+      errorPlaceholder.style.height = this.height + "px";
+      errorPlaceholder.style.width = this.width + "px";
 
-    var errorMessage = document.createElement("span");
-    errorMessage.style.color = "#ccc";
-    errorMessage.style.display = "block";
-    errorMessage.style.paddingTop = (this.height / 2 - 15) + "px";
-    errorMessage.style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
-    errorMessage.style.fontSize = "21px";
-    errorMessage.style.fontWeight = "light";
-    errorMessage.style.textAlign = "center";
+      errorMessage = document.createElement("span");
+      errorMessage.style.color = "#ccc";
+      errorMessage.style.display = "block";
+      errorMessage.style.paddingTop = (this.height / 2 - 15) + "px";
+      errorMessage.style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
+      errorMessage.style.fontSize = "21px";
+      errorMessage.style.fontWeight = "light";
+      errorMessage.style.textAlign = "center";
 
-    errorMessage.innerHTML = msg;
-    errorPlaceholder.appendChild(errorMessage);
+      errorMessage.innerHTML = this['error'].message;
+      errorPlaceholder.appendChild(errorMessage);
 
-    this.el.innerHTML = "";
-    this.el.appendChild(errorPlaceholder);
-  }
+      this.el.innerHTML = "";
+      this.el.appendChild(errorPlaceholder);
+    }
+  });
+
+  Keen.Visualization.register('keen-io', {
+    'error': ErrorMessage
+  });
 
 
   // -------------------------------

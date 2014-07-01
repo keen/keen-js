@@ -73,8 +73,11 @@
 
     var handleFailure = function(res, req){
       var response = JSON.parse(res.responseText);
+      self.trigger('error', response);
+      if (self.error) {
+        self.error(res, req);
+      }
       Keen.log(res.statusText + ' (' + response.error_code + '): ' + response.message);
-      if (self.error) self.error(res, req);
     };
 
     for (var i = 0; i < self.queries.length; i++) {
