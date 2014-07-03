@@ -136,8 +136,12 @@
   };
 
   Keen.Query.prototype.get = function(attribute) {
+    var key = attribute;
+    if (key.match(new RegExp("[A-Z]"))) {
+      key = key.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });
+    }
     if (this.params) {
-      return this.params[attribute] || null;
+      return this.params[key] || null;
     }
   };
 
