@@ -7,6 +7,7 @@
       './lib/domready',
       './lib/spinner'
     ], function(Dataform, domready, Spinner){
+
       var Keen = definition();
       Keen.Dataform = Dataform;
       Keen.utils.domready = domready;
@@ -14,9 +15,9 @@
       return Keen;
     });
   }
-  else if (typeof module != 'undefined' && module.exports) {
+  /*else if (typeof module != 'undefined' && module.exports) {
     module.exports = definition();
-  }
+  }*/
   else {
     context[name] = definition();
   }
