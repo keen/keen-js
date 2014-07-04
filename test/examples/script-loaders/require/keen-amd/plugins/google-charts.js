@@ -8,26 +8,21 @@
 !function(name, context, definition){
 
   if (typeof define == 'function' && define.amd) {
-
-    define(function(){
-      //definition(Keen)
-      console.log("here");
-      var Keen = require("Keen");
+    define(['../core'], function(Keen){
       return definition(Keen);
 		});
-
   }
-  else if (typeof module != 'undefined' && module.exports) {
+  /*else if (typeof module != 'undefined' && module.exports) {
     module.exports = definition();
-  }
+  }*/
   else {
-    context[name] = definition(context);
+    context[name] = definition();
   }
 
 }("Keen", this, function(lib) {
   'use strict';
 
-  var Keen = lib.Keen || {},
+  var Keen = lib || this.Keen || {},
       AreaChart,
       BarChart,
       ColumnChart,
@@ -37,8 +32,9 @@
 
   var errors = {
     "google-visualization-errors-0": "No results to visualize"
-  }
+  };
 
+  //console.log(Keen.utils);
   Keen.utils.loadScript("https://www.google.com/jsapi", function() {
     if(typeof google === 'undefined'){
       throw new Error("Problem loading Google Charts library. Please contact us!");

@@ -44,14 +44,14 @@ module.exports = function(grunt) {
           "src/query.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
-          "src/lib/keen-dataform.js",
+          //"src/lib/keen-dataform.js",
           "src/lib/keen-domready.js",
           "src/lib/keen-spinner.js",
           "src/visualize.js",
           "src/async.js",
-          "src/_outro.js",
-          "src/plugins/keen-googlecharts.js",
-          "src/plugins/keen-widgets.js"
+          "src/_outro.js"
+          //"src/plugins/keen-googlecharts.js",
+          //"src/plugins/keen-widgets.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
@@ -68,6 +68,22 @@ module.exports = function(grunt) {
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
+
+      /*adm: {
+        src: [
+          "src/_intro.js",
+          "src/core.js",
+          "src/track.js",
+          "src/query.js",
+          "src/lib/base64.js",
+          "src/lib/json2.js",
+          "src/visualize.js",
+          "src/async.js",
+          "src/_outro.js"
+        ],
+        dest: "dist/keen-adm/core.js"
+      },*/
+
       loader: {
         src: "src/loader.js",
         dest: "dist/<%= pkg.name %>-loader.js"

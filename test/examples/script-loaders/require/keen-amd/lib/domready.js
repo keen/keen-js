@@ -1,14 +1,20 @@
 /*!
   * domready (c) Dustin Diaz 2012 - License MIT
   */
-// Modified header to work internally w/ Keen lib
-/**!function (name, context, definition) {
-  if (typeof module != 'undefined' && module.exports) module.exports = definition()
-  else if (typeof define == 'function' && define.amd) define(definition)
-  else context[name] = definition()
-}('domready', Keen.utils,*/
 
-Keen.utils.domready = function(ready) {
+!function (name, context, definition) {
+
+  if (typeof module != 'undefined' && module.exports) {
+    module.exports = definition();
+  }
+  else if (typeof define == 'function' && define.amd) {
+    define(definition);
+  }
+  else {
+    context[name] = definition();
+  }
+
+}('domready', this, function() {
 
   var fns = [], fn, f = false
     , doc = document
@@ -55,4 +61,4 @@ Keen.utils.domready = function(ready) {
     function (fn) {
       loaded ? fn() : fns.push(fn)
     })
-};
+});

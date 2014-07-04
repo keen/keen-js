@@ -2,8 +2,8 @@
  * Copyright (c) 2011-2014 Felix Gnass
  * Licensed under the MIT license
  */
-// Modified to work internall with Keen lib
-!function(name, context, factory) {
+
+(function(name, context, factory) {
 
   // CommonJS
   if (typeof exports == 'object')  module.exports = factory()
@@ -13,8 +13,8 @@
 
   // Browser global
   else context[name] = factory()
-
-}("Spinner", Keen, function() {
+}
+("Spinner", this, function() {
   "use strict";
 
   var prefixes = ['webkit', 'Moz', 'ms', 'O'] /* Vendor prefixes */
@@ -345,6 +345,6 @@
   if (!vendor(probe, 'transform') && probe.adj) initVML()
   else useCssAnimations = vendor(probe, 'animation')
 
-  return Spinner
+  return Spinner;
 
-});
+}));

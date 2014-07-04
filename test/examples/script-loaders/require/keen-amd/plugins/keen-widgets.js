@@ -6,21 +6,23 @@
 */
 
 !function(name, context, definition){
+
   if (typeof define == 'function' && define.amd) {
-    define("Keen/Widgets", [], function (require) {
-      var Keen = require("Keen");
-      return definition(context, Keen);
+    define(['../core'], function(Keen){
+      return definition(Keen);
     });
-  } else if (typeof module != 'undefined' && module.exports) {
+  }
+  /*else if (typeof module != 'undefined' && module.exports) {
     module.exports = definition();
-  } else {
-    context[name] = definition(context);
+  }*/
+  else {
+    context[name] = definition();
   }
 
-}("Keen", this, function(ctx, lib) {
+}("Keen", this, function(lib) {
   'use strict';
 
-  var Keen = lib || ctx.Keen || {},
+  var Keen = lib || this.Keen || {},
       Metric;
 
   Metric = Keen.Visualization.extend({
