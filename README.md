@@ -2,7 +2,7 @@
 
 A crisp, new JS Library for the Keen IO API.
 
-**Important:** v3 is now the current version. [v2.1.2](https://github.com/keenlabs/keen-js/tree/2.1.2) documentation is located here.
+**Important:** v3 is now the current version. v2.1.2 documentation is located [here](https://github.com/keenlabs/keen-js/tree/2.1.2).
 
 [![RepoStats](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/visit?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjoiUkVBRE1FLm1kIiwidmlzaXRvciI6eyJpcF9hZGRyZXNzIjoiJHtrZWVuLmlwfSIsInVzZXJfYWdlbnQiOiIke2tlZW4udXNlcl9hZ2VudH0ifSwia2VlbiI6eyJhZGRvbnMiOlt7Im5hbWUiOiJrZWVuOmlwX3RvX2dlbyIsImlucHV0Ijp7ImlwIjoidmlzaXRvci5pcF9hZGRyZXNzIn0sIm91dHB1dCI6InZpc2l0b3IuZ2VvIn0seyJuYW1lIjoia2Vlbjp1YV9wYXJzZXIiLCJpbnB1dCI6eyJ1YV9zdHJpbmciOiJ2aXNpdG9yLnVzZXJfYWdlbnQifSwib3V0cHV0IjoidmlzaXRvci50ZWNoIn1dfX0=&redirect=http://img.shields.io/badge/Stats-Keen%20IO-blue.svg)](https://github.com/keenlabs/keen-js)
 [![Build Status](https://api.travis-ci.org/keenlabs/keen-js.png?branch=master)](https://travis-ci.org/keenlabs/keen-js)
