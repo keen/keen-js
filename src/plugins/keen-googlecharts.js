@@ -6,28 +6,22 @@
 */
 
 !function(name, context, definition){
-
-  if (typeof define == 'function' && define.amd) {
-
-    define(function(){
-      //definition(Keen)
-      console.log("here");
-      var Keen = require("Keen");
-      return definition(Keen);
-		});
-
+  if (typeof define == "function" && define.amd) {
+    define(["keen"], function(lib){
+      return definition(lib);
+    });
   }
-  else if (typeof module != 'undefined' && module.exports) {
+  if (typeof module != "undefined" && module.exports) {
     module.exports = definition();
   }
-  else {
-    context[name] = definition(context);
+  if (context[name]){
+    definition(context[name]);
   }
 
 }("Keen", this, function(lib) {
-  'use strict';
+  "use strict";
 
-  var Keen = lib.Keen || {},
+  var Keen = lib || {},
       AreaChart,
       BarChart,
       ColumnChart,
@@ -241,5 +235,5 @@
     'table'       : Table
   });
 
-  return Keen;
+  //return Keen;
 });

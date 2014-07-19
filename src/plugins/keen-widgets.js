@@ -6,21 +6,22 @@
 */
 
 !function(name, context, definition){
-  if (typeof define == 'function' && define.amd) {
-    define("Keen/Widgets", [], function (require) {
-      var Keen = require("Keen");
-      return definition(context, Keen);
+  if (typeof define == "function" && define.amd) {
+    define(["keen"], function(lib){
+      return definition(lib);
     });
-  } else if (typeof module != 'undefined' && module.exports) {
+  }
+  if (typeof module != "undefined" && module.exports) {
     module.exports = definition();
-  } else {
-    context[name] = definition(context);
+  }
+  if (context[name]){
+    definition(context[name]);
   }
 
-}("Keen", this, function(ctx, lib) {
+}("Keen", this, function(lib) {
   'use strict';
 
-  var Keen = lib || ctx.Keen || {},
+  var Keen = lib || {},
       Metric;
 
   Metric = Keen.Visualization.extend({
@@ -67,5 +68,5 @@
     'metric': Metric
   });
 
-  return Keen;
+  //return Keen;
 });

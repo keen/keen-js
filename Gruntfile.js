@@ -16,14 +16,12 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
 
     copy: {
-      build: {
-        src: "bower_components/dataform/dist/dataform.js",
-        dest: "src/lib/keen-dataform.js",
-        options: {
-          process: function (content, path) {
-            return content.replace("\'Dataform\', this", "\'Dataform\', Keen");
-          }
-        }
+      plugins: {
+        expand: true,
+        src: "src/plugins/**",
+        dest: "dist/plugins/",
+        flatten: true,
+        filter: "isFile"
       }
     },
 
@@ -36,6 +34,8 @@ module.exports = function(grunt) {
           return "  // Source: " + filepath + "\n" + src;
         }
       },
+
+      // Build complete version
       all: {
         src: [
           "src/_intro.js",
@@ -44,7 +44,7 @@ module.exports = function(grunt) {
           "src/query.js",
           "src/lib/base64.js",
           "src/lib/json2.js",
-          //"src/lib/keen-dataform.js",
+          "src/lib/keen-dataform.js",
           "src/lib/keen-domready.js",
           "src/lib/keen-spinner.js",
           "src/visualize.js",
@@ -55,6 +55,8 @@ module.exports = function(grunt) {
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
+
+      // Build tracking-only version
       tracker: {
         src: [
           "src/_intro.js",
@@ -68,21 +70,6 @@ module.exports = function(grunt) {
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
-
-      /*adm: {
-        src: [
-          "src/_intro.js",
-          "src/core.js",
-          "src/track.js",
-          "src/query.js",
-          "src/lib/base64.js",
-          "src/lib/json2.js",
-          "src/visualize.js",
-          "src/async.js",
-          "src/_outro.js"
-        ],
-        dest: "dist/keen-adm/core.js"
-      },*/
 
       loader: {
         src: "src/loader.js",
