@@ -7,8 +7,9 @@
   Keen.prototype.draw = function(query, selector, config) {
     // Find DOM element, set height, build spinner
     var config = config || {};
-    var id = selector.getAttribute("id");
-    var el = document.getElementById(id);
+    var el = selector;
+    //var id = selector.getAttribute("id");
+    //var el = document.getElementById(id);
 
     var placeholder = document.createElement("div");
     placeholder.className = "keen-loading";

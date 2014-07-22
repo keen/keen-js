@@ -38,20 +38,20 @@ module.exports = function(grunt) {
       // Build complete version
       all: {
         src: [
-          "src/_intro.js",
-          "src/core.js",
-          "src/track.js",
-          "src/query.js",
-          "src/lib/base64.js",
-          "src/lib/json2.js",
-          "src/lib/keen-dataform.js",
-          "src/lib/keen-domready.js",
-          "src/lib/keen-spinner.js",
-          "src/visualize.js",
-          "src/async.js",
-          "src/_outro.js"
-          //"src/plugins/keen-googlecharts.js",
-          //"src/plugins/keen-widgets.js"
+            "src/_intro.js"
+          , "src/core.js"
+          , "src/track.js"
+          , "src/query.js"
+          , "src/lib/base64.js"
+          , "src/lib/json2.js"
+          , "src/lib/keen-dataform.js"
+          , "src/lib/keen-domready.js"
+          , "src/lib/keen-spinner.js"
+          , "src/visualize.js"
+          , "src/async.js"
+          , "src/_outro.js"
+          , "src/plugins/keen-googlecharts.js"
+          , "src/plugins/keen-widgets.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
@@ -59,14 +59,14 @@ module.exports = function(grunt) {
       // Build tracking-only version
       tracker: {
         src: [
-          "src/_intro.js",
-          "src/core.js",
-          "src/track.js",
-          "src/lib/base64.js",
-          "src/lib/json2.js",
-          "src/lib/keen-domready.js",
-          "src/async.js",
-          "src/_outro.js"
+            "src/_intro.js"
+          , "src/core.js"
+          , "src/track.js"
+          , "src/lib/base64.js"
+          , "src/lib/json2.js"
+          , "src/lib/keen-domready.js"
+          , "src/async.js"
+          , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
