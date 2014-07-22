@@ -31,10 +31,10 @@
     "*.md"
   ],
   "devDependencies": {
-    "dataform": "0.0.8",
     "mocha": "~1.18.2",
     "chai": "~1.9.1",
     "sinon": "http://sinonjs.org/releases/sinon-1.9.0.js",
-    "sinon-ie": "http://sinonjs.org/releases/sinon-ie-1.9.0.js"
+    "sinon-ie": "http://sinonjs.org/releases/sinon-ie-1.9.0.js",
+    "requirejs-bower": "2.1.14"
   }
 }

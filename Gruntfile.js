@@ -16,14 +16,12 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
 
     copy: {
-      build: {
-        src: "bower_components/dataform/dist/dataform.js",
-        dest: "src/lib/keen-dataform.js",
-        options: {
-          process: function (content, path) {
-            return content.replace("\'Dataform\', this", "\'Dataform\', Keen");
-          }
-        }
+      plugins: {
+        expand: true,
+        src: "src/plugins/**",
+        dest: "dist/plugins/",
+        flatten: true,
+        filter: "isFile"
       }
     },
 
@@ -36,6 +34,8 @@ module.exports = function(grunt) {
           return "  // Source: " + filepath + "\n" + src;
         }
       },
+
+      // Build complete version
       all: {
         src: [
           "src/_intro.js",
@@ -49,12 +49,14 @@ module.exports = function(grunt) {
           "src/lib/keen-spinner.js",
           "src/visualize.js",
           "src/async.js",
-          "src/_outro.js",
-          "src/plugins/keen-googlecharts.js",
-          "src/plugins/keen-widgets.js"
+          "src/_outro.js"
+          //"src/plugins/keen-googlecharts.js",
+          //"src/plugins/keen-widgets.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
+
+      // Build tracking-only version
       tracker: {
         src: [
           "src/_intro.js",
@@ -68,6 +70,7 @@ module.exports = function(grunt) {
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
+
       loader: {
         src: "src/loader.js",
         dest: "dist/<%= pkg.name %>-loader.js"

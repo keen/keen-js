@@ -5,8 +5,23 @@
 * ----------------------
 */
 
-!function(name, context){
-  var Keen = context[name] || {},
+!function(name, context, definition){
+  if (typeof define == "function" && define.amd) {
+    define(["keen"], function(lib){
+      return definition(lib);
+    });
+  }
+  if (typeof module != "undefined" && module.exports) {
+    module.exports = definition();
+  }
+  if (context[name]){
+    definition(context[name]);
+  }
+
+}("Keen", this, function(lib) {
+  "use strict";
+
+  var Keen = lib || {},
       AreaChart,
       BarChart,
       ColumnChart,
@@ -212,12 +227,13 @@
   // -------------------------------
 
   Keen.Visualization.register('google', {
-    'areachart': AreaChart,
-    'barchart': BarChart,
-    'columnchart': ColumnChart,
-    'linechart': LineChart,
-    'piechart': PieChart,
-    'table': Table
+    'areachart'   : AreaChart,
+    'barchart'    : BarChart,
+    'columnchart' : ColumnChart,
+    'linechart'   : LineChart,
+    'piechart'    : PieChart,
+    'table'       : Table
   });
 
-}('Keen', this);
+  //return Keen;
+});
