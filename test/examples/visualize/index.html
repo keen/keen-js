@@ -113,14 +113,14 @@
 
       line = new Keen.Query("count", {
         event_collection: "pageview",
-        timeframe: "this_5_months",
+        timeframe: "this_12_months",
         interval: "monthly"
       });
 
       multiline = new Keen.Query("count", {
         event_collection: "pageview",
         group_by: "page",
-        timeframe: "this_5_months",
+        timeframe: "this_12_months",
         interval: "monthly"
       });
 

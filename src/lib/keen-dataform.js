@@ -1,7 +1,9 @@
 // Source: src/lib/_intro.js
-(function(lib){
-  var Keen = lib || {};
-  Keen.Dataform = function() {
+
+(function(root, factory) {
+  root.Dataform = factory();
+}
+(Keen, function() {
     'use strict';
 
     // Source: src/dataform.js
@@ -814,9 +816,6 @@
     return self;
   };
 
-  // Source: src/lib/_outro.js
+    // Source: src/lib/_outro.js
     return Dataform;
-  }
-
-  return Keen;
-})(Keen);
+}));

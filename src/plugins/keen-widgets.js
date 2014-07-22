@@ -7,7 +7,7 @@
 
 !function(name, context, definition){
   if (typeof define == "function" && define.amd) {
-    define(["keen"], function(lib){
+    define("keen/keenwidgets", ["keen"], function(lib){
       return definition(lib);
     });
   }

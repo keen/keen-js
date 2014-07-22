@@ -1,21 +1,37 @@
 requirejs.config({
   paths: {
     // complete version + plugins
+    // Map "keen" module ID to source
       "keen"              : "../../../dist/keen"
-    , "keen/googlecharts" : "../../../dist/plugins/keen-googlecharts"
-    , "keen/widgets"      : "../../../dist/plugins/keen-widgets"
-    , "keen/test-plugin"  : "./test-plugin"
-    // tracking-only version
-    , "keen-tracker"      : "../../../dist/keen-tracker"
+    //, "keen/googlecharts" : "../../../dist/plugins/keen-googlecharts"
+    //, "keen/keen-widgets" : "../../../dist/plugins/keen-widgets"
+    //, "keen/test-plugin"  : "./test-plugin"
+  },
+
+  // Use bundles to "unpack" modules from the CDN distro
+  bundles: {
+    "keen": ["keen/googlecharts", "keen/keenwidgets"]
   }
 });
 
 require([
-    "keen-tracker"
-  , "keen"
+  // 1) Use tracking-only directly or w/ path ID
+  "../../../dist/keen-tracker",
+
+  // 2) Use source directly without plugins
+  //"../../../dist/keen"
+
+  /* 3) Use "keen" when unpacking from bundles */
+  "keen"
   , "keen/googlecharts"
-  , "keen/widgets"
-  , "keen/test-plugin"
+  , "keen/keenwidgets"
+  , "./test-plugin"
+
+  /* 4) Use "keen" when loading plugins from elsewhere
+  "keen"
+  , "../../../dist/plugins/keen-googlecharts"
+  , "../../../dist/plugins/keen-widgets"
+  , "./test-plugin" */
 
 ], function(KeenTracker, KeenAMD) {
 
@@ -49,5 +65,8 @@ require([
     writeKey: "456",
     readKey: "789"
   });
-  console.log('TRACKER', tracker);
+  KeenTracker.ready(function(){
+    console.log('TRACKER', tracker);
+  });
+
 });
