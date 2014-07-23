@@ -1,39 +1,26 @@
+
 requirejs.config({
   paths: {
-    // complete version + plugins
-    // Map "keen" module ID to source
-      "keen"              : "../../../dist/keen"
-    //, "keen/googlecharts" : "../../../dist/plugins/keen-googlecharts"
-    //, "keen/keen-widgets" : "../../../dist/plugins/keen-widgets"
-    //, "keen/test-plugin"  : "./test-plugin"
-  },
-
-  // Use bundles to "unpack" modules from the CDN distro
-  bundles: {
-    "keen": ["keen/googlecharts", "keen/keenwidgets"]
+    /* Set "keen" module ID for plugins */
+    "keen": "../../../dist/keen"
   }
 });
 
 require([
   // 1) Use tracking-only directly or w/ path ID
-  "../../../dist/keen-tracker",
+  "../../../dist/keen-tracker"
 
   // 2) Use source directly without plugins
-  //"../../../dist/keen"
+  , "../../../dist/keen"
 
-  /* 3) Use "keen" when unpacking from bundles */
-  "keen"
-  , "keen/googlecharts"
-  , "keen/keenwidgets"
+  /* 3) Use "keen" path when loading plugins
+  , "keen"
   , "./test-plugin"
-
-  /* 4) Use "keen" when loading plugins from elsewhere
-  "keen"
   , "../../../dist/plugins/keen-googlecharts"
   , "../../../dist/plugins/keen-widgets"
-  , "./test-plugin" */
+  */
 
-], function(KeenTracker, KeenAMD) {
+], function(KeenTracker, KeenAMD) { // KeenTracker,
 
   console.log(arguments);
   console.log(require.s.contexts._.defined);

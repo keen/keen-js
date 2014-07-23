@@ -5,7 +5,6 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-contrib-concat");
-  grunt.loadNpmTasks('grunt-contrib-copy');
   grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-s3');
@@ -14,16 +13,6 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
-
-    copy: {
-      plugins: {
-        expand: true,
-        src: "src/plugins/**",
-        dest: "dist/plugins/",
-        flatten: true,
-        filter: "isFile"
-      }
-    },
 
     concat: {
       options: {
@@ -48,10 +37,10 @@ module.exports = function(grunt) {
           , "src/lib/keen-domready.js"
           , "src/lib/keen-spinner.js"
           , "src/visualize.js"
-          , "src/async.js"
-          , "src/_outro.js"
           , "src/plugins/keen-googlecharts.js"
           , "src/plugins/keen-widgets.js"
+          , "src/async.js"
+          , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
@@ -69,6 +58,16 @@ module.exports = function(grunt) {
           , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
+      },
+
+      plugin_googlecharts: {
+        src: ["src/plugins/_intro.js", "src/plugins/keen-googlecharts.js", "src/plugins/_outro.js"],
+        dest: "dist/plugins/keen-googlecharts.js"
+      },
+
+      plugin_keenwidgets: {
+        src: ["src/plugins/_intro.js", "src/plugins/keen-widgets.js", "src/plugins/_outro.js"],
+        dest: "dist/plugins/keen-widgets.js"
       },
 
       loader: {
@@ -174,7 +173,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['copy', 'concat', 'uglify']);
+  grunt.registerTask('build', ['concat', 'uglify']);
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
   grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
   grunt.registerTask('default', ['build']);
