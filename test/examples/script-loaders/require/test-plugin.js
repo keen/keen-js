@@ -8,7 +8,7 @@
 !function(name, context, definition){
   if (typeof define == "function" && define.amd) {
     define(["keen"], function(lib){
-      return definition(lib);
+      definition(lib);
     });
   }
   if (typeof module != "undefined" && module.exports) {
