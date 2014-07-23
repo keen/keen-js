@@ -4,10 +4,10 @@
       definition(lib);
     });
   }
-  if (typeof module != "undefined" && module.exports) {
+
+  if ( typeof module === "object" && typeof module.exports === "object" ) {
     module.exports = definition();
-  }
-  if (context[name]){
+  } else {
     definition(context[name]);
   }
 

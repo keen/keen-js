@@ -1,10 +1,15 @@
 !function(name, context, definition){
   if (typeof define == "function" && define.amd) {
-    define(definition);
+    // Register ID to avoid anonymous define() errors
+    define("keen", [], function(){
+      return definition();
+    });
   }
-  if (typeof module != "undefined" && module.exports) {
+  if ( typeof module === "object" && typeof module.exports === "object" ) {
     module.exports = definition();
+  } else {
+    context[name] = definition();
   }
-  context[name] = definition();
+
 }("Keen", this, function(){
   "use strict";
