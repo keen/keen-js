@@ -97,7 +97,7 @@
         var jsonBody = JSON.stringify(newEvent);
         var base64Body = Keen.Base64.encode(jsonBody);
         url = url + "?api_key=" + this.client.writeKey;
-        url = url + "&data=" + base64Body;
+        url = url + "&data=" + encodeURIComponent(base64Body);
         url = url + "&modified=" + new Date().getTime();
         _request.jsonp.apply(this, [url, this.client.writeKey, success, error])
         break;
