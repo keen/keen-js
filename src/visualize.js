@@ -553,6 +553,14 @@
 
     }
 
+    // Trim colorMapping values
+    // -------------------------------
+    if (self.colorMapping) {
+      Keen.utils.each(self.colorMapping, function(v,k){
+        self.colorMapping[k] = v.trim();
+      });
+    }
+
 
     // Apply formatting options
     // -------------------------------
