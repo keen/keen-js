@@ -287,6 +287,32 @@
     //_extend(self, options);
     options['data'] = (data) ? _transform.call(options, data, dataformSchema) : [];
 
+
+    // Apply color-mapping options (post-process)
+    // -------------------------------
+    if (options.colorMapping) {
+
+      // Map to selected index
+      if (options['data'].schema.select && options['data'].table[0].length == 2) {
+        _each(options['data'].table, function(row, i){
+          if (i > 0 && options.colorMapping[row[0]]) {
+            options.colors.splice(i-1, 0, options.colorMapping[row[0]]);
+          }
+        });
+      }
+
+      // Map to unpacked labels
+      if (options['data'].schema.unpack) { //  && options['data'].table[0].length > 2
+        _each(options['data'].table[0], function(cell, i){
+          if (i > 0 && options.colorMapping[cell]) {
+            options.colors.splice(i-1, 0, options.colorMapping[cell]);
+          }
+        });
+      }
+
+    }
+
+
     // Put it all together
     // -------------------------------
     if (options.library) {
@@ -423,7 +449,7 @@
   // queries are not known
   // -------------------------------
   function _transform(response, config){
-    var self = this, schema = config || {};
+    var self = this, schema = config || {}, dataform;
 
     // Metric
     // -------------------------------
@@ -553,25 +579,58 @@
 
     }
 
-
-    // Apply formatting options
+    // Trim colorMapping values
     // -------------------------------
-    if (self.labelMapping && schema.unpack) {
-      if (schema.unpack['index']) {
-        schema.unpack['index'].replace = schema.unpack['index'].replace || self.labelMapping;
-      }
-      if (schema.unpack['label']) {
-        schema.unpack['label'].replace = schema.unpack['label'].replace || self.labelMapping;
-      }
-    }
-
-    if (self.labelMapping && schema.select) {
-      _each(schema.select, function(v, i){
-        schema.select[i].replace = self.labelMapping;
+    if (self.colorMapping) {
+      _each(self.colorMapping, function(v,k){
+        self.colorMapping[k] = v.trim();
       });
     }
 
-    return new Keen.Dataform(response, schema);
+    // Apply formatting options
+    // -------------------------------
+
+    // If key:value replacement map
+    if (self.labelMapping && _type(self.labelMapping) == 'Object') {
+
+      if (schema.unpack) {
+        if (schema.unpack['index']) {
+          schema.unpack['index'].replace = schema.unpack['index'].replace || self.labelMapping;
+        }
+        if (schema.unpack['label']) {
+          schema.unpack['label'].replace = schema.unpack['label'].replace || self.labelMapping;
+        }
+      }
+
+      if (schema.select) {
+        _each(schema.select, function(v, i){
+          schema.select[i].replace = self.labelMapping;
+        });
+      }
+
+    }
+
+    dataform = new Keen.Dataform(response, schema);
+
+    // If full replacement (post-process)
+    if (self.labelMapping && _type(self.labelMapping) == 'Array') {
+      if (schema.unpack && dataform.table[0].length == 2) {
+        _each(dataform.table, function(row,i){
+          if (i > 0 && self.labelMapping[i-1]) {
+            dataform.table[i][0] = self.labelMapping[i-1];
+          }
+        });
+      }
+      if (schema.unpack && dataform.table[0].length > 2) {
+        _each(dataform.table[0], function(cell,i){
+          if (i > 0 && self.labelMapping[i-1]) {
+            dataform.table[0][i] = self.labelMapping[i-1];
+          }
+        });
+      }
+    }
+
+    return dataform;
   }
 
   function _pretty_number(_input) {
@@ -681,7 +740,6 @@
       }, false);
     }
   }
-
 
   Keen.Visualization.find = function(target){
     var el, match;

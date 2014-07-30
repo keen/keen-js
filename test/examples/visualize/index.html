@@ -15,6 +15,8 @@
   <br/>
   <div id="multi-js"></div>
   <br>
+  <div id="filtered-multi-js"></div>
+  <br>
   <div id="random-single-js"></div>
   <br>
   <div id="random-multi-js"></div>
@@ -124,6 +126,20 @@
         interval: "monthly"
       });
 
+      filtered_multi = new Keen.Query("count", {
+        event_collection: "pageview",
+        group_by: "page",
+        timeframe: "this_12_months",
+        interval: "monthly",
+        filters: [
+          {
+            "property_name" : "page",
+            "operator" : "eq",
+            "property_value" : "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html"
+          }
+        ]
+      });
+
       ext = new Keen.Query("extraction", {
         eventCollection: "pageview",
         //latest: 2,
@@ -165,13 +181,14 @@
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel with a custom title",
         chartType: "barchart",
-        labelMapping: {
+        /*labelMapping: {
           "pageview"           : "Start",
           "viewed_twentyfive"  : "25%",
           "viewed_fifty"       : "50%",
           "viewed_seventyfive" : "75%",
           "viewed_all"         : "100%"
-        }
+        }*/
+        labelMapping: ["1", "2", "3", "4", "5"]
       });
 
       keen.draw(pie, document.getElementById("pie-js"), {
@@ -183,7 +200,7 @@
         },
         //colors: ['#444', '#777'],
         colorMapping: {
-          //"N/A": "#ccc"
+          "N/A": "#ccc"
           //"Home": "blue",
           //"Video page": "red"
         }
@@ -244,13 +261,15 @@
         this.draw(document.getElementById("random-multi-js"), {
           title: "Random multi",
           height: 500,
+          //labelMapping: ["1", "2", "3", "4", "5"],
           labelMapping: {
             "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Page",
             "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Index",
             "": "N/A"
           },
           colorMapping: {
-            "Page": "pink"
+            "Page": "pink",
+            "Index": "yellow"
           },
           chartOptions: {
             isStacked: true
@@ -269,7 +288,19 @@
         colorMapping: {
           //"N/A": "#ccc",
           //"Home": "pink",
-          "Page": "pink"
+          "Page": "pink "
+        }
+      });
+
+      // Filtered to remove all but one series result, will still be colored correctly
+      keen.draw(filtered_multi, document.getElementById("filtered-multi-js"), {
+        chartType: "columnchart",
+        width: 800,
+        labelMapping: {
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Page"
+        },
+        colorMapping: {
+          "Page": "pink "
         }
       });
 
