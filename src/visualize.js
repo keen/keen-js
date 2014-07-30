@@ -715,7 +715,6 @@
     }
   }
 
-
   Keen.Visualization.find = function(target){
     var el, match;
     if (target) {
