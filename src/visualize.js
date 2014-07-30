@@ -287,6 +287,32 @@
     //_extend(self, options);
     options['data'] = (data) ? _transform.call(options, data, dataformSchema) : [];
 
+
+    // Apply color-mapping options (post-process)
+    // -------------------------------
+    if (options.colorMapping) {
+
+      // Map to selected index
+      if (options['data'].schema.select && options['data'].table[0].length == 2) {
+        _each(options['data'].table, function(row, i){
+          if (i > 0 && options.colorMapping[row[0]]) {
+            options.colors.splice(i-1, 0, options.colorMapping[row[0]]);
+          }
+        });
+      }
+
+      // Map to unpacked labels
+      if (options['data'].schema.unpack) { //  && options['data'].table[0].length > 2
+        _each(options['data'].table[0], function(cell, i){
+          if (i > 0 && options.colorMapping[cell]) {
+            options.colors.splice(i-1, 0, options.colorMapping[cell]);
+          }
+        });
+      }
+
+    }
+
+
     // Put it all together
     // -------------------------------
     if (options.library) {

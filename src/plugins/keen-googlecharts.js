@@ -32,28 +32,6 @@
       }
     });
 
-    function setColors(){
-      var self = this;
-      if (self.colorMapping) {
-        if (self.data.table[0].length > 2) {
-          // map to labels
-          Keen.utils.each(self.data.table[0], function(cell, i){
-            if (i > 0 && self.colorMapping[cell]) {
-              self.colors.splice(i-1, 0, self.colorMapping[cell]);
-            }
-          });
-        } else {
-          // map to indices
-          Keen.utils.each(self.data.table, function(row, i){
-            if (i > 0 && self.colorMapping[row[0]]) {
-              self.colors.splice(i-1, 0, self.colorMapping[row[0]]);
-            }
-          });
-        }
-      }
-      return self.colors;
-    }
-
     function handleErrors(stack){
       var message = errors[stack['id']] || stack['message'] || "An error occurred";
       this.trigger('error', message);
@@ -81,7 +59,7 @@
           title: this.title || '',
           height: parseInt(this.height),
           width: parseInt(this.width),
-          colors: setColors.call(this)
+          colors: this.colors
         });
         this._chart.draw(data, options);
       }
@@ -105,7 +83,7 @@
           title: this.title || '',
           height: parseInt(this.height),
           width: parseInt(this.width),
-          colors: setColors.call(this)
+          colors: this.colors
         });
         this._chart.draw(data, options);
       }
@@ -129,7 +107,7 @@
           title: this.title || '',
           height: parseInt(this.height),
           width: parseInt(this.width),
-          colors: setColors.call(this)
+          colors: this.colors
         });
         this._chart.draw(data, options);
       }
@@ -153,7 +131,7 @@
           title: this.title || '',
           height: parseInt(this.height),
           width: parseInt(this.width),
-          colors: setColors.call(this)
+          colors: this.colors
         });
         this._chart.draw(data, options);
       }
@@ -177,7 +155,7 @@
           title: this.title || '',
           height: parseInt(this.height),
           width: parseInt(this.width),
-          colors: setColors.call(this)
+          colors: this.colors
         });
         this._chart.draw(data, options);
       }
@@ -201,7 +179,7 @@
           title: this.title || '',
           height: parseInt(this.height),
           width: parseInt(this.width),
-          colors: setColors.call(this)
+          colors: this.colors
         });
         this._chart.draw(data, options);
       }
