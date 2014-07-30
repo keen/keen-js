@@ -165,13 +165,14 @@
       keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel with a custom title",
         chartType: "barchart",
-        labelMapping: {
+        /*labelMapping: {
           "pageview"           : "Start",
           "viewed_twentyfive"  : "25%",
           "viewed_fifty"       : "50%",
           "viewed_seventyfive" : "75%",
           "viewed_all"         : "100%"
-        }
+        }*/
+        labelMapping: ["1", "2", "3", "4", "5"]
       });
 
       keen.draw(pie, document.getElementById("pie-js"), {
@@ -244,6 +245,7 @@
         this.draw(document.getElementById("random-multi-js"), {
           title: "Random multi",
           height: 500,
+          //labelMapping: ["1", "2", "3", "4", "5"],
           labelMapping: {
             "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Page",
             "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Index",
