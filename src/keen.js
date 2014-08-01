@@ -890,27 +890,38 @@ window.Keen = window.Keen || {};
      */
     Keen.trackExternalLink = function(htmlElementOrEvent, eventCollection, event, timeout, timeoutCallback){
 
-        var htmlElement = htmlElementOrEvent;
-        var jsEvent = null;
-        var newTab = false;
+        var htmlElement = htmlElementOrEvent,
+            triggered = false,
+            jsEvent = null,
+            newTab = false,
+            targetAttr = "",
+            win;
+
+        var callback = function(){};
 
         if (!htmlElementOrEvent.nodeName) {
+          // First arg is an event (revised signature)
           // htmlElementOrEvent == event
           jsEvent = htmlElementOrEvent;
-          htmlElement = jsEvent.target;
+          htmlElement = (jsEvent.currentTarget) ? jsEvent.currentTarget : jsEvent.target;
           newTab = (htmlElementOrEvent.metaKey || false);
+          targetAttr = htmlElement.getAttribute("target") || htmlElement.target || "";
 
         } else if (window.event && window.event.metaKey == true) {
+          // First arg is an element (original), and global event is available
           // htmlElementOrEvent == element, new tab == true
+
           newTab = true;
+        }
+
+        if (targetAttr == "_blank" && !newTab) {
+          win = window.open("about:blank");
+          win.document.location = htmlElement.href;
         }
 
         if (timeout === undefined){
           timeout = 500;
         }
-
-        var triggered = false;
-        var callback = function(){};
 
 
         if( htmlElement.nodeName === "A"){
