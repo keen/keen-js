@@ -34,7 +34,7 @@ module.exports = function(grunt) {
         gzip: true
       },
       release: {
-        sync: [
+        upload: [
           {
             src: 'build/<%= pkg.name %>.min.js',
             dest: '<%= pkg.version %>/<%= pkg.name %>.min.js'

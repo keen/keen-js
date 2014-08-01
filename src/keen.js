@@ -890,31 +890,39 @@ window.Keen = window.Keen || {};
      */
     Keen.trackExternalLink = function(htmlElementOrEvent, eventCollection, event, timeout, timeoutCallback){
 
-        var htmlElement = htmlElementOrEvent,
-            triggered = false,
-            jsEvent = null,
+        var jsEvent = null,
+            htmlElement,
             newTab = false,
             targetAttr = "",
+            triggered = false,
             win;
 
         var callback = function(){};
 
         if (!htmlElementOrEvent.nodeName) {
           // First arg is an event (revised signature)
-          // htmlElementOrEvent == event
           jsEvent = htmlElementOrEvent;
           htmlElement = (jsEvent.currentTarget) ? jsEvent.currentTarget : jsEvent.target;
-          newTab = (htmlElementOrEvent.metaKey || false);
-          targetAttr = htmlElement.getAttribute("target") || htmlElement.target || "";
-
-        } else if (window.event && window.event.metaKey == true) {
-          // First arg is an element (original), and global event is available
-          // htmlElementOrEvent == element, new tab == true
-
-          newTab = true;
+          newTab = (jsEvent.metaKey) ? jsEvent.metaKey : false;
+          targetAttr = getTargetAttribute(htmlElement);
+        } else {
+          // First arg is an element (original signature)
+          htmlElement = htmlElementOrEvent;
+          newTab = (window.event && window.event.metaKey) ? window.event.metaKey : false;
+          targetAttr = getTargetAttribute(htmlElement);
         }
 
-        if (targetAttr == "_blank" && !newTab) {
+        function getTargetAttribute(el){
+          var attr = "";
+          if (el.getAttribute !== void 0) {
+            attr = el.getAttribute("target");
+          } else if (el.target) {
+            attr = el.target;
+          }
+          return attr;
+        }
+
+        if ((targetAttr == "_blank" || targetAttr == "blank") && !newTab) {
           win = window.open("about:blank");
           win.document.location = htmlElement.href;
         }
@@ -923,10 +931,9 @@ window.Keen = window.Keen || {};
           timeout = 500;
         }
 
-
         if( htmlElement.nodeName === "A"){
           callback = function(){
-            if(!newTab && !triggered){
+            if(!triggered && !newTab && (targetAttr !== "_blank" && targetAttr !== "blank")){
               triggered = true;
               window.location = htmlElement.href;
             }
