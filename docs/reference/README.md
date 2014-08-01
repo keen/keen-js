@@ -1,6 +1,6 @@
 # SDK Reference
 
-This document contains the technical documentation of the Keen IO JavaScript SDK v1.1.0.  If you're looking for the usage guide, please [go here](https://github.com/keenlabs/keen-js/tree/2.1.2).
+This document contains the technical documentation of the Keen IO JavaScript SDK v2.  If you're looking for the usage guide, please [go here](https://github.com/keenlabs/keen-js/tree/v2).
 
 Quick overview of the JavaScript SDK:
 

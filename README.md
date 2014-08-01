@@ -1,4 +1,4 @@
-# JavaScript SDK v2.1.x Usage Guide
+# JavaScript SDK v2.1.3 Usage Guide
 
 This version is no longer supported, please use [version 3](https://github.com/keenlabs/keen-js/).
 
@@ -27,8 +27,8 @@ Copy and paste the following code into your HTML page in the `<head/>` section o
 
 ```
 <script type="text/javascript">
-  var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"d26b395fwzu5fz.cloudfront.net/2.1.2/keen.min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
-  
+  var Keen=Keen||{configure:function(e){this._cf=e},addEvent:function(e,t,n,i){this._eq=this._eq||[],this._eq.push([e,t,n,i])},setGlobalProperties:function(e){this._gp=e},onChartsReady:function(e){this._ocrq=this._ocrq||[],this._ocrq.push(e)}};(function(){var e=document.createElement("script");e.type="text/javascript",e.async=!0,e.src=("https:"==document.location.protocol?"https://":"http://")+"d26b395fwzu5fz.cloudfront.net/2.1.3/keen.min.js";var t=document.getElementsByTagName("script")[0];t.parentNode.insertBefore(e,t)})();
+
   // Configure the Keen object with your Project ID and (optional) access keys.
   Keen.configure({
     projectId: "your_project_id",
@@ -61,7 +61,7 @@ Keen.configure({
 });
 ```
 
-[Keen.configure](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference#keen-configure) sets up the SDK to be used later. Now you're ready to do the fun stuff!
+[Keen.configure](https://github.com/keenlabs/keen-js/tree/v2/docs/reference#keen-configure) sets up the SDK to be used later. Now you're ready to do the fun stuff!
 
 
 ## Add Events
@@ -74,7 +74,7 @@ var trackPurchase = function () {
   var purchase = {
     item: "golden widget"
   };
-  
+
   // add it to the "purchases" collection
   Keen.addEvent("purchases", purchase);
 };
@@ -193,13 +193,13 @@ Keen.onChartsReady(function() {
     targetProperty: "item.price",
     timeframe: "previous_7_days"
   });
-  
+
   //Get the result of the query and alert it.
   metric.getResponse(function(response){
     alert(response.result);
   });
 });
-```    
+```
 
 Now that we've defined a new metric variable, we can visualize it. You can even add style customizations, like changing the background color. Drawing visualizations requires the `Keen.onChartsReady` function. This ensures that the visualizations are drawn after the charting libraries have loaded in the background.
 

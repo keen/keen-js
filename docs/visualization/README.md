@@ -4,40 +4,40 @@ So you're collecting a bunch of awesome data, and now you'd like to visualize it
 
 We have a great set of tools to turn your data into charts that you can embed on your internal dashboard, customer-facing site, or anywhere else you want. In fact, when you build a query using the Keen IO workbench, it automatically generates JavaScript code snippets that you can copy and paste!
 
-Check out our [Usage Guide](https://github.com/keenlabs/keen-js/blob/2.1.2/README.md) and [JS SDK Reference](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference) to learn more!
+Check out our [Usage Guide](https://github.com/keenlabs/keen-js/blob/v2/README.md) and [JS SDK Reference](https://github.com/keenlabs/keen-js/tree/v2/docs/reference) to learn more!
 
 
 ## Number
 
-Check out the SDK reference for [Keen.Number](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference#keennumber)
+Check out the SDK reference for [Keen.Number](https://github.com/keenlabs/keen-js/tree/v2/docs/reference#keennumber)
 
 ![Keen.Number example](http://d26b395fwzu5fz.cloudfront.net/images/v2/metric_example.png)
 
 
 ## LineChart
 
-Check out the SDK reference for [Keen.LineChart](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference#keenlinechart)
+Check out the SDK reference for [Keen.LineChart](https://github.com/keenlabs/keen-js/tree/v2/docs/reference#keenlinechart)
 
 ![Keen.LineChart example](http://d26b395fwzu5fz.cloudfront.net/images/v2/series_example.png)
 
 
 ## PieChart
 
-Check out the SDK reference for [Keen.PieChart](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference#keenpiechart)
+Check out the SDK reference for [Keen.PieChart](https://github.com/keenlabs/keen-js/tree/v2/docs/reference#keenpiechart)
 
 ![Keen.PieChart example](http://d26b395fwzu5fz.cloudfront.net/images/v2/pie_example.png)
 
 
 ## Multi-Line Chart
 
-Check out the SDK reference for [Keen.MultilineChart](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference#keenmultilinechart)
+Check out the SDK reference for [Keen.MultilineChart](https://github.com/keenlabs/keen-js/tree/v2/docs/reference#keenmultilinechart)
 
 ![Keen.MultilineChart example](http://d26b395fwzu5fz.cloudfront.net/images/v2/multiline_example.png)
 
 
 ## FunnelChart
 
-Check out the SDK reference for [Keen.FunnelChart](https://github.com/keenlabs/keen-js/tree/2.1.2/docs/reference#keenfunnelchart-query---options--)
+Check out the SDK reference for [Keen.FunnelChart](https://github.com/keenlabs/keen-js/tree/v2/docs/reference#keenfunnelchart-query---options--)
 
 ![Keen.FunnelChart example](http://d26b395fwzu5fz.cloudfront.net/images/v2/funnel_example.png)
 
