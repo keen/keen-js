@@ -1,4 +1,4 @@
-# JavaScript SDK v2.1.3 Usage Guide
+# JavaScript SDK v2 Usage Guide
 
 This version is no longer supported, please use [version 3](https://github.com/keenlabs/keen-js/).
 

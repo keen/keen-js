@@ -28,12 +28,12 @@ module.exports = function(grunt) {
         access: 'public-read',
         headers: {
           // Two Year cache policy (1000 * 60 * 60 * 24 * 730)
-          "Cache-Control": "max-age=630720000, public",
-          "Expires": new Date(Date.now() + 63072000000).toUTCString()
+          "Cache-Control": "max-age=86400000, public",
+          "Expires": new Date(Date.now() + 86400000).toUTCString()
         },
         gzip: true
       },
-      deploy: {
+      release: {
         sync: [
           {
             src: 'build/<%= pkg.name %>.min.js',
