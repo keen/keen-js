@@ -129,9 +129,15 @@
   Keen.Query.prototype.configure = function(analysisType, params) {
     this.analysis = analysisType;
     this.path = '/queries/' + analysisType;
+
+    // Apply params w/ #set method
     this.params = this.params || {};
     this.set(params);
-    this.params.timezone = this.params.timezone || _build_timezone_offset();
+
+    // Localize timezone if none is set
+    if (this.params.timezone === void 0) {
+      this.params.timezone = _build_timezone_offset();
+    }
     return this;
   };
 
