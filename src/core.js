@@ -295,7 +295,9 @@
       }
       var events = this.listeners[name] || [];
       for (var i = events.length; i--;) {
-        if (callback && callback == events[i]['callback']) this.listeners[name].splice(i, 1);
+        if (callback && callback == events[i]['callback']) {
+          this.listeners[name].splice(i, 1);
+        }
         if (!callback || events.length == 0) {
           this.listeners[name] = void 0;
           delete this.listeners[name];

@@ -39,13 +39,16 @@
     }).spin(placeholder);
 
     var request = new Keen.Request(this, [query]);
-    request.once("complete", function(){
-      spinner.stop();
-      el.removeChild(placeholder);
-    });
+
     request.on("complete", function(){
+      if (placeholder && placeholder.parentNode !== null) {
+        spinner.stop();
+        el.removeChild(placeholder);
+        placeholder = null;
+      }
       this.draw(selector, config);
     });
+    
     request.on("error", function(response){
       var errorConfig, error;
       spinner.stop();
