@@ -611,12 +611,7 @@
       if (options.format && moment && moment(value).isValid()) {
         output = moment(output).format(options.format);
       } else {
-        output = (function(){
-          var now = new Date(output);
-          var utc = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(),  now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds(), now.getUTCMilliseconds());
-          return utc;
-        })(output);
-        //output = new Date(output); //.toISOString();
+        output = new Date(output);
       }
     }
 
