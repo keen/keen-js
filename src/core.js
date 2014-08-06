@@ -98,6 +98,17 @@
     return 1;
   }
 
+  function _once(func) {
+    var ran = false, memo;
+    return function() {
+      if (ran) return memo;
+      ran = true;
+      memo = func.apply(this, arguments);
+      func = null;
+      return memo;
+    };
+  }
+
   function _parse_params(str){
     // via http://stackoverflow.com/a/2880929/2511985
     var urlParams = {},
@@ -257,6 +268,7 @@
 
   // -------------------------------
   // Keen.Events
+  // (Based heavily on backbone.js!)
   // -------------------------------
 
   var Events = Keen.Events = {
@@ -265,6 +277,15 @@
       var events = this.listeners[name] || (this.listeners[name] = []);
       events.push({callback: callback});
       return this;
+    },
+    once: function(name, callback, context) {
+      var self = this;
+      var once = _once(function() {
+        self.off(name, once);
+        callback.apply(this, arguments);
+      });
+      once._callback = callback;
+      return self.on(name, once, context);
     },
     off: function(name, callback) {
       if (!name && !callback) {

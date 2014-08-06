@@ -250,7 +250,7 @@
         });
       });
 
-      keen.run(multiline, function(res){
+      window.todo = keen.run(multiline, function(res){
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
           for (var j = 0; j < res.result[i].value.length; j++) {
@@ -277,6 +277,10 @@
         });
       });
 
+      setInterval(function(){
+        window.todo.refresh();
+      }, 2000);
+
       keen.draw(multiline, document.getElementById("multi-js"), {
         chartType: "columnchart",
         width: 800,
@@ -293,7 +297,7 @@
       });
 
       // Filtered to remove all but one series result, will still be colored correctly
-      keen.draw(filtered_multi, document.getElementById("filtered-multi-js"), {
+      var tada = keen.draw(filtered_multi, document.getElementById("filtered-multi-js"), {
         chartType: "columnchart",
         width: 800,
         labelMapping: {
@@ -303,6 +307,9 @@
           "Page": "pink "
         }
       });
+      setInterval(function(){
+        tada.refresh();
+      }, 3000);
 
       keen.draw(ext, document.getElementById("ext-js"), {
         labelMapping: {

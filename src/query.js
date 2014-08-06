@@ -80,39 +80,43 @@
       Keen.log(res.statusText + ' (' + response.error_code + '): ' + response.message);
     };
 
-    for (var i = 0; i < self.queries.length; i++) {
+    _each(self.queries, function(query, index){
+      var url = null;
+      var successSequencer = function(res){
+        handleSuccess(res, index);
+      };
+      var failureSequencer = function(res){
+        handleFailure(res, index);
+      };
+
+      if (query instanceof Keen.Query || query instanceof Keen.Query) {
+        url = _build_url.call(self.instance, query.path);
+        url += "?api_key=" + self.instance.client.readKey;
+        url += _build_query_string.call(self.instance, query.params);
+
+      } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
+        url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
+        url += "?api_key=" + self.instance.client.readKey;
+
+      } else {
+        var res = {
+          statusText: 'Bad Request',
+          responseText: { message: 'Error: Query ' + (i+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
+        };
+        Keen.log(res.responseText.message);
+        Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');
+        Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
+        if (self.error) self.error(res.responseText.message);
+      }
+      if (url) _send_query.call(self.instance, url, successSequencer, failureSequencer);
+    });
+
+    /*for (var i = 0; i < self.queries.length; i++) {
       (function(query, index){
-        var url = null;
-        var successSequencer = function(res){
-          handleSuccess(res, index);
-        };
-        var failureSequencer = function(res){
-          handleFailure(res, index);
-        };
 
-        if (query instanceof Keen.Query || query instanceof Keen.Query) {
-          url = _build_url.call(self.instance, query.path);
-          url += "?api_key=" + self.instance.client.readKey;
-          url += _build_query_string.call(self.instance, query.params);
-
-        } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-          url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
-          url += "?api_key=" + self.instance.client.readKey;
-
-        } else {
-          var res = {
-            statusText: 'Bad Request',
-            responseText: { message: 'Error: Query ' + (i+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
-          };
-          Keen.log(res.responseText.message);
-          Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');
-          Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
-          if (self.error) self.error(res.responseText.message);
-        }
-        if (url) _send_query.call(self.instance, url, successSequencer, failureSequencer);
 
       })(self.queries[i], i);
-    }
+    }*/
     return this;
   };
 
