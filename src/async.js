@@ -68,7 +68,7 @@
 
     for (var i = 0; i < ready.length; i++) {
       var callback = ready[i];
-      Keen.on('ready', function(){
+      Keen.once('ready', function(){
         callback();
       });
     };

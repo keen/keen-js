@@ -39,9 +39,11 @@
     }).spin(placeholder);
 
     var request = new Keen.Request(this, [query]);
-    request.on("complete", function(){
+    request.once("complete", function(){
       spinner.stop();
       el.removeChild(placeholder);
+    });
+    request.on("complete", function(){
       this.draw(selector, config);
     });
     request.on("error", function(response){
