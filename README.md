@@ -29,7 +29,7 @@ Install the Keen JS SDK on your page by copy/pasting this snippet of JavaScript 
 
 The Keen IO JS Library is built around instances of your project(s). Once configured, these objects take on super powers, allowing you to send and query data with minimal effort.
 
-```javascript
+```html
 <script>
   var client = new Keen({
     projectId: "your_project_id",
