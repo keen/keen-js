@@ -21,7 +21,7 @@ Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installat
 
 Install the Keen JS SDK on your page by copy/pasting this snippet of JavaScript above the `</head>` tag of your page.
 
-```javascript
+```html
 <script type="text/javascript">
   !function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="https://d26b395fwzu5fz.cloudfront.net/3.0.7/keen.min.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
 </script>
@@ -46,7 +46,7 @@ You can configure new instances for as many projects as necessary. [Read more ab
 
 Let's record some data! Here is a basic example for tracking events in your app:
 
-```javascript
+``` javascript
 // Configure an instance for your project
 var client = new Keen({...});
 
@@ -77,13 +77,13 @@ Queries are first-class citizens, complete with parameter getters and setters.
 
 The `<Client>.run` method is available on each configured client instance to run one or many analyses on a given project. Read more about running multiple analyses below.
 
-```
+```javascript
 var your_analysis = new Keen.Query(analysisType, params);
 ```
 
 ### Example Usage
 
-```
+```javascript
 var client = new Keen({
   projectId: "your_project_id",
   readKey: "your_read_key"
@@ -109,13 +109,13 @@ Building charts from queries is easier than ever.
 
 Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
 
-```
+```javascript
 client.draw(query, selector, config);
 ```
 
 Requests also have a draw method. The query is already known in this case, so you can omit the query from the method signature:
 
-```
+```javascript
 var request = client.run(query, function(){
   this.draw(document.getElementById("chart-wrapper"), {
     title: "Custom chart title"
@@ -127,7 +127,7 @@ A future release will add the ability to plot multiple query responses on a sing
 
 ### Example usage
 
-```
+```javascript
 var count = new Keen.Query("count", {
   eventCollection: "pageviews",
   groupBy: "visitor.geo.country"
