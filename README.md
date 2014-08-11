@@ -130,7 +130,7 @@ A future release will add the ability to plot multiple query responses on a sing
 ```
 var count = new Keen.Query("count", {
   eventCollection: "pageviews",
-  groupBy: "visitor.geo.country"
+  groupBy: "visitor.geo.country",
   interval: "daily",
   timeframe: "this_21_days"
 });
