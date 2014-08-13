@@ -191,6 +191,33 @@
         labelMapping: ["1", "2", "3", "4", "5"]
       });
 
+      keen.run(funnel, function(res){
+        var data = res;
+        var labelMap = {
+          "pageview"           : "Visit",
+          "viewed_twentyfive"  : "Viewed 1/4",
+          "viewed_fifty"       : "Viewed 1/2",
+          "viewed_seventyfive" : "Viewed 3/4",
+          "viewed_all"         : "Viewed All"
+        };
+
+        Keen.utils.each(res.result, function(step, index){
+          var original = res.steps[index].event_collection;
+          var initial = res.result[0];
+          var diff = parseInt(res.result[index]) / parseInt(initial) * 100;
+          // Append percentage value to label map
+          labelMap[original] += " (" + diff.toFixed(0) + "%)";
+        });
+        console.log(data, labelMap);
+
+        new Keen.Visualization(data, document.getElementById("funnel"), {
+          library: "google",
+          chartType: "barchart",
+          labelMapping: labelMap
+        });
+      });
+
+
       keen.draw(pie, document.getElementById("pie-js"), {
         //chartType: "barchart",
         labelMapping: {
@@ -278,7 +305,7 @@
       });
 
       setInterval(function(){
-        window.todo.refresh();
+        //window.todo.refresh();
       }, 2000);
 
       keen.draw(multiline, document.getElementById("multi-js"), {
@@ -308,7 +335,7 @@
         }
       });
       setInterval(function(){
-        tada.refresh();
+        //tada.refresh();
       }, 3000);
 
       keen.draw(ext, document.getElementById("ext-js"), {
