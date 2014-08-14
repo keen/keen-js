@@ -74,18 +74,10 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(req, el, config){
-    var dataViz = new Keen.Dataviz(req, el, config);
-    dataViz.render();
+    var dataviz = new Keen.Dataviz(req, el, config);
+    dataviz.prepare();
+    dataviz.render();
   };
-
-  // Keen.Visualization.prototype.data()
-  // Keen.Visualization.prototype.prepare() - ???
-  // Keen.Visualization.prototype.render()
-  // Keen.Visualization.prototype.destroy()
-  // listen for re-run requests
-  // handle errors
-  // * read data structure
-  // *
 
   Keen.Dataviz = function(req, el, config) {
     var self = this;
@@ -124,7 +116,11 @@
     this.options['data'] = (this.data) ? _transform.call(this.options, this.data, this.dataformSchema) : [];
 
     this.applyColorMapping();
+  };
 
+  Keen.Dataviz.prototype.prepare = function() {
+    this.el.innerHTML = "";
+    this.spinner = Keen.showSpinner(this.el);
     return this;
   };
 
@@ -333,17 +329,26 @@
   };
 
   Keen.Dataviz.prototype.render = function() {
-    // Put it all together
-    // -------------------------------
+    this.spinner.stop();
+
     if (this.options.library) {
       if (Keen.Visualization.libraries[this.options.library][this.options.chartType]) {
-        return new Keen.Visualization.libraries[this.options.library][this.options.chartType](this.options);
+        this.viz = new Keen.Visualization.libraries[this.options.library][this.options.chartType](this.options);
       } else {
         throw new Error('The library you selected does not support this chartType');
       }
     } else {
       throw new Error('The library you selected is not present');
     }
+
+    return this;
+  };
+
+  Keen.Dataviz.prototype.destroy = function() {
+    this.el.innerHTML = "";
+    this.spinner.stop();
+    this.spinner = null;
+    this.viz = null; // TODO: Destroy the actual chart object?
   };
 
   // Visual defaults
