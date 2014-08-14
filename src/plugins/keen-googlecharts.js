@@ -22,7 +22,7 @@
       if(typeof google === 'undefined'){
         throw new Error("Problem loading Google Charts library. Please contact us!");
       } else {
-        google.load('visualization', '1.0', {
+        google.load('visualization', '1.1', {
             packages: ['corechart', 'table'],
             callback: function(){
               Keen.loaded = true;
@@ -126,6 +126,7 @@
         self.update();
       },
       update: function(){
+        this.trigger("remove");
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -134,6 +135,11 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        google.visualization.events.removeAllListeners(this._chart);
+        this._chart.clearChart();
+        //console.log(this._chart);
       }
     });
 
