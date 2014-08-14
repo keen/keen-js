@@ -55,17 +55,17 @@
   // -------------------------------
   // Inject Request Draw Method
   // -------------------------------
-  // Keen.Request.prototype.draw = function(selector, config) {
-  //   _build_visual.call(this, selector, config);
-  //   this.on('complete', function(){
-  //     _build_visual.call(this, selector, config);
-  //   });
-  //   return this;
-  // };
+  Keen.Request.prototype.draw = function(selector, config) {
+    _build_visual.call(this, selector, config);
+    this.on('complete', function(){
+      _build_visual.call(this, selector, config);
+    });
+    return this;
+  };
 
-  // function _build_visual(selector, config){
-  //   this.visual = new Keen.Visualization(this, selector, config);
-  // }
+  function _build_visual(selector, config){
+    this.visual = new Keen.Visualization(this, selector, config);
+  }
 
 
   // -------------------------------
@@ -125,9 +125,10 @@
   };
 
   Keen.Dataviz.prototype.buildDefaultTitle = function() {
+    var self = this;
     this.options.title = (function(){
-      var analysis = this.req.queries[0].analysis.replace("_", " "),
-          collection = this.req.queries[0].get('event_collection'),
+      var analysis = self.req.queries[0].analysis.replace("_", " "),
+          collection = self.req.queries[0].get('event_collection'),
           output;
 
       output = analysis.replace( /\b./g, function(a){
@@ -269,14 +270,15 @@
   Keen.Dataviz.prototype.applyColorMapping = function() {
     // Apply color-mapping options (post-process)
     // -------------------------------
+    var self = this;
 
     if (this.options.colorMapping) {
 
       // Map to selected index
       if (this.options['data'].schema.select && this.options['data'].table[0].length == 2) {
         _each(this.options['data'].table, function(row, i){
-          if (i > 0 && this.options.colorMapping[row[0]]) {
-            this.options.colors.splice(i-1, 0, this.options.colorMapping[row[0]]);
+          if (i > 0 && self.options.colorMapping[row[0]]) {
+            self.options.colors.splice(i-1, 0, self.options.colorMapping[row[0]]);
           }
         });
       }
@@ -284,8 +286,8 @@
       // Map to unpacked labels
       if (this.options['data'].schema.unpack) { //  && this.options['data'].table[0].length > 2
         _each(this.options['data'].table[0], function(cell, i){
-          if (i > 0 && this.options.colorMapping[cell]) {
-            this.options.colors.splice(i-1, 0, this.options.colorMapping[cell]);
+          if (i > 0 && self.options.colorMapping[cell]) {
+            self.options.colors.splice(i-1, 0, self.options.colorMapping[cell]);
           }
         });
       }
