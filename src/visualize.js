@@ -165,7 +165,7 @@
       // Handle raw data
       // _transform() and handle as usual
       this.data = (this.req instanceof Array) ? this.req[0] : this.req;
-      this.isMetric = (typeof data.result === "number" || data.result === null) ? true : false
+      this.isMetric = (typeof this.data.result === "number" || this.data.result === null) ? true : false
     }
   };
 
