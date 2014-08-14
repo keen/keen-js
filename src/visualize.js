@@ -4,11 +4,30 @@
   * ----------------------
   */
 
+  Keen.Spinner.defaults = {
+    lines: 10, // The number of lines to draw
+    length: 8, // The length of each line
+    width: 3, // The line thickness
+    radius: 10, // The radius of the inner circle
+    corners: 1, // Corner roundness (0..1)
+    rotate: 0, // The rotation offset
+    direction: 1, // 1: clockwise, -1: counterclockwise
+    color: '#4d4d4d', // #rgb or #rrggbb or array of colors
+    speed: 1, // Rounds per second
+    trail: 60, // Afterglow percentage
+    shadow: false, // Whether to render a shadow
+    hwaccel: false, // Whether to use hardware acceleration
+    className: 'keen-spinner', // The CSS class to assign to the spinner
+    zIndex: 2e9, // The z-index (defaults to 2000000000)
+    top: '50%', // Top position relative to parent
+    left: '50%' // Left position relative to parent
+  };
+
   Keen.prototype.draw = function(query, el, config) {
     // Find DOM element, set height, build spinner
     var config = config || {};
     var el = el;
-    var spinner = this.showSpinner(el);
+    var spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(el);
 
     var request = new Keen.Request(this, [query]);
 
@@ -30,27 +49,6 @@
     });
 
     return request;
-  };
-
-  Keen.prototype.showSpinner = function(el) {
-    return new Keen.Spinner({
-      lines: 10, // The number of lines to draw
-      length: 8, // The length of each line
-      width: 3, // The line thickness
-      radius: 10, // The radius of the inner circle
-      corners: 1, // Corner roundness (0..1)
-      rotate: 0, // The rotation offset
-      direction: 1, // 1: clockwise, -1: counterclockwise
-      color: '#4d4d4d', // #rgb or #rrggbb or array of colors
-      speed: 1, // Rounds per second
-      trail: 60, // Afterglow percentage
-      shadow: false, // Whether to render a shadow
-      hwaccel: false, // Whether to use hardware acceleration
-      className: 'keen-spinner', // The CSS class to assign to the spinner
-      zIndex: 2e9, // The z-index (defaults to 2000000000)
-      top: '50%', // Top position relative to parent
-      left: '50%' // Left position relative to parent
-    }).spin(el);
   };
 
 
@@ -93,6 +91,7 @@
 
     this.options = _extend(defaults, config || {});
     this.options.el = el;
+    this.el = el;
 
     // Build default title if necessary to do so.
     if (!this.options.title && this.req instanceof Keen.Request) {
@@ -121,7 +120,7 @@
 
   Keen.Dataviz.prototype.prepare = function() {
     this.el.innerHTML = "";
-    this.spinner = Keen.showSpinner(this.el);
+    this.spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(this.el);
     return this;
   };
 
