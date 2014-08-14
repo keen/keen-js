@@ -4,22 +4,36 @@
   * ----------------------
   */
 
-  Keen.prototype.draw = function(query, selector, config) {
+  Keen.prototype.draw = function(query, el, config) {
     // Find DOM element, set height, build spinner
     var config = config || {};
-    var el = selector;
-    //var id = selector.getAttribute("id");
-    //var el = document.getElementById(id);
+    var el = el;
+    var spinner = this.showSpinner(el);
 
-    var placeholder = document.createElement("div");
-    placeholder.className = "keen-loading";
-    //placeholder.style.background = "#f2f2f2";
-    placeholder.style.height = (config.height || Keen.Visualization.defaults.height) + "px";
-    placeholder.style.position = "relative";
-    placeholder.style.width = (config.width || Keen.Visualization.defaults.width) + "px";
-    el.appendChild(placeholder);
+    var request = new Keen.Request(this, [query]);
 
-    var spinner = new Keen.Spinner({
+    request.on("complete", function(){
+      if (spinner) {
+        spinner.stop();
+      }
+      this.draw(el, config);
+    });
+
+    request.on("error", function(response){
+      spinner.stop();
+
+      var errorConfig = Keen.utils.extend({
+        error: response,
+        el: el
+      }, Keen.Visualization.defaults);
+      new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
+    });
+
+    return request;
+  };
+
+  Keen.prototype.showSpinner = function(el) {
+    return new Keen.Spinner({
       lines: 10, // The number of lines to draw
       length: 8, // The length of each line
       width: 3, // The line thickness
@@ -36,64 +50,53 @@
       zIndex: 2e9, // The z-index (defaults to 2000000000)
       top: '50%', // Top position relative to parent
       left: '50%' // Left position relative to parent
-    }).spin(placeholder);
-
-    var request = new Keen.Request(this, [query]);
-
-    request.on("complete", function(){
-      if (placeholder && placeholder.parentNode !== null) {
-        spinner.stop();
-        el.removeChild(placeholder);
-        placeholder = null;
-      }
-      this.draw(selector, config);
-    });
-    
-    request.on("error", function(response){
-      var errorConfig, error;
-      spinner.stop();
-      el.removeChild(placeholder);
-
-      errorConfig = Keen.utils.extend({
-        error: response,
-        el: el
-      }, Keen.Visualization.defaults);
-      error = new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
-    });
-
-    return request;
+    }).spin(el);
   };
 
 
   // -------------------------------
   // Inject Request Draw Method
   // -------------------------------
-  Keen.Request.prototype.draw = function(selector, config) {
-    _build_visual.call(this, selector, config);
-    this.on('complete', function(){
-      _build_visual.call(this, selector, config);
-    });
-    return this;
-  };
+  // Keen.Request.prototype.draw = function(selector, config) {
+  //   _build_visual.call(this, selector, config);
+  //   this.on('complete', function(){
+  //     _build_visual.call(this, selector, config);
+  //   });
+  //   return this;
+  // };
 
-  function _build_visual(selector, config){
-    this.visual = new Keen.Visualization(this, selector, config);
-  }
+  // function _build_visual(selector, config){
+  //   this.visual = new Keen.Visualization(this, selector, config);
+  // }
 
 
   // -------------------------------
   // Keen.Visualization
   // -------------------------------
-  Keen.Visualization = function(req, selector, config){
-    var self = this, data, defaults, options, library, defaultType, dataformSchema;
+  Keen.Visualization = function(req, el, config){
+    this.configure(req, el, config);
+  };
+
+  // Keen.Visualization.prototype.data()
+  // Keen.Visualization.prototype.prepare() - ???
+  // Keen.Visualization.prototype.render()
+  // Keen.Visualization.prototype.destroy()
+  // listen for re-run requests
+  // handle errors
+  // * read data structure
+  // *
+
+  Keen.Visualization.prototype.configure = function(req, el, config) {
+    this.req = req;
+    var self = this, data, defaults, library, defaultType, dataformSchema;
 
     // Backwoods cloning facility
     defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
 
-    options = _extend(defaults, config || {});
-    library = Keen.Visualization.libraries[options.library];
+    this.options = _extend(defaults, config || {});
+    library = Keen.Visualization.libraries[this.options.library];
 
-    options.el = selector;
+    this.options.el = el;
 
     dataformSchema = {
       collection: 'result',
@@ -101,21 +104,8 @@
     };
 
     // Build default title if necessary to do so
-    if (!options.title && req instanceof Keen.Request) {
-      options.title = (function(){
-        var analysis = req.queries[0].analysis.replace("_", " "),
-            collection = req.queries[0].get('event_collection'),
-            output;
-
-        output = analysis.replace( /\b./g, function(a){
-          return a.toUpperCase();
-        });
-
-        if (collection) {
-          output += ' - ' + collection;
-        }
-        return output;
-      })();
+    if (!this.options.title && this.req instanceof Keen.Request) {
+      this.buildDefaultTitle();
     }
 
     var isMetric = false,
@@ -125,26 +115,21 @@
         is2xGroupBy = false,
         isExtraction = false;
 
-    if (req instanceof Keen.Request) {
+    if (this.req instanceof Keen.Request) {
       // Handle known scenarios
-      isMetric = (typeof req.data.result === "number" || req.data.result === null) ? true : false,
-      isFunnel = (req.queries[0].get('steps')) ? true : false,
-      isInterval = (req.queries[0].get('interval')) ? true : false,
-      isGroupBy = (req.queries[0].get('group_by')) ? true : false,
-      is2xGroupBy = (req.queries[0].get('group_by') instanceof Array) ? true : false;
-      isExtraction = (req.queries[0].analysis == 'extraction') ? true : false;
+      isMetric = (typeof this.req.data.result === "number" || this.req.data.result === null) ? true : false,
+      isFunnel = (this.req.queries[0].get('steps')) ? true : false,
+      isInterval = (this.req.queries[0].get('interval')) ? true : false,
+      isGroupBy = (this.req.queries[0].get('group_by')) ? true : false,
+      is2xGroupBy = (this.req.queries[0].get('group_by') instanceof Array) ? true : false;
+      isExtraction = (this.req.queries[0].analysis == 'extraction') ? true : false;
 
-      data = (req.data instanceof Array) ? req.data[0] : req.data;
-
-    } else if (typeof req === "string") {
-      // Fetch a new resource
-      // _request.jsonp()
-      // _transform()
+      data = (this.req.data instanceof Array) ? this.req.data[0] : this.req.data;
 
     } else {
       // Handle raw data
       // _transform() and handle as usual
-      data = (req instanceof Array) ? req[0] : req;
+      data = (this.req instanceof Array) ? this.req[0] : this.req;
       isMetric = (typeof data.result === "number" || data.result === null) ? true : false
     }
 
@@ -155,26 +140,26 @@
 
     // Metric
     if (isMetric) {
-      options.capable = ['metric'];
+      this.options.capable = ['metric'];
       defaultType = 'metric';
     }
 
     // GroupBy
     if (!isInterval && isGroupBy) {
-      options.capable = ['piechart', 'barchart', 'columnchart', 'table'];
+      this.options.capable = ['piechart', 'barchart', 'columnchart', 'table'];
       defaultType = 'piechart';
-      if (options.chartType == 'barchart') {
-        options.chartOptions.legend = { position: 'none' };
+      if (this.options.chartType == 'barchart') {
+        this.options.chartOptions.legend = { position: 'none' };
       }
     }
 
     // Single Interval
     if (isInterval && !isGroupBy) { // Series
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'areachart';
-      if (options.library == 'google') {
-        if (options.chartOptions.legend == void 0) {
-          options.chartOptions.legend = { position: 'none' };
+      if (this.options.library == 'google') {
+        if (this.options.chartOptions.legend == void 0) {
+          this.options.chartOptions.legend = { position: 'none' };
         }
       }
 
@@ -182,7 +167,7 @@
 
     // GroupBy Interval
     if (isInterval && isGroupBy) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'linechart';
     }
 
@@ -192,16 +177,16 @@
 
     // Funnels
     if (isFunnel) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'columnchart';
-      if (options.library == 'google') {
-        options.chartOptions.legend = { position: 'none' };
+      if (this.options.library == 'google') {
+        this.options.chartOptions.legend = { position: 'none' };
       }
     }
 
     // 2x GroupBy
     if (is2xGroupBy) {
-      options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       defaultType = 'columnchart';
     }
 
@@ -219,13 +204,13 @@
       if (isInterval) {
         dataformSchema.unpack = {
           index: 'timeframe -> start',
-          label: 'value -> ' + req.queries[0].params.group_by[0],
+          label: 'value -> ' + this.req.queries[0].params.group_by[0],
           value: 'value -> result'
         };
       } else {
         dataformSchema.unpack = {
-          index: req.queries[0].params.group_by[0],
-          label: req.queries[0].params.group_by[1],
+          index: this.req.queries[0].params.group_by[0],
+          label: this.req.queries[0].params.group_by[1],
           value: 'result'
         };
       }
@@ -233,7 +218,7 @@
 
     // Extractions
     if (isExtraction) {
-      options.capable = ['table'];
+      this.options.capable = ['table'];
       defaultType = 'table';
     }
 
@@ -244,10 +229,10 @@
         collection: "result",
         select: true
       };
-      if (req.queries[0].get('property_names')) {
+      if (this.req.queries[0].get('property_names')) {
         dataformSchema.select = [];
-        for (var i = 0; i < req.queries[0].get('property_names').length; i++) {
-          dataformSchema.select.push({ path: req.queries[0].get('property_names')[i] });
+        for (var i = 0; i < this.req.queries[0].get('property_names').length; i++) {
+          dataformSchema.select.push({ path: this.req.queries[0].get('property_names')[i] });
         }
       }
     }
@@ -255,62 +240,62 @@
 
     // A few last details
     // -------------------------------
-    if (!options.chartType) {
-      options.chartType = defaultType;
+    if (!this.options.chartType) {
+      this.options.chartType = defaultType;
     }
 
-    if (options.chartType == 'metric') {
-      options.library = 'keen-io';
+    if (this.options.chartType == 'metric') {
+      this.options.library = 'keen-io';
     }
 
-    if (options.chartOptions.lineWidth == void 0) {
-      options.chartOptions.lineWidth = 2;
+    if (this.options.chartOptions.lineWidth == void 0) {
+      this.options.chartOptions.lineWidth = 2;
     }
 
-    if (options.chartType == 'piechart') {
-      if (options.chartOptions.sliceVisibilityThreshold == void 0) {
-        options.chartOptions.sliceVisibilityThreshold = 0.01;
+    if (this.options.chartType == 'piechart') {
+      if (this.options.chartOptions.sliceVisibilityThreshold == void 0) {
+        this.options.chartOptions.sliceVisibilityThreshold = 0.01;
       }
     }
 
-    if (options.chartType == 'columnchart' || options.chartType == 'areachart' || options.chartType == 'linechart') {
+    if (this.options.chartType == 'columnchart' || this.options.chartType == 'areachart' || this.options.chartType == 'linechart') {
 
-      if (options.chartOptions.hAxis == void 0) {
-        options.chartOptions.hAxis = {
+      if (this.options.chartOptions.hAxis == void 0) {
+        this.options.chartOptions.hAxis = {
           baselineColor: 'transparent',
           gridlines: { color: 'transparent' }
         };
       }
 
-      if (options.chartOptions.vAxis == void 0) {
-        options.chartOptions.vAxis = {
+      if (this.options.chartOptions.vAxis == void 0) {
+        this.options.chartOptions.vAxis = {
           viewWindow: { min: 0 }
         };
       }
     }
 
     //_extend(self, options);
-    options['data'] = (data) ? _transform.call(options, data, dataformSchema) : [];
+    this.options['data'] = (data) ? _transform.call(this.options, data, dataformSchema) : [];
 
 
     // Apply color-mapping options (post-process)
     // -------------------------------
-    if (options.colorMapping) {
+    if (this.options.colorMapping) {
 
       // Map to selected index
-      if (options['data'].schema.select && options['data'].table[0].length == 2) {
-        _each(options['data'].table, function(row, i){
-          if (i > 0 && options.colorMapping[row[0]]) {
-            options.colors.splice(i-1, 0, options.colorMapping[row[0]]);
+      if (this.options['data'].schema.select && this.options['data'].table[0].length == 2) {
+        _each(this.options['data'].table, function(row, i){
+          if (i > 0 && this.options.colorMapping[row[0]]) {
+            this.options.colors.splice(i-1, 0, this.options.colorMapping[row[0]]);
           }
         });
       }
 
       // Map to unpacked labels
-      if (options['data'].schema.unpack) { //  && options['data'].table[0].length > 2
-        _each(options['data'].table[0], function(cell, i){
-          if (i > 0 && options.colorMapping[cell]) {
-            options.colors.splice(i-1, 0, options.colorMapping[cell]);
+      if (this.options['data'].schema.unpack) { //  && this.options['data'].table[0].length > 2
+        _each(this.options['data'].table[0], function(cell, i){
+          if (i > 0 && this.options.colorMapping[cell]) {
+            this.options.colors.splice(i-1, 0, this.options.colorMapping[cell]);
           }
         });
       }
@@ -320,9 +305,9 @@
 
     // Put it all together
     // -------------------------------
-    if (options.library) {
-      if (Keen.Visualization.libraries[options.library][options.chartType]) {
-        return new Keen.Visualization.libraries[options.library][options.chartType](options);
+    if (this.options.library) {
+      if (Keen.Visualization.libraries[this.options.library][this.options.chartType]) {
+        return new Keen.Visualization.libraries[this.options.library][this.options.chartType](this.options);
       } else {
         throw new Error('The library you selected does not support this chartType');
       }
@@ -331,6 +316,23 @@
     }
 
     return this;
+  };
+
+  Keen.Visualization.prototype.buildDefaultTitle = function() {
+    this.options.title = (function(){
+      var analysis = this.this.req.queries[0].analysis.replace("_", " "),
+          collection = this.this.req.queries[0].get('event_collection'),
+          output;
+
+      output = analysis.replace( /\b./g, function(a){
+        return a.toUpperCase();
+      });
+
+      if (collection) {
+        output += ' - ' + collection;
+      }
+      return output;
+    })();
   };
 
   // Visual defaults
