@@ -82,6 +82,7 @@
   Keen.Dataviz = function(req, el, config) {
     var self = this;
     this.req = req;
+    this.capabilities = []; // No capabilities by default;
     this.dataformSchema = {
       collection: 'result',
       select: true
@@ -102,7 +103,7 @@
     this.setVizTypes();
 
     // Set the capable chart types and default type for this viz.
-    this.setCapableAndDefaultType();
+    this.setCapabilitiesAndDefaultType();
 
     this.setDataformSchema();
 
@@ -168,16 +169,16 @@
     }
   };
 
-  Keen.Dataviz.prototype.setCapableAndDefaultType = function() {
+  Keen.Dataviz.prototype.setCapabilitiesAndDefaultType = function() {
     // Metric
     if (this.isMetric) {
-      this.options.capable = ['metric'];
+      this.capabilities = ['metric'];
       this.defaultType ='metric';
     }
 
     // GroupBy
     if (!this.isInterval && this.isGroupBy) {
-      this.options.capable = ['piechart', 'barchart', 'columnchart', 'table'];
+      this.capabilities = ['piechart', 'barchart', 'columnchart', 'table'];
       this.defaultType ='piechart';
       if (this.options.chartType == 'barchart') {
         this.options.chartOptions.legend = { position: 'none' };
@@ -186,7 +187,7 @@
 
     // Single Interval
     if (this.isInterval && !this.isGroupBy) { // Series
-      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       this.defaultType ='areachart';
       if (this.options.library == 'google') {
         if (this.options.chartOptions.legend == void 0) {
@@ -198,7 +199,7 @@
 
     // GroupBy Interval
     if (this.isInterval && this.isGroupBy) {
-      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       this.defaultType ='linechart';
     }
 
@@ -208,7 +209,7 @@
 
     // Funnels
     if (this.isFunnel) {
-      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       this.defaultType ='columnchart';
       if (this.options.library == 'google') {
         this.options.chartOptions.legend = { position: 'none' };
@@ -217,13 +218,13 @@
 
     // 2x GroupBy
     if (this.is2xGroupBy) {
-      this.options.capable = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
+      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
       this.defaultType ='columnchart';
     }
 
     // Extractions
     if (this.isExtraction) {
-      this.options.capable = ['table'];
+      this.capabilities = ['table'];
       this.defaultType ='table';
     }
   };
