@@ -74,7 +74,8 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(req, el, config){
-    this.configure(req, el, config);
+    var dataViz = new Keen.Dataviz(req, el, config);
+    dataViz.render();
   };
 
   // Keen.Visualization.prototype.data()
@@ -86,7 +87,7 @@
   // * read data structure
   // *
 
-  Keen.Visualization.prototype.configure = function(req, el, config) {
+  Keen.Dataviz = function(req, el, config) {
     var self = this;
     this.req = req;
     this.dataformSchema = {
@@ -124,12 +125,10 @@
 
     this.applyColorMapping();
 
-    this.render();
-
     return this;
   };
 
-  Keen.Visualization.prototype.buildDefaultTitle = function() {
+  Keen.Dataviz.prototype.buildDefaultTitle = function() {
     this.options.title = (function(){
       var analysis = this.req.queries[0].analysis.replace("_", " "),
           collection = this.req.queries[0].get('event_collection'),
@@ -146,7 +145,7 @@
     })();
   };
 
-  Keen.Visualization.prototype.setVizTypes = function() {
+  Keen.Dataviz.prototype.setVizTypes = function() {
     this.isMetric = false;
     this.isFunnel = false;
     this.isInterval = false;
@@ -173,11 +172,7 @@
     }
   };
 
-  Keen.Visualization.prototype.setCapableAndDefaultType = function() {
-    // -------------------------------
-    // Select a default chart type
-    // -------------------------------
-
+  Keen.Dataviz.prototype.setCapableAndDefaultType = function() {
     // Metric
     if (this.isMetric) {
       this.options.capable = ['metric'];
@@ -237,7 +232,7 @@
     }
   };
 
-  Keen.Visualization.prototype.setDataformSchema = function() {
+  Keen.Dataviz.prototype.setDataformSchema = function() {
     if (this.is2xGroupBy) {
       this.dataformSchema = {
         collection: 'result',
@@ -275,7 +270,7 @@
     }
   };
 
-  Keen.Visualization.prototype.applyColorMapping = function() {
+  Keen.Dataviz.prototype.applyColorMapping = function() {
     // Apply color-mapping options (post-process)
     // -------------------------------
 
@@ -302,7 +297,7 @@
     }
   };
 
-  Keen.Visualization.prototype.setSpecificChartOptions = function() {
+  Keen.Dataviz.prototype.setSpecificChartOptions = function() {
     // A few last details
     // -------------------------------
 
@@ -337,7 +332,7 @@
     }
   };
 
-  Keen.Visualization.prototype.render = function() {
+  Keen.Dataviz.prototype.render = function() {
     // Put it all together
     // -------------------------------
     if (this.options.library) {
