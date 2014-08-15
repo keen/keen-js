@@ -71,64 +71,89 @@
   // -------------------------------
   // Keen.Visualization
   // -------------------------------
-  Keen.Visualization = function(req, el, config){
-    var dataviz = new Keen.Dataviz(req, el, config);
-    dataviz.prepare();
-    dataviz.render();
+  Keen.Visualization = function(dataset, el, config){
+    return new Keen.Dataviz("column-chart").prepare(el).setData(dataset).config(config).render(el);
   };
 
-  Keen.Dataviz = function(req, el, config) {
-    var self = this;
-    this.req = req;
+  // *******************
+  // START NEW CLEAN API
+  // *******************
+
+  Keen.Dataviz = function(chartType) {
+    if (!chartType) {
+      throw new Error('You must pass a chartType to the Keen.Dataviz constructor.');
+    }
+    this.chartType = chartType;
     this.capabilities = []; // No capabilities by default;
     this.dataformSchema = {
       collection: 'result',
       select: true
     };
+  };
 
-    // Backwoods cloning facility
-    var defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
+  Keen.Dataviz.prototype.setData = function(dataset) {
+    this.dataset = dataset;
 
-    this.options = _extend(defaults, config || {});
-    this.options.el = el;
-    this.el = el;
+    if (this.dataset instanceof Keen.Request) {
+      this.data = (this.dataset.data instanceof Array) ? this.dataset.data[0] : this.dataset.data;
+    } else {
+      // Handle raw data
+      // _transform() and handle as usual
+      this.data = (this.dataset instanceof Array) ? this.dataset[0] : this.dataset;
+    }
 
     // Build default title if necessary to do so.
-    if (!this.options.title && this.req instanceof Keen.Request) {
+    if (!this.config.title && this.dataset instanceof Keen.Request) {
       this.buildDefaultTitle();
     }
 
     // Set the visualization types this reqest can do.
     this.setVizTypes();
 
+    return this;
+  };
+
+  Keen.Dataviz.prototype.config = function(config) {
+    if (!this.dataset) {
+      throw new Error('You must provide data to a Keen.Dataviz object using the setData() function before calling config() on it.');
+    }
+
+    // Backwoods cloning facility
+    var defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
+    this.config = _extend(defaults, config || {});
+
     // Set the capable chart types and default type for this viz.
-    this.setCapabilitiesAndDefaultType();
+    this.setCapabilities();
 
     this.setDataformSchema();
 
-    // Set chart type to default
-    if (!this.options.chartType) {
-      this.options.chartType = this.defaultType;
+    // Set chart type to default if one hasn't seen set,
+    // which is just the first index in the array of chart types this viz is capable of.
+    if (!this.config.chartType) {
+      this.config.chartType = this.capabilities[0];
     }
 
     this.setSpecificChartOptions();
 
-    this.options['data'] = (this.data) ? _transform.call(this.options, this.data, this.dataformSchema) : [];
+    this.config['data'] = (this.data) ? _transform.call(this.config, this.data, this.dataformSchema) : [];
 
     this.applyColorMapping();
+
+    return this;
   };
 
-  Keen.Dataviz.prototype.prepare = function() {
-    this.el.innerHTML = "";
-    this.spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(this.el);
+  Keen.Dataviz.prototype.prepare = function(el) {
+    this.config.el = el;
+    this.config.el.innerHTML = "";
+    this.spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(this.config.el);
     return this;
   };
 
   Keen.Dataviz.prototype.buildDefaultTitle = function() {
     var self = this;
-    this.options.title = (function(){
-      var analysis = self.req.queries[0].analysis.replace("_", " "),
-          collection = self.req.queries[0].get('event_collection'),
+    this.config.title = (function(){
+      var analysis = self.dataset.queries[0].analysis.replace("_", " "),
+          collection = self.dataset.queries[0].get('event_collection'),
           output;
 
       output = analysis.replace( /\b./g, function(a){
@@ -143,55 +168,39 @@
   };
 
   Keen.Dataviz.prototype.setVizTypes = function() {
-    this.isMetric = false;
-    this.isFunnel = false;
-    this.isInterval = false;
-    this.isGroupBy = false;
-    this.is2xGroupBy = false;
-    this.isExtraction = false;
-
-    if (this.req instanceof Keen.Request) {
+    if (this.dataset instanceof Keen.Request) {
       // Handle known scenarios
-      this.isMetric = (typeof this.req.data.result === "number" || this.req.data.result === null) ? true : false,
-      this.isFunnel = (this.req.queries[0].get('steps')) ? true : false,
-      this.isInterval = (this.req.queries[0].get('interval')) ? true : false,
-      this.isGroupBy = (this.req.queries[0].get('group_by')) ? true : false,
-      this.is2xGroupBy = (this.req.queries[0].get('group_by') instanceof Array) ? true : false;
-      this.isExtraction = (this.req.queries[0].analysis == 'extraction') ? true : false;
-
-      this.data = (this.req.data instanceof Array) ? this.req.data[0] : this.req.data;
-
+      this.isMetric = (typeof this.dataset.data.result === "number" || this.dataset.data.result === null) ? true : false,
+      this.isFunnel = (this.dataset.queries[0].get('steps')) ? true : false,
+      this.isInterval = (this.dataset.queries[0].get('interval')) ? true : false,
+      this.isGroupBy = (this.dataset.queries[0].get('group_by')) ? true : false,
+      this.is2xGroupBy = (this.dataset.queries[0].get('group_by') instanceof Array) ? true : false;
+      this.isExtraction = (this.dataset.queries[0].analysis == 'extraction') ? true : false;
     } else {
-      // Handle raw data
-      // _transform() and handle as usual
-      this.data = (this.req instanceof Array) ? this.req[0] : this.req;
       this.isMetric = (typeof this.data.result === "number" || this.data.result === null) ? true : false
     }
   };
 
-  Keen.Dataviz.prototype.setCapabilitiesAndDefaultType = function() {
+  Keen.Dataviz.prototype.setCapabilities = function() {
     // Metric
     if (this.isMetric) {
       this.capabilities = ['metric'];
-      this.defaultType ='metric';
     }
 
     // GroupBy
     if (!this.isInterval && this.isGroupBy) {
       this.capabilities = ['piechart', 'barchart', 'columnchart', 'table'];
-      this.defaultType ='piechart';
-      if (this.options.chartType == 'barchart') {
-        this.options.chartOptions.legend = { position: 'none' };
+      if (this.config.chartType == 'barchart') {
+        this.config.chartOptions.legend = { position: 'none' };
       }
     }
 
     // Single Interval
     if (this.isInterval && !this.isGroupBy) { // Series
       this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
-      this.defaultType ='areachart';
-      if (this.options.library == 'google') {
-        if (this.options.chartOptions.legend == void 0) {
-          this.options.chartOptions.legend = { position: 'none' };
+      if (this.config.library == 'google') {
+        if (this.config.chartOptions.legend == void 0) {
+          this.config.chartOptions.legend = { position: 'none' };
         }
       }
 
@@ -199,8 +208,7 @@
 
     // GroupBy Interval
     if (this.isInterval && this.isGroupBy) {
-      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
-      this.defaultType ='linechart';
+      this.capabilities = ['linechart', 'areachart', 'barchart', 'columnchart', 'table'];
     }
 
     // Custom Dataset schema for
@@ -209,23 +217,20 @@
 
     // Funnels
     if (this.isFunnel) {
-      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
-      this.defaultType ='columnchart';
-      if (this.options.library == 'google') {
-        this.options.chartOptions.legend = { position: 'none' };
+      this.capabilities = ['columnchart', 'areachart', 'barchart', 'linechart', 'table'];
+      if (this.config.library == 'google') {
+        this.config.chartOptions.legend = { position: 'none' };
       }
     }
 
     // 2x GroupBy
     if (this.is2xGroupBy) {
-      this.capabilities = ['areachart', 'barchart', 'columnchart', 'linechart', 'table'];
-      this.defaultType ='columnchart';
+      this.capabilities = ['columnchart', 'areachart', 'barchart', 'linechart', 'table'];
     }
 
     // Extractions
     if (this.isExtraction) {
       this.capabilities = ['table'];
-      this.defaultType ='table';
     }
   };
 
@@ -241,13 +246,13 @@
       if (this.isInterval) {
         this.dataformSchema.unpack = {
           index: 'timeframe -> start',
-          label: 'value -> ' + this.req.queries[0].params.group_by[0],
+          label: 'value -> ' + this.dataset.queries[0].params.group_by[0],
           value: 'value -> result'
         };
       } else {
         this.dataformSchema.unpack = {
-          index: this.req.queries[0].params.group_by[0],
-          label: this.req.queries[0].params.group_by[1],
+          index: this.dataset.queries[0].params.group_by[0],
+          label: this.dataset.queries[0].params.group_by[1],
           value: 'result'
         };
       }
@@ -258,10 +263,10 @@
         collection: "result",
         select: true
       };
-      if (this.req.queries[0].get('property_names')) {
+      if (this.dataset.queries[0].get('property_names')) {
         this.dataformSchema.select = [];
-        for (var i = 0; i < this.req.queries[0].get('property_names').length; i++) {
-          this.dataformSchema.select.push({ path: this.req.queries[0].get('property_names')[i] });
+        for (var i = 0; i < this.dataset.queries[0].get('property_names').length; i++) {
+          this.dataformSchema.select.push({ path: this.dataset.queries[0].get('property_names')[i] });
         }
       }
     }
@@ -272,22 +277,22 @@
     // -------------------------------
     var self = this;
 
-    if (this.options.colorMapping) {
+    if (this.config.colorMapping) {
 
       // Map to selected index
-      if (this.options['data'].schema.select && this.options['data'].table[0].length == 2) {
-        _each(this.options['data'].table, function(row, i){
-          if (i > 0 && self.options.colorMapping[row[0]]) {
-            self.options.colors.splice(i-1, 0, self.options.colorMapping[row[0]]);
+      if (this.config['data'].schema.select && this.config['data'].table[0].length == 2) {
+        _each(this.config['data'].table, function(row, i){
+          if (i > 0 && self.config.colorMapping[row[0]]) {
+            self.config.colors.splice(i-1, 0, self.config.colorMapping[row[0]]);
           }
         });
       }
 
       // Map to unpacked labels
-      if (this.options['data'].schema.unpack) { //  && this.options['data'].table[0].length > 2
-        _each(this.options['data'].table[0], function(cell, i){
-          if (i > 0 && self.options.colorMapping[cell]) {
-            self.options.colors.splice(i-1, 0, self.options.colorMapping[cell]);
+      if (this.config['data'].schema.unpack) { //  && this.config['data'].table[0].length > 2
+        _each(this.config['data'].table[0], function(cell, i){
+          if (i > 0 && self.config.colorMapping[cell]) {
+            self.config.colors.splice(i-1, 0, self.config.colorMapping[cell]);
           }
         });
       }
@@ -299,43 +304,44 @@
     // A few last details
     // -------------------------------
 
-    if (this.options.chartType == 'metric') {
-      this.options.library = 'keen-io';
+    if (this.config.chartType == 'metric') {
+      this.config.library = 'keen-io';
     }
 
-    if (this.options.chartOptions.lineWidth == void 0) {
-      this.options.chartOptions.lineWidth = 2;
+    if (this.config.chartOptions.lineWidth == void 0) {
+      this.config.chartOptions.lineWidth = 2;
     }
 
-    if (this.options.chartType == 'piechart') {
-      if (this.options.chartOptions.sliceVisibilityThreshold == void 0) {
-        this.options.chartOptions.sliceVisibilityThreshold = 0.01;
+    if (this.config.chartType == 'piechart') {
+      if (this.config.chartOptions.sliceVisibilityThreshold == void 0) {
+        this.config.chartOptions.sliceVisibilityThreshold = 0.01;
       }
     }
 
-    if (this.options.chartType == 'columnchart' || this.options.chartType == 'areachart' || this.options.chartType == 'linechart') {
+    if (this.config.chartType == 'columnchart' || this.config.chartType == 'areachart' || this.config.chartType == 'linechart') {
 
-      if (this.options.chartOptions.hAxis == void 0) {
-        this.options.chartOptions.hAxis = {
+      if (this.config.chartOptions.hAxis == void 0) {
+        this.config.chartOptions.hAxis = {
           baselineColor: 'transparent',
           gridlines: { color: 'transparent' }
         };
       }
 
-      if (this.options.chartOptions.vAxis == void 0) {
-        this.options.chartOptions.vAxis = {
+      if (this.config.chartOptions.vAxis == void 0) {
+        this.config.chartOptions.vAxis = {
           viewWindow: { min: 0 }
         };
       }
     }
   };
 
-  Keen.Dataviz.prototype.render = function() {
+  Keen.Dataviz.prototype.render = function(el) {
     this.spinner.stop();
+    this.config.el = el;
 
-    if (this.options.library) {
-      if (Keen.Visualization.libraries[this.options.library][this.options.chartType]) {
-        this.viz = new Keen.Visualization.libraries[this.options.library][this.options.chartType](this.options);
+    if (this.config.library) {
+      if (Keen.Visualization.libraries[this.config.library][this.config.chartType]) {
+        this.chart = new Keen.Visualization.libraries[this.config.library][this.config.chartType](this.config);
       } else {
         throw new Error('The library you selected does not support this chartType');
       }
@@ -347,10 +353,16 @@
   };
 
   Keen.Dataviz.prototype.destroy = function() {
-    this.el.innerHTML = "";
-    this.spinner.stop();
-    this.spinner = null;
-    this.viz = null; // TODO: Destroy the actual chart object?
+    if (this.config.el) {
+      this.config.el.innerHTML = "";
+    }
+    if (this.spinner) {
+      this.spinner.stop();
+      this.spinner = null;
+    }
+    if (this.viz) {
+      this.viz = null; // TODO: Destroy the actual chart object?
+    }
   };
 
   // Visual defaults
