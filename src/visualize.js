@@ -72,7 +72,7 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(dataset, el, config){
-    return new Keen.Dataviz("column-chart").prepare(el).setData(dataset).config(config).render(el);
+    return new Keen.Dataviz(config.chartType || null).prepare(el).setData(dataset).setConfig(config).render(el);
   };
 
   // *******************
@@ -80,11 +80,9 @@
   // *******************
 
   Keen.Dataviz = function(chartType) {
-    if (!chartType) {
-      throw new Error('You must pass a chartType to the Keen.Dataviz constructor.');
-    }
     this.chartType = chartType;
     this.capabilities = []; // No capabilities by default;
+    this.config = {};
     this.dataformSchema = {
       collection: 'result',
       select: true
@@ -92,6 +90,9 @@
   };
 
   Keen.Dataviz.prototype.setData = function(dataset) {
+    if (!dataset) {
+      throw new Error('You must pass data to the setData() function.');
+    }
     this.dataset = dataset;
 
     if (this.dataset instanceof Keen.Request) {
@@ -102,25 +103,25 @@
       this.data = (this.dataset instanceof Array) ? this.dataset[0] : this.dataset;
     }
 
-    // Build default title if necessary to do so.
-    if (!this.config.title && this.dataset instanceof Keen.Request) {
-      this.buildDefaultTitle();
-    }
-
     // Set the visualization types this reqest can do.
     this.setVizTypes();
 
     return this;
   };
 
-  Keen.Dataviz.prototype.config = function(config) {
+  Keen.Dataviz.prototype.setConfig = function(config) {
     if (!this.dataset) {
       throw new Error('You must provide data to a Keen.Dataviz object using the setData() function before calling config() on it.');
     }
 
     // Backwoods cloning facility
     var defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
-    this.config = _extend(defaults, config || {});
+    this.config = _extend(defaults, config);
+
+    // Build default title if necessary to do so.
+    if (!this.config.title && this.dataset instanceof Keen.Request) {
+      this.buildDefaultTitle();
+    }
 
     // Set the capable chart types and default type for this viz.
     this.setCapabilities();
@@ -177,7 +178,7 @@
       this.is2xGroupBy = (this.dataset.queries[0].get('group_by') instanceof Array) ? true : false;
       this.isExtraction = (this.dataset.queries[0].analysis == 'extraction') ? true : false;
     } else {
-      this.isMetric = (typeof this.data.result === "number" || this.data.result === null) ? true : false
+      this.isMetric = (typeof this.dataset.result === "number" || this.dataset.result === null) ? true : false
     }
   };
 
