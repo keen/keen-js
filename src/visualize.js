@@ -337,7 +337,9 @@
   };
 
   Keen.Dataviz.prototype.render = function(el) {
-    this.spinner.stop();
+    if (this.spinner) {
+      this.spinner.stop();
+    }
     this.config.el = el;
 
     if (this.config.library) {
