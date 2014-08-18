@@ -22,7 +22,7 @@
       if(typeof google === 'undefined'){
         throw new Error("Problem loading Google Charts library. Please contact us!");
       } else {
-        google.load('visualization', '1.0', {
+        google.load('visualization', '1.1', {
             packages: ['corechart', 'table'],
             callback: function(){
               Keen.loaded = true;
@@ -35,6 +35,12 @@
     function handleErrors(stack){
       var message = errors[stack['id']] || stack['message'] || "An error occurred";
       this.trigger('error', message);
+    }
+
+    function handleRemoval(){
+      var self = this;
+      google.visualization.events.removeAllListeners(self._chart);
+      self._chart.clearChart();
     }
 
 
@@ -54,6 +60,7 @@
         this.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -62,6 +69,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -78,6 +88,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -86,6 +97,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -102,6 +116,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -110,6 +125,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -126,6 +144,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -134,6 +153,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -150,6 +172,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -158,6 +181,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -174,6 +200,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -182,6 +209,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 

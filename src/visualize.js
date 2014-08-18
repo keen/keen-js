@@ -17,6 +17,7 @@
     placeholder.style.height = (config.height || Keen.Visualization.defaults.height) + "px";
     placeholder.style.position = "relative";
     placeholder.style.width = (config.width || Keen.Visualization.defaults.width) + "px";
+    el.innerHTML = "";
     el.appendChild(placeholder);
 
     var spinner = new Keen.Spinner({
@@ -48,7 +49,7 @@
       }
       this.draw(selector, config);
     });
-    
+
     request.on("error", function(response){
       var errorConfig, error;
       spinner.stop();
@@ -77,6 +78,9 @@
   };
 
   function _build_visual(selector, config){
+    if (this.visual) {
+      this.visual.trigger("remove");
+    }
     this.visual = new Keen.Visualization(this, selector, config);
   }
 
@@ -377,6 +381,9 @@
     self.on("update", function(){
       self.update.apply(this, arguments);
     });
+    self.on("remove", function(){
+      self.remove.apply(this, arguments);
+    });
 
     // Let's kick it off!
     self.initialize();
@@ -392,6 +399,9 @@
     },
     update: function(){
       // Handle data updates
+    },
+    remove: function(){
+      // Handle deletion
     }
   };
   _extend(baseVisualization.prototype, Events);
