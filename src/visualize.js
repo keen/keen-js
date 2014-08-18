@@ -17,6 +17,7 @@
     placeholder.style.height = (config.height || Keen.Visualization.defaults.height) + "px";
     placeholder.style.position = "relative";
     placeholder.style.width = (config.width || Keen.Visualization.defaults.width) + "px";
+    el.innerHTML = "";
     el.appendChild(placeholder);
 
     var spinner = new Keen.Spinner({

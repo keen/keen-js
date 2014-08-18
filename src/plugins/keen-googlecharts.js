@@ -37,6 +37,12 @@
       this.trigger('error', message);
     }
 
+    function handleRemoval(){
+      var self = this;
+      google.visualization.events.removeAllListeners(self._chart);
+      self._chart.clearChart();
+    }
+
 
     // Create chart types
     // -------------------------------
@@ -54,6 +60,7 @@
         this.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -62,6 +69,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -78,6 +88,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -86,6 +97,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -102,6 +116,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -110,6 +125,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -126,7 +144,7 @@
         self.update();
       },
       update: function(){
-        this.trigger("remove");
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -137,9 +155,7 @@
         this._chart.draw(data, options);
       },
       remove: function(){
-        google.visualization.events.removeAllListeners(this._chart);
-        this._chart.clearChart();
-        //console.log(this._chart);
+        handleRemoval.call(this);
       }
     });
 
@@ -156,6 +172,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -164,6 +181,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
@@ -180,6 +200,7 @@
         self.update();
       },
       update: function(){
+        this.remove();
         var data = google.visualization.arrayToDataTable(this.data.table);
         var options = Keen.utils.extend(this.chartOptions, {
           title: this.title || '',
@@ -188,6 +209,9 @@
           colors: this.colors
         });
         this._chart.draw(data, options);
+      },
+      remove: function(){
+        handleRemoval.call(this);
       }
     });
 
