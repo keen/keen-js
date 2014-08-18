@@ -178,4 +178,19 @@ describe("Keen Query", function() {
     });
   });
 
+  describe("#once", function() {
+    it("should call once handlers once when triggered", function(){
+      var query = this.query;
+      var callbackA = sinon.spy();
+      var callbackB = sinon.spy();
+      this.query.once('event', callbackA);
+      this.query.once('event', callbackB);
+      expect(callbackA.callCount).to.eql(1);
+      expect(callbackB.callCount).to.eql(1);
+      this.query.trigger('event');
+      expect(callbackA.callCount).to.eql(1);
+      expect(callbackB.callCount).to.eql(1);
+    });
+  });
+
 });
