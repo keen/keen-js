@@ -128,12 +128,6 @@
 
     this.setDataformSchema();
 
-    // Set chart type to default if one hasn't seen set,
-    // which is just the first index in the array of chart types this viz is capable of.
-    if (!this.config.chartType) {
-      this.config.chartType = this.capabilities[0];
-    }
-
     this.setSpecificChartOptions();
 
     this.config['data'] = (this.data) ? _transform.call(this.config, this.data, this.dataformSchema) : [];
@@ -232,6 +226,12 @@
     // Extractions
     if (this.isExtraction) {
       this.capabilities = ['table'];
+    }
+
+    // Set chart type to default if one hasn't seen set,
+    // which is just the first index in the array of chart types this viz is capable of.
+    if (!this.config.chartType) {
+      this.config.chartType = this.capabilities[0];
     }
   };
 
