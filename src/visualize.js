@@ -106,6 +106,9 @@
     // Set the visualization types this reqest can do.
     this.setVizTypes();
 
+    // Set the capable chart types and default type for this viz.
+    this.setCapabilities();
+
     return this;
   };
 
@@ -122,9 +125,6 @@
     if (!this.config.title && this.dataset instanceof Keen.Request) {
       this.buildDefaultTitle();
     }
-
-    // Set the capable chart types and default type for this viz.
-    this.setCapabilities();
 
     this.setDataformSchema();
 
