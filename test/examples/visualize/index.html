@@ -283,12 +283,10 @@
             newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
           }
         }
+        this.data = newData;
 
-        if (window.memChart) {
-          console.log("REMOVE CHART");
-          window.memChart.trigger("remove");
-        }
-        window.memChart = new Keen.Visualization(newData, document.getElementById("random-multi-js"), {
+        if (window.memChart) window.memChart.remove();
+        window.memChart = new Keen.Visualization(this, document.getElementById("random-multi-js"), {
           library: "google",
           chartType: "linechart",
           title: "Random multi",
