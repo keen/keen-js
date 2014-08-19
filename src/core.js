@@ -268,7 +268,7 @@
 
   // -------------------------------
   // Keen.Events
-  // (Based heavily on backbone.js!)
+  // We <3 BackboneJS!
   // -------------------------------
 
   var Events = Keen.Events = {
@@ -287,22 +287,58 @@
       once._callback = callback;
       return self.on(name, once, context);
     },
-    off: function(name, callback) {
-      if (!name && !callback) {
+    off: function(name, callback, context) {
+      if (!this.listeners) return this;
+
+      // Remove all callbacks for all events.
+      if (!name && !callback && !context) {
         this.listeners = void 0;
-        delete this.listeners;
         return this;
       }
-      var events = this.listeners[name] || [];
-      for (var i = events.length; i--;) {
-        if (callback && callback == events[i]['callback']) {
-          this.listeners[name].splice(i, 1);
+
+      var names = [];
+      if (name) {
+        names.push(name);
+      } else {
+        _each(this.listeners, function(value, key){
+          names.push(key);
+        });
+      }
+
+      for (var i = 0, length = names.length; i < length; i++) {
+        name = names[i];
+
+        // Bail out if there are no events stored.
+        var events = this.listeners[name];
+        if (!events) continue;
+
+        // Remove all callbacks for this event.
+        if (!callback && !context) {
+          delete this.listeners[name];
+          continue;
         }
-        if (!callback || events.length == 0) {
-          this.listeners[name] = void 0;
+
+        // Find any remaining events.
+        var remaining = [];
+        for (var j = 0, k = events.length; j < k; j++) {
+          var event = events[j];
+          if (
+            callback && callback !== event.callback &&
+            callback !== event.callback._callback ||
+            context && context !== event.context
+          ) {
+            remaining.push(event);
+          }
+        }
+
+        // Replace events if there are any remaining.  Otherwise, clean up.
+        if (remaining.length) {
+          this.listeners[name] = remaining;
+        } else {
           delete this.listeners[name];
         }
       }
+
       return this;
     },
     trigger: function(name) {
