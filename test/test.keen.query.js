@@ -185,6 +185,7 @@ describe("Keen Query", function() {
       var callbackB = sinon.spy();
       this.query.once('event', callbackA);
       this.query.once('event', callbackB);
+      this.query.trigger('event');
       expect(callbackA.callCount).to.eql(1);
       expect(callbackB.callCount).to.eql(1);
       this.query.trigger('event');
