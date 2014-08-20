@@ -73,6 +73,25 @@
       return plucked;
     };
 
+    /**
+     * Handler for determining what the x-axis will display
+     * @return {object}/undefined
+     */
+    var handleTimeseries = function() {
+      var candidates = this.data.c3;
+      // if the first itemset is a date, then make it into a timeseries
+      if(candidates[0][1] instanceof Date) {
+        return {
+          x: {
+            type: 'timeseries',
+            tick: {
+              fit: true
+            }
+          }
+        };
+      }
+    };
+
     var chartTypes = ['Spline', 'Pie', 'Donut', 'Area-Spline', 'Bar', 'Scatter'];
     var charts = {};
 
@@ -88,9 +107,10 @@
         render: function(){
           var self = this;
 
-          // self._chart = self._chart || new google.visualization.AreaChart(self.el);
-          self._chart = c3.generate({
+          // Binding and defaulting
+          var options = {
             bindto: self.el,
+            height: this.height,
             grid: {
               x: {
                 show: true
@@ -104,22 +124,13 @@
               columns: this.data.c3,
               type: chart.toLowerCase()
             },
-            axis: (function() {
-              var candidates = self.data.c3;
-              // If the first itemset is a date, then make it into a timeseries
-              if(candidates[0][1] instanceof Date) {
-                return {
-                  x: {
-                    type: 'timeseries',
-                    tick: {
-                      fit: true
-                    }
-                  }
-                };
-              }
+            axis: handleTimeseries.apply(this)
+          };
 
-            })()
-          });
+          _extend(options, this.chartOptions);
+
+          // Make chart
+          self._chart = c3.generate(options);
         },
         update: function(){
           var unpacked = _unpack(this.data.table);
@@ -136,7 +147,7 @@
 
     // Register library + types
     // -------------------------------
-
+    
     Keen.Visualization.register('c3', charts);
 
   })(Keen);
