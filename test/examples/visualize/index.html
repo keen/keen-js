@@ -184,7 +184,9 @@
         labelMapping: ["1", "2", "3", "4", "5"]
       });*/
 
-      /*keen.run(funnel, function(res){
+      /**/
+
+      keen.run(funnel, function(res){
         var data = res;
         var labelMap = {
           "pageview"           : "Visit",
@@ -253,7 +255,7 @@
       });
 
 
-      keen.run(line, function(res){
+      /*var drawThis = keen.run(line, function(res){
         var newData = res;
         Keen.utils.each(res.result, function(record, index){
           Keen.utils.each(record, function(value, key){
@@ -268,11 +270,14 @@
             "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "pink"
           }
         });
-      });*/
+      });
+      setInterval(function(){
+        drawThis.refresh();
+      }, 2000);*/
 
       window.memChart;
       window.todo = keen.run(multiline, function(res){
-        /*var newData = res;
+        var newData = res;
         for (var i = 0; i < res.result.length; i++) {
           for (var j = 0; j < res.result[i].value.length; j++) {
             newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
@@ -301,26 +306,8 @@
           chartOptions: {
             isStacked: true
           }
-        });*/
+        });
 
-        /*this.data = newData;
-        this.draw(document.getElementById("random-multi-js"), {
-          title: "Random multi",
-          height: 500,
-          //labelMapping: ["1", "2", "3", "4", "5"],
-          labelMapping: {
-            "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Page",
-            "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Index",
-            "": "N/A"
-          },
-          colorMapping: {
-            "Page": "pink",
-            "Index": "yellow"
-          },
-          chartOptions: {
-            isStacked: true
-          }
-        });*/
       });
 
       setInterval(function(){

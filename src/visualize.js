@@ -26,8 +26,42 @@
   Keen.prototype.draw = function(query, el, config) {
     // Find DOM element, set height, build spinner
     var config = config || {};
+<<<<<<< HEAD
     var el = el;
     var spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(el);
+=======
+    var el = selector;
+    //var id = selector.getAttribute("id");
+    //var el = document.getElementById(id);
+
+    var placeholder = document.createElement("div");
+    placeholder.className = "keen-loading";
+    //placeholder.style.background = "#f2f2f2";
+    placeholder.style.height = (config.height || Keen.Visualization.defaults.height) + "px";
+    placeholder.style.position = "relative";
+    placeholder.style.width = (config.width || Keen.Visualization.defaults.width) + "px";
+    el.innerHTML = "";
+    el.appendChild(placeholder);
+
+    var spinner = new Keen.Spinner({
+      lines: 10, // The number of lines to draw
+      length: 8, // The length of each line
+      width: 3, // The line thickness
+      radius: 10, // The radius of the inner circle
+      corners: 1, // Corner roundness (0..1)
+      rotate: 0, // The rotation offset
+      direction: 1, // 1: clockwise, -1: counterclockwise
+      color: '#4d4d4d', // #rgb or #rrggbb or array of colors
+      speed: 1, // Rounds per second
+      trail: 60, // Afterglow percentage
+      shadow: false, // Whether to render a shadow
+      hwaccel: false, // Whether to use hardware acceleration
+      className: 'keen-spinner', // The CSS class to assign to the spinner
+      zIndex: 2e9, // The z-index (defaults to 2000000000)
+      top: '50%', // Top position relative to parent
+      left: '50%' // Left position relative to parent
+    }).spin(placeholder);
+>>>>>>> Fixes #138 (memory leak) and fixes #134 (loading indicator)
 
     var request = new Keen.Request(this, [query]);
 
