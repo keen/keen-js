@@ -15,21 +15,13 @@
         Table;
 
     var errors = {
-      "google-visualization-errors-0": "No results to visualize"
     }
 
-    Keen.utils.loadScript("https://www.google.com/jsapi", function() {
-      if(typeof google === 'undefined'){
-        throw new Error("Problem loading Google Charts library. Please contact us!");
-      } else {
-        google.load('visualization', '1.1', {
-            packages: ['corechart', 'table'],
-            callback: function(){
-              Keen.loaded = true;
-              Keen.trigger('ready');
-            }
-        });
-      }
+    Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js", function() {
+      Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/c3/0.1.29/c3.min.js", function() {
+        Keen.loaded = true;
+        Keen.trigger('ready');
+      });
     });
 
     function handleErrors(stack){
@@ -39,7 +31,7 @@
 
     function handleRemoval(){
       var self = this;
-      google.visualization.events.removeAllListeners(self._chart);
+      // google.visualization.events.removeAllListeners(self._chart);
       self._chart.clearChart();
     }
 
@@ -47,28 +39,49 @@
     // Create chart types
     // -------------------------------
 
-    AreaChart = Keen.Visualization.extend({
+    LineChart = Keen.Visualization.extend({
       initialize: function(){
+        debugger;
         this.render();
       },
       render: function(){
         var self = this;
-        self._chart = self._chart || new google.visualization.AreaChart(self.el);
-        google.visualization.events.addListener(self._chart, 'error', function(stack){
-          handleErrors.call(self, stack);
+        debugger;
+
+        // self._chart = self._chart || new google.visualization.AreaChart(self.el);
+        self._chart = c3.generate({
+          bindto: self.el,
+          grid: {
+            x: {
+              show: true
+            },
+            y: {
+              show: true
+            }
+          },
+          data: {
+            x: 'x',
+            columns: [
+              ['x'].concat(dates),
+              [this.model.get('name')].concat(weights)
+            ]
+          }
         });
+        // google.visualization.events.addListener(self._chart, 'error', function(stack){
+        //   handleErrors.call(self, stack);
+        // });
         this.update();
       },
       update: function(){
-        this.remove();
-        var data = google.visualization.arrayToDataTable(this.data.table);
-        var options = Keen.utils.extend(this.chartOptions, {
-          title: this.title || '',
-          height: parseInt(this.height),
-          width: parseInt(this.width),
-          colors: this.colors
-        });
-        this._chart.draw(data, options);
+        // this.remove();
+        // var data = google.visualization.arrayToDataTable(this.data.table);
+        // var options = Keen.utils.extend(this.chartOptions, {
+        //   title: this.title || '',
+        //   height: parseInt(this.height),
+        //   width: parseInt(this.width),
+        //   colors: this.colors
+        // });
+        // this._chart.draw(data, options);
       },
       remove: function(){
         handleRemoval.call(this);
@@ -79,7 +92,7 @@
     // Register library + types
     // -------------------------------
 
-    Keen.Visualization.register('google', {
+    Keen.Visualization.register('c3', {
       'linechart'   : LineChart
     });
 
