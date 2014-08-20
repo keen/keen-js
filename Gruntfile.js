@@ -39,6 +39,7 @@ module.exports = function(grunt) {
           , "src/visualize.js"
           , "src/plugins/keen-googlecharts.js"
           , "src/plugins/keen-c3.js"
+          , "src/plugins/keen-chart.js"
           , "src/plugins/keen-widgets.js"
           , "src/async.js"
           , "src/_outro.js"
