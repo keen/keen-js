@@ -791,7 +791,16 @@
   }
 
   function _load_style(url, cb) {
-    
+    var link = document.createElement('link');
+
+    link.setAttribute('rel', 'stylesheet');
+
+    link.type = 'text/css';
+
+    link.href = url;
+
+    document.head.appendChild(link);
+
   }
 
   Keen.Visualization.find = function(target){
@@ -816,7 +825,8 @@
   // Expose utils
   _extend(Keen.utils, {
     prettyNumber: _pretty_number,
-    loadScript: _load_script
+    loadScript: _load_script,
+    loadStyle: _load_style
   });
 
   // Set flag for script loading
