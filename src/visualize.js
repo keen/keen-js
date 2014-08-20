@@ -389,8 +389,10 @@
     self.initialize();
     Keen.Visualization.visuals.push(self);
   };
+  Keen.BaseVisualization = baseVisualization;
 
   baseVisualization.prototype = {
+    constructor: baseVisualization,
     initialize: function(){
       // Set listeners and prepare data
     },
