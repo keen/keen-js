@@ -392,11 +392,46 @@
 
   // Collect and manage libraries
   Keen.Visualization.libraries = {};
-  Keen.Visualization.register = function(name, methods){
+  Keen.Visualization.dependencies = {
+    loading: 0,
+    loaded: 0
+  };
+  Keen.Visualization.register = function(name, methods, config){
     Keen.Visualization.libraries[name] = Keen.Visualization.libraries[name] || {};
     for (var method in methods) {
       Keen.Visualization.libraries[name][method] = methods[method];
     }
+
+    // For all dependencies
+    if(config && config.dependencies) {
+      _each(config.dependencies, function (dependency, index, collection) {
+        var status = Keen.Visualization.dependencies;
+        status.loading++;
+        // Load the script || style
+        if(dependency.type === 'script') {
+          _load_script(dependency.url, function() {
+            dependency.cb && dependency.cb();
+            status.loaded++;
+            if(status.loaded === status.loading) {
+              Keen.trigger('ready');
+            }
+          });
+        } else if(dependency.type === 'style') {
+          _load_style(dependency.url, function() {
+            dependency.cb && dependency.cb();
+            status.loaded++;
+            if(status.loaded === status.loading) {
+              Keen.trigger('ready');
+            }
+          });
+        }
+      }); // End each
+    }
+    //   increment the loading counter
+    //     onLoadfinished
+    //       increment the loaded counter
+    //       if loaded counter is equal to loading counter
+    //         trigger the ready event
   };
 
   Keen.Visualization.visuals = [];
@@ -798,6 +833,7 @@
     link.type = 'text/css';
 
     link.href = url;
+    cb();
 
     document.head.appendChild(link);
 
