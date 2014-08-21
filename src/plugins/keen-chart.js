@@ -54,7 +54,7 @@
      *
      * We could probably put the checker in the plug (this file) and the handler in another place
      */
-    Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js", function() {
+    Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.js", function() {
       Keen.loaded = true;
       Keen.trigger('ready');
     });
@@ -102,7 +102,7 @@
       };
     };
 
-    var chartTypes = ['Spline', 'Pie', 'Donut', 'Area-Spline', 'Bar', 'Scatter'];
+    var chartTypes = ['Line', 'Bar', 'Radar', 'PolarArea', 'Pie', 'Doughnut'];
     var charts = {};
 
     // Create chart types
@@ -120,23 +120,23 @@
 
           // Binding and defaulting
           var options = {
-            data: {
-              x: this.data.chart[0][0],
-              columns: this.data.chart,
-              type: chart.toLowerCase()
-            },
           };
 
           _extend(options, this.chartOptions);
 
           // Make chart
-          // self._chart = c3.generate(options);
+          var chartNode = self.el;
+          chartNode.setAttribute('width', this.chartOptions.width);
+          chartNode.setAttribute('height', this.chartOptions.height);
+          var context = chartNode.getContext("2d");
+
+          self._chart = new Chart(context)[chart](this.data.chart, options);
         },
         update: function(){
           var unpacked = _unpack(this.data.table);
-          this._chart.load({
-            columns: unpacked
-          });
+          // this._chart.load({
+          //   columns: unpacked
+          // });
         },
         remove: function(){
           handleRemoval.call(this);
