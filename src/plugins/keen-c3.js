@@ -26,14 +26,7 @@
      *
      * We could probably put the checker in the plug (this file) and the handler in another place
      */
-    Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js", function() {
-      Keen.utils.loadScript("http://c3js.org/js/c3.min-05d32fdf.js", function() {
-        // Keen.loaded = true;
-        // Keen.trigger('ready');
-        Keen.utils.loadStyle("http://c3js.org/css/c3-f750e4d4.css", function() {
-        });
-      });
-    });
+
 
     function handleErrors(stack){
       var message = errors[stack['id']] || stack['message'] || "An error occurred";
@@ -142,6 +135,21 @@
     // Register library + types
     // -------------------------------
     
-    Keen.Visualization.register('c3', charts);
+    Keen.Visualization.register('c3', charts, {
+      dependencies: [
+        {
+          type: 'script',
+          url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
+        },
+        {
+          type: 'script',
+          url: 'http://c3js.org/js/c3.min-05d32fdf.js'
+        },
+        {
+          type: 'style',
+          url: 'http://c3js.org/css/c3-f750e4d4.css'
+        }
+      ]
+    });
 
   })(Keen);

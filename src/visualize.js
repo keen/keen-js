@@ -427,11 +427,6 @@
         }
       }); // End each
     }
-    //   increment the loading counter
-    //     onLoadfinished
-    //       increment the loaded counter
-    //       if loaded counter is equal to loading counter
-    //         trigger the ready event
   };
 
   Keen.Visualization.visuals = [];

@@ -6,31 +6,11 @@
   */
 
   (function(lib){
-    var Keen = lib || {},
-        AreaChart,
-        BarChart,
-        ColumnChart,
-        LineChart,
-        PieChart,
-        Table;
+    var Keen = lib || {};
 
     var errors = {
       "google-visualization-errors-0": "No results to visualize"
-    }
-
-    Keen.utils.loadScript("https://www.google.com/jsapi", function() {
-      if(typeof google === 'undefined'){
-        throw new Error("Problem loading Google Charts library. Please contact us!");
-      } else {
-        google.load('visualization', '1.1', {
-            packages: ['corechart', 'table'],
-            callback: function(){
-              Keen.loaded = true;
-              // Keen.trigger('ready');
-            }
-        });
-      }
-    });
+    };
 
     function handleErrors(stack){
       var message = errors[stack['id']] || stack['message'] || "An error occurred";
@@ -73,6 +53,23 @@
     // Register library + types
     // -------------------------------
 
-    Keen.Visualization.register('google', charts);
+    Keen.Visualization.register('google', charts, {
+      dependencies: [{
+        type: 'script',
+        url: 'https://www.google.com/jsapi',
+        cb: function() {
+          if(typeof google === 'undefined'){
+            throw new Error("Problem loading Google Charts library. Please contact us!");
+          } else {
+            google.load('visualization', '1.1', {
+                packages: ['corechart', 'table'],
+                callback: function(){
+                  // Keen.libraries++
+                }
+            });
+          }
+        }
+      }]
+    });
 
   })(Keen);

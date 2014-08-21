@@ -39,7 +39,7 @@
     var errors = {
     };
 
-    // TODO: Fix how dependnecies work
+    // TODO: Fix how dependencies work
     /**
      * As of the moment, the library dependencies trigger a ready event, which is dangerous because
      * there may be multiple dependencies such as chart, google viz, nvd3, etc. which all currently trigger
@@ -55,8 +55,8 @@
      * We could probably put the checker in the plug (this file) and the handler in another place
      */
     Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.js", function() {
-      Keen.loaded = true;
-      Keen.trigger('ready');
+      // Keen.loaded = true;
+      // Keen.trigger('ready');
     });
 
     function handleErrors(stack){
@@ -71,6 +71,7 @@
     /**
      * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
      * 90 degrees.
+     * TODO: Might need different unpackers depending on which visualization it is.
      * @param  {[2D array]} table [the dataform 2d array]
      * @return {[2D array]}       [the resulting array that is compatible with chart's column structure]
      */
@@ -148,6 +149,11 @@
     // Register library + types
     // -------------------------------
     
-    Keen.Visualization.register('chart', charts);
+    Keen.Visualization.register('chart', charts, {
+      dependencies: [{
+        type: 'script',
+        url: 'http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.js'
+      }]
+    });
 
   })(Keen);

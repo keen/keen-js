@@ -55,7 +55,7 @@
       requestType: "jsonp"
     });
 
-    var chartTypes = ['Spline', 'Pie', 'Donut', 'Area-Spline', 'Bar', 'Scatter'];
+    var chartTypes = ['Line', 'Bar', 'Radar', 'PolarArea', 'Pie', 'Doughnut'];
     var labelMapping = {
       null: 'N/A',
       "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
@@ -80,14 +80,16 @@
         this.data = newData;
 
         for(i = 0; i < chartTypes.length; i++) {
-          var div = document.createElement('div');
-          document.querySelector('body').appendChild(div);
+          var canvas = document.createElement('canvas');
+          document.querySelector('body').appendChild(canvas);
 
-          new Keen.Visualization(this, div, {
+          new Keen.Visualization(this, canvas, {
             library: "chart",
             chartType: chartTypes[i],
             chartOptions: {
-              isStacked: true
+              isStacked: true,
+              width: 500,
+              height: 320
             },
             labelMapping: labelMapping
           });
