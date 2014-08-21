@@ -11,23 +11,6 @@
     var errors = {
     };
 
-    // TODO: Fix how dependnecies work
-    /**
-     * As of the moment, the library dependencies trigger a ready event, which is dangerous because
-     * there may be multiple dependencies such as c3, google viz, nvd3, etc. which all currently trigger
-     * a Keen ready event. This can lead to issues of triggering the callback when a library has not loaded
-     * yet.
-     *
-     * We want to fix this by creating a better pattern for handling all of the dependencies.
-     *
-     * For instance, once a single dependency has been loaded, it will check that dependency as loaded.
-     * Then, we can have a listener that listens to whether all the dependencies have been satisfied,
-     * in which we can safely trigger the Keen ready event.
-     *
-     * We could probably put the checker in the plug (this file) and the handler in another place
-     */
-
-
     function handleErrors(stack){
       var message = errors[stack['id']] || stack['message'] || "An error occurred";
       this.trigger('error', message);
