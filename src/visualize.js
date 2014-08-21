@@ -394,7 +394,8 @@
   Keen.Visualization.libraries = {};
   Keen.Visualization.dependencies = {
     loading: 0,
-    loaded: 0
+    loaded: 0,
+    urls: {}
   };
   Keen.Visualization.register = function(name, methods, config){
     Keen.Visualization.libraries[name] = Keen.Visualization.libraries[name] || {};
@@ -406,18 +407,13 @@
     if(config && config.dependencies) {
       _each(config.dependencies, function (dependency, index, collection) {
         var status = Keen.Visualization.dependencies;
-        status.loading++;
-        // Load the script || style
-        if(dependency.type === 'script') {
-          _load_script(dependency.url, function() {
-            dependency.cb && dependency.cb();
-            status.loaded++;
-            if(status.loaded === status.loading) {
-              Keen.trigger('ready');
-            }
-          });
-        } else if(dependency.type === 'style') {
-          _load_style(dependency.url, function() {
+        // If it doesn't exist in the current dependencies being loaded
+        if(!status.urls[dependency.url]) {
+          status.urls[dependency.url] = true;
+          status.loading++;
+          var method = dependency.type === 'script' ? _load_script : _load_style;
+
+          method(dependency.url, function() {
             dependency.cb && dependency.cb();
             status.loaded++;
             if(status.loaded === status.loading) {
