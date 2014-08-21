@@ -2,17 +2,39 @@
   * ----------------------
   * Keen IO Plugin
   * Data Visualization
+  *
+  *
+  * Chart.js sample data structure
+  * var data = {
+      labels: ["January", "February", "March", "April", "May", "June", "July"],
+      datasets: [
+          {
+              label: "My First dataset",
+              fillColor: "rgba(220,220,220,0.2)",
+              strokeColor: "rgba(220,220,220,1)",
+              pointColor: "rgba(220,220,220,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(220,220,220,1)",
+              data: [65, 59, 80, 81, 56, 55, 40]
+          },
+          {
+              label: "My Second dataset",
+              fillColor: "rgba(151,187,205,0.2)",
+              strokeColor: "rgba(151,187,205,1)",
+              pointColor: "rgba(151,187,205,1)",
+              pointStrokeColor: "#fff",
+              pointHighlightFill: "#fff",
+              pointHighlightStroke: "rgba(151,187,205,1)",
+              data: [28, 48, 40, 19, 86, 27, 90]
+          }
+      ]
+  };
   * ----------------------
   */
 
   (function(lib){
-    var Keen = lib || {},
-        AreaChart,
-        BarChart,
-        ColumnChart,
-        LineChart,
-        PieChart,
-        Table;
+    var Keen = lib || {};
 
     var errors = {
     };
@@ -20,7 +42,7 @@
     // TODO: Fix how dependnecies work
     /**
      * As of the moment, the library dependencies trigger a ready event, which is dangerous because
-     * there may be multiple dependencies such as c3, google viz, nvd3, etc. which all currently trigger
+     * there may be multiple dependencies such as chart, google viz, nvd3, etc. which all currently trigger
      * a Keen ready event. This can lead to issues of triggering the callback when a library has not loaded
      * yet.
      *
@@ -32,13 +54,9 @@
      *
      * We could probably put the checker in the plug (this file) and the handler in another place
      */
-    Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js", function() {
-      Keen.utils.loadScript("http://c3js.org/js/c3.min-05d32fdf.js", function() {
-        Keen.loaded = true;
-        Keen.trigger('ready');
-        Keen.utils.loadStyle("http://c3js.org/css/c3-f750e4d4.css", function() {
-        });
-      });
+    Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.min.js", function() {
+      Keen.loaded = true;
+      Keen.trigger('ready');
     });
 
     function handleErrors(stack){
@@ -54,7 +72,7 @@
      * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
      * 90 degrees.
      * @param  {[2D array]} table [the dataform 2d array]
-     * @return {[2D array]}       [the resulting array that is compatible with C3's column structure]
+     * @return {[2D array]}       [the resulting array that is compatible with chart's column structure]
      */
     var _unpack = function(table) {
       var plucked = [];
@@ -70,26 +88,18 @@
           plucked[j].push(table[i][j]);
         }
       }
-      return plucked;
-    };
-
-    /**
-     * Handler for determining what the x-axis will display
-     * @return {object}/undefined
-     */
-    var handleTimeseries = function() {
-      var candidates = this.data.c3;
-      // if the first itemset is a date, then make it into a timeseries
-      if(candidates[0][1] instanceof Date) {
-        return {
-          x: {
-            type: 'timeseries',
-            tick: {
-              fit: true
-            }
-          }
-        };
+      var datasets = [];
+      for(i = 1; i < plucked.length; i++) {
+        datasets.push({
+          label: plucked[i].shift(),
+          data: plucked[i]
+        });
       }
+
+      return {
+        labels: plucked.shift().slice(1),
+        datasets: datasets
+      };
     };
 
     var chartTypes = ['Spline', 'Pie', 'Donut', 'Area-Spline', 'Bar', 'Scatter'];
@@ -101,36 +111,26 @@
     _each(chartTypes, function (chart) {
       charts[chart] = Keen.Visualization.extend({
         initialize: function(){
-          this.data.c3 = _unpack(this.data.table);
+          this.data.chart = _unpack(this.data.table);
           this.render();
         },
         render: function(){
           var self = this;
+          // Chart.js usage: new Chart(ctx).PolarArea(data);
 
           // Binding and defaulting
           var options = {
-            bindto: self.el,
-            height: this.height,
-            grid: {
-              x: {
-                show: true
-              },
-              y: {
-                show: true
-              }
-            },
             data: {
-              x: this.data.c3[0][0],
-              columns: this.data.c3,
+              x: this.data.chart[0][0],
+              columns: this.data.chart,
               type: chart.toLowerCase()
             },
-            axis: handleTimeseries.apply(this)
           };
 
           _extend(options, this.chartOptions);
 
           // Make chart
-          self._chart = c3.generate(options);
+          // self._chart = c3.generate(options);
         },
         update: function(){
           var unpacked = _unpack(this.data.table);
@@ -148,6 +148,6 @@
     // Register library + types
     // -------------------------------
     
-    Keen.Visualization.register('c3', charts);
+    Keen.Visualization.register('chart', charts);
 
   })(Keen);
