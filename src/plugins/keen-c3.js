@@ -6,13 +6,7 @@
   */
 
   (function(lib){
-    var Keen = lib || {},
-        AreaChart,
-        BarChart,
-        ColumnChart,
-        LineChart,
-        PieChart,
-        Table;
+    var Keen = lib || {};
 
     var errors = {
     };
@@ -34,8 +28,8 @@
      */
     Keen.utils.loadScript("http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js", function() {
       Keen.utils.loadScript("http://c3js.org/js/c3.min-05d32fdf.js", function() {
-        Keen.loaded = true;
-        Keen.trigger('ready');
+        // Keen.loaded = true;
+        // Keen.trigger('ready');
         Keen.utils.loadStyle("http://c3js.org/css/c3-f750e4d4.css", function() {
         });
       });
