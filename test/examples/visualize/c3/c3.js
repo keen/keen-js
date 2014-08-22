@@ -13,7 +13,7 @@ describe('C3', function () {
   // OVERRIDE THE TIMEOUT
   this.timeout(15000);
   var keen;
-  var chartTypes = ['Spline', 'Pie', 'Donut', 'Area-Spline', 'Bar', 'Scatter'];
+  var chartTypes = ['spline', 'pie', 'donut', 'area-spline', 'bar', 'scatter'];
   var labelMapping = {
     null: 'N/A',
     "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
@@ -42,10 +42,9 @@ describe('C3', function () {
     expect(true).to.equal(true);
   });
 
-  it('should display a simple multiline graphs of no configuration', function (done) {
+  it('should display graphs with chartType specified', function (done) {
 
     Keen.ready(function() {
-
       keen.run(multiline, function(res){
           this.data = generateData(res);
           for(i = 0; i < chartTypes.length; i++) {
@@ -59,14 +58,67 @@ describe('C3', function () {
             });
             expect(div.className).equal('c3');
             done();
+
+            div.remove();
           }
         });
 
     });
   });
 
-  it('should display graphs with various configurations', function () {
-    
+  it('should pass options to underlying library', function (done) {
+    Keen.ready(function() {
+      keen.run(multiline, function(res) {
+        var div = document.createElement('div');
+        document.querySelector('body').appendChild(div);
+        this.data = generateData(res);
+
+        new Keen.Visualization(this, div, {
+          library: "c3",
+          chartType: 'spline',
+          labelMapping: labelMapping,
+          chartOptions: {
+            size: {
+              height: 500
+            }
+          }
+        });
+
+        expect(div.querySelector('svg').height.baseVal.value).equal(500);
+        done();
+
+        div.remove();
+      });
+    });
+  });
+
+  //TODO: This functionality is currently not supported
+  xit('should update itself smoothly using the underlying librarys update pattern', function (done) {
+    Keen.ready(function() {
+      keen.run(multiline, function(res) {
+        var div = document.createElement('div');
+        document.querySelector('body').appendChild(div);
+        this.data = generateData(res);
+
+        var chart = new Keen.Visualization(this, div, {
+          library: "c3",
+          chartType: 'Spline',
+          labelMapping: labelMapping,
+          chartOptions: {
+            size: {
+              height: 500
+            }
+          }
+        });
+
+        setTimeout(function() {
+          this.data = generateData(res);
+          done();
+          // div.remove();
+        }.bind(this), 1500);
+
+      });
+    });
   });
 
 });

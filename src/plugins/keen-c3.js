@@ -62,13 +62,22 @@
       }
     };
 
-    var chartTypes = ['Spline', 'Pie', 'Donut', 'Area-Spline', 'Bar', 'Scatter'];
+    var chartTypes = ['spline', 'pie', 'donut', 'area-spline', 'bar', 'scatter'];
+    // var conversions = {
+    //   'areachart': 'Area-Spline',
+    //   'barchart': 'Bar',
+    //   'linechart': 'Spline',
+    //   'piechart': 'Pie',
+    //   'scatterchart': 'Scatter',
+    //   'donutchart': 'Donut'
+    // };
     var charts = {};
 
     // Create chart types
     // -------------------------------
 
     _each(chartTypes, function (chart) {
+      // console.log(key, chart);
       charts[chart] = Keen.Visualization.extend({
         initialize: function(){
           this.data.c3 = _unpack(this.data.table);
@@ -92,7 +101,7 @@
             data: {
               x: this.data.c3[0][0],
               columns: this.data.c3,
-              type: chart.toLowerCase()
+              type: chart
             },
             axis: handleTimeseries.apply(this)
           };
