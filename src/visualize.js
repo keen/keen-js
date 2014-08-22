@@ -417,6 +417,7 @@
             dependency.cb && dependency.cb();
             status.loaded++;
             if(status.loaded === status.loading) {
+              Keen.loaded = true;
               Keen.trigger('ready');
             }
           });
