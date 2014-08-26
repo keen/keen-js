@@ -175,21 +175,16 @@
         ]
       });
 
-      keen.draw(error, document.getElementById("error-js"));
+      //keen.draw(error, document.getElementById("error-js"));
 
       // keen.run([num, pie, line, funnel], function(){});
-      keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
+      /*keen.draw(funnel, document.getElementById("client-dot-draw-demo"), {
         title: "Funnel with a custom title",
         chartType: "barchart",
-        /*labelMapping: {
-          "pageview"           : "Start",
-          "viewed_twentyfive"  : "25%",
-          "viewed_fifty"       : "50%",
-          "viewed_seventyfive" : "75%",
-          "viewed_all"         : "100%"
-        }*/
         labelMapping: ["1", "2", "3", "4", "5"]
-      });
+      });*/
+
+      /**/
 
       keen.run(funnel, function(res){
         var data = res;
@@ -260,7 +255,7 @@
       });
 
 
-      keen.run(line, function(res){
+      /*var drawThis = keen.run(line, function(res){
         var newData = res;
         Keen.utils.each(res.result, function(record, index){
           Keen.utils.each(record, function(value, key){
@@ -276,7 +271,11 @@
           }
         });
       });
+      setInterval(function(){
+        drawThis.refresh();
+      }, 2000);*/
 
+      window.memChart;
       window.todo = keen.run(multiline, function(res){
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
@@ -285,7 +284,11 @@
           }
         }
         this.data = newData;
-        this.draw(document.getElementById("random-multi-js"), {
+
+        if (window.memChart) window.memChart.remove();
+        window.memChart = new Keen.Visualization(this, document.getElementById("random-multi-js"), {
+          library: "google",
+          chartType: "linechart",
           title: "Random multi",
           height: 500,
           //labelMapping: ["1", "2", "3", "4", "5"],
@@ -302,13 +305,15 @@
             isStacked: true
           }
         });
+
       });
 
       setInterval(function(){
-        //window.todo.refresh();
+        //window.todo.visual.remove();
+        window.todo.refresh();
       }, 2000);
 
-      keen.draw(multiline, document.getElementById("multi-js"), {
+      /*keen.draw(multiline, document.getElementById("multi-js"), {
         chartType: "columnchart",
         width: 800,
         labelMapping: {
@@ -362,6 +367,7 @@
           width : "auto"
       });
       //console.log(testsort.data);
+      */
 
     });
 
