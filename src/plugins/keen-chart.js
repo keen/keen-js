@@ -5,6 +5,7 @@
   *
   *
   * Chart.js sample data structure
+  * Line & Bar & Radar chart
   * var data = {
       labels: ["January", "February", "March", "April", "May", "June", "July"],
       datasets: [
@@ -30,6 +31,28 @@
           }
       ]
   };
+  *
+  * Polar Area & Pie & Donut charts
+  * var data = [
+      {
+          value: 300,
+          color:"#F7464A",
+          highlight: "#FF5A5E",
+          label: "Red"
+      },
+      {
+          value: 50,
+          color: "#46BFBD",
+          highlight: "#5AD3D1",
+          label: "Green"
+      },
+      {
+          value: 120,
+          color: "#4D5360",
+          highlight: "#616774",
+          label: "Dark Grey"
+      }
+    ];
   * ----------------------
   */
 
@@ -55,14 +78,13 @@
      * @param  {[2D array]} table [the dataform 2d array]
      * @return {[2D array]}       [the resulting array that is compatible with chart's column structure]
      */
-    var _unpack = function(table) {
+    var _unpackLBR = function(table) {
       var plucked = [];
       var numberOfColumns = table[0].length;
       // Construct new table
       for(var x = 0; x < numberOfColumns; x++) {
         plucked.push([]);
       }
-      // Build new table that is compatible with c3.
       // The first item in the table will be the names
       for(var i = 0; i < table.length; i++) {
         for(var j = 0; j < numberOfColumns; j++) {
@@ -83,16 +105,43 @@
       };
     };
 
+    var _unpackPPD = function(table) {
+      var plucked = [];
+      var numberOfColumns = table[0].length - 1;
+      for(var x = 0; x < numberOfColumns; x++) {
+        plucked.push(0);
+      }
+      for(var i = 1; i < table.length; i++) {
+        for(var j = 0; j < numberOfColumns; j++) {
+          plucked[j] += table[i][j + 1];
+        }
+      }
+      var datasets = [];
+      for(i = 0; i < plucked.length; i++) {
+        datasets.push({
+          value: plucked[i],
+          label: table[0][i + 1]
+        });
+      }
+
+      return datasets;
+    };
+
     var chartTypes = ['Line', 'Bar', 'Radar', 'PolarArea', 'Pie', 'Doughnut'];
     var charts = {};
 
     // Create chart types
     // -------------------------------
 
-    _each(chartTypes, function (chart) {
+    _each(chartTypes, function (chart, index) {
       charts[chart] = Keen.Visualization.extend({
         initialize: function(){
-          this.data.chart = _unpack(this.data.table);
+          if(parseInt(index, 10) > 2) {
+            this.data.chart = _unpackPPD(this.data.table);
+          } else {
+            this.data.chart = _unpackLBR(this.data.table);
+          }
+
           this.render();
         },
         render: function(){
