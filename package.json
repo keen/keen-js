@@ -32,6 +32,7 @@
     "karma-ie-launcher": "latest",
     "karma-jasmine": "~0.2.0",
     "karma-mocha": "^0.1.8",
+    "karma-sinon": "latest",
     "karma-safari-launcher": "latest"
   },
   "homepage": "https://keen.io"

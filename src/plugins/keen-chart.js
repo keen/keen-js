@@ -129,7 +129,7 @@
     // Register library + types
     // -------------------------------
     
-    Keen.Visualization.register('chart', charts, {
+    Keen.Visualization.register('chart.js', charts, {
       dependencies: [{
         type: 'script',
         url: 'http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.js'
