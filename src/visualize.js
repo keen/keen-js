@@ -75,7 +75,8 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(dataset, el, config){
-    return new Keen.Dataviz(config.chartType).prepare(el).setData(dataset).setConfig(config).render(el);
+    var type = (config && config.chartType) ? config.chartType : null;
+    return new Keen.Dataviz(type).prepare(el).setData(dataset).setConfig(config).render(el);
   };
 
   // *******************
