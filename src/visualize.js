@@ -64,6 +64,9 @@
   };
 
   function _build_visual(selector, config){
+    if (this.visual) {
+      this.visual.trigger("remove");
+    }
     this.visual = new Keen.Visualization(this, selector, config);
   }
 
@@ -412,6 +415,9 @@
     self.on("update", function(){
       self.update.apply(this, arguments);
     });
+    self.on("remove", function(){
+      self.remove.apply(this, arguments);
+    });
 
     // Let's kick it off!
     self.initialize();
@@ -427,6 +433,9 @@
     },
     update: function(){
       // Handle data updates
+    },
+    remove: function(){
+      // Handle deletion
     }
   };
   _extend(baseVisualization.prototype, Events);
