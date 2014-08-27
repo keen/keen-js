@@ -160,6 +160,7 @@
       for(i = 0; i < plucked.length; i++) {
         datasets.push({
           value: plucked[i],
+          color: this.colors[i],
           label: table[0][i + 1]
         });
       }
@@ -177,9 +178,9 @@
       charts[chart] = Keen.Visualization.extend({
         initialize: function(){
           if(parseInt(index, 10) > 2) {
-            this.data.chart = _unpackPPD(this.data.table, this.chartOptions);
+            this.data.chart = _unpackPPD.call(this, this.data.table, this.chartOptions);
           } else {
-            this.data.chart = _unpackLBR(this.data.table, this.chartOptions);
+            this.data.chart = _unpackLBR.call(this, this.data.table, this.chartOptions);
           }
 
           this.render();
