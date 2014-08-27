@@ -62,6 +62,15 @@
       }
     };
 
+    var registerColors = function() {
+      var colors = {};
+      for(var i = 1; i < this.data.c3.length; i++) {
+        var set = this.data.c3[i];
+        colors[set[0]] = this.colors[i - 1];
+      }
+      return colors;
+    };
+
     var chartTypes = ['spline', 'pie', 'donut', 'area-spline', 'bar', 'scatter'];
     // var conversions = {
     //   'areachart': 'Area-Spline',
@@ -101,6 +110,7 @@
             data: {
               x: this.data.c3[0][0],
               columns: this.data.c3,
+              colors: registerColors.call(this),
               type: chart
             },
             axis: handleTimeseries.apply(this)
