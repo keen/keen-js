@@ -1,4 +1,3 @@
-// jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
 var generateData = function(res) {
   var newData = res;
   for (var i = 0; i < res.result.length; i++) {
@@ -33,7 +32,6 @@ describe('C3', function () {
       readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
       requestType: "jsonp"
     });
-    
   });
 
   it('should display a metric', function () {

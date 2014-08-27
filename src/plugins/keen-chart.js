@@ -99,6 +99,13 @@
       this._chart.clearChart();
     }
 
+    var handleDate = function(dates) {
+      for(var i = 0; i < dates.length; i++) {
+        dates[i] = moment(dates[i]).calendar();
+      }
+      return dates;
+    };
+
     /**
      * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
      * 90 degrees.
@@ -133,7 +140,7 @@
       }
 
       return {
-        labels: plucked.shift().slice(1),
+        labels: handleDate(plucked.shift().slice(1)),
         datasets: datasets
       };
     };
@@ -216,6 +223,10 @@
       dependencies: [{
         type: 'script',
         url: 'http://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1-beta.2/Chart.js'
+      },
+      {
+        type: 'script',
+        url: 'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js'
       }]
     });
 

@@ -28,6 +28,7 @@
     var config = config || {};
     var el = el;
     var spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(el);
+    debugger;
 
     var request = new Keen.Request(this, [query]);
 
