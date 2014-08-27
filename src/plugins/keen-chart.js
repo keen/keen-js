@@ -32,7 +32,7 @@
       ]
   };
   *
-  * Polar Area & Pie & Donut charts
+  * Polar Area & Pie & Doughnut charts
   * var data = [
       {
           value: 300,
@@ -54,6 +54,7 @@
       }
     ];
   * ----------------------
+  * TODO: Add default styles to layouts
   */
 
   (function(lib){
@@ -61,6 +62,33 @@
 
     var errors = {
     };
+
+    var colorsetLBR = [
+      {
+        fillColor: "rgba(0,175,215,0.2)",
+        strokeColor: "rgba(0,175,215,1)",
+        pointColor: "rgba(0,175,215,1)",
+        pointStrokeColor  : "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(220,220,220,1)"
+      },
+      {
+        fillColor: "rgba(243,87,87,0.2)",
+        strokeColor: "rgba(243,87,87,1)",
+        pointColor: "rgba(243,87,87,1)",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(151,187,205,1)"
+      },
+      {
+        fillColor: "rgba(73,197,177,0.2)",
+        strokeColor: "rgba(73,197,177,1)",
+        pointColor: "rgba(73,197,177,1)",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(151,187,205,1)"
+      }
+    ];
     
     function handleErrors(stack){
       var message = errors[stack['id']] || stack['message'] || "An error occurred";
@@ -74,11 +102,14 @@
     /**
      * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
      * 90 degrees.
+     *
+     * TODO: Add colors
+     * 
      * TODO: Might need different unpackers depending on which visualization it is.
      * @param  {[2D array]} table [the dataform 2d array]
      * @return {[2D array]}       [the resulting array that is compatible with chart's column structure]
      */
-    var _unpackLBR = function(table) {
+    var _unpackLBR = function(table, options) {
       var plucked = [];
       var numberOfColumns = table[0].length;
       // Construct new table
@@ -93,10 +124,12 @@
       }
       var datasets = [];
       for(i = 1; i < plucked.length; i++) {
-        datasets.push({
+        // Add color
+        var set = _extend({
           label: plucked[i].shift(),
           data: plucked[i]
-        });
+        }, colorsetLBR[i - 1]); // TODO: Make it extendable with options
+        datasets.push(set);
       }
 
       return {
@@ -105,7 +138,7 @@
       };
     };
 
-    var _unpackPPD = function(table) {
+    var _unpackPPD = function(table, options) {
       var plucked = [];
       var numberOfColumns = table[0].length - 1;
       for(var x = 0; x < numberOfColumns; x++) {
@@ -137,9 +170,9 @@
       charts[chart] = Keen.Visualization.extend({
         initialize: function(){
           if(parseInt(index, 10) > 2) {
-            this.data.chart = _unpackPPD(this.data.table);
+            this.data.chart = _unpackPPD(this.data.table, this.chartOptions);
           } else {
-            this.data.chart = _unpackLBR(this.data.table);
+            this.data.chart = _unpackLBR(this.data.table, this.chartOptions);
           }
 
           this.render();
@@ -163,6 +196,7 @@
           self._chart = new Chart(context)[chart](this.data.chart, options);
         },
         update: function(){
+          // TODO: fix updater
           var unpacked = _unpack(this.data.table);
           // this._chart.load({
           //   columns: unpacked
@@ -181,7 +215,7 @@
     Keen.Visualization.register('chart.js', charts, {
       dependencies: [{
         type: 'script',
-        url: 'http://cdnjs.cloudflare.com/ajax/libs/Chart.js/0.2.0/Chart.js'
+        url: 'http://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1-beta.2/Chart.js'
       }]
     });
 
