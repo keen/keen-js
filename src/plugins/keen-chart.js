@@ -135,7 +135,11 @@
         var set = _extend({
           label: plucked[i].shift(),
           data: plucked[i]
-        }, colorsetLBR[i - 1]); // TODO: Make it extendable with options
+        }, _extend(colorsetLBR[i - 1], {
+          fillColor: this.colors[i],
+          strokeColor: this.colors[i],
+          pointColor: this.colors[i]
+        })); // TODO: Make it extendable with options
         datasets.push(set);
       }
 

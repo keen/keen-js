@@ -64,6 +64,7 @@
 
     var registerColors = function() {
       var colors = {};
+      //TODO set colors as an alternative
       for(var i = 1; i < this.data.c3.length; i++) {
         var set = this.data.c3[i];
         colors[set[0]] = this.colors[i - 1];
@@ -84,7 +85,6 @@
 
     // Create chart types
     // -------------------------------
-
     _each(chartTypes, function (chart) {
       // console.log(key, chart);
       charts[chart] = Keen.Visualization.extend({
@@ -136,7 +136,6 @@
 
     // Register library + types
     // -------------------------------
-    
     Keen.Visualization.register('c3', charts, {
       dependencies: [
         {
