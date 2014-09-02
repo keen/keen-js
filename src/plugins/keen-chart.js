@@ -136,9 +136,9 @@
           label: plucked[i].shift(),
           data: plucked[i]
         }, _extend(colorsetLBR[i - 1], {
-          fillColor: this.colors[i],
-          strokeColor: this.colors[i],
-          pointColor: this.colors[i]
+          fillColor: this.colors[i - 1],
+          strokeColor: this.colors[i - 1],
+          pointColor: this.colors[i - 1]
         })); // TODO: Make it extendable with options
         datasets.push(set);
       }

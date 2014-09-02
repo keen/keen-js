@@ -134,7 +134,7 @@
 
     });
 
-    // Register library + types
+    // Register library + add dependencies + types
     // -------------------------------
     Keen.Visualization.register('c3', charts, {
       dependencies: [

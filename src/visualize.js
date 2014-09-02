@@ -78,6 +78,8 @@
     return new Keen.Dataviz(config.chartType).prepare(el).setData(dataset).setConfig(config).render(el);
   };
 
+  _extend(Keen.Visualization, Events);
+
   // *******************
   // START NEW CLEAN API
   // *******************
@@ -397,11 +399,14 @@
     loaded: 0,
     urls: {}
   };
+
   Keen.Visualization.register = function(name, methods, config){
     Keen.Visualization.libraries[name] = Keen.Visualization.libraries[name] || {};
     for (var method in methods) {
       Keen.Visualization.libraries[name][method] = methods[method];
     }
+
+    var self = this;
 
     // For all dependencies
     if(config && config.dependencies) {
