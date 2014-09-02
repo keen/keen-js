@@ -9,7 +9,7 @@
     var Keen = lib || {},
         Metric;
 
-    Metric = Keen.Visualization.extend({
+    Metric = Keen.VisualizationPlugin.extend({
       initialize: function(){
         var css = document.createElement("style"),
             bgDefault = "#49c5b1";

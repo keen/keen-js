@@ -47,7 +47,7 @@
     // Create chart types
     // -------------------------------
 
-    AreaChart = Keen.Visualization.extend({
+    AreaChart = Keen.VisualizationPlugin.extend({
       initialize: function(){
         this.render();
       },
@@ -75,7 +75,7 @@
       }
     });
 
-    BarChart = Keen.Visualization.extend({
+    BarChart = Keen.VisualizationPlugin.extend({
       initialize: function(){
         this.render();
       },
@@ -103,7 +103,7 @@
       }
     });
 
-    ColumnChart = Keen.Visualization.extend({
+    ColumnChart = Keen.VisualizationPlugin.extend({
       initialize: function(){
         this.render();
       },
@@ -131,7 +131,7 @@
       }
     });
 
-    LineChart = Keen.Visualization.extend({
+    LineChart = Keen.VisualizationPlugin.extend({
       initialize: function(){
         this.render();
       },
@@ -159,7 +159,7 @@
       }
     });
 
-    PieChart = Keen.Visualization.extend({
+    PieChart = Keen.VisualizationPlugin.extend({
       initialize: function(){
         this.render();
       },
@@ -187,7 +187,7 @@
       }
     });
 
-    Table = Keen.Visualization.extend({
+    Table = Keen.VisualizationPlugin.extend({
       initialize: function(){
         this.render();
       },
