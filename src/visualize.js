@@ -64,9 +64,6 @@
   };
 
   function _build_visual(selector, config){
-    if (this.visual) {
-      this.visual.trigger("remove");
-    }
     this.visual = new Keen.Visualization(this, selector, config);
   }
 
@@ -232,12 +229,6 @@
     // Extractions
     if (this.isExtraction) {
       this.capabilities = ['table'];
-    }
-
-    // Set chart type to default if one hasn't seen set,
-    // which is just the first index in the array of chart types this viz is capable of.
-    if (!this.config.chartType) {
-      this.config.chartType = this.capabilities[0];
     }
   };
 
