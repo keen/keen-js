@@ -64,17 +64,8 @@
   };
 
   function _build_visual(selector, config){
-    this.visual = new Keen.Visualization(this, selector, config);
+    this.visual = Keen.Visualization.render(this, selector, config);
   }
-
-
-  // -------------------------------
-  // Keen.Visualization
-  // -------------------------------
-  Keen.Visualization = function(dataset, el, config){
-    var chartType = (config && config.chartType) ? config.chartType : null;
-    return new Keen.Dataviz(chartType).prepare(el).setData(dataset).setConfig(config).render(el);
-  };
 
   // *******************
   // START NEW CLEAN API
@@ -370,6 +361,38 @@
     }
   };
 
+  // -------------------------------
+  // Keen.Visualization
+  // -------------------------------
+  var baseVisualization = Keen.Visualization = function(config){
+    var self = this;
+    _extend(self, config);
+
+    // Set default event handlers
+    self.on("error", function(){
+      var errorConfig, error;
+      errorConfig = Keen.utils.extend({
+        error: { message: arguments[0] }
+      }, config);
+      error = new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
+    });
+    self.on("update", function(){
+      self.update.apply(this, arguments);
+    });
+    self.on("remove", function(){
+      self.remove.apply(this, arguments);
+    });
+
+    // Let's kick it off!
+    self.initialize();
+    Keen.Visualization.visuals.push(self);
+  };
+
+  Keen.Visualization.render = function(dataset, el, config){
+    var chartType = (config && config.chartType) ? config.chartType : null;
+    return new Keen.Dataviz(chartType).prepare(el).setData(dataset).setConfig(config).render(el);
+  };
+
   // Visual defaults
   Keen.Visualization.defaults = {
     library: 'google',
@@ -399,29 +422,6 @@
   };
 
   Keen.Visualization.visuals = [];
-  var baseVisualization = function(config){
-    var self = this;
-    _extend(self, config);
-
-    // Set default event handlers
-    self.on("error", function(){
-      var errorConfig, error;
-      errorConfig = Keen.utils.extend({
-        error: { message: arguments[0] }
-      }, config);
-      error = new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
-    });
-    self.on("update", function(){
-      self.update.apply(this, arguments);
-    });
-    self.on("remove", function(){
-      self.remove.apply(this, arguments);
-    });
-
-    // Let's kick it off!
-    self.initialize();
-    Keen.Visualization.visuals.push(self);
-  };
 
   baseVisualization.prototype = {
     initialize: function(){

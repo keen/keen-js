@@ -4,7 +4,7 @@ var el = document.getElementById("chart-wrapper");
 
 client.draw(query, el, {});
 
-var chart = new Keen.Visualization([req||raw],el,{
+var chart = Keen.Visualization.render([req||raw],el,{
   chartType: "piechart",
   library: "google",
   labelMapping: {

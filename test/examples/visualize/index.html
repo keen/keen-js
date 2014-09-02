@@ -205,7 +205,7 @@
         });
         console.log(data, labelMap);
 
-        new Keen.Visualization(data, document.getElementById("funnel"), {
+        Keen.Visualization.render(data, document.getElementById("funnel"), {
           library: "google",
           chartType: "barchart",
           labelMapping: labelMap
@@ -234,7 +234,7 @@
         });
       });
 
-      window.chart = new Keen.Visualization({ result: 24450 }, document.getElementById("chart2"), {
+      window.chart = Keen.Visualization.render({ result: 24450 }, document.getElementById("chart2"), {
         chartType: 'metric',
         title: "Manual!",
         width: 600,
@@ -245,7 +245,7 @@
         colors: ['#222']
       });
 
-      window.chart = new Keen.Visualization({ result: 78524450 }, document.getElementById("metric2"), {
+      window.chart = Keen.Visualization.render({ result: 78524450 }, document.getElementById("metric2"), {
         chartType: 'metric',
         title: "Two!",
         width: "auto",
@@ -286,7 +286,7 @@
         this.data = newData;
 
         if (window.memChart) window.memChart.remove();
-        window.memChart = new Keen.Visualization(this, document.getElementById("random-multi-js"), {
+        window.memChart = Keen.Visualization.render(this, document.getElementById("random-multi-js"), {
           library: "google",
           chartType: "linechart",
           title: "Random multi",
@@ -359,7 +359,7 @@
               col2 : Math.floor(test_max / 2) - i
           });
       }
-      var testsort = new Keen.Visualization({
+      var testsort = Keen.Visualization.render({
           result : test_rows
       }, document.getElementById('test-table-sort'), {
           chartType : 'table',
