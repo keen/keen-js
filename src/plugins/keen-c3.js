@@ -26,17 +26,21 @@
      * @param  {[2D array]} table [the dataform 2d array]
      * @return {[2D array]}       [the resulting array that is compatible with C3's column structure]
      */
-    var _unpack = function(table) {
+    var _unpack = function(table, chartType) {
       var plucked = [];
+      var isNonDate = chartType === 'pie' || chartType === 'donut';
       var numberOfColumns = table[0].length;
+      var start = isNonDate ? 1 : 0;
+
       // Construct new table
       for(var x = 0; x < numberOfColumns; x++) {
         plucked.push([]);
       }
+
       // Build new table that is compatible with c3.
       // The first item in the table will be the names
       for(var i = 0; i < table.length; i++) {
-        for(var j = 0; j < numberOfColumns; j++) {
+        for(var j = start; j < numberOfColumns; j++) {
           plucked[j].push(table[i][j]);
         }
       }
@@ -89,11 +93,22 @@
       // console.log(key, chart);
       charts[chart] = Keen.Visualization.extend({
         initialize: function(){
-          this.data.c3 = _unpack(this.data.table);
+          this.data.c3 = _unpack(this.data.table, chart);
           this.render();
         },
         render: function(){
           var self = this;
+          var data = {};
+
+          if(chart !== 'pie') {
+            data.x = this.data.c3[0][0];
+          }
+
+          _extend(data, {
+            columns: this.data.c3,
+            colors: registerColors.call(this),
+            type: chart
+          });
 
           // Binding and defaulting
           var options = {
@@ -107,12 +122,7 @@
                 show: true
               }
             },
-            data: {
-              x: this.data.c3[0][0],
-              columns: this.data.c3,
-              colors: registerColors.call(this),
-              type: chart
-            },
+            data: data,
             axis: handleTimeseries.apply(this)
           };
 
@@ -140,11 +150,12 @@
       dependencies: [
         {
           type: 'script',
-          url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
+          url: '../../../../bower_components/d3/d3.min.js'
+          // url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
         },
         {
           type: 'script',
-          url: 'http://c3js.org/js/c3.min-05d32fdf.js'
+          url: '../../../../bower_components/c3/c3.js'
         },
         {
           type: 'style',

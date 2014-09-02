@@ -62,6 +62,22 @@
       "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Video page"
     };
 
+    var optionOne = {
+      isStacked: true,
+      axis: {
+        x: {
+          type: 'timeseries',
+          tick: {
+            format: '%Y-%m-%d'
+          }
+        }
+      }
+    };
+
+    var optionTwo = {
+      isStacked: true
+    };
+
     Keen.ready(function(){
       multiline = new Keen.Query("count", {
         event_collection: "pageview",
@@ -70,6 +86,9 @@
         interval: "monthly"
       });
 
+      /**
+       * MASS TEST
+       */
       keen.run(multiline, function(res){
         var newData = res;
         for (var i = 0; i < res.result.length; i++) {
@@ -82,18 +101,54 @@
         for(i = 0; i < chartTypes.length; i++) {
           var div = document.createElement('div');
           document.querySelector('body').appendChild(div);
+          if(chartTypes[i] === 'pie' || chartTypes[i] === 'donut') {
+            chartOptions = optionTwo;
+          } else {
+            chartOptions = optionOne;
+          }
 
           new Keen.Visualization(this, div, {
             library: "c3",
             chartType: chartTypes[i],
-            chartOptions: {
-              isStacked: true
-            },
+            chartOptions: chartOptions,
             labelMapping: labelMapping
           });
 
         }
       });
+
+      /**
+       * SINGLE TESTS
+       */
+      // keen.run(multiline, function(res) {
+      //   var newData = res;
+      //   for (var i = 0; i < res.result.length; i++) {
+      //     for (var j = 0; j < res.result[i].value.length; j++) {
+      //       newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+      //     }
+      //   }
+      //   this.data = newData;
+      //   var div = document.createElement('div');
+      //   document.querySelector('body').appendChild(div);
+
+      //   new Keen.Visualization(this, div, {
+      //     library: "c3",
+      //     chartType: 'spline',
+      //     chartOptions: {
+      //       isStacked: true,
+      //       axis: {
+      //         x: {
+      //           type: 'timeseries',
+      //           tick: {
+      //             format: '%Y-%m-%d'
+      //           }
+      //         }
+      //       }
+      //     },
+      //     labelMapping: labelMapping
+      //   });
+      // });
+
     });
 
   </script>
