@@ -75,19 +75,20 @@
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(dataset, el, config){
-    return new Keen.Dataviz(config.chartType).prepare(el).setData(dataset).setConfig(config).render(el);
+    var chartType = (config && config.chartType) ? config.chartType : null;
+    return new Keen.Dataviz(chartType).prepare(el).setData(dataset).setConfig(config).render(el);
   };
-
-  _extend(Keen.Visualization, Events);
 
   // *******************
   // START NEW CLEAN API
   // *******************
 
   Keen.Dataviz = function(chartType) {
-    this.chartType = chartType;
     this.capabilities = []; // No capabilities by default;
     this.config = {};
+    if (chartType) {
+      this.config['chartType'] = chartType;
+    }
     this.dataformSchema = {
       collection: 'result',
       select: true
@@ -342,6 +343,11 @@
   };
 
   Keen.Dataviz.prototype.render = function(el) {
+    // Set chart type to default if one hasn't seen set,
+    // which is just the first index in the array of chart types this viz is capable of.
+    if (!this.config.chartType) {
+      this.config.chartType = this.capabilities[0];
+    }
     if (this.spinner) {
       this.spinner.stop();
     }
@@ -360,7 +366,7 @@
     return this;
   };
 
-  Keen.Dataviz.prototype.destroy = function() {
+  Keen.Dataviz.prototype.remove = function() {
     if (this.config.el) {
       this.config.el.innerHTML = "";
     }
