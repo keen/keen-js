@@ -64,6 +64,9 @@
   };
 
   function _build_visual(selector, config){
+    if (this.visual) {
+      this.visual.trigger('remove');
+    }
     this.visual = new Keen.Visualization(this, selector, config);
   }
 
@@ -91,6 +94,8 @@
       select: true
     };
   };
+
+  _extend(Keen.Dataviz.prototype, Events);
 
   Keen.Dataviz.prototype.setData = function(dataset) {
     if (!dataset) {
