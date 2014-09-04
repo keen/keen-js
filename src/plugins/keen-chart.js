@@ -54,7 +54,6 @@
       }
     ];
   * ----------------------
-  * TODO: Add default styles to layouts
   */
 
   (function(lib){
@@ -73,17 +72,17 @@
         pointHighlightStroke: "rgba(220,220,220,1)"
       },
       {
-        fillColor: "rgba(243,87,87,0.2)",
-        strokeColor: "rgba(243,87,87,1)",
-        pointColor: "rgba(243,87,87,1)",
+        fillColor: "rgba(240,173,78,0.2)",
+        strokeColor: "rgba(240,173,78,1)",
+        pointColor: "rgba(240,173,78,1)",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)"
       },
       {
-        fillColor: "rgba(73,197,177,0.2)",
-        strokeColor: "rgba(73,197,177,1)",
-        pointColor: "rgba(73,197,177,1)",
+        fillColor: "rgba(249,132,91,0.2)",
+        strokeColor: "rgba(249,132,91,1)",
+        pointColor: "rgba(249,132,91,1)",
         pointStrokeColor: "#fff",
         pointHighlightFill: "#fff",
         pointHighlightStroke: "rgba(151,187,205,1)"
@@ -110,9 +109,6 @@
      * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
      * 90 degrees.
      *
-     * TODO: Add colors
-     * 
-     * TODO: Might need different unpackers depending on which visualization it is.
      * @param  {[2D array]} table [the dataform 2d array]
      * @return {[2D array]}       [the resulting array that is compatible with chart's column structure]
      */
@@ -132,14 +128,12 @@
       var datasets = [];
       for(i = 1; i < plucked.length; i++) {
         // Add color
+        var color = {};
+        _extend(color, colorsetLBR[i - 1], this.colors[i - 1]);
         var set = _extend({
           label: plucked[i].shift(),
           data: plucked[i]
-        }, _extend(colorsetLBR[i - 1], {
-          fillColor: this.colors[i - 1],
-          strokeColor: this.colors[i - 1],
-          pointColor: this.colors[i - 1]
-        })); // TODO: Make it extendable with options
+        }, color); 
         datasets.push(set);
       }
 
