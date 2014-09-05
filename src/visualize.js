@@ -406,6 +406,14 @@
     for (var method in methods) {
       Keen.Visualization.libraries[name][method] = methods[method];
     }
+    var loadHandler = function(st) {
+      debugger;
+      st.loaded++;
+      if(st.loaded === st.loading) {
+        Keen.loaded = true;
+        Keen.trigger('ready');
+      }
+    };
 
     var self = this;
 
@@ -420,11 +428,12 @@
           var method = dependency.type === 'script' ? _load_script : _load_style;
 
           method(dependency.url, function() {
-            dependency.cb && dependency.cb();
-            status.loaded++;
-            if(status.loaded === status.loading) {
-              Keen.loaded = true;
-              Keen.trigger('ready');
+            if(dependency.cb) {
+              dependency.cb.call(self, function() {
+                loadHandler(status);
+              });
+            } else {
+              loadHandler(status);
             }
           });
         }
