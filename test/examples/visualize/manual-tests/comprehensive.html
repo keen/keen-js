@@ -2,9 +2,9 @@
 <html>
 <head>
   <title>Keen IO Comprehensive Test</title>
-<link rel="stylesheet" href="../assets/lib/bootstrap/dist/css/bootstrap.min.css">
-<link rel="stylesheet" href="../assets/css/keen-gotham.css">
-<link rel="stylesheet" href="../assets/css/keen-dashboards.css">
+<link rel="stylesheet" href="keen-bootstrap.min.css">
+<link rel="stylesheet" href="keen-gotham.css">
+<link rel="stylesheet" href="keen-dashboards.css">
 <style>
 body {
   padding: 0;
@@ -15,6 +15,78 @@ body {
 
 </head>
 <body>
+
+<!-- 
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="../">
+        <span class="glyphicon glyphicon-chevron-left"></span>
+      </a>
+      <a class="navbar-brand" href="./">Dashboard Starter UI</a>
+    </div>
+    <div class="navbar-collapse collapse">
+      <ul class="nav navbar-nav navbar-left">
+        <li><a href="https://keen.io">Home</a></li>
+        <li><a href="https://keen.io/team">Team</a></li>
+        <li><a href="https://github.com/keenlabs/dashboards/tree/gh-pages/starter-kit">Source</a></li>
+        <li><a href="https://users.keen.io">Chat Support</a></li>
+      </ul>
+    </div>
+  </div>
+</div>
+-->
+
+<h1>Comprehensive Visual Tests</h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Google Charts
+        </div>
+        <div class="chart-stage">
+          <div id="chart-0"></div>
+        </div>
+        <div class="chart-notes">
+          This is a sample text region to describe this chart.
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          C3
+        </div>
+        <div class="chart-stage">
+          <div id="chart-1"></div>
+        </div>
+        <div class="chart-notes">
+          This is a sample text region to describe this chart.
+        </div>
+      </div>
+    </div>
+    <div class="col-sm-4">
+      <div class="chart-wrapper">
+        <div class="chart-title">
+          Chart.js
+        </div>
+        <div class="chart-stage">
+          <canvas id="chart-2" width="400" height="500"></canvas>
+        </div>
+        <div class="chart-notes">
+          This is a sample text region to describe this chart.
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 
     
 </body>
@@ -37,10 +109,62 @@ var keen = new Keen({
  * Extractions = table output
  */
 
+var libraries = [
+{
+  name: 'google',
+  line: 'linechart'
+},
+{
+  name: 'c3',
+  line: 'spline'
+},
+{
+  name: 'chart.js',
+  line: 'Line'
+}];
+
 Keen.ready(function() {
+  var labelMapping = {
+    null: 'N/A',
+    "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Home",
+    "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Video page"
+  };
   var metric = new Keen.Query("count", {
     event_collection: "pageview"
   });
+
+  var groupBy = new Keen.Query("count", {
+    event_collection: "pageview",
+    group_by: "page"
+  });
+
+  var multiline = new Keen.Query("count", {
+    event_collection: "pageview",
+    group_by: "page",
+    timeframe: "this_12_months",
+    interval: "monthly"
+  });
+
+  var count = 0;
+  for(var i = 0; i < libraries.length; i++) {
+    keen.run(multiline, function(res) {
+      var newData = res;
+      for (var i = 0; i < res.result.length; i++) {
+        for (var j = 0; j < res.result[i].value.length; j++) {
+          newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+        }
+      }
+      this.data = newData;
+      new Keen.Visualization(res, document.getElementById("chart-" + count), {
+        library: libraries[count].name,
+        chartType: libraries[count].line,
+        labelMapping: labelMapping,
+        height: 500
+      });
+      count++;
+    });
+
+  }
 
 });
 

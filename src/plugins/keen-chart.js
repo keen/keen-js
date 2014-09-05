@@ -195,8 +195,8 @@
 
           // Make chart
           var chartNode = self.el;
-          chartNode.setAttribute('width', this.chartOptions.width);
-          chartNode.setAttribute('height', this.chartOptions.height);
+          // chartNode.setAttribute('width', this.chartOptions.width);
+          // chartNode.setAttribute('height', this.chartOptions.height);
           var context = chartNode.getContext("2d");
 
           self._chart = new Chart(context)[chart](this.data.chart, options);

@@ -113,7 +113,10 @@
           // Binding and defaulting
           var options = {
             bindto: self.el,
-            height: this.height,
+            size: {
+              width: this.width,
+              height: this.height,
+            },
             grid: {
               x: {
                 show: true
