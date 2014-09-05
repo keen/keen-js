@@ -148,7 +148,15 @@
   Keen.Dataviz.prototype.prepare = function(el) {
     this.config.el = el;
     this.config.el.innerHTML = "";
-    this.spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(this.config.el);
+    var placeholder = document.createElement("div");
+    placeholder.className = "keen-loading";
+    //placeholder.style.background = "#f2f2f2";
+    placeholder.style.height = (this.config.height || Keen.Visualization.defaults.height) + "px";
+    placeholder.style.position = "relative";
+    placeholder.style.width = (this.config.width || Keen.Visualization.defaults.width) + "px";
+    el.innerHTML = "";
+    el.appendChild(placeholder);
+    this.spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(placeholder);
     return this;
   };
 
