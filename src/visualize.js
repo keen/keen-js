@@ -379,7 +379,6 @@
   Keen.Visualization.defaults = {
     library: 'google',
     height: 400,
-    width: 600,
     colors: [
       "#00afd7",
       "#f35757",
