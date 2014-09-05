@@ -379,7 +379,6 @@
   Keen.Visualization.defaults = {
     library: 'google',
     height: 400,
-    width: 600,
     colors: [
       "#00afd7",
       "#f35757",
@@ -396,10 +395,48 @@
 
   // Collect and manage libraries
   Keen.Visualization.libraries = {};
-  Keen.Visualization.register = function(name, methods){
+  Keen.Visualization.dependencies = {
+    loading: 0,
+    loaded: 0,
+    urls: {}
+  };
+
+  Keen.Visualization.register = function(name, methods, config){
     Keen.Visualization.libraries[name] = Keen.Visualization.libraries[name] || {};
     for (var method in methods) {
       Keen.Visualization.libraries[name][method] = methods[method];
+    }
+    var loadHandler = function(st) {
+      st.loaded++;
+      if(st.loaded === st.loading) {
+        Keen.loaded = true;
+        Keen.trigger('ready');
+      }
+    };
+
+    var self = this;
+
+    // For all dependencies
+    if(config && config.dependencies) {
+      _each(config.dependencies, function (dependency, index, collection) {
+        var status = Keen.Visualization.dependencies;
+        // If it doesn't exist in the current dependencies being loaded
+        if(!status.urls[dependency.url]) {
+          status.urls[dependency.url] = true;
+          status.loading++;
+          var method = dependency.type === 'script' ? _load_script : _load_style;
+
+          method(dependency.url, function() {
+            if(dependency.cb) {
+              dependency.cb.call(self, function() {
+                loadHandler(status);
+              });
+            } else {
+              loadHandler(status);
+            }
+          });
+        }
+      }); // End each
     }
   };
 
@@ -794,6 +831,20 @@
     }
   }
 
+  function _load_style(url, cb) {
+    var link = document.createElement('link');
+
+    link.setAttribute('rel', 'stylesheet');
+
+    link.type = 'text/css';
+
+    link.href = url;
+    cb();
+
+    document.head.appendChild(link);
+
+  }
+
   Keen.Visualization.find = function(target){
     var el, match;
     if (target) {
@@ -816,7 +867,8 @@
   // Expose utils
   _extend(Keen.utils, {
     prettyNumber: _pretty_number,
-    loadScript: _load_script
+    loadScript: _load_script,
+    loadStyle: _load_style
   });
 
   // Set flag for script loading
