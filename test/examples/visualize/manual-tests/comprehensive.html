@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keen IO Comprehensive Test</title>
+<link rel="stylesheet" href="../assets/lib/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet" href="../assets/css/keen-gotham.css">
+<link rel="stylesheet" href="../assets/css/keen-dashboards.css">
+<style>
+body {
+  padding: 0;
+  border: 0;
+}
+
+</style>
+
+</head>
+<body>
+
+    
+</body>
+<script src="../../../dist/keen.js"></script>
+<script>
+
+// We'll be using dummy data
+var keen = new Keen({
+  projectId: "52f2ae5905cd661a7800000a",
+  readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+  requestType: "jsonp"
+});
+
+/**
+ * 
+ * Metric
+ * Group by
+ * interval
+ * Group by-interval
+ * Extractions = table output
+ */
+
+Keen.ready(function() {
+  var metric = new Keen.Query("count", {
+    event_collection: "pageview"
+  });
+
+});
+
+
+
+</script>
+</html>
