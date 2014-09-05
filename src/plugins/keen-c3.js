@@ -153,12 +153,12 @@
       dependencies: [
         {
           type: 'script',
-          url: '../../../../bower_components/d3/d3.min.js'
+          url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
           // url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
         },
         {
           type: 'script',
-          url: '../../../../bower_components/c3/c3.js'
+          url: 'http://c3js.org/js/c3.min-b4e07444.js'
         },
         {
           type: 'style',

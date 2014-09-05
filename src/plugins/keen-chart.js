@@ -185,8 +185,6 @@
         },
         render: function(){
           var self = this;
-          // Chart.js usage: new Chart(ctx).PolarArea(data);
-
           // Binding and defaulting
           var options = {
           };
@@ -195,8 +193,11 @@
 
           // Make chart
           var chartNode = self.el;
-          // chartNode.setAttribute('width', this.chartOptions.width);
-          // chartNode.setAttribute('height', this.chartOptions.height);
+          if(this.chartOptions.width) {
+            chartNode.setAttribute('width', this.chartOptions.width);
+          }
+
+          chartNode.setAttribute('height', this.height);
           var context = chartNode.getContext("2d");
 
           self._chart = new Chart(context)[chart](this.data.chart, options);

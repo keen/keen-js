@@ -46,45 +46,6 @@ body {
 <h1>Comprehensive Visual Tests</h1>
 <div class="container-fluid">
   <div class="row">
-    <div class="col-sm-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          Google Charts
-        </div>
-        <div class="chart-stage">
-          <div id="chart-0"></div>
-        </div>
-        <div class="chart-notes">
-          This is a sample text region to describe this chart.
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          C3
-        </div>
-        <div class="chart-stage">
-          <div id="chart-1"></div>
-        </div>
-        <div class="chart-notes">
-          This is a sample text region to describe this chart.
-        </div>
-      </div>
-    </div>
-    <div class="col-sm-4">
-      <div class="chart-wrapper">
-        <div class="chart-title">
-          Chart.js
-        </div>
-        <div class="chart-stage">
-          <canvas id="chart-2" width="400" height="500"></canvas>
-        </div>
-        <div class="chart-notes">
-          This is a sample text region to describe this chart.
-        </div>
-      </div>
-    </div>
   </div>
 </div>
 
@@ -106,21 +67,25 @@ var keen = new Keen({
  * Group by
  * interval
  * Group by-interval
- * Extractions = table output
+ * Extractions = table outputA
+ * var chart.js = ['Line', 'Bar', 'Radar', 'PolarArea', 'Pie', 'Doughnut'];
+ * var google = ['AreaChart', 'BarChart', 'ColumnChart', 'LineChart', 'PieChart', 'Table'];
+ * c3 = ['spline', 'pie', 'donut', 'area-spline', 'bar', 'scatter'];
+
  */
 
 var libraries = [
 {
   name: 'google',
-  line: 'linechart'
+  chartTypes: ['linechart', 'piechart', 'barchart', 'columnchart', 'table']
 },
 {
   name: 'c3',
-  line: 'spline'
+  chartTypes:  ['spline', 'pie', 'bar', 'donut', 'area-spline', 'scatter']
 },
 {
   name: 'chart.js',
-  line: 'Line'
+  chartTypes: ['Line', 'Pie', 'Bar', 'Radar', 'PolarArea', 'Doughnut']
 }];
 
 Keen.ready(function() {
@@ -144,27 +109,87 @@ Keen.ready(function() {
     timeframe: "this_12_months",
     interval: "monthly"
   });
-
-  var count = 0;
-  for(var i = 0; i < libraries.length; i++) {
-    keen.run(multiline, function(res) {
-      var newData = res;
-      for (var i = 0; i < res.result.length; i++) {
-        for (var j = 0; j < res.result[i].value.length; j++) {
-          newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
-        }
+  var generateRandomData = function(res) {
+    var newData = res;
+    for (var i = 0; i < res.result.length; i++) {
+      for (var j = 0; j < res.result[i].value.length; j++) {
+        newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
       }
-      this.data = newData;
-      new Keen.Visualization(res, document.getElementById("chart-" + count), {
-        library: libraries[count].name,
-        chartType: libraries[count].line,
-        labelMapping: labelMapping,
-        height: 500
-      });
-      count++;
-    });
-
+    }
+    return newData;
   }
+
+  var makeNewLibNode = function() {
+    var node = document.createElement('div');
+    node.className = 'col-sm-' + Math.floor(12 / libraries.length);
+    document.querySelector('.container-fluid>.row').appendChild(node);
+    return node;
+  };
+
+  /**
+  <div class="chart-wrapper">
+    <div class="chart-title">
+      Total Acquisitions, by State (5 yr)
+    </div>
+    <div class="chart-stage">
+      <div id="grid-1"></div>
+    </div>
+    <div class="chart-notes">
+      Notes about this chart
+    </div>
+  </div>
+   */
+  var makeNewCell = function(parent, lib) {
+    var row = document.createElement('div');
+    row.innerHTML = [
+      '<div class="chart-wrapper">',
+        '<div class="chart-title">',
+          '</div>',
+          '<div class="chart-stage">',
+          '</div>',
+      '</div>'
+    ].join('');
+    var type = 'div';
+    if(lib.name === 'chart.js') {
+      type = 'canvas';
+    }
+    var cell = document.createElement(type);
+    row.className = 'row';
+    cell.className = 'col-sm-12';
+    row.querySelector('.chart-stage').appendChild(cell);
+    parent.appendChild(row);
+    return cell;
+  };
+
+  keen.run(multiline, function(res) {
+    var columns = [];
+    for(var i = 0; i < libraries.length; i++) {
+      var column = makeNewLibNode();
+      columns.push(column);
+      for(var x = 0; x < libraries[i].chartTypes.length; x++) {
+        this.data = generateRandomData(res);
+        var el = makeNewCell(columns[i], libraries[i]);
+
+        new Keen.Visualization(res, el, {
+          library: libraries[i].name,
+          chartType: libraries[i].chartTypes[x],
+          labelMapping: labelMapping,
+          chartOptions: {
+            chartArea: {
+              height: "75%",
+              left: "10%",
+              top: "5%",
+              width: "60%"
+            },
+            bar: {
+              groupWidth: "85%"
+            },
+            isStacked: true
+          }
+        });
+      }
+    }
+  }); 
 
 });
 

@@ -407,7 +407,6 @@
       Keen.Visualization.libraries[name][method] = methods[method];
     }
     var loadHandler = function(st) {
-      debugger;
       st.loaded++;
       if(st.loaded === st.loading) {
         Keen.loaded = true;
