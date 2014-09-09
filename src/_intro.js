@@ -5,7 +5,7 @@
       return definition();
     });
   }
-  if ( typeof module === "object" && typeof module.exports === "object" ) {
+  else if ( typeof module === "object" && typeof module.exports === "object" ) {
     module.exports = definition();
   } else {
     context[name] = definition();
