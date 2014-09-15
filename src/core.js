@@ -29,6 +29,7 @@
       projectId: config.projectId,
       writeKey: config.writeKey,
       readKey: config.readKey,
+      masterKey: config.masterKey,
       globalProperties: null,
 
       endpoint: config['protocol'] + "://" + config['host'],
