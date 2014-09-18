@@ -97,7 +97,7 @@
 
   _extend(Keen.Dataviz.prototype, Events);
 
-  Keen.Dataviz.prototype.setData = function(dataset) {
+  /*Keen.Dataviz.prototype.setData = function(dataset) {
     if (!dataset) {
       throw new Error('You must pass data to the setData() function.');
     }
@@ -118,34 +118,34 @@
     this.setCapabilities();
 
     return this;
-  };
+  };*/
 
-  Keen.Dataviz.prototype.setConfig = function(config) {
+  /*Keen.Dataviz.prototype.setConfig = function(config) {
     if (!this.dataset) {
       throw new Error('You must provide data to a Keen.Dataviz object using the setData() function before calling config() on it.');
     }
 
     // Backwoods cloning facility
-    var defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
-    this.config = _extend(defaults, config);
+    //x var defaults = JSON.parse(JSON.stringify(Keen.Visualization.defaults));
+    //x this.config = _extend(defaults, config);
 
     // Build default title if necessary to do so.
     if (!this.config.title && this.dataset instanceof Keen.Request) {
       this.buildDefaultTitle();
     }
 
-    this.setDataformSchema();
+    //x this.setDataformSchema();
 
     this.setSpecificChartOptions();
 
-    this.config['data'] = (this.data) ? _transform.call(this.config, this.data, this.dataformSchema) : [];
+    //x this.config['data'] = (this.data) ? _transform.call(this.config, this.data, this.dataformSchema) : [];
 
-    this.applyColorMapping();
+    //x this.applyColorMapping();
 
     return this;
-  };
+  };*/
 
-  Keen.Dataviz.prototype.prepare = function(el) {
+  /*Keen.Dataviz.prototype.prepare = function(el) {
     this.config.el = el;
     this.config.el.innerHTML = "";
     var placeholder = document.createElement("div");
@@ -158,9 +158,9 @@
     el.appendChild(placeholder);
     this.spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(placeholder);
     return this;
-  };
+  };*/
 
-  Keen.Dataviz.prototype.buildDefaultTitle = function() {
+  /*Keen.Dataviz.prototype.buildDefaultTitle = function() {
     var self = this;
     this.config.title = (function(){
       var analysis = self.dataset.queries[0].analysis.replace("_", " "),
@@ -176,9 +176,9 @@
       }
       return output;
     })();
-  };
+  };*/
 
-  Keen.Dataviz.prototype.setVizTypes = function() {
+  /*Keen.Dataviz.prototype.setVizTypes = function() {
     if (this.dataset instanceof Keen.Request) {
       // Handle known scenarios
       this.isMetric = (typeof this.dataset.data.result === "number" || this.dataset.data.result === null) ? true : false,
@@ -190,7 +190,7 @@
     } else {
       this.isMetric = (typeof this.dataset.result === "number" || this.dataset.result === null) ? true : false
     }
-  };
+  };*/
 
   Keen.Dataviz.prototype.setCapabilities = function() {
     // Metric
@@ -245,7 +245,7 @@
     }
   };
 
-  Keen.Dataviz.prototype.setDataformSchema = function() {
+  /*Keen.Dataviz.prototype.setDataformSchema = function() {
     if (this.is2xGroupBy) {
       this.dataformSchema = {
         collection: 'result',
@@ -283,7 +283,7 @@
     }
   };
 
-  Keen.Dataviz.prototype.applyColorMapping = function() {
+  /*Keen.Dataviz.prototype.applyColorMapping = function() {
     // Apply color-mapping options (post-process)
     // -------------------------------
     var self = this;
@@ -309,9 +309,9 @@
       }
 
     }
-  };
+  };*/
 
-  Keen.Dataviz.prototype.setSpecificChartOptions = function() {
+  /*Keen.Dataviz.prototype.setSpecificChartOptions = function() {
     // A few last details
     // -------------------------------
 
@@ -381,25 +381,13 @@
     if (this.viz) {
       this.viz = null; // TODO: Destroy the actual chart object?
     }
-  };
+  };*/
 
-  // Visual defaults
-  Keen.Visualization.defaults = {
-    library: 'google',
-    height: 400,
-    colors: [
-      "#00afd7",
-      "#f35757",
-      "#f0ad4e",
-      "#8383c6",
-      "#f9845b",
-      "#49c5b1",
-      "#2a99d1",
-      "#aacc85",
-      "#ba7fab"
-    ],
+  // Visualization defaults
+  /*Keen.Visualization.defaults = _extend({
+    width: 600,
     chartOptions: {}
-  };
+  }, Keen.Dataviz.defaults);
 
   // Collect and manage libraries
   Keen.Visualization.libraries = {};
@@ -536,7 +524,7 @@
 
   Keen.Visualization.register('keen-io', {
     'error': ErrorMessage
-  });
+  });*/
 
 
   // -------------------------------
@@ -546,7 +534,7 @@
   // scenarios where originating
   // queries are not known
   // -------------------------------
-  function _transform(response, config){
+  /*function _transform(response, config){
     var self = this, schema = config || {}, dataform;
 
     // Metric
@@ -729,131 +717,11 @@
     }
 
     return dataform;
-  }
+  }*/
 
-  function _pretty_number(_input) {
-    // If it has 3 or fewer sig figs already, just return the number.
-    var input = Number(_input),
-        sciNo = input.toPrecision(3),
-        prefix = "",
-        suffixes = ["", "k", "M", "B", "T"];
 
-    if (Number(sciNo) == input && String(input).length <= 4) {
-      return String(input);
-    }
 
-    if(input >= 1 || input <= -1) {
-      if(input < 0){
-        //Pull off the negative side and stash that.
-        input = -input;
-        prefix = "-";
-      }
-      return prefix + recurse(input, 0);
-    } else {
-      return input.toPrecision(3);
-    }
-
-    function recurse(input, iteration) {
-      var input = String(input);
-      var split = input.split(".");
-      // If there's a dot
-      if(split.length > 1) {
-        // Keep the left hand side only
-        input = split[0];
-        var rhs = split[1];
-        // If the left-hand side is too short, pad until it has 3 digits
-        if (input.length == 2 && rhs.length > 0) {
-          // Pad with right-hand side if possible
-          if (rhs.length > 0) {
-            input = input + "." + rhs.charAt(0);
-          }
-          // Pad with zeroes if you must
-          else {
-            input += "0";
-          }
-        }
-        else if (input.length == 1 && rhs.length > 0) {
-          input = input + "." + rhs.charAt(0);
-          // Pad with right-hand side if possible
-          if(rhs.length > 1) {
-            input += rhs.charAt(1);
-          }
-          // Pad with zeroes if you must
-          else {
-            input += "0";
-          }
-        }
-      }
-      var numNumerals = input.length;
-      // if it has a period, then numNumerals is 1 smaller than the string length:
-      if (input.split(".").length > 1) {
-        numNumerals--;
-      }
-      if(numNumerals <= 3) {
-        return String(input) + suffixes[iteration];
-      }
-      else {
-        return recurse(Number(input) / 1000, iteration + 1);
-      }
-    }
-  }
-
-  function _load_script(url, cb) {
-    var doc = document;
-    var handler;
-    var head = doc.head || doc.getElementsByTagName("head");
-
-    // loading code borrowed directly from LABjs itself
-    setTimeout(function () {
-      // check if ref is still a live node list
-      if ('item' in head) {
-        // append_to node not yet ready
-        if (!head[0]) {
-          setTimeout(arguments.callee, 25);
-          return;
-        }
-        // reassign from live node list ref to pure node ref -- avoids nasty IE bug where changes to DOM invalidate live node lists
-        head = head[0];
-      }
-      var script = doc.createElement("script"),
-      scriptdone = false;
-      script.onload = script.onreadystatechange = function () {
-        if ((script.readyState && script.readyState !== "complete" && script.readyState !== "loaded") || scriptdone) {
-          return false;
-        }
-        script.onload = script.onreadystatechange = null;
-        scriptdone = true;
-        cb();
-      };
-      script.src = url;
-      head.insertBefore(script, head.firstChild);
-    }, 0);
-
-    // required: shim for FF <= 3.5 not having document.readyState
-    if (doc.readyState === null && doc.addEventListener) {
-      doc.readyState = "loading";
-      doc.addEventListener("DOMContentLoaded", handler = function () {
-        doc.removeEventListener("DOMContentLoaded", handler, false);
-        doc.readyState = "complete";
-      }, false);
-    }
-  }
-
-  function _load_style(url, cb) {
-    var link = document.createElement('link');
-
-    link.setAttribute('rel', 'stylesheet');
-
-    link.type = 'text/css';
-
-    link.href = url;
-    cb();
-
-    document.head.appendChild(link);
-
-  }
-
-  Keen.Visualization.find = function(target){
+  /*Keen.Visualization.find = function(target){
     var el, match;
     if (target) {
       el = target.nodeName ? target : document.querySelector(target);
@@ -870,14 +738,14 @@
     } else {
       return Keen.Visualization.visuals;
     }
-  };
+  };*/
 
   // Expose utils
-  _extend(Keen.utils, {
+  /*_extend(Keen.utils, {
     prettyNumber: _pretty_number,
     loadScript: _load_script,
     loadStyle: _load_style
-  });
+  });*/
 
   // Set flag for script loading
-  Keen.loaded = false;
+  // Keen.loaded = false;

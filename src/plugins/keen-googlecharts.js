@@ -24,7 +24,7 @@
     // Create chart types
     // -------------------------------
     _each(chartTypes, function (chart) {
-      charts[chart.toLowerCase()] = Keen.Visualization.extend({
+      charts[chart.toLowerCase()] = Keen.Dataviz.extend({
         initialize: function(){
           this.render();
         },
@@ -53,7 +53,7 @@
     // Register library + types
     // -------------------------------
 
-    Keen.Visualization.register('google', charts, {
+    Keen.Dataviz.register('google', charts, {
       dependencies: [{
         type: 'script',
         url: 'https://www.google.com/jsapi',
@@ -73,3 +73,45 @@
     });
 
   })(Keen);
+
+
+/*
+
+// Lib defaults should live here
+
+Keen.Dataviz.prototype.setSpecificChartOptions = function() {
+  // A few last details
+  // -------------------------------
+
+  if (this.config.chartType == 'metric') {
+    this.config.library = 'keen-io';
+  }
+
+  if (this.config.chartOptions.lineWidth == void 0) {
+    this.config.chartOptions.lineWidth = 2;
+  }
+
+  if (this.config.chartType == 'piechart') {
+    if (this.config.chartOptions.sliceVisibilityThreshold == void 0) {
+      this.config.chartOptions.sliceVisibilityThreshold = 0.01;
+    }
+  }
+
+  if (this.config.chartType == 'columnchart' || this.config.chartType == 'areachart' || this.config.chartType == 'linechart') {
+
+    if (this.config.chartOptions.hAxis == void 0) {
+      this.config.chartOptions.hAxis = {
+        baselineColor: 'transparent',
+        gridlines: { color: 'transparent' }
+      };
+    }
+
+    if (this.config.chartOptions.vAxis == void 0) {
+      this.config.chartOptions.vAxis = {
+        viewWindow: { min: 0 }
+      };
+    }
+  }
+};
+
+*/
