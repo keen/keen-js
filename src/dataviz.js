@@ -1,5 +1,5 @@
-/* TODOs
-   [ ] figure out setCapabilities flow
+/* TODO:
+   [ ] set up dataType capability-mapping
    [ ] move google defaults into adapter
 */
 
@@ -11,6 +11,25 @@ _extend(Keen.utils, {
 
 // Set flag for script loading
 Keen.loaded = false;
+
+Keen.Spinner.defaults = {
+  lines: 10,                    // The number of lines to draw
+  length: 8,                    // The length of each line
+  width: 3,                     // The line thickness
+  radius: 10,                   // The radius of the inner circle
+  corners: 1,                   // Corner roundness (0..1)
+  rotate: 0,                    // The rotation offset
+  direction: 1,                 // 1: clockwise, -1: counterclockwise
+  color: '#4d4d4d',             // #rgb or #rrggbb or array of colors
+  speed: 1,                     // Rounds per second
+  trail: 60,                    // Afterglow percentage
+  shadow: false,                // Whether to render a shadow
+  hwaccel: false,               // Whether to use hardware acceleration
+  className: 'keen-spinner',    // The CSS class to assign to the spinner
+  zIndex: 2e9,                  // The z-index (defaults to 2000000000)
+  top: '50%',                   // Top position relative to parent
+  left: '50%'                   // Left position relative to parent
+};
 
 Keen.Dataviz = function(){
 
@@ -126,7 +145,7 @@ Keen.Dataviz.prototype.parseRequest = function(req){
 
 
 // ------------------------------
-// View methods
+// View Attributes
 // ------------------------------
 
 Keen.Dataviz.prototype.attributes = function(_attributes){
@@ -138,11 +157,6 @@ Keen.Dataviz.prototype.attributes = function(_attributes){
   }
   return this;
 };
-
-
-// ------------------------------
-// Attributes
-// ------------------------------
 
 Keen.Dataviz.prototype.colors = function(value){
   if (!arguments.length) return this.view.attributes.colors;
@@ -203,7 +217,7 @@ Keen.Dataviz.prototype.width = function(value){
 
 
 // ------------------------------
-// Adapter methods
+// View Adapter
 // ------------------------------
 
 Keen.Dataviz.prototype.adapter = function(_adapter){
@@ -345,7 +359,7 @@ Keen.Dataviz.find = function(target){
     }
   });
   if (match) return match;
-  Keen.log("Visualization not found");
+  //Keen.log("Visualization not found");
 };
 
 
@@ -549,6 +563,9 @@ function _buildDefaultTitle(query){
 
 function _parseRequest(req){
   var dataset;
+  /*
+    TODO: Handle multiple queries
+  */
   this.dataType(_getQueryType.call(this, req.queries[0]));
   if (this.dataType() !== "extraction") {
     // Run data thru raw parser
@@ -606,13 +623,13 @@ function _getQueryType(query){
   }
 
   // 2x group_by
-  // Todo: needs a dataType!
+  // TODO: research possible dataType options
   if (!isInterval && is2xGroupBy) {
     queryType = 'categorical';
   }
 
   // interval, 2x group_by
-  // Todo: needs a dataType!
+  // TODO: research possible dataType options
   if (isInterval && is2xGroupBy) {
     queryType = 'cat-chronological';
   }

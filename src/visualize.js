@@ -4,86 +4,35 @@
   * ----------------------
   */
 
-  Keen.Spinner.defaults = {
-    lines: 10, // The number of lines to draw
-    length: 8, // The length of each line
-    width: 3, // The line thickness
-    radius: 10, // The radius of the inner circle
-    corners: 1, // Corner roundness (0..1)
-    rotate: 0, // The rotation offset
-    direction: 1, // 1: clockwise, -1: counterclockwise
-    color: '#4d4d4d', // #rgb or #rrggbb or array of colors
-    speed: 1, // Rounds per second
-    trail: 60, // Afterglow percentage
-    shadow: false, // Whether to render a shadow
-    hwaccel: false, // Whether to use hardware acceleration
-    className: 'keen-spinner', // The CSS class to assign to the spinner
-    zIndex: 2e9, // The z-index (defaults to 2000000000)
-    top: '50%', // Top position relative to parent
-    left: '50%' // Left position relative to parent
-  };
-
   Keen.prototype.draw = function(query, el, config) {
-    // Find DOM element, set height, build spinner
-    var config = config || {};
-    var el = el;
-    var spinner = new Keen.Spinner(Keen.Spinner.defaults).spin(el);
-
-    var request = new Keen.Request(this, [query]);
+    var visual = new Keen.Dataviz().prepare(el).attributes(config),
+        request = new Keen.Request(this, [query]);
 
     request.on("complete", function(){
-      if (spinner) {
-        spinner.stop();
-      }
-      this.draw(el, config);
+      visual.parseRequest(this).render();
     });
-
     request.on("error", function(response){
-      spinner.stop();
-
-      var errorConfig = Keen.utils.extend({
-        error: response,
-        el: el
-      }, Keen.Visualization.defaults);
-      new Keen.Visualization.libraries['keen-io']['error'](errorConfig);
+      visual.error({ error: response, el: el });
     });
-
-    return request;
+    return visual;
   };
-
-
-  // -------------------------------
-  // Inject Request Draw Method
-  // -------------------------------
-  Keen.Request.prototype.draw = function(selector, config) {
-    _build_visual.call(this, selector, config);
-    this.on('complete', function(){
-      _build_visual.call(this, selector, config);
-    });
-    return this;
-  };
-
-  function _build_visual(selector, config){
-    if (this.visual) {
-      this.visual.trigger('remove');
-    }
-    this.visual = new Keen.Visualization(this, selector, config);
-  }
-
 
   // -------------------------------
   // Keen.Visualization
   // -------------------------------
   Keen.Visualization = function(dataset, el, config){
-    var chartType = (config && config.chartType) ? config.chartType : null;
-    return new Keen.Dataviz(chartType).prepare(el).setData(dataset).setConfig(config).render(el);
+    return new Keen.Dataviz()
+      .prepare(el)
+      .data(dataset)
+      .attributes(config)
+      .render();
   };
 
   // *******************
   // START NEW CLEAN API
   // *******************
 
-  Keen.Dataviz = function(chartType) {
+  /*Keen.Dataviz = function(chartType) {
     this.capabilities = []; // No capabilities by default;
     this.config = {};
     if (chartType) {
@@ -95,7 +44,7 @@
     };
   };
 
-  _extend(Keen.Dataviz.prototype, Events);
+  _extend(Keen.Dataviz.prototype, Events);*/
 
   /*Keen.Dataviz.prototype.setData = function(dataset) {
     if (!dataset) {
@@ -192,7 +141,7 @@
     }
   };*/
 
-  Keen.Dataviz.prototype.setCapabilities = function() {
+  /*Keen.Dataviz.prototype.setCapabilities = function() {
     // Metric
     if (this.isMetric) {
       this.capabilities = ['metric'];
@@ -243,7 +192,7 @@
     if (this.isExtraction) {
       this.capabilities = ['table'];
     }
-  };
+  };*/
 
   /*Keen.Dataviz.prototype.setDataformSchema = function() {
     if (this.is2xGroupBy) {
