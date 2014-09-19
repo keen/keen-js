@@ -1,5 +1,5 @@
 /* TODO:
-   [ ] set up dataType capability-mapping
+   [x] set up dataType capability-mapping
    [ ] move google defaults into adapter
 */
 
@@ -43,27 +43,18 @@ Keen.Dataviz = function(){
     _rendered: false,
     _artifacts: { /* state bin */ },
 
-    adapter: {                // => .adapter()
-      library: undefined,     // => .library()
-      chartType: undefined,   // => .chartType()
-      dataType: undefined     // => .dataType()
+    adapter: {                  // => .adapter()
+      library: undefined,       // => .library()
+      chartType: undefined,     // => .chartType()
+      defaultChartType: undefined, // => .defaultChartType()
+      dataType: undefined       // => .dataType()
     },
 
     attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults)),
     // attributes: _extend({}, Keen.Dataviz.defaults),
-    /*attributes: {             // => .attributes()
-      height: null,           // => .height()
-      title: "",              // => .title()
-      width: null             // => .width() ..etc
-    },*/
 
     defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults)),
     //defaults: _extend({}, Keen.Dataviz.defaults),
-    /*defaults: {
-      height: 400,
-      title: "",
-      width: 600
-    },*/
 
     el: undefined             // => .el()
   };
@@ -150,11 +141,9 @@ Keen.Dataviz.prototype.parseRequest = function(req){
 
 Keen.Dataviz.prototype.attributes = function(_attributes){
   if (!arguments.length) return this.view.attributes;
-  for (var key in _attributes) {
-    if (_attributes.hasOwnProperty(key)) {
-      this.view.attributes[key] = _attributes[key];
-    }
-  }
+  _each(_attributes, function(prop, key){
+    this.view.attributes[key] = _prop;
+  });
   return this;
 };
 
@@ -222,11 +211,9 @@ Keen.Dataviz.prototype.width = function(value){
 
 Keen.Dataviz.prototype.adapter = function(_adapter){
   if (!arguments.length) return this.view.adapter;
-  for (var key in _adapter) {
-    if (_adapter.hasOwnProperty(key)) {
-      this.view.adapter[key] = _adapter[key];
-    }
-  }
+  _each(_adapter, function(prop, key){
+    this.view.adapter[key] = _prop;
+  });
   return this;
 };
 
@@ -239,6 +226,31 @@ Keen.Dataviz.prototype.library = function(_lib){
 Keen.Dataviz.prototype.chartType = function(_type){
   if (!arguments.length) return this.view.adapter.chartType;
   this.view.adapter.chartType = String(_type);
+  return this;
+};
+
+Keen.Dataviz.prototype.defaultChartType = function(_type){
+  if (!arguments.length) return this.view.adapter.defaultChartType;
+  this.view.adapter.defaultChartType = String(_type);
+  // Set chartType if a value is not set
+  if (!this.chartType()) {
+    this.chartType(String(_type))
+  }
+  return this;
+};
+
+Keen.Dataviz.prototype.dataType = function(_type){
+  if (!arguments.length) return this.view.adapter.dataType;
+  this.view.adapter.dataType = String(_type);
+  /*
+  get adapter.capabilities
+  get adapter default for dataType
+  set adapter.defaultChartType = deafult type
+  */
+  var defaultTypeSet = Keen.Dataviz.libraries[this.library()]._defaults[_type];
+  if (defaultTypeSet) {
+    this.defaultChartType(defaultTypeSet[0]);
+  }
   return this;
 };
 
@@ -310,10 +322,6 @@ function _getRenderer(){
 // ------------------------------
 
 Keen.Dataviz.register = function(name, methods, config){
-  Keen.Dataviz.libraries[name] = Keen.Dataviz.libraries[name] || {};
-  for (var method in methods) {
-    Keen.Dataviz.libraries[name][method] = methods[method];
-  }
   var self = this;
   var loadHandler = function(st) {
     st.loaded++;
@@ -322,9 +330,24 @@ Keen.Dataviz.register = function(name, methods, config){
       Keen.trigger('ready');
     }
   };
+  Keen.Dataviz.libraries[name] = Keen.Dataviz.libraries[name] || {};
+
+  // Add method to library hash
+  _each(methods, function(method, key){
+    Keen.Dataviz.libraries[name][key] = method;
+  });
+
+  // Set default capabilities hash
+  if (config && config.capabilities) {
+    Keen.Dataviz.libraries[name]._defaults = Keen.Dataviz.libraries[name]._defaults || {};
+    _each(config.capabilities, function(typeSet, key){
+      // store somewhere in library
+      Keen.Dataviz.libraries[name]._defaults[key] = typeSet;
+    });
+  }
 
   // For all dependencies
-  if(config && config.dependencies) {
+  if (config && config.dependencies) {
     _each(config.dependencies, function (dependency, index, collection) {
       var status = Keen.Dataviz.dependencies;
       // If it doesn't exist in the current dependencies being loaded
@@ -566,7 +589,8 @@ function _parseRequest(req){
   /*
     TODO: Handle multiple queries
   */
-  this.dataType(_getQueryType.call(this, req.queries[0]));
+  // First-pass at dataType detection
+  this.dataType(_getQueryDataType.call(this, req.queries[0]));
   if (this.dataType() !== "extraction") {
     // Run data thru raw parser
     dataset = _parseRawData.call(this, req.data[0]);
@@ -596,56 +620,56 @@ function _parseExtraction(req){
 
 // function _parseQueryData(query){}
 
-function _getQueryType(query){
+function _getQueryDataType(query){
   var isInterval = typeof query.params.interval === "string",
       isGroupBy = typeof query.params.group_by === "string",
       is2xGroupBy = query.params.group_by instanceof Array,
-      queryType;
+      dataType;
 
   // metric
   if (!isGroupBy && !isInterval) {
-    queryType = 'singular';
+    dataType = 'singular';
   }
 
   // group_by, no interval
   if (isGroupBy && !isInterval) {
-    queryType = 'categorical';
+    dataType = 'categorical';
   }
 
   // interval, no group_by
   if (isInterval && !isGroupBy) {
-    queryType = 'chronological';
+    dataType = 'chronological';
   }
 
   // interval, group_by
   if (isInterval && isGroupBy) {
-    queryType = 'cat-chronological';
+    dataType = 'cat-chronological';
   }
 
   // 2x group_by
   // TODO: research possible dataType options
   if (!isInterval && is2xGroupBy) {
-    queryType = 'categorical';
+    dataType = 'categorical';
   }
 
   // interval, 2x group_by
   // TODO: research possible dataType options
   if (isInterval && is2xGroupBy) {
-    queryType = 'cat-chronological';
+    dataType = 'cat-chronological';
   }
 
   if (query.analysis === "funnel") {
-    queryType = 'cat-ordinal';
+    dataType = 'cat-ordinal';
   }
 
   if (query.analysis === "extraction") {
-    queryType = 'extraction';
+    dataType = 'extraction';
   }
   if (query.analysis === "select_unique") {
-    queryType = 'nominal'
+    dataType = 'nominal';
   }
 
-  return queryType;
+  return dataType;
 }
 
 function _parseRawData(response){
@@ -653,6 +677,7 @@ function _parseRawData(response){
       schema = {},
       labelSet,
       labelMap,
+      dataType,
       dataset;
 
   labelSet = self.labels() || null;
@@ -662,6 +687,7 @@ function _parseRawData(response){
   // -------------------------------
   if (typeof response.result == "number"){
     //return new Keen.Dataset(response, {
+    dataType = "singular";
     schema = {
       collection: "",
       select: [{
@@ -684,6 +710,7 @@ function _parseRawData(response){
     // Interval w/ single value
     // -------------------------------
     if (response.result[0].timeframe && (typeof response.result[0].value == "number" || response.result[0].value == null)) {
+      dataType = "chronological";
       schema = {
         collection: "result",
         select: [
@@ -710,6 +737,7 @@ function _parseRawData(response){
     // Static GroupBy
     // -------------------------------
     if (typeof response.result[0].result == "number"){
+      dataType = "categorical";
       schema = {
         collection: "result",
         select: [],
@@ -736,6 +764,7 @@ function _parseRawData(response){
     // Grouped Interval
     // -------------------------------
     if (response.result[0].value instanceof Array){
+      dataType = "cat-chronological";
       schema = {
         collection: "result",
         unpack: {
@@ -768,6 +797,7 @@ function _parseRawData(response){
 
     // Funnel
     // -------------------------------
+    dataType = "cat-ordinal";
     if (typeof response.result[0] == "number"){
       schema = {
         collection: "",
@@ -794,38 +824,6 @@ function _parseRawData(response){
   // Post-process label replacement
   _runLabelReplacement.call(this);
 
+  this.dataType(dataType);
   return dataset;
 }
-
-
-
-// via Keen.Dataviz.register(namespace, methods, options);
-// ------------------------------
-/*var adapter = {
-  initialize: function(){
-    // this.__data__ = ref to constructed data artifact
-    console.log("----------------------");
-    console.log("INITIALIZE", this.data());
-    return this;
-  },
-  render: function(){
-    // this.__chart__ = ref to constructed chart artifact
-    console.log("----------------------");
-    console.log("RENDER!",
-                  this.el(),
-                  this.data(),
-                  this.attributes(),
-                  this.adapter());
-    return this;
-  },
-  update: function(){
-    console.log("----------------------");
-    console.log("UPDATE", this.data());
-    return this;
-  },
-  destroy: function(){
-    console.log("----------------------");
-    console.log("DESTROY", this.data());
-    return this;
-  }
-};*/
