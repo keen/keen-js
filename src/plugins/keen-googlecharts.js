@@ -12,15 +12,6 @@
       "google-visualization-errors-0": "No results to visualize"
     };
 
-    function handleErrors(stack){
-      var message = errors[stack['id']] || stack['message'] || "An error occurred";
-      this.trigger('error', message);
-    }
-
-    function setDefaults(){
-
-    }
-
     var chartTypes = ['AreaChart', 'BarChart', 'ColumnChart', 'LineChart', 'PieChart', 'Table'];
     var chartMap = {};
 
@@ -45,19 +36,19 @@
           // Nothing to do here
         },
         render: function(){
-          var self = this,
-              options;
+          var self = this;
           if (self.view._artifacts['googlechart']) {
             this.destroy();
           }
           self.view._artifacts['googlechart'] = self.view._artifacts['googlechart'] || new google.visualization[type](self.el());
           google.visualization.events.addListener(self.view._artifacts.googlechart, 'error', function(stack){
-            handleErrors.call(self, stack);
+            _handleErrors.call(self, stack);
           });
           this.update();
         },
         update: function(){
-          var options = Keen.utils.extend({}, this.attributes());
+          var options = _getDefaultAttributes.call(this, type);
+          Keen.utils.extend(options, this.chartOptions(), this.attributes());
           if (this.view._artifacts['datatable']) {
             this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data()));
           }
@@ -100,46 +91,73 @@
       }]
     });
 
+    function _handleErrors(stack){
+      var message = errors[stack['id']] || stack['message'] || "An error occurred";
+      this.trigger('error', message);
+    }
+
+    function _getDefaultAttributes(type){
+      var output = {};
+      switch (type) {
+
+        case "areachart":
+          output.lineWidth = 2;
+          output.hAxis = {
+            baselineColor: 'transparent',
+            gridlines: { color: 'transparent' }
+          };
+          output.vAxis = {
+            viewWindow: { min: 0 }
+          };
+          if (this.dataType() === "chronological") {
+            output.legend = {
+              position: "none";
+            }
+          }
+          break;
+
+        case "barchart":
+          break;
+
+        case "columnchart":
+          output.hAxis = {
+            baselineColor: 'transparent',
+            gridlines: { color: 'transparent' }
+          };
+          output.vAxis = {
+            viewWindow: { min: 0 }
+          };
+          if (this.dataType() === "chronological") {
+            output.legend = {
+              position: "none";
+            }
+          }
+          break;
+
+        case "linechart":
+          output.lineWidth = 2;
+          output.hAxis = {
+            baselineColor: 'transparent',
+            gridlines: { color: 'transparent' }
+          };
+          output.vAxis = {
+            viewWindow: { min: 0 }
+          };
+          if (this.dataType() === "chronological") {
+            output.legend = {
+              position: "none";
+            }
+          }
+          break;
+
+        case "piechart":
+          output.sliceVisibilityThreshold = 0.01;
+          break;
+
+        case "table":
+          break;
+      }
+      return output;
+    }
+
   })(Keen);
-
-
-/*
-
-// Lib defaults should live here
-
-Keen.Dataviz.prototype.setSpecificChartOptions = function() {
-  // A few last details
-  // -------------------------------
-
-  if (this.config.chartType == 'metric') {
-    this.config.library = 'keen-io';
-  }
-
-  if (this.config.chartOptions.lineWidth == void 0) {
-    this.config.chartOptions.lineWidth = 2;
-  }
-
-  if (this.config.chartType == 'piechart') {
-    if (this.config.chartOptions.sliceVisibilityThreshold == void 0) {
-      this.config.chartOptions.sliceVisibilityThreshold = 0.01;
-    }
-  }
-
-  if (this.config.chartType == 'columnchart' || this.config.chartType == 'areachart' || this.config.chartType == 'linechart') {
-
-    if (this.config.chartOptions.hAxis == void 0) {
-      this.config.chartOptions.hAxis = {
-        baselineColor: 'transparent',
-        gridlines: { color: 'transparent' }
-      };
-    }
-
-    if (this.config.chartOptions.vAxis == void 0) {
-      this.config.chartOptions.vAxis = {
-        viewWindow: { min: 0 }
-      };
-    }
-  }
-};
-
-*/

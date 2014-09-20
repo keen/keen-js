@@ -1,6 +1,7 @@
 /* TODO:
    [x] set up dataType capability-mapping
-   [ ] move google defaults into adapter
+   [x] move google defaults into adapter
+   [ ] set default lib+chart combos for types
 */
 
 _extend(Keen.utils, {
@@ -123,99 +124,113 @@ Keen.Dataviz.prototype.parseRequest = function(req){
 // View Attributes
 // ------------------------------
 
-Keen.Dataviz.prototype.attributes = function(_attributes){
+Keen.Dataviz.prototype.attributes = function(obj){
   if (!arguments.length) return this.view.attributes;
-  _each(_attributes, function(prop, key){
-    this.view.attributes[key] = _prop;
+  _each(obj, function(prop, key){
+    if (key === "chartOptions") {
+      this.chartOptions(prop);
+    } else {
+      this.view.attributes[key] = prop;
+    }
   });
   return this;
 };
 
-Keen.Dataviz.prototype.colors = function(value){
+Keen.Dataviz.prototype.chartOptions = function(obj){
+  if (!arguments.length) return this.view.adapter.chartOptions;
+  _each(obj, function(prop, key){
+    this.view.adapter.chartOptions[key] = prop;
+  });
+  return this;
+};
+
+Keen.Dataviz.prototype.colors = function(arr){
   if (!arguments.length) return this.view.attributes.colors;
-  if (value instanceof Array) {
-    this.view.attributes.colors = value;
+  if (arr instanceof Array) {
+    this.view.attributes.colors = arr;
   }
   return this;
 };
 
-Keen.Dataviz.prototype.colorMapping = function(value){
+Keen.Dataviz.prototype.colorMapping = function(obj){
   if (!arguments.length) return this.view.attributes.colorMapping;
   var self = this;
   self.view.attributes.colorMapping = null;
-  _each(value, function(v,k){
-    self.view.attributes.colorMapping[k] = v.trim();
+  _each(obj, function(prop, key){
+    self.view.attributes.colorMapping[key] = prop.trim();
   });
   _runColorMapping.call(self);
   return self;
 };
 
-Keen.Dataviz.prototype.labels = function(value){
+Keen.Dataviz.prototype.labels = function(arr){
   if (!arguments.length) return this.view.attributes.labels;
-  if (value instanceof Array) {
-    this.view.attributes.labels = value;
+  if (arr instanceof Array) {
+    this.view.attributes.labels = arr;
   }
   _runLabelReplacement.call(this);
   return this;
 };
 
-Keen.Dataviz.prototype.labelMapping = function(value){
+Keen.Dataviz.prototype.labelMapping = function(obj){
   if (!arguments.length) return this.view.attributes.labelMapping;
   var self = this;
   self.view.attributes.labelMapping = null;
-  _each(value, function(v,k){
-    self.view.attributes.labelMapping[k] = v.trim();
+  _each(obj, function(prop, key){
+    self.view.attributes.labelMapping[key] = prop.trim();
   });
   _runLabelMapping.call(self);
   return self;
 };
 
-Keen.Dataviz.prototype.height = function(value){
+Keen.Dataviz.prototype.height = function(int){
   if (!arguments.length) return this.view.attributes.height;
-  this.view.attributes['height'] = parseInt(value);
+  this.view.attributes['height'] = parseInt(int);
   return this;
 };
 
-Keen.Dataviz.prototype.title = function(value){
+Keen.Dataviz.prototype.title = function(str){
   if (!arguments.length) return this.view.attributes.title;
-  this.view.attributes['title'] = String(value);
+  this.view.attributes['title'] = String(str);
   return this;
 };
 
-Keen.Dataviz.prototype.width = function(value){
+Keen.Dataviz.prototype.width = function(int){
   if (!arguments.length) return this.view.attributes.width;
-  this.view.attributes['width'] = parseInt(value);
+  this.view.attributes['width'] = parseInt(int);
   return this;
 };
+
+
 
 
 // ------------------------------
 // View Adapter
 // ------------------------------
 
-Keen.Dataviz.prototype.adapter = function(_adapter){
+Keen.Dataviz.prototype.adapter = function(obj){
   if (!arguments.length) return this.view.adapter;
-  _each(_adapter, function(prop, key){
-    this.view.adapter[key] = _prop;
+  _each(obj, function(prop, key){
+    this.view.adapter[key] = prop;
   });
   return this;
 };
 
-Keen.Dataviz.prototype.library = function(_lib){
+Keen.Dataviz.prototype.library = function(str){
   if (!arguments.length) return this.view.adapter.library;
-  this.view.adapter.library = String(_lib);
+  this.view.adapter.library = String(str);
   return this;
 };
 
-Keen.Dataviz.prototype.chartType = function(_type){
+Keen.Dataviz.prototype.chartType = function(str){
   if (!arguments.length) return this.view.adapter.chartType;
-  this.view.adapter.chartType = String(_type);
+  this.view.adapter.chartType = String(str);
   return this;
 };
 
-Keen.Dataviz.prototype.defaultChartType = function(_type){
+Keen.Dataviz.prototype.defaultChartType = function(str){
   if (!arguments.length) return this.view.adapter.defaultChartType;
-  this.view.adapter.defaultChartType = String(_type);
+  this.view.adapter.defaultChartType = String(str);
   // Set chartType if a value is not set
   if (!this.chartType()) {
   //  this.chartType(String(_type))
@@ -223,9 +238,9 @@ Keen.Dataviz.prototype.defaultChartType = function(_type){
   return this;
 };
 
-Keen.Dataviz.prototype.dataType = function(_type){
+Keen.Dataviz.prototype.dataType = function(str){
   if (!arguments.length) return this.view.adapter.dataType;
-  this.view.adapter.dataType = String(_type);
+  this.view.adapter.dataType = String(str);
   /*
   get adapter.capabilities
   get adapter default for dataType
@@ -238,14 +253,14 @@ Keen.Dataviz.prototype.dataType = function(_type){
   return this;
 };
 
-Keen.Dataviz.prototype.el = function(_el){
+Keen.Dataviz.prototype.el = function(el){
   if (!arguments.length) return this.view.el;
-  this.view.el = _el;
+  this.view.el = el;
   return this;
 };
 
-Keen.Dataviz.prototype.prepare = function(_el){
-  if (_el) this.view.el(_el);
+Keen.Dataviz.prototype.prepare = function(el){
+  if (el) this.view.el(el);
   if (this.view._rendered) {
     Keen.Dataviz.libraries['keen-io']['spinner'].destroy.apply(this, arguments);
     this.view._initialized = false;
@@ -265,9 +280,9 @@ Keen.Dataviz.prototype.initialize = function(){
   return this;
 };
 
-Keen.Dataviz.prototype.render = function(_el){
+Keen.Dataviz.prototype.render = function(el){
   var actions = _getAdapterActions.call(this);
-  if (_el) this.el(_el);
+  if (el) this.el(el);
   if (!this.view._initialized) this.initialize();
   if (this.el() && actions.render) actions.render.apply(this, arguments);
   this.view._rendered = true;
