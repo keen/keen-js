@@ -59,22 +59,6 @@ Keen.Dataviz = function(){
     el: undefined             // => .el()
   };
 
-  // Set default event handlers
-  /*var self = this;
-  self.on("error", function(){
-    var errorConfig, error;
-    errorConfig = _extend({error:{message: arguments[0]}}, self.attributes());
-    error = new Keen.Dataviz.libraries['keen-io']['error'](errorConfig);
-  });
-  self.on("update", function(){
-    self.update.apply(this, arguments);
-  });
-  self.on("remove", function(){
-    self.remove.apply(this, arguments);
-  });
-
-  // Let's kick it off!
-  self.initialize();*/
   Keen.Dataviz.visuals.push(this);
 };
 
@@ -127,10 +111,10 @@ Keen.Dataviz.prototype.parseRawData = function(raw){
 
 Keen.Dataviz.prototype.parseRequest = function(req){
   this.dataset = _parseRequest.call(this, req);
-  // Update the active title if not set
-  if (!this.title()) this.title(_buildDefaultTitle.call(this));
   // Update the default title every time
-  this.view.defaults.title = _buildDefaultTitle.call(this);
+  this.view.defaults.title = _getDefaultTitle.call(this);
+  // Update the active title if not set
+  if (!this.title()) this.title(this.view.defaults.title);
   return this;
 };
 
@@ -234,7 +218,7 @@ Keen.Dataviz.prototype.defaultChartType = function(_type){
   this.view.adapter.defaultChartType = String(_type);
   // Set chartType if a value is not set
   if (!this.chartType()) {
-    this.chartType(String(_type))
+  //  this.chartType(String(_type))
   }
   return this;
 };
@@ -275,14 +259,14 @@ Keen.Dataviz.prototype.prepare = function(_el){
 };
 
 Keen.Dataviz.prototype.initialize = function(){
-  var actions = _getActionSet.call(this);
+  var actions = _getAdapterActions.call(this);
   if (actions.initialize) actions.initialize.apply(this, arguments);
   this.view._initialized = true;
   return this;
 };
 
 Keen.Dataviz.prototype.render = function(_el){
-  var actions = _getActionSet.call(this);
+  var actions = _getAdapterActions.call(this);
   if (_el) this.el(_el);
   if (!this.view._initialized) this.initialize();
   if (this.el() && actions.render) actions.render.apply(this, arguments);
@@ -291,13 +275,13 @@ Keen.Dataviz.prototype.render = function(_el){
 };
 
 Keen.Dataviz.prototype.update = function(){
-  var actions = _getActionSet.call(this);
+  var actions = _getAdapterActions.call(this);
   if (actions.update) actions.update.apply(this, arguments);
   return this;
 };
 
 Keen.Dataviz.prototype.destroy = function(){
-  var actions = _getActionSet.call(this);
+  var actions = _getAdapterActions.call(this);
   if (actions.destroy) actions.destroy.apply(this, arguments);
   // clear rendered artifats, state bin
   this.el().innerHTML = "";
@@ -307,13 +291,14 @@ Keen.Dataviz.prototype.destroy = function(){
 };
 
 Keen.Dataviz.prototype.error = function(){
-  var actions = _getActionSet.call(this);
+  var actions = _getAdapterActions.call(this);
   if (actions['error']) actions['error'].apply(this, arguments);
   return this;
 };
 
-function _getRenderer(){
-  return Keen.Dataviz.libraries[this.library()][this.chartType()];
+function _getAdapterActions(){
+  var chartType = (this.chartType() || this.defaultChartType());
+  return Keen.Dataviz.libraries[this.library()][chartType];
 }
 
 
@@ -572,7 +557,7 @@ function _runLabelReplacement(){
   }
 }
 
-function _buildDefaultTitle(query){
+function _getDefaultTitle(query){
   var analysis = query.analysis.replace("_", " "),
       collection = query.get('event_collection'),
       output;
