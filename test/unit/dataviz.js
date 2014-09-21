@@ -29,10 +29,10 @@ describe("Keen.Dataviz", function(){
       expect(this.dataviz.view).to.be.an("object");
     });
     it("should contain view attributes matching Keen.Dataviz.defaults", function(){
-      expect(this.dataviz.view.attributes).to.deep.equal(Keen.Dataviz.defaults.attributes);
+      expect(this.dataviz.view.attributes).to.deep.equal(Keen.Dataviz.defaults);
     });
     it("should contain view defaults also matching Keen.Dataviz.defaults", function(){
-      expect(this.dataviz.view.defaults).to.deep.equal(Keen.Dataviz.defaults.attributes);
+      expect(this.dataviz.view.defaults).to.deep.equal(Keen.Dataviz.defaults);
     });
     it("should be appended to Keen.Dataviz.visuals", function(){
       expect(Keen.Dataviz.visuals).to.have.length(1);
@@ -42,7 +42,7 @@ describe("Keen.Dataviz", function(){
 
   describe("#attributes", function(){
     it("should get the current properties", function(){
-      expect(this.dataviz.attributes()).to.deep.equal(Keen.Dataviz.defaults.attributes);
+      expect(this.dataviz.attributes()).to.deep.equal(Keen.Dataviz.defaults);
     });
     it("should set a hash of properties", function(){
       this.dataviz.attributes({ title: "Updated Attributes", width: 600 });
@@ -62,7 +62,7 @@ describe("Keen.Dataviz", function(){
   describe("#colors", function(){
     it("should get the current color set", function(){
       expect(this.dataviz.colors()).to.be.an("array")
-        .and.to.eql(Keen.Dataviz.defaults.attributes.colors);
+        .and.to.eql(Keen.Dataviz.defaults.colors);
     });
     it("should set a new array of colors", function(){
       var array = ["red","green","blue"];
@@ -139,9 +139,8 @@ describe("Keen.Dataviz", function(){
   });
 
   describe("#height", function(){
-    it("should get the default height", function(){
-      expect(this.dataviz.height()).to.be.a("number")
-        .and.to.equal(Keen.Dataviz.defaults.attributes.height);
+    it("should return undefined by default", function(){
+      expect(this.dataviz.height()).to.be.an("undefined");
     });
     it("should set and get a new height", function(){
       var height = 375;

@@ -40,7 +40,7 @@ module.exports = function(grunt) {
 
           , "src/dataset.js"
           , "src/dataviz.js"
-          , "src/visualize.js"
+          , "src/visualization.js"
 
           , "src/plugins/keen-googlecharts.js"
           //, "src/plugins/keen-c3.js"
@@ -75,7 +75,7 @@ module.exports = function(grunt) {
           , "test/unit/query.js"
           , "test/unit/dataviz.js"
           , "test/unit/dataset.js"
-          , "test/unit/visualize.js"
+          , "test/unit/visualization.js"
           , "test/unit/utils.js"
         ],
         dest: "test/keen-unit-all.js"

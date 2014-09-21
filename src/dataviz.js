@@ -32,6 +32,11 @@ Keen.Spinner.defaults = {
   left: '50%'                   // Left position relative to parent
 };
 
+
+// ------------------------------
+// Dataviz constructor
+// ------------------------------
+
 Keen.Dataviz = function(){
 
   this.dataset = new Keen.Dataset();
@@ -43,13 +48,13 @@ Keen.Dataviz = function(){
     _artifacts: { /* state bin */ },
 
     adapter: {
-      library: undefined,   // Keen.Dataviz.defaults.adapter.library ||
+      library: undefined,
       chartType: undefined,
       defaultChartType: undefined,
       dataType: undefined
     },
-    attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
-    defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
+    attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults)),
+    defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults)),
     el: undefined,
     loader: { library: "keen-io", chartType: "spinner" }
   };
@@ -59,30 +64,26 @@ Keen.Dataviz = function(){
 
 _extend(Keen.Dataviz.prototype, Events);
 _extend(Keen.Dataviz, {
-  defaults: {
-    attributes: { height: 400, colors: [
-      "#00afd7", "#f35757", "#f0ad4e", "#8383c6", "#f9845b", "#49c5b1", "#2a99d1", "#aacc85", "#ba7fab"
-      /* Todo: add light/dark derivatives */
-    ] },
-    adapter: {
-      library: "google",
-      chartOptions: {}
-    },
-    dataTypeMap: {
-      "singular":          { library: "keen-io", chartType: "metric"      },
-      "categorical":       { library: "google",  chartType: "piechart"    },
-      "cat-interval":      { library: "google",  chartType: "columnchart" },
-      "cat-ordinal":       { library: "google",  chartType: "barchart"    },
-      "chronological":     { library: "google",  chartType: "areachart"   },
-      "cat-chronological": { library: "google",  chartType: "linechart"   }
-    }
+  dataTypeMap: {
+    "singular":          { library: "keen-io", chartType: "metric"      },
+    "categorical":       { library: "google",  chartType: "piechart"    },
+    "cat-interval":      { library: "google",  chartType: "columnchart" },
+    "cat-ordinal":       { library: "google",  chartType: "barchart"    },
+    "chronological":     { library: "google",  chartType: "areachart"   },
+    "cat-chronological": { library: "google",  chartType: "linechart"   }
   },
-  libraries: {},
+  defaults: {
+    colors: [
+    "#00afd7", "#f35757", "#f0ad4e", "#8383c6", "#f9845b", "#49c5b1", "#2a99d1", "#aacc85", "#ba7fab"
+    /* Todo: add light/dark derivatives */
+    ]
+  },
   dependencies: {
     loading: 0,
     loaded: 0,
     urls: {}
   },
+  libraries: {},
   visuals: []
 });
 
@@ -319,21 +320,14 @@ Keen.Dataviz.prototype.error = function(){
 };
 
 function _getAdapterActions(){
-  var map = _extend({}, Keen.Dataviz.defaults.dataTypeMap),
+  var map = _extend({}, Keen.Dataviz.dataTypeMap),
       dataType = this.dataType(),
       library,
       chartType;
 
-  console.log(dataType);
-
   library = this.library() || map[dataType].library,
   chartType = this.chartType() || this.defaultChartType() || map[dataType].chartType;
   return Keen.Dataviz.libraries[library][chartType];
-  /*if (dataType) {
-
-  } else {
-    return {};
-  }*/
 }
 
 
