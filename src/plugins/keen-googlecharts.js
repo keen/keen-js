@@ -50,7 +50,7 @@
           var options = _getDefaultAttributes.call(this, type);
           Keen.utils.extend(options, this.chartOptions(), this.attributes());
           if (this.view._artifacts['datatable']) {
-            this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data()));
+            this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
           }
           if (this.view._artifacts['googlechart']) {
             this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
@@ -111,8 +111,8 @@
           };
           if (this.dataType() === "chronological") {
             output.legend = {
-              position: "none";
-            }
+              position: "none"
+            };
           }
           break;
 
@@ -129,8 +129,8 @@
           };
           if (this.dataType() === "chronological") {
             output.legend = {
-              position: "none";
-            }
+              position: "none"
+            };
           }
           break;
 
@@ -145,8 +145,8 @@
           };
           if (this.dataType() === "chronological") {
             output.legend = {
-              position: "none";
-            }
+              position: "none"
+            };
           }
           break;
 

@@ -1,7 +1,7 @@
-describe("Keen Client", function() {
+describe("Keen Core", function() {
 
   beforeEach(function() {
-    this.keen = new Keen({
+    this.project = new Keen({
       projectId: keenHelper.projectId,
       readKey: keenHelper.readKey,
       writeKey: keenHelper.writeKey
@@ -11,7 +11,7 @@ describe("Keen Client", function() {
   describe("constructor", function() {
 
     it("should create a new Keen instance", function(){
-      expect(this.keen).to.be.an.instanceof(Keen);
+      expect(this.project).to.be.an.instanceof(Keen);
     });
 
     it("should error if no configuration object", function() {
@@ -21,7 +21,7 @@ describe("Keen Client", function() {
     });
 
     it("should create a new client object", function(){
-      expect(this.keen.client).to.be.ok;
+      expect(this.project.client).to.be.ok;
     });
 
     describe("validates projectId", function(){
@@ -68,7 +68,7 @@ describe("Keen Client", function() {
 
       it("should set the projectId (string)", function() {
 
-        expect(this.keen.client)
+        expect(this.project.client)
           .to.have.property('projectId')
           .that.is.a('string')
           .that.equals(keenHelper.projectId);
@@ -80,7 +80,7 @@ describe("Keen Client", function() {
     describe("validates readKey", function(){
 
       it("should set the readKey (string)", function() {
-        expect(this.keen.client)
+        expect(this.project.client)
           .to.have.property('readKey')
           .that.is.a('string')
           .that.equals(keenHelper.readKey);
@@ -92,7 +92,7 @@ describe("Keen Client", function() {
     describe("validates readKey", function(){
 
       it("should set the writeKey (string)", function() {
-        expect(this.keen.client)
+        expect(this.project.client)
           .to.have.property('writeKey')
           .that.is.a('string')
           .that.equals(keenHelper.writeKey);

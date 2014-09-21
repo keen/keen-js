@@ -1,18 +1,17 @@
-describe("Keen Query", function() {
+describe("Keen.Query", function() {
 
   beforeEach(function() {
-    this.keen = new Keen({
+    this.project = new Keen({
       projectId: keenHelper.projectId,
       readKey: keenHelper.readKey
     });
     this.query = new Keen.Query("count", {
       eventCollection: "test-collection"
     });
-    //console.log(this.query);
   });
 
   afterEach(function(){
-    this.keen = void 0;
+    this.project = void 0;
     this.query = void 0;
   });
 

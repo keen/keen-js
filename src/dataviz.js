@@ -34,30 +34,36 @@ Keen.Spinner.defaults = {
 
 Keen.Dataviz = function(){
 
-  this.dataset = {
-    parse: function(){ console.log("demo"); },
-    table: [["date", "value"],[new Date().toISOString(), 54343]]
-  }; // => new Keen.Dataset();
+  // this.dataset = {
+  //   parse: function(){ console.log("demo"); },
+  //   table: [["date", "value"],[new Date().toISOString(), 54343]]
+  // };
+
+  this.dataset = new Keen.Dataset();
 
   this.view = {
+    _prepared: false,
     _initialized: false,
     _rendered: false,
     _artifacts: { /* state bin */ },
 
-    adapter: {                  // => .adapter()
-      library: undefined,       // => .library()
-      chartType: undefined,     // => .chartType()
-      defaultChartType: undefined, // => .defaultChartType()
-      dataType: undefined       // => .dataType()
+    adapter: {
+      library: Keen.Dataviz.defaults.adapter.library || undefined,
+      chartType: undefined,
+      defaultChartType: undefined,
+      dataType: undefined
     },
 
-    attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults)),
-    // attributes: _extend({}, Keen.Dataviz.defaults),
+    //attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
+    attributes: _extend({}, Keen.Dataviz.defaults.attributes),
 
-    defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults)),
-    //defaults: _extend({}, Keen.Dataviz.defaults),
+    //defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
+    defaults: _extend({}, Keen.Dataviz.defaults.attributes),
 
-    el: undefined             // => .el()
+    el: undefined,
+
+    loader: { library: "keen-io", chartType: "spinner" }
+
   };
 
   Keen.Dataviz.visuals.push(this);
@@ -65,17 +71,18 @@ Keen.Dataviz = function(){
 
 _extend(Keen.Dataviz.prototype, Events);
 _extend(Keen.Dataviz, {
-  defaults = {
-    library: 'google',
-    height: 400,
-    colors: [
+  defaults: {
+    attributes: { height: 400, colors: [
       "#00afd7", "#f35757", "#f0ad4e", "#8383c6", "#f9845b", "#49c5b1", "#2a99d1", "#aacc85", "#ba7fab"
       /* Todo: add light/dark derivatives */
-    ],
-    chartOptions: {}
+    ] },
+    adapter: {
+      library: "google",
+      chartOptions: {}
+    }
   },
   libraries: {},
-  dependencies = {
+  dependencies: {
     loading: 0,
     loaded: 0,
     urls: {}
@@ -126,38 +133,29 @@ Keen.Dataviz.prototype.parseRequest = function(req){
 
 Keen.Dataviz.prototype.attributes = function(obj){
   if (!arguments.length) return this.view.attributes;
+  var self = this;
   _each(obj, function(prop, key){
     if (key === "chartOptions") {
-      this.chartOptions(prop);
+      self.chartOptions(prop);
     } else {
-      this.view.attributes[key] = prop;
+      self.view.attributes[key] = (prop ? prop : null);
     }
-  });
-  return this;
-};
-
-Keen.Dataviz.prototype.chartOptions = function(obj){
-  if (!arguments.length) return this.view.adapter.chartOptions;
-  _each(obj, function(prop, key){
-    this.view.adapter.chartOptions[key] = prop;
   });
   return this;
 };
 
 Keen.Dataviz.prototype.colors = function(arr){
   if (!arguments.length) return this.view.attributes.colors;
-  if (arr instanceof Array) {
-    this.view.attributes.colors = arr;
-  }
+  this.view.attributes.colors = (arr instanceof Array ? arr : null);
   return this;
 };
 
 Keen.Dataviz.prototype.colorMapping = function(obj){
   if (!arguments.length) return this.view.attributes.colorMapping;
   var self = this;
-  self.view.attributes.colorMapping = null;
+  self.view.attributes.colorMapping = {};
   _each(obj, function(prop, key){
-    self.view.attributes.colorMapping[key] = prop.trim();
+    self.view.attributes.colorMapping[key] = (prop? prop.trim() : null);
   });
   _runColorMapping.call(self);
   return self;
@@ -165,9 +163,7 @@ Keen.Dataviz.prototype.colorMapping = function(obj){
 
 Keen.Dataviz.prototype.labels = function(arr){
   if (!arguments.length) return this.view.attributes.labels;
-  if (arr instanceof Array) {
-    this.view.attributes.labels = arr;
-  }
+  this.view.attributes.labels = (arr instanceof Array ? arr : null);
   _runLabelReplacement.call(this);
   return this;
 };
@@ -175,9 +171,9 @@ Keen.Dataviz.prototype.labels = function(arr){
 Keen.Dataviz.prototype.labelMapping = function(obj){
   if (!arguments.length) return this.view.attributes.labelMapping;
   var self = this;
-  self.view.attributes.labelMapping = null;
+  self.view.attributes.labelMapping = {};
   _each(obj, function(prop, key){
-    self.view.attributes.labelMapping[key] = prop.trim();
+    self.view.attributes.labelMapping[key] = (prop? prop.trim() : null);
   });
   _runLabelMapping.call(self);
   return self;
@@ -185,19 +181,19 @@ Keen.Dataviz.prototype.labelMapping = function(obj){
 
 Keen.Dataviz.prototype.height = function(int){
   if (!arguments.length) return this.view.attributes.height;
-  this.view.attributes['height'] = parseInt(int);
+  this.view.attributes['height'] = (!isNaN(parseInt(int)) ? parseInt(int) : null);
   return this;
 };
 
 Keen.Dataviz.prototype.title = function(str){
   if (!arguments.length) return this.view.attributes.title;
-  this.view.attributes['title'] = String(str);
+  this.view.attributes['title'] = (str ? String(str) : null);
   return this;
 };
 
 Keen.Dataviz.prototype.width = function(int){
   if (!arguments.length) return this.view.attributes.width;
-  this.view.attributes['width'] = parseInt(int);
+  this.view.attributes['width'] = (!isNaN(parseInt(int)) ? parseInt(int) : null);
   return this;
 };
 
@@ -210,27 +206,38 @@ Keen.Dataviz.prototype.width = function(int){
 
 Keen.Dataviz.prototype.adapter = function(obj){
   if (!arguments.length) return this.view.adapter;
+  var self = this;
   _each(obj, function(prop, key){
-    this.view.adapter[key] = prop;
+    self.view.adapter[key] = (prop ? prop : null);
   });
   return this;
 };
 
 Keen.Dataviz.prototype.library = function(str){
   if (!arguments.length) return this.view.adapter.library;
-  this.view.adapter.library = String(str);
+  this.view.adapter.library = (str ? String(str) : null);
+  return this;
+};
+
+Keen.Dataviz.prototype.chartOptions = function(obj){
+  if (!arguments.length) return this.view.adapter.chartOptions;
+  var self = this;
+  self.view.adapter.chartOptions = self.view.adapter.chartOptions || {};
+  _each(obj, function(prop, key){
+    self.view.adapter.chartOptions[key] = (prop ? prop : null);
+  });
   return this;
 };
 
 Keen.Dataviz.prototype.chartType = function(str){
   if (!arguments.length) return this.view.adapter.chartType;
-  this.view.adapter.chartType = String(str);
+  this.view.adapter.chartType = (str ? String(str) : null);
   return this;
 };
 
 Keen.Dataviz.prototype.defaultChartType = function(str){
   if (!arguments.length) return this.view.adapter.defaultChartType;
-  this.view.adapter.defaultChartType = String(str);
+  this.view.adapter.defaultChartType = (str ? String(str) : null);
   // Set chartType if a value is not set
   if (!this.chartType()) {
   //  this.chartType(String(_type))
@@ -240,7 +247,7 @@ Keen.Dataviz.prototype.defaultChartType = function(str){
 
 Keen.Dataviz.prototype.dataType = function(str){
   if (!arguments.length) return this.view.adapter.dataType;
-  this.view.adapter.dataType = String(str);
+  this.view.adapter.dataType = (str ? String(str) : null);
   /*
   get adapter.capabilities
   get adapter default for dataType
@@ -260,21 +267,29 @@ Keen.Dataviz.prototype.el = function(el){
 };
 
 Keen.Dataviz.prototype.prepare = function(el){
-  if (el) this.view.el(el);
+  if (el) this.el(el);
   if (this.view._rendered) {
-    Keen.Dataviz.libraries['keen-io']['spinner'].destroy.apply(this, arguments);
-    this.view._initialized = false;
-    this.view._rendered = false;
+    // Keen.Dataviz.libraries['keen-io']['spinner'].destroy.apply(this, arguments);
+    // this.view._initialized = false;
+    // this.view._rendered = false;
+    this.destroy();
   }
   this.el().innerHTML = "";
-  Keen.Dataviz.libraries['keen-io']['spinner'].render.apply(this, arguments);
-  this.view._initialized = true;
-  this.view._rendered = true;
+  var loader = Keen.Dataviz.libraries[this.view.loader.library][this.view.loader.chartType];
+  if (loader.initialize) loader.initialize.apply(this, arguments);
+  if (loader.render) loader.render.apply(this, arguments);
+  this.view._prepared = true;
   return this;
 };
 
 Keen.Dataviz.prototype.initialize = function(){
   var actions = _getAdapterActions.call(this);
+  var loader = Keen.Dataviz.libraries[this.view.loader.library][this.view.loader.chartType];
+  if (this.view._prepared) {
+    if (loader.destroy) loader.destroy.apply(this, arguments);
+  } else {
+    if (this.el()) this.el().innerHTML = "";
+  }
   if (actions.initialize) actions.initialize.apply(this, arguments);
   this.view._initialized = true;
   return this;
@@ -299,7 +314,8 @@ Keen.Dataviz.prototype.destroy = function(){
   var actions = _getAdapterActions.call(this);
   if (actions.destroy) actions.destroy.apply(this, arguments);
   // clear rendered artifats, state bin
-  this.el().innerHTML = "";
+  if (this.el()) this.el().innerHTML = "";
+  this.view._prepared = false;
   this.view._initialized = false;
   this.view._rendered = false;
   return this;
@@ -354,7 +370,7 @@ Keen.Dataviz.register = function(name, methods, config){
       if(!status.urls[dependency.url]) {
         status.urls[dependency.url] = true;
         status.loading++;
-        var method = dependency.type === 'script' ? _load_script : _load_style;
+        var method = dependency.type === 'script' ? _loadScript : _loadStyle;
 
         method(dependency.url, function() {
           if(dependency.cb) {

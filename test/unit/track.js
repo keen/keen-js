@@ -1,5 +1,3 @@
-//var expect = chai.expect;
-
 describe("Keen Tracking", function() {
 
   describe("#addEvent", function() {
@@ -8,13 +6,13 @@ describe("Keen Tracking", function() {
 
       beforeEach(function() {
         var self = this;
-        self.keen = new Keen({
+        self.project = new Keen({
           projectId: keenHelper.projectId,
           writeKey: keenHelper.writeKey,
           host: keenHelper.host,
           requestType: 'xhr'
         });
-        self.postUrl = self.keen.client.endpoint + "/projects/" + self.keen.client.projectId + "/events/" + keenHelper.collection;
+        self.postUrl = self.project.client.endpoint + "/projects/" + self.project.client.projectId + "/events/" + keenHelper.collection;
         self.server = sinon.fakeServer.create();
         self.respondWith = function(code, body){
           self.server.respondWith("POST", self.postUrl,
@@ -32,7 +30,7 @@ describe("Keen Tracking", function() {
 
           var callbacks = [sinon.spy(), sinon.spy()];
           this.respondWith(200, keenHelper.responses.success);
-          this.keen.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+          this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
           this.server.respond();
 
           expect(this.server.requests[0].requestBody)
@@ -47,7 +45,7 @@ describe("Keen Tracking", function() {
 
           var callbacks = [sinon.spy(), sinon.spy()];
           this.respondWith(500, keenHelper.responses.error);
-          this.keen.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+          this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
           this.server.respond();
 
           expect(this.server.requests[0].requestBody)
@@ -64,7 +62,7 @@ describe("Keen Tracking", function() {
     describe("via JSONP to a fake server", function(){
 
       beforeEach(function() {
-        this.keen = new Keen({
+        this.project = new Keen({
           projectId: keenHelper.projectId,
           writeKey: keenHelper.writeKey,
           host: keenHelper.host,
@@ -74,7 +72,7 @@ describe("Keen Tracking", function() {
 
       it("should add a script tag with a URL that has data and modified params", function(){
 
-        this.keen.addEvent(keenHelper.collection, keenHelper.properties);
+        this.project.addEvent(keenHelper.collection, keenHelper.properties);
         var tag = document.getElementById("keen-jsonp");
         expect(tag).to.exist;
         expect(tag.src).to.contain("data=");
@@ -88,7 +86,7 @@ describe("Keen Tracking", function() {
 
       /*
       beforeEach(function() {
-        this.keen = new Keen({
+        this.project = new Keen({
           projectId: keenHelper.projectId,
           writeKey: keenHelper.writeKey,
           host: keenHelper.host,
@@ -99,7 +97,7 @@ describe("Keen Tracking", function() {
       it("should add an image tag", function(){
 
         var callbacks = [function(){ console.log('here'); }, sinon.spy()];
-        this.keen.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+        this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
 
         var tag = document.getElementById("keen-beacon");
         //expect(tag).to.exist;

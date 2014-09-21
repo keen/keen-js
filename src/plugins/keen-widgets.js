@@ -7,7 +7,7 @@
 
   (function(lib){
     var Keen = lib || {},
-        Metric, Error;
+        Metric, Error, Spinner;
 
     Metric = {
       initialize: function(){
@@ -23,25 +23,24 @@
         if (!document.getElementById(css.id)) {
           document.body.appendChild(css);
         }
-        this.render();
       },
 
       render: function(){
-        var bgColor = (this.colors.length == 1) ? this.colors[0] : "#49c5b1",
+        var bgColor = (this.colors().length == 1) ? this.colors()[0] : "#49c5b1",
             prefix = "",
             suffix = "",
-            title = this.title || "Result",
-            value = this.data.table[1],
-            width = parseInt(this.width);
+            title = this.title() || "Result",
+            value = this.data()[1],
+            width = this.width();
 
         if (this.chartOptions['prefix']) {
-          prefix = '<span class="keen-metric-prefix">' + this.chartOptions['prefix'] + '</span>';
+          prefix = '<span class="keen-metric-prefix">' + this.chartOptions()['prefix'] + '</span>';
         }
         if (this.chartOptions['suffix']) {
-          suffix = '<span class="keen-metric-suffix">' + this.chartOptions['suffix'] + '</span>';
+          suffix = '<span class="keen-metric-suffix">' + this.chartOptions()['suffix'] + '</span>';
         }
 
-        this.el.innerHTML = '' +
+        this.el().innerHTML = '' +
           '<div class="keen-widget keen-metric" style="background-color: ' + bgColor + '; width:' + width + 'px;">' +
             '<span class="keen-metric-value">' + prefix + value + suffix + '</span>' +
             '<span class="keen-metric-title">' + title + '</span>' +
@@ -50,9 +49,7 @@
     };
 
     Error = {
-      initialize: function(){
-        //this.render();
-      },
+      initialize: function(){},
       render: function(){
         var err, msg;
 
@@ -76,6 +73,9 @@
 
         this.el().innerHTML = "";
         this.el().appendChild(errorPlaceholder);
+      },
+      destroy: function(){
+        this.el().innerHTML = "";
       }
     };
 
