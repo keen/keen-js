@@ -319,10 +319,17 @@ Keen.Dataviz.prototype.error = function(){
 };
 
 function _getAdapterActions(){
-  var map = _extend({}, Keen.Dataviz.defaults.dataTypeMap);
-  var library = this.library() || map[this.dataType()].library,
-      chartType = this.chartType() || this.defaultChartType() || map[this.dataType()].chartType;
-  return Keen.Dataviz.libraries[library][chartType];
+  var map = _extend({}, Keen.Dataviz.defaults.dataTypeMap),
+      dataType = this.dataType(),
+      library,
+      chartType;
+  if (dataType) {
+    library = this.library() || map[this.dataType()].library,
+    chartType = this.chartType() || this.defaultChartType() || map[this.dataType()].chartType;
+    return Keen.Dataviz.libraries[library][chartType];
+  } else {
+    return {};
+  }
 }
 
 

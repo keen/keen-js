@@ -5,8 +5,22 @@
   */
 
   Keen.prototype.draw = function(query, el, config) {
-    var visual = new Keen.Dataviz().prepare(el).attributes(config),
+    var visual = new Keen.Dataviz(),
         request = new Keen.Request(this, [query]);
+
+    if (config || config.chartType) {
+      visual.chartType(config.chartType);
+      delete config.chartType;
+    }
+    if (config || config.library) {
+      visual.library(config.library);
+      delete config.library;
+    }
+    if (config || config.chartOptions) {
+      visual.chartOptions(config.chartOptions);
+      delete config.chartOptions;
+    }
+    visual.attributes(config).prepare(el);
 
     request.on("complete", function(){
       visual.parseRequest(this).render();
