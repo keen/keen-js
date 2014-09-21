@@ -119,6 +119,18 @@
           break;
 
         case "barchart":
+          output.hAxis = {
+            viewWindow: { min: 0 }
+          };
+          output.vAxis = {
+            baselineColor: 'transparent',
+            gridlines: { color: 'transparent' }
+          };
+          if (this.dataType() === "chronological") {
+            output.legend = {
+              position: "none"
+            };
+          }
           break;
 
         case "columnchart":
@@ -132,6 +144,9 @@
           if (this.dataType() === "chronological") {
             output.legend = {
               position: "none"
+            };
+            output.chartArea = {
+              width: "85%"
             };
           }
           break;
@@ -148,6 +163,9 @@
           if (this.dataType() === "chronological") {
             output.legend = {
               position: "none"
+            };
+            output.chartArea = {
+              width: "85%"
             };
           }
           break;

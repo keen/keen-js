@@ -43,15 +43,12 @@ var metric = new Keen.Query("count", {
         <div id="1-1">A</div><br>
 <pre class="pre-scrollable">
 var m1 = document.getElementById("1-1");
-var drawn_metric = client.draw(metric, m1, {
-  height: 138
-});
-
-// Update
-drawn_metric
-  .colors(["#f35757"])
-  .title("Total Pageviews")
-  .update();
+var cfg = {
+  colors: ["#f35757"],
+  height: 138,
+  title: "Total Pageviews"
+};
+var metric = client.draw(metric, m1, cfg);
 </pre>
       </div>
       <div class="col-sm-4">
@@ -275,7 +272,7 @@ var multiline = new Keen.Query("count", {
       drawn_metric
         .colors(["#f35757"])
         .title("Total Pageviews")
-        .update();
+        //.update();
 
       var req_metric = new Keen.Dataviz()
         .height(138)

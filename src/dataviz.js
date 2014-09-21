@@ -323,13 +323,17 @@ function _getAdapterActions(){
       dataType = this.dataType(),
       library,
       chartType;
-  if (dataType) {
-    library = this.library() || map[this.dataType()].library,
-    chartType = this.chartType() || this.defaultChartType() || map[this.dataType()].chartType;
-    return Keen.Dataviz.libraries[library][chartType];
+
+  console.log(dataType);
+
+  library = this.library() || map[dataType].library,
+  chartType = this.chartType() || this.defaultChartType() || map[dataType].chartType;
+  return Keen.Dataviz.libraries[library][chartType];
+  /*if (dataType) {
+
   } else {
     return {};
-  }
+  }*/
 }
 
 
