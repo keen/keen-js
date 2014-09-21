@@ -336,7 +336,6 @@ describe("Keen.Dataviz", function(){
     });
 
     describe("#render", function(){
-
       it("should set el by passing a DOM element", function(){
         this.dataviz.render(document.getElementById("chart-test"));
         expect(this.dataviz.el()).to.be.an("object");
@@ -345,28 +344,29 @@ describe("Keen.Dataviz", function(){
             .and.to.eql("DIV");
         }
       });
-
       it("should call the #initialize method of a given adapter", function(){
         this.dataviz.initialize();
         expect(Keen.Dataviz.libraries.demo.chart.initialize.called).to.be.ok;
       });
-
       it("should call the #render method of a given adapter", function(){
         this.dataviz.render(document.getElementById("chart-test"));
         expect(Keen.Dataviz.libraries.demo.chart.render.called).to.be.ok;
       });
-
-      it("should NOT call the #render method if el is not set", function(){
+      it("should NOT call the #render method if el is NOT set", function(){
         this.dataviz.render();
         expect(Keen.Dataviz.libraries.demo.chart.render.called).to.not.be.ok;
       });
-
     });
 
     describe("#update", function(){
-      it("should call the #update method of a given adapter", function(){
+      it("should call the #update method of a given adapter if available", function(){
         this.dataviz.update();
         expect(Keen.Dataviz.libraries.demo.chart.update.called).to.be.ok;
+      });
+      it("should call the #render method of a given adapter if NOT available", function(){
+        Keen.Dataviz.libraries.demo.chart.update = void 0;
+        this.dataviz.el(document.getElementById("chart-test")).update();
+        expect(Keen.Dataviz.libraries.demo.chart.render.called).to.be.ok;
       });
     });
 
