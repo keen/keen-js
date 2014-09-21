@@ -264,7 +264,7 @@ var multiline = new Keen.Query("count", {
        *  ------------------------------
        */
 
-      var drawn_metric = client.draw(metric, document.getElementById("1-1"), {
+      /*var drawn_metric = client.draw(metric, document.getElementById("1-1"), {
         //colors: [Keen.Dataviz.defaults.colors[1]],
         height: 138
       });
@@ -272,7 +272,7 @@ var multiline = new Keen.Query("count", {
       drawn_metric
         .colors(["#f35757"])
         .title("Total Pageviews")
-        //.update();
+        //.update();*/
 
       var req_metric = new Keen.Dataviz()
         .height(138)
@@ -285,6 +285,7 @@ var multiline = new Keen.Query("count", {
         .prepare(document.getElementById("1-3"));
 
       window.reqs['metric'].on("complete", function(res){
+        this.draw(document.getElementById("1-1"), { height: 138 });
         req_metric.parseRequest(this).render();
         raw_metric.parseRawData(res).render();
       });
