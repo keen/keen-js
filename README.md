@@ -105,25 +105,19 @@ Read more about advanced queries in our [query guide](https://github.com/keenlab
 
 ## Visualization
 
-Building charts from queries is easier than ever.
+Visualize query results with just a few lines of code.
 
-Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
+Client instances have a **.draw()** method that accepts the following arguments:
+
+1. Keen.Query instance
+2. DOM element
+3. Configuration hash (optional)
+
+This method will execute a query request behind the scenes and visualize the response, like so:
 
 ```javascript
-client.draw(query, selector, config);
+client.draw(query, el, config);
 ```
-
-Requests also have a draw method. The query is already known in this case, so you can omit the query from the method signature:
-
-```javascript
-var request = client.run(query, function(){
-  this.draw(document.getElementById("chart-wrapper"), {
-    title: "Custom chart title"
-  });
-});
-```
-
-A future release will add the ability to plot multiple query responses on a single chart, but for the time being only the first query response will be visualized.
 
 ### Example usage
 
@@ -134,15 +128,15 @@ var count = new Keen.Query("count", {
   interval: "daily",
   timeframe: "this_21_days"
 });
-var request = client.run(count, function(){
-  this.draw(document.getElementById("chart-wrapper"), {
-    chartType: "columnchart",
-    title: "Custom chart title"
-  });
+var chart = client.draw(count, document.getElementById("chart-wrapper"), {
+  chartType: "columnchart",
+  title: "Custom chart title",
+  height: 250,
+  width: 450
 });
 ```
 
-Read more about building charts from query responses in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization).
+Read more in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization).
 
 ## Resources
 
