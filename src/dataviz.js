@@ -22,7 +22,7 @@ Keen.Spinner.defaults = {
   rotate: 0,                    // The rotation offset
   direction: 1,                 // 1: clockwise, -1: counterclockwise
   color: '#4d4d4d',             // #rgb or #rrggbb or array of colors
-  speed: 1,                     // Rounds per second
+  speed: 1.67,                  // Rounds per second
   trail: 60,                    // Afterglow percentage
   shadow: false,                // Whether to render a shadow
   hwaccel: false,               // Whether to use hardware acceleration
@@ -34,11 +34,6 @@ Keen.Spinner.defaults = {
 
 Keen.Dataviz = function(){
 
-  // this.dataset = {
-  //   parse: function(){ console.log("demo"); },
-  //   table: [["date", "value"],[new Date().toISOString(), 54343]]
-  // };
-
   this.dataset = new Keen.Dataset();
 
   this.view = {
@@ -48,22 +43,15 @@ Keen.Dataviz = function(){
     _artifacts: { /* state bin */ },
 
     adapter: {
-      library: Keen.Dataviz.defaults.adapter.library || undefined,
+      library: undefined,   // Keen.Dataviz.defaults.adapter.library ||
       chartType: undefined,
       defaultChartType: undefined,
       dataType: undefined
     },
-
-    //attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
-    attributes: _extend({}, Keen.Dataviz.defaults.attributes),
-
-    //defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
-    defaults: _extend({}, Keen.Dataviz.defaults.attributes),
-
+    attributes: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
+    defaults: JSON.parse(JSON.stringify(Keen.Dataviz.defaults.attributes)),
     el: undefined,
-
     loader: { library: "keen-io", chartType: "spinner" }
-
   };
 
   Keen.Dataviz.visuals.push(this);
@@ -79,6 +67,14 @@ _extend(Keen.Dataviz, {
     adapter: {
       library: "google",
       chartOptions: {}
+    },
+    dataTypeMap: {
+      "singular":          { library: "keen-io", chartType: "metric"      },
+      "categorical":       { library: "google",  chartType: "piechart"    },
+      "cat-interval":      { library: "google",  chartType: "columnchart" },
+      "cat-ordinal":       { library: "google",  chartType: "barchart"    },
+      "chronological":     { library: "google",  chartType: "areachart"   },
+      "cat-chronological": { library: "google",  chartType: "linechart"   }
     }
   },
   libraries: {},
@@ -109,6 +105,10 @@ Keen.Dataviz.prototype.data = function(data){
   } else {
     this.parseRawData(data);
   }
+  this
+    .call(_runColorMapping)
+    .call(_runLabelMapping)
+    .call(_runLabelReplacement);
   return this;
 };
 
@@ -120,7 +120,7 @@ Keen.Dataviz.prototype.parseRawData = function(raw){
 Keen.Dataviz.prototype.parseRequest = function(req){
   this.dataset = _parseRequest.call(this, req);
   // Update the default title every time
-  this.view.defaults.title = _getDefaultTitle.call(this);
+  this.view.defaults.title = _getDefaultTitle.call(this, req);
   // Update the active title if not set
   if (!this.title()) this.title(this.view.defaults.title);
   return this;
@@ -238,25 +238,12 @@ Keen.Dataviz.prototype.chartType = function(str){
 Keen.Dataviz.prototype.defaultChartType = function(str){
   if (!arguments.length) return this.view.adapter.defaultChartType;
   this.view.adapter.defaultChartType = (str ? String(str) : null);
-  // Set chartType if a value is not set
-  if (!this.chartType()) {
-  //  this.chartType(String(_type))
-  }
   return this;
 };
 
 Keen.Dataviz.prototype.dataType = function(str){
   if (!arguments.length) return this.view.adapter.dataType;
   this.view.adapter.dataType = (str ? String(str) : null);
-  /*
-  get adapter.capabilities
-  get adapter default for dataType
-  set adapter.defaultChartType = deafult type
-  */
-  var defaultTypeSet = Keen.Dataviz.libraries[this.library()]._defaults[_type];
-  if (defaultTypeSet) {
-    this.defaultChartType(defaultTypeSet[0]);
-  }
   return this;
 };
 
@@ -332,8 +319,10 @@ Keen.Dataviz.prototype.error = function(){
 };
 
 function _getAdapterActions(){
-  var chartType = (this.chartType() || this.defaultChartType());
-  return Keen.Dataviz.libraries[this.library()][chartType];
+  var map = _extend({}, Keen.Dataviz.defaults.dataTypeMap);
+  var library = this.library() || map[this.dataType()].library,
+      chartType = this.chartType() || this.defaultChartType() || map[this.dataType()].chartType;
+  return Keen.Dataviz.libraries[library][chartType];
 }
 
 
@@ -530,50 +519,53 @@ function _runColorMapping(){
       colorSet = this.colors(),
       colorMap = this.colorMapping();
 
-  // Map to selected index
-  if (schema.select && data[0].length == 2) {
-    _each(data, function(row, i){
-      if (i > 0 && colorMap[row[0]]) {
-        colorSet.splice(i-1, 0, map[row[0]]);
-      }
-    });
+  if (colorMap) {
+    // Map to selected index
+    if (schema.select && data[0].length == 2) {
+      _each(data, function(row, i){
+        if (i > 0 && colorMap[String(row[0])]) {
+          colorSet.splice(i-1, 0, colorMap[row[0]]);
+        }
+      });
+    }
+    // Map to unpacked labels
+    if (schema.unpack) {
+      _each(data[0], function(cell, i){
+        if (i > 0 && colorMap[String(cell)]) {
+          colorSet.splice(i-1, 0, colorMap[cell]);
+        }
+      });
+    }
+    self.colors(colorSet);
   }
-  // Map to unpacked labels
-  if (schema.unpack) {
-    _each(data[0], function(cell, i){
-      if (i > 0 && map[cell]) {
-        colorSet.splice(i-1, 0, map[cell]);
-      }
-    });
-  }
-  self.colors(colorSet);
 }
 
 function _runLabelMapping(){
+  var self = this;
   var labelMap = this.labelMapping() || null,
       schema = this.dataset.schema || {};
 
   if (labelMap) {
     if (schema.unpack) {
       if (schema.unpack['index']) {
-        schema.unpack['index'].replace = schema.unpack['index'].replace || labelMap;
+        self.dataset.schema.unpack['index'].replace = labelMap;
       }
       if (schema.unpack['label']) {
-        schema.unpack['label'].replace = schema.unpack['label'].replace || labelMap;
+        self.dataset.schema.unpack['label'].replace = labelMap;
       }
     }
     if (schema.select) {
       _each(schema.select, function(v, i){
-        schema.select[i].replace = labelMap;
+        self.dataset.schema.select[i].replace = labelMap;
       });
     }
   }
+  self.dataset.configure(self.dataset.raw, self.dataset.schema);
 }
 
 function _runLabelReplacement(){
   var labelSet = this.labels() || null,
       schema = this.dataset.schema || {};
-
   if (labelSet) {
     if (schema.unpack && dataset.table[0].length == 2) {
       _each(dataset.table, function(row,i){
@@ -592,9 +584,9 @@ function _runLabelReplacement(){
   }
 }
 
-function _getDefaultTitle(query){
-  var analysis = query.analysis.replace("_", " "),
-      collection = query.get('event_collection'),
+function _getDefaultTitle(req){
+  var analysis = req.queries[0].analysis.replace("_", " "),
+      collection = req.queries[0].get('event_collection'),
       output;
   output = analysis.replace( /\b./g, function(a){
     return a.toUpperCase();
@@ -613,7 +605,7 @@ function _parseRequest(req){
   this.dataType(_getQueryDataType.call(this, req.queries[0]));
   if (this.dataType() !== "extraction") {
     // Run data thru raw parser
-    dataset = _parseRawData.call(this, req.data[0]);
+    dataset = _parseRawData.call(this, (req.data instanceof Array ? req.data[0] : req.data));
   } else {
     // Requires manual parser
     dataset = _parseExtraction.call(this, req);
@@ -817,8 +809,8 @@ function _parseRawData(response){
 
     // Funnel
     // -------------------------------
-    dataType = "cat-ordinal";
     if (typeof response.result[0] == "number"){
+      dataType = "cat-ordinal";
       schema = {
         collection: "",
         unpack: {
@@ -837,7 +829,22 @@ function _parseRawData(response){
   }
 
   // Key-value label mapping
-  _runLabelMapping.call(this);
+  // _runLabelMapping.call(this);
+  if (labelMap) {
+    if (schema.unpack) {
+      if (schema.unpack['index']) {
+        schema.unpack['index'].replace = labelMap;
+      }
+      if (schema.unpack['label']) {
+        schema.unpack['label'].replace = labelMap;
+      }
+    }
+    if (schema.select) {
+      _each(schema.select, function(v, i){
+        schema.select[i].replace = labelMap;
+      });
+    }
+  }
 
   dataset = new Keen.Dataset(response, schema);
 

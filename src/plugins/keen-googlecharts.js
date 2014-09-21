@@ -49,9 +49,8 @@
         update: function(){
           var options = _getDefaultAttributes.call(this, type);
           Keen.utils.extend(options, this.chartOptions(), this.attributes());
-          if (this.view._artifacts['datatable']) {
-            this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
-          }
+          this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
+          // if (this.view._artifacts['datatable']) {}
           if (this.view._artifacts['googlechart']) {
             this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
           }
@@ -98,7 +97,7 @@
 
     function _getDefaultAttributes(type){
       var output = {};
-      switch (type) {
+      switch (type.toLowerCase()) {
 
         case "areachart":
           output.lineWidth = 2;
@@ -112,6 +111,9 @@
           if (this.dataType() === "chronological") {
             output.legend = {
               position: "none"
+            };
+            output.chartArea = {
+              width: "85%"
             };
           }
           break;

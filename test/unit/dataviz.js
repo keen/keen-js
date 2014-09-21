@@ -191,8 +191,7 @@ describe("Keen.Dataviz", function(){
     it("should get the current adapter properties", function(){
       expect(this.dataviz.adapter()).to.be.an("object")
         .and.to.contain.keys("library", "chartType", "defaultChartType", "dataType");
-      expect(this.dataviz.adapter().library).to.be.a("string")
-        .and.to.eql("google");
+      expect(this.dataviz.adapter().library).to.be.an("undefined");
       expect(this.dataviz.adapter().chartType).to.be.an("undefined");
     });
     it("should set a hash of properties", function(){
@@ -209,9 +208,8 @@ describe("Keen.Dataviz", function(){
   });
 
   describe("#library", function(){
-    it("should return \"google\" by default", function(){
-      expect(this.dataviz.library()).to.be.a("string")
-        .and.to.eql("google");
+    it("should return undefined by default", function(){
+      expect(this.dataviz.library()).to.be.an("undefined");
     });
     it("should set and get a new library", function(){
       var lib = "nvd3";

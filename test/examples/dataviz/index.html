@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keen IO Comprehensive Test</title>
+  <link rel="stylesheet" href="keen-bootstrap.min.css">
+  <link rel="stylesheet" href="keen-dashboards.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Keen.Dataviz Visual Tests</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <h2>Default chart types</h2>
+      </div>
+      <div class="col-sm-4">
+        <h2>-</h2>
+      </div>
+      <div class="col-sm-4">
+        <h2>-</h2>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="1-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="1-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="1-3">C</div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="2-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="2-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="2-3">C</div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="3-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="3-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="3-3">C</div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="4-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="4-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="4-3">C</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../../dist/keen.js"></script>
+  <script>
+
+    window.client = new Keen({
+      projectId: "52f2ae5905cd661a7800000a",
+      readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+      requestType: "jsonp"
+    });
+
+    /**
+     *
+     * Metric
+     * Group by
+     * interval
+     * Group by-interval
+     * Extractions = table outputA
+     * var chart.js = ['Line', 'Bar', 'Radar', 'PolarArea', 'Pie', 'Doughnut'];
+     * var google = ['AreaChart', 'BarChart', 'ColumnChart', 'LineChart', 'PieChart', 'Table'];
+     * c3 = ['spline', 'pie', 'donut', 'area-spline', 'bar', 'scatter'];
+
+     */
+
+
+    Keen.ready(function() {
+
+      var metric = new Keen.Query("count", {
+        event_collection: "pageview"
+      });
+
+      var groupBy = new Keen.Query("count", {
+        event_collection: "pageview",
+        group_by: "page"
+      });
+
+      var interval = new Keen.Query("count", {
+        event_collection: "pageview",
+        timeframe: "this_12_months",
+        interval: "monthly"
+      });
+
+      var multiline = new Keen.Query("count", {
+        event_collection: "pageview",
+        group_by: "page",
+        timeframe: "this_12_months",
+        interval: "monthly"
+      });
+
+      // var generateRandomData = function(res) {
+      //   var newData = res;
+      //   for (var i = 0; i < res.result.length; i++) {
+      //     for (var j = 0; j < res.result[i].value.length; j++) {
+      //       newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+      //     }
+      //   }
+      //   return newData;
+      // }
+
+      var def_metric = new Keen.Dataviz()
+        .height(138)
+        .colors([Keen.Dataviz.defaults.attributes.colors[3]])
+        .prepare(document.getElementById("1-1"));
+
+      var def_pie = new Keen.Dataviz()
+        .height(300)
+        .labelMapping({
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        })
+        .colorMapping({ "Direct": "#808080" })
+        .prepare(document.getElementById("2-1"));
+
+      var def_area = new Keen.Dataviz()
+        .height(300)
+        .prepare(document.getElementById("3-1"));
+
+      var def_lines = new Keen.Dataviz()
+        .height(300)
+        .prepare(document.getElementById("4-1"));
+
+      window.reqs = {
+        metric: client.run(metric),
+        groupBy: client.run(groupBy),
+        interval: client.run(interval),
+        multiline: client.run(multiline)
+      };
+
+      window.reqs['metric'].on("complete", function(){
+        def_metric.data(this).render();
+      });
+
+      window.reqs['groupBy'].on("complete", function(){
+        def_pie.data(this).render();
+      });
+
+      window.reqs['interval'].on("complete", function(){
+        def_area.data(this).render();
+      });
+
+      window.reqs['multiline'].on("complete", function(){
+        def_lines.data(this).render();
+      });
+
+    });
+  </script>
+
+</body>
+</html>

@@ -9,6 +9,10 @@
     var Keen = lib || {},
         Metric, Error, Spinner;
 
+    var dataTypes = {
+      'singular': ['metric']
+    };
+
     Metric = {
       initialize: function(){
         var css = document.createElement("style"),
@@ -102,6 +106,8 @@
       'metric': Metric,
       'error': Error,
       'spinner': Spinner
+    }, {
+      capabilities: dataTypes
     });
 
   })(Keen);
