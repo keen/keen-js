@@ -50,9 +50,8 @@ Keen.prototype.draw = function(query, el, cfg) {
 // ------------------------------
 
 Keen.Request.prototype.draw = function(el, cfg) {
-  Keen.log("DEPRECATED: \"<Keen.Request>.draw()\" will be removed in a future release.");
-  this.instance.draw(this.queries[0], el, cfg);
-  return this;
+  //Keen.log("DEPRECATED: \"<Keen.Request>.draw()\" will be removed in a future release.");
+  return new Keen.Visualization(this, el, cfg);
 };
 
 
