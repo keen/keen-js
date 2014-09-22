@@ -1,4 +1,4 @@
-describe("Keen Tracking", function() {
+describe("Keen tracking methods", function() {
 
   describe("#addEvent", function() {
 
