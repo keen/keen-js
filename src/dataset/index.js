@@ -33,7 +33,7 @@ Keen.Dataset.defaults = {
 
 Keen.Dataset.prototype.input = function(obj){
   if (!arguments.length) return this.data.input;
-  this.data.input = (obj ? obj : null);
+  this.data.input = (obj ? JSON.parse(JSON.stringify(obj)) : null);
   return this;
 };
 

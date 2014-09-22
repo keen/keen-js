@@ -411,9 +411,71 @@ describe("Keen.Dataset", function(){
       });
     });
 
-
-
-
   });
+
+  describe("#input", function() {
+    it("should set and get a copy of raw data", function(){
+      var data = { value: 0 };
+      this.ds.input(data);
+      expect(this.ds.input()).to.be.an("object")
+        .and.to.eql(data);
+    });
+    it("should unset this copy by passing null", function(){
+      this.ds.input(null);
+      expect(this.ds.input()).to.be.null;
+    });
+  });
+
+  describe("#output", function() {
+    it("should set and get a copy of output data", function(){
+      var data = [["Header"][125]];
+      this.ds.output(data);
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.eql(data);
+    });
+    it("should unset this copy by passing null", function(){
+      this.ds.output(null);
+      expect(this.ds.output()).to.be.null;
+    });
+  });
+
+  describe("#method", function() {
+    it("should set and get the parser method", function(){
+      this.ds.method("select");
+      expect(this.ds.method()).to.be.a("string")
+        .and.to.eql("select");
+    });
+    it("should unset this copy by passing null", function(){
+      this.ds.method(null);
+      expect(this.ds.method()).to.be.null;
+    });
+  });
+
+  describe("#schema", function() {
+    it("should set and get the parser schema", function(){
+      var schema = { records: "", select: true };
+      this.ds.schema(schema);
+      expect(this.ds.schema()).to.be.an("object")
+        .and.to.deep.equal(schema);
+    });
+    it("should unset the schema by passing null", function(){
+      this.ds.schema(null);
+      expect(this.ds.schema()).to.be.null;
+    });
+  });
+  
+  // describe("#selectRow", function() {});
+  // describe("#appendRow", function() {});
+  // describe("#insertRow", function() {});
+  // describe("#modifyRow", function() {});
+  // describe("#removeRow", function() {});
+  // describe("#filterRows", function() {});
+  //
+  // describe("#selectColumn", function() {});
+  // describe("#appendColumn", function() {});
+  // describe("#insertColumn", function() {});
+  // describe("#modifyColumn", function() {});
+  // describe("#removeColumn", function() {});
+  // describe("#filterColumns", function() {});
 
 });
