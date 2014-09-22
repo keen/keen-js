@@ -1,7 +1,7 @@
 Keen.Dataset.prototype.sort = function(opts){
   var self = this, options;
 
-  if (self.action == 'unpack') {
+  if (this.method() === 'unpack') {
 
     options = extend({
       index: false,
@@ -11,8 +11,8 @@ Keen.Dataset.prototype.sort = function(opts){
     // Sort records by index
     if (options.index) {
       !function(){
-        var header = self.table[0],
-            body = self.table.splice(1);
+        var header = self.data.output[0],
+            body = self.data.output.splice(1);
 
         body.sort(function(a, b) {
           if (options.index == 'asc') {
@@ -31,18 +31,18 @@ Keen.Dataset.prototype.sort = function(opts){
           return false;
         });
 
-        self.table = [header].concat(body);
+        self.output([header].concat(body));
       }();
     }
 
     // Sort columns (labels) by total values
-    if (options.value && self.schema.unpack.label && self.table[0].length > 2) {
+    if (options.value && self.meta.schema.unpack.label && self.data.output[0].length > 2) {
       !function(){
-        var header = self.table[0],
-            body = self.table.splice(1),
+        var header = self.data.output[0],
+            body = self.data.output.splice(1),
             series = [],
             table = [],
-            index_cell = (self.schema.unpack.index) ? 0 : -1;
+            index_cell = (self.meta.schema.unpack.index) ? 0 : -1;
 
         each(header, function(cell, i){
           if (i > index_cell) {
@@ -61,9 +61,9 @@ Keen.Dataset.prototype.sort = function(opts){
           });
         });
 
-        if (self.schema.unpack.label.type == 'number' || is(body[0][1], 'number')) {
+        if (self.meta.schema.unpack.label.type == 'number' || is(body[0][1], 'number')) {
           series.sort(function(a, b) {
-            //console.log(options, self.schema, options.value, a.total, b.total);
+            //console.log(options, self.meta.schema, options.value, a.total, b.total);
             if (options.value == 'asc') {
               if (a.total > b.total) {
                 return 1;
@@ -88,13 +88,13 @@ Keen.Dataset.prototype.sort = function(opts){
           });
         });
 
-        self.table = [header].concat(body);
+        self.output([header].concat(body));
 
       }();
     }
   }
 
-  if (self.action == 'select') {
+  if (this.method() === 'select') {
 
     options = extend({
       column: 0,
@@ -103,8 +103,8 @@ Keen.Dataset.prototype.sort = function(opts){
 
     if (options.order != false) {
       !function(){
-        var header = self.table[0],
-            body = self.table.splice(1);
+        var header = self.data.output[0],
+            body = self.data.output.splice(1);
 
         body.sort(function(a, b){
           var _a = (a[options.column] === null || a[options.column] === void 0) ? "" : a[options.column],
@@ -124,7 +124,7 @@ Keen.Dataset.prototype.sort = function(opts){
           }
           return 0;
         });
-        self.table = [header].concat(body);
+        self.output([header].concat(body));
       }();
     }
   }

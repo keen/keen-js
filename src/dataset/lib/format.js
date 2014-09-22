@@ -18,7 +18,7 @@ Keen.Dataset.prototype.format = function(opts){
       }
     };
 
-    if (self.action == 'select') {
+    if (this.method() === 'select') {
       options = [];
       each(opts, function(option){
         var copy = {}, output;
@@ -29,20 +29,20 @@ Keen.Dataset.prototype.format = function(opts){
         options.push(output);
       });
 
-      each(self.table, function(row, i){
+      each(self.output(), function(row, i){
 
         // Replace labels
         if (i == 0) {
           each(row, function(cell, j){
             if (options[j] && options[j].label) {
-              self.table[i][j] = options[j].label;
+              self.data.output[i][j] = options[j].label;
             }
           });
 
         } else {
 
           each(row, function(cell, j){
-            self.table[i][j] = _applyFormat(self.table[i][j], options[j]);
+            self.data.output[i][j] = _applyFormat(self.data.output[i][j], options[j]);
           });
         }
 
@@ -53,8 +53,7 @@ Keen.Dataset.prototype.format = function(opts){
 
   //////////////////////////////////
 
-
-  if (self.action == 'unpack') {
+  if (this.method() === 'unpack') {
     options = {};
     each(opts, function(option, key){
       var copy = {}, output;
@@ -65,30 +64,30 @@ Keen.Dataset.prototype.format = function(opts){
     });
 
     if (options.index) {
-      each(self.table, function(row, i){
+      each(self.output(), function(row, i){
         if (i == 0) {
           if (options.index.label) {
-            self.table[i][0] = options.index.label;
+            self.data.output[i][0] = options.index.label;
           }
         } else {
-          self.table[i][0] = _applyFormat(self.table[i][0], options.index);
+          self.data.output[i][0] = _applyFormat(self.data.output[i][0], options.index);
         }
       });
     }
 
     if (options.label) {
       if (options.index) {
-        each(self.table, function(row, i){
+        each(self.output(), function(row, i){
           each(row, function(cell, j){
             if (i == 0 && j > 0) {
-              self.table[i][j] = _applyFormat(self.table[i][j], options.label);
+              self.data.output[i][j] = _applyFormat(self.data.output[i][j], options.label);
             }
           });
         });
       } else {
-        each(self.table, function(row, i){
+        each(self.output(), function(row, i){
           if (i > 0) {
-            self.table[i][0] = _applyFormat(self.table[i][0], options.label);
+            self.data.output[i][0] = _applyFormat(self.data.output[i][0], options.label);
           }
         });
         //console.log('label, NO index');
@@ -98,19 +97,19 @@ Keen.Dataset.prototype.format = function(opts){
     if (options.value) {
       if (options.index) {
         // start > 0
-        each(self.table, function(row, i){
+        each(self.output(), function(row, i){
           each(row, function(cell, j){
             if (i > 0 && j > 0) {
-              self.table[i][j] = _applyFormat(self.table[i][j], options.value);
+              self.data.output[i][j] = _applyFormat(self.data.output[i][j], options.value);
             }
           });
         });
       } else {
         // start @ 0
-        each(self.table, function(row, i){
+        each(self.output(), function(row, i){
           each(row, function(cell, j){
             if (i > 0) {
-              self.table[i][j] = _applyFormat(self.table[i][j], options.value);
+              self.data.output[i][j] = _applyFormat(self.data.output[i][j], options.value);
             }
           });
         });
@@ -119,7 +118,7 @@ Keen.Dataset.prototype.format = function(opts){
 
   }
 
-  //console.log(self.table);
+  //console.log(self.data.output);
   return self;
 };
 

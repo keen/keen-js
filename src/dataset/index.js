@@ -12,54 +12,83 @@
 // });
 
 
-Keen.Dataset = function(raw, schema) {
-  //this.schema = {};
-  this.configure.apply(this, arguments);
+Keen.Dataset = function() {
+  this.data = {
+    input: {},
+    output: [[]]
+  };
+  this.meta = {
+    schema: {},
+    method: undefined
+  };
+  // temp fwd
+  if (arguments.length > 0) {
+    this.parse.apply(this, arguments);
+  }
 };
 
-// Keen.Dataset.prototype.parse = function(raw, schema){};
+Keen.Dataset.defaults = {
+  delimeter: " -> "
+};
 
-Keen.Dataset.prototype.configure = function(raw, schema){
-  var self = this, options;
+Keen.Dataset.prototype.parse = function(raw, schema){
+  var options;
+  if (raw) this.input(raw);
+  if (schema) this.schema(schema);
 
-  self.raw = self.raw || raw,
-  self.schema = self.schema || schema || {},
-  self.table = [[]];
+  // Reset output value
+  this.output([[]]);
 
-  if (self.schema.collection && is(self.schema.collection, 'string') == false) {
-    throw new Error('schema.collection must be a string');
-  }
-
-  if (self.schema.unpack && self.schema.select) {
-    throw new Error('schema.unpack and schema.select cannot be used together');
-  }
-
-  if (self.schema.unpack) {
-    this.action = 'unpack';
+  if (this.meta.schema.select) {
+    this.method("select");
     options = extend({
-      collection: "",
+      records: "",
+      select: true
+    }, this.schema());
+    _select.call(this, _optHash(options));
+  }
+  else if (this.meta.schema.unpack) {
+    this.method("unpack");
+    options = extend({
+      records: "",
       unpack: {
         index: false,
         value: false,
         label: false
       }
-    }, self.schema);
-    options = _optHash(options);
-    _unpack.call(this, options);
+    }, this.schema());
+    _unpack.call(this, _optHash(options));
   }
-
-  if (self.schema.select) {
-    this.action = 'select';
-    options = extend({
-      collection: "",
-      select: true
-    }, self.schema);
-    options = _optHash(options);
-    _select.call(this, options);
-  }
-
   return this;
 };
+
+Keen.Dataset.prototype.input = function(obj){
+  if (!arguments.length) return this.data.input;
+  this.data.input = (obj ? obj : null);
+  return this;
+};
+
+Keen.Dataset.prototype.output = function(arr){
+  if (!arguments.length) return this.data.output;
+  this.data.output = (arr instanceof Array ? arr : null);
+  return this;
+}
+
+Keen.Dataset.prototype.method = function(str){
+  if (!arguments.length) return this.meta.method;
+  this.meta.method = (str ? String(str) : null);
+  return this;
+};
+
+Keen.Dataset.prototype.schema = function(obj){
+  if (!arguments.length) return this.meta.schema;
+  this.meta.schema = (obj ? obj : null);
+  return this;
+};
+
+// Keen.Dataset.prototype.configure = function(raw, schema){
+//   return this;
+// };
 
 
 
@@ -75,10 +104,10 @@ function _select(options){
 
   var root = (function(){
     var root, parsed;
-    if (options.collection == "") {
-      root = self.raw;
+    if (options.records == "") {
+      root = self.input();
     } else {
-      parsed = parse.apply(self, [self.raw].concat(options.collection.split(" -> ")));
+      parsed = parse.apply(self, [self.input()].concat(options.records.split(Keen.Dataset.defaults.delimeter)));
       root = parsed[0];
     }
     if (Object.prototype.toString.call(root) !== '[object Array]') {
@@ -88,7 +117,7 @@ function _select(options){
   })();
 
   each(options.select, function(property, i){
-    target_set.push(property.path.split(" -> "));
+    target_set.push(property.path.split(Keen.Dataset.defaults.delimeter));
   });
 
   // Retrieve keys found in asymmetrical collections
@@ -108,18 +137,17 @@ function _select(options){
   // Parse each record
   each(root, function(record, interval){
     var flat = flatten(record);
-    self.table.push([]);
+    self.data.output.push([]);
     each(target_set, function(target, i){
       var flat_target = target.join(".");
       if (interval == 0) {
-        self.table[0].push(flat_target);
+        self.data.output[0].push(flat_target);
       }
       if (flat[flat_target] !== void 0 || typeof flat[flat_target] == 'boolean') {
-        self.table[interval+1].push(flat[flat_target]);
+        self.data.output[interval+1].push(flat[flat_target]);
       } else {
-        self.table[interval+1].push(null);
+        self.data.output[interval+1].push(null);
       }
-
     });
   });
 
@@ -134,12 +162,12 @@ function _select(options){
 // --------------------------------------
 
 function _unpack(options){
-  // console.log('Unpacking', options);
+  //console.log('Unpacking', options);
   var self = this, discovered_labels = [];
 
-  var value_set = (options.unpack.value) ? options.unpack.value.path.split(" -> ") : false,
-      label_set = (options.unpack.label) ? options.unpack.label.path.split(" -> ") : false,
-      index_set = (options.unpack.index) ? options.unpack.index.path.split(" -> ") : false;
+  var value_set = (options.unpack.value) ? options.unpack.value.path.split(Keen.Dataset.defaults.delimeter) : false,
+      label_set = (options.unpack.label) ? options.unpack.label.path.split(Keen.Dataset.defaults.delimeter) : false,
+      index_set = (options.unpack.index) ? options.unpack.index.path.split(Keen.Dataset.defaults.delimeter) : false;
   //console.log(index_set, label_set, value_set);
 
   var value_desc = (value_set[value_set.length-1] !== "") ? value_set[value_set.length-1] : "Value",
@@ -152,10 +180,10 @@ function _unpack(options){
   // Prepare root for parsing
   var root = (function(){
     var root;
-    if (options.collection == "") {
-      root = [self.raw];
+    if (options.records == "") {
+      root = [self.input()];
     } else {
-      root = parse.apply(self, [self.raw].concat(options.collection.split(" -> ")));
+      root = parse.apply(self, [self.input()].concat(options.records.split(Keen.Dataset.defaults.delimeter)));
     }
     return root[0];
   })();
@@ -184,10 +212,10 @@ function _unpack(options){
     // Inject row for each index
     if (plucked_index) {
       each(plucked_index, function(){
-        self.table.push([]);
+        self.data.output.push([]);
       });
     } else {
-      self.table.push([]);
+      self.data.output.push([]);
     }
 
     // Build index column
@@ -197,69 +225,69 @@ function _unpack(options){
       if (interval == 0) {
 
         // Push last index property to 0,0
-        self.table[0].push(index_desc);
+        self.data.output[0].push(index_desc);
 
         // Build subsequent series headers (1:N)
         if (discovered_labels.length > 0) {
           each(discovered_labels, function(value, i){
-            self.table[0].push(value);
+            self.data.output[0].push(value);
           });
 
         } else {
-          self.table[0].push(value_desc);
+          self.data.output[0].push(value_desc);
         }
       }
 
       // Correct for odd root cases
-      if (root.length < self.table.length-1) {
+      if (root.length < self.data.output.length-1) {
         if (interval == 0) {
-          each(self.table, function(row, i){
+          each(self.data.output, function(row, i){
             if (i > 0) {
-              self.table[i].push(plucked_index[i-1]);
+              self.data.output[i].push(plucked_index[i-1]);
             }
           });
         }
       } else {
-        self.table[interval+1].push(plucked_index[0]);
+        self.data.output[interval+1].push(plucked_index[0]);
       }
     }
 
     // Build label column
     if (!plucked_index && discovered_labels.length > 0) {
       if (interval == 0) {
-        self.table[0].push(label_desc);
-        self.table[0].push(value_desc);
+        self.data.output[0].push(label_desc);
+        self.data.output[0].push(value_desc);
       }
-      self.table[interval+1].push(discovered_labels[0]);
+      self.data.output[interval+1].push(discovered_labels[0]);
     }
 
     if (!plucked_index && discovered_labels.length == 0) {
       // [REVISIT]
-      self.table[0].push('');
+      self.data.output[0].push('');
     }
 
     // Append values
     if (plucked_value) {
       // Correct for odd root cases
-      if (root.length < self.table.length-1) {
+      if (root.length < self.data.output.length-1) {
         if (interval == 0) {
-          each(self.table, function(row, i){
+          each(self.data.output, function(row, i){
             if (i > 0) {
-              self.table[i].push(plucked_value[i-1]);
+              self.data.output[i].push(plucked_value[i-1]);
             }
           });
         }
       } else {
         each(plucked_value, function(value){
-          self.table[interval+1].push(value);
+          self.data.output[interval+1].push(value);
         });
       }
     } else {
       // append null across this row
-      each(self.table[0], function(cell, i){
+      each(self.data.output[0], function(cell, i){
         var offset = (plucked_index) ? 0 : -1;
         if (i > offset) {
-          self.table[interval+1].push(null);
+          self.data.output[interval+1].push(null);
         }
       })
     }
@@ -440,7 +468,7 @@ function extend(o, e){
   return o;
 }
 
-// Configure moment.js if present
-if (window.moment) {
-  moment.suppressDeprecationWarnings = true;
-}
+// Silence moment.js if present
+// if (window.moment) {
+//   moment.suppressDeprecationWarnings = true;
+// }

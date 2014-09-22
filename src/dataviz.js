@@ -90,7 +90,7 @@ Keen.Dataviz.prototype.call = function(fn){
 };
 
 Keen.Dataviz.prototype.data = function(data){
-  if (!arguments.length) return this.dataset.table;
+  if (!arguments.length) return this.dataset.output();
   if (data instanceof Keen.Dataset) {
     this.dataset = data;
   } else if (data instanceof Keen.Request) {
@@ -536,7 +536,7 @@ function _loadStyle(url, cb) {
 function _runColorMapping(){
   var self = this,
       schema = this.dataset.schema,
-      data = this.dataset.table,
+      data = this.dataset.output(),
       colorSet = this.colors(),
       colorMap = this.colorMapping();
 
@@ -564,41 +564,41 @@ function _runColorMapping(){
 function _runLabelMapping(){
   var self = this;
   var labelMap = this.labelMapping() || null,
-      schema = this.dataset.schema || {};
+      schema = this.dataset.schema() || {};
 
   if (labelMap) {
     if (schema.unpack) {
       if (schema.unpack['index']) {
-        self.dataset.schema.unpack['index'].replace = labelMap;
+        self.dataset.meta.schema.unpack['index'].replace = labelMap;
       }
       if (schema.unpack['label']) {
-        self.dataset.schema.unpack['label'].replace = labelMap;
+        self.dataset.meta.schema.unpack['label'].replace = labelMap;
       }
     }
     if (schema.select) {
       _each(schema.select, function(v, i){
-        self.dataset.schema.select[i].replace = labelMap;
+        self.dataset.meta.schema.select[i].replace = labelMap;
       });
     }
   }
-  self.dataset.configure(self.dataset.raw, self.dataset.schema);
+  self.dataset.parse(self.dataset.input(), self.dataset.schema());
 }
 
 function _runLabelReplacement(){
   var labelSet = this.labels() || null,
       schema = this.dataset.schema || {};
   if (labelSet) {
-    if (schema.unpack && dataset.table[0].length == 2) {
-      _each(dataset.table, function(row,i){
+    if (schema.unpack && dataset.output()[0].length == 2) {
+      _each(dataset.output(), function(row,i){
         if (i > 0 && labelSet[i-1]) {
-          dataset.table[i][0] = labelSet[i-1];
+          dataset.output()[i][0] = labelSet[i-1];
         }
       });
     }
-    if (schema.unpack && dataset.table[0].length > 2) {
-      _each(dataset.table[0], function(cell,i){
+    if (schema.unpack && dataset.output()[0].length > 2) {
+      _each(dataset.output()[0], function(cell,i){
         if (i > 0 && labelSet[i-1]) {
-          dataset.table[0][i] = labelSetg[i-1];
+          dataset.output()[0][i] = labelSetg[i-1];
         }
       });
     }
@@ -636,7 +636,7 @@ function _parseRequest(req){
 
 function _parseExtraction(req){
   var names = req.queries[0].get('property_names'),
-      schema = { collection: "result", select: true };
+      schema = { records: "result", select: true };
 
   if (names) {
     schema.select = [];
@@ -722,7 +722,7 @@ function _parseRawData(response){
     //return new Keen.Dataset(response, {
     dataType = "singular";
     schema = {
-      collection: "",
+      records: "",
       select: [{
         path: "result",
         type: "string",
@@ -745,7 +745,7 @@ function _parseRawData(response){
     if (response.result[0].timeframe && (typeof response.result[0].value == "number" || response.result[0].value == null)) {
       dataType = "chronological";
       schema = {
-        collection: "result",
+        records: "result",
         select: [
           {
             path: "timeframe -> start",
@@ -772,7 +772,7 @@ function _parseRawData(response){
     if (typeof response.result[0].result == "number"){
       dataType = "categorical";
       schema = {
-        collection: "result",
+        records: "result",
         select: [],
         sort: {
           column: 1,
@@ -799,7 +799,7 @@ function _parseRawData(response){
     if (response.result[0].value instanceof Array){
       dataType = "cat-chronological";
       schema = {
-        collection: "result",
+        records: "result",
         unpack: {
           index: {
             path: "timeframe -> start",
@@ -833,7 +833,7 @@ function _parseRawData(response){
     if (typeof response.result[0] == "number"){
       dataType = "cat-ordinal";
       schema = {
-        collection: "",
+      records: "",
         unpack: {
           index: {
             path: "steps -> event_collection",
