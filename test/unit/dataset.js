@@ -28,8 +28,36 @@ describe("Keen.Dataset", function(){
 
   describe("#parse", function() {
 
-    it("keen_groupby.json (pie!)", function(done){
-      $.getJSON("./unit/data/keen_groupby.json", function(response) {
+    it("metric.json", function(done){
+      $.getJSON("./unit/data/metric.json", function(response) {
+        var dataset = new Keen.Dataset(response, {
+          collection: "",
+          select: [
+            {
+              path: "result",
+              type: "number",
+              replace: {
+                null: 2450
+              },
+              label: "Metric",
+              format: "1,000.00",
+              prefix: "$",
+              suffix: " per month"
+            }
+          ]
+        });
+        console.log('metric.json', dataset);
+
+        expect(dataset).to.have.property('table');
+        expect(dataset.table).to.be.of.length(2);
+        expect(dataset.table[0][0]).to.eql("Metric");
+        expect(dataset.table[1][0]).to.eql("$2,450.00 per month");
+        done();
+      });
+    });
+
+    it("groupby.json", function(done){
+      $.getJSON("./unit/data/groupby.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           unpack: {
@@ -46,7 +74,7 @@ describe("Keen.Dataset", function(){
             index: 'asc'
           }
         });
-        console.log('keen_groupby.json', dataset);
+        console.log('groupby.json', dataset);
 
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(56);
@@ -57,8 +85,93 @@ describe("Keen.Dataset", function(){
       });
     });
 
-    it("keen2.json", function(done){
-      $.getJSON("./unit/data/keen2.json", function(response) {
+    it("groupBy-boolean.json", function(done){
+      $.getJSON("./unit/data/groupBy-boolean.json", function(response) {
+        var dataset = new Keen.Dataset(response, {
+          collection: "result",
+          select: [
+            {
+              path: "switch",
+              type: "string"
+            },
+            {
+              path: "result",
+              type: "number"
+            }
+          ],
+          sort: {
+            column: 1,
+            order: 'desc'
+          }
+        });
+        console.log('groupBy-boolean.json', dataset);
+        expect(dataset).to.have.property('table');
+        expect(dataset.table).to.be.of.length(4);
+        expect(dataset.table[1][0]).to.eql("true");
+        expect(dataset.table[2][0]).to.eql("false");
+        done();
+      });
+    });
+
+    it("interval-groupBy-empties.json", function(done){
+      $.getJSON("./unit/data/interval-groupBy-empties.json", function(response) {
+        var dataset = new Keen.Dataset(response, {
+          collection: "result",
+          unpack: {
+            index: {
+              path: "timeframe -> start",
+              type: "date"
+            },
+            value: {
+              path: "value -> result",
+              type: "number"
+            },
+            label: {
+              path: "value -> parsed_user_agent.os.family",
+              type: "string"
+            }
+          }
+        });
+        console.log('interval-groupBy-empties.json', dataset);
+        expect(dataset).to.have.property('table');
+        expect(dataset.table).to.be.of.length(7);
+        /*
+        expect(dataset.table[0][0]).to.eql("Event");
+        expect(dataset.table[0][1]).to.eql("Value");
+        expect(dataset.table[1][0]).to.be.eql("Visit");
+        expect(dataset.table[1][1]).to.be.eql(42);*/
+        done();
+      });
+    });
+
+    it("interval-groupBy-boolean.json", function(done){
+      $.getJSON("./unit/data/interval-groupBy-boolean.json", function(response) {
+        var dataset = new Keen.Dataset(response, {
+          collection: "result",
+          unpack: {
+            index: {
+              path: "timeframe -> start",
+              type: "date"
+            },
+            value: {
+              path: "value -> result",
+              type: "number"
+            },
+            label: {
+              path: "value -> key",
+              type: "string"
+            }
+          }
+        });
+        console.log('interval-groupBy-boolean.json', dataset);
+        expect(dataset).to.have.property('table');
+        expect(dataset.table).to.be.of.length(7);
+        done();
+      });
+    });
+
+    it("interval-groupBy-nulls.json", function(done){
+      $.getJSON("./unit/data/interval-groupBy-nulls.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           unpack: {
@@ -83,7 +196,7 @@ describe("Keen.Dataset", function(){
             value: 'desc'
           }
         });
-        console.log('keen2.json', dataset);
+        console.log('interval-groupBy-nulls.json', dataset);
 
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(7);
@@ -95,182 +208,8 @@ describe("Keen.Dataset", function(){
       });
     });
 
-    // it("keen.json 1 (columns sorted DESC)", function(done){
-    //   $.getJSON("./unit/data/keen.json", function(response) {
-    //     var dataset = new Keen.Dataset(response, {
-    //       collection: "result",
-    //       unpack: {
-    //         index: "timeframe -> start",
-    //         value: "value -> result -> number -> value",
-    //         label: "value -> page"
-    //       },
-    //       sort: {
-    //         index: 'asc',
-    //         value: 'desc'
-    //       }
-    //     });
-    //     console.log('keen.json 1', dataset);
-    //
-    //     expect(dataset).to.have.property('table');
-    //     expect(dataset.table).to.be.of.length(3);
-    //     expect(dataset.table[0]).to.be.of.length(4);
-    //     expect(dataset.table[0][0]).to.eql("start");
-    //     expect(dataset.table[0][1]).to.eql("contact");
-    //     expect(dataset.table[0][2]).to.eql("home");
-    //     expect(dataset.table[0][3]).to.eql("about");
-    //     done();
-    //   });
-    // });
-
-    // it("keen.json 2 (columns sorted ASC)", function(done){
-    //   $.getJSON("./unit/data/keen.json", function(response) {
-    //     var dataset = new Keen.Dataset(response, {
-    //       collection: "result",
-    //       unpack: {
-    //         index: "timeframe -> start",
-    //         value: "value -> result -> number -> value",
-    //         label: "value -> page"
-    //       },
-    //       sort: {
-    //         index: 'asc',
-    //         value: 'asc'
-    //       }
-    //     });
-    //     console.log('keen.json 2', dataset);
-    //
-    //     expect(dataset).to.have.property('table');
-    //     expect(dataset.table).to.be.of.length(3);
-    //     expect(dataset.table[0]).to.be.of.length(4);
-    //     expect(dataset.table[0][0]).to.eql("start");
-    //     expect(dataset.table[0][1]).to.eql("about");
-    //     expect(dataset.table[0][2]).to.eql("home");
-    //     expect(dataset.table[0][3]).to.eql("contact");
-    //     done();
-    //   });
-    // });
-
-    // it("Rows sorted according to index: asc/desc (twitter.json)", function(done){
-    //   $.getJSON("./unit/data/twitter.json", function(response) {
-    //     var dataset1 = new Keen.Dataset(response, {
-    //       collection: "",
-    //       unpack: {
-    //         index: "created_at",
-    //         value: "text",
-    //         label: "user -> screen_name"
-    //       },
-    //       sort: {
-    //         index: 'asc'
-    //       }
-    //     });
-    //     var dataset2 = new Keen.Dataset(response, {
-    //       collection: "",
-    //       unpack: {
-    //         index: {
-    //           path: "created_at"
-    //         },
-    //         value: {
-    //           path: "text",
-    //           type: "string",
-    //           prefix: "SITE: ",
-    //           format: "uppercase"
-    //         },
-    //         label: {
-    //           path: "user -> screen_name",
-    //           prefix: "@"
-    //         }
-    //       },
-    //       sort: {
-    //         index: 'desc'
-    //       }
-    //     });
-    //     console.log('twitter.json', dataset1);
-    //     console.log('twitter.json', dataset2);
-    //
-    //     expect(dataset1).to.have.property('table');
-    //
-    //     expect(dataset1.table).to.be.of.length(3);
-    //     expect(dataset1.table[0]).to.be.of.length(2);
-    //     expect(dataset1.table[0][0]).to.eql("created_at");
-    //     expect(dataset1.table[0][1]).to.eql("larimer");
-    //     expect(dataset1.table[1][0]).to.be.eql('Tue Mar 25 17:39:38 +0000 2014');
-    //
-    //     expect(dataset2.table).to.be.of.length(3);
-    //     expect(dataset2.table[0]).to.be.of.length(2);
-    //     expect(dataset2).to.have.property('table');
-    //     expect(dataset2.table[0][0]).to.eql("created_at");
-    //     expect(dataset2.table[0][1]).to.eql("@larimer");
-    //     expect(dataset2.table[1][0]).to.be.eql('Tue Mar 25 20:19:50 +0000 2014');
-    //     done();
-    //   });
-    // });
-
-    // it("External method call (twitter.json)", function(done){
-    //   $.getJSON("./unit/data/twitter.json", function(response) {
-    //     window.Twitter = {
-    //       DateFixer: function(str, opt) {
-    //         var parsed = Date.parse(str);
-    //         var date = new Date(parsed);
-    //         return date;
-    //       }
-    //     };
-    //     var dataset = new Keen.Dataset(response, {
-    //       collection: "",
-    //       unpack: {
-    //         index: {
-    //           path: "created_at",
-    //           type: "date",
-    //           method: "Twitter.DateFixer",
-    //           format: "MMM DD, YYYY"
-    //         },
-    //         value: "text",
-    //         label: "user -> screen_name"
-    //       },
-    //       sort: {
-    //         index: 'desc'
-    //       }
-    //     });
-    //     console.log('twitter.json Ext Method', dataset);
-    //
-    //     expect(dataset).to.have.property("table");
-    //     expect(dataset.table).to.be.of.length(3);
-    //     expect(dataset.table[0]).to.be.of.length(2);
-    //     expect(dataset.table[0][0]).to.eql("created_at");
-    //     expect(dataset.table[0][1]).to.eql("larimer");
-    //     expect(dataset.table[1][0]).to.be.eql("Mar 25, 2014");
-    //     done();
-    //   });
-    // });
-
-    it("keen_metric.json", function(done){
-      $.getJSON("./unit/data/keen_metric.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
-          collection: "",
-          select: [
-            {
-              path: "result",
-              type: "number",
-              replace: {
-                null: 2450
-              },
-              label: "Metric",
-              format: "1,000.00",
-              prefix: "$",
-              suffix: " per month"
-            }
-          ]
-        });
-        console.log('keen_metric.json', dataset);
-
-        expect(dataset).to.have.property('table');
-        expect(dataset.table).to.be.of.length(2);
-        expect(dataset.table[0][0]).to.eql("Metric");
-        expect(dataset.table[1][0]).to.eql("$2,450.00 per month");
-        done();
-      });
-    });
-
-    it("keen_extraction.json 1", function(done){
-      $.getJSON("./unit/data/keen_extraction.json", function(response) {
+    it("extraction.json 1", function(done){
+      $.getJSON("./unit/data/extraction.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           select: [
@@ -295,7 +234,7 @@ describe("Keen.Dataset", function(){
             order: 'asc'
           }
         });
-        console.log('keen_extraction.json 1', dataset);
+        console.log('extraction.json 1', dataset);
 
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(response.result.length+1);
@@ -308,8 +247,8 @@ describe("Keen.Dataset", function(){
       });
     });
 
-    it("keen_extraction.json 2", function(done){
-      $.getJSON("./unit/data/keen_extraction.json", function(response) {
+    it("extraction.json 2", function(done){
+      $.getJSON("./unit/data/extraction.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           select: [
@@ -333,7 +272,7 @@ describe("Keen.Dataset", function(){
             order: 'desc'
           }
         });
-        console.log('keen_extraction.json 2', dataset);
+        console.log('extraction.json 2', dataset);
 
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(response.result.length+1);
@@ -347,8 +286,8 @@ describe("Keen.Dataset", function(){
     });
 
 
-    it("keen_uneven_extraction.json", function(done){
-      $.getJSON("./unit/data/keen_uneven_extraction.json", function(response) {
+    it("extraction-uneven.json", function(done){
+      $.getJSON("./unit/data/extraction-uneven.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           select: [
@@ -365,7 +304,7 @@ describe("Keen.Dataset", function(){
             }
           ]
         });
-        console.log('keen_uneven_extraction.json', dataset);
+        console.log('extraction-uneven.json', dataset);
 
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(response.result.length+1);
@@ -379,8 +318,8 @@ describe("Keen.Dataset", function(){
     });
 
 
-    it("keen_uneven_extraction.json SELECT ALL", function(done){
-      $.getJSON("./unit/data/keen_uneven_extraction.json", function(response) {
+    it("extraction-uneven.json SELECT ALL", function(done){
+      $.getJSON("./unit/data/extraction-uneven.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           select: true,
@@ -389,7 +328,7 @@ describe("Keen.Dataset", function(){
             order: 'asc'
           }
         });
-        console.log('keen_uneven_extraction.json SELECT ALL', dataset);
+        console.log('extraction-uneven.json SELECT ALL', dataset);
 
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(response.result.length+1);
@@ -402,8 +341,8 @@ describe("Keen.Dataset", function(){
     });
 
 
-    it("keen_funnel.json", function(done){
-      $.getJSON("./unit/data/keen_funnel.json", function(response) {
+    it("funnel.json", function(done){
+      $.getJSON("./unit/data/funnel.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "",
           unpack: {
@@ -425,7 +364,7 @@ describe("Keen.Dataset", function(){
             }
           }
         });
-        console.log('keen_funnel.json', dataset);
+        console.log('funnel.json', dataset);
         expect(dataset).to.have.property('table');
         expect(dataset.table).to.be.of.length(6);
         expect(dataset.table[0][0]).to.eql("Event");
@@ -438,8 +377,8 @@ describe("Keen.Dataset", function(){
 
 
 
-    it("keen_2xgroupby.json", function(done){
-      $.getJSON("./unit/data/keen_2xgroupby.json", function(response) {
+    it("interval-double-groupBy.json", function(done){
+      $.getJSON("./unit/data/interval-double-groupBy.json", function(response) {
         var dataset = new Keen.Dataset(response, {
           collection: "result",
           unpack: {
@@ -468,7 +407,7 @@ describe("Keen.Dataset", function(){
             }
           }
         });
-        console.log('keen_2xgroupby.json', dataset);
+        console.log('interval-double-groupBy.json', dataset);
         expect(dataset).to.have.property('table');
         /*expect(dataset.table).to.be.of.length(6);
         expect(dataset.table[0][0]).to.eql("Event");
@@ -480,91 +419,7 @@ describe("Keen.Dataset", function(){
     });
 
 
-    it("keen_empty.json", function(done){
-      $.getJSON("./unit/data/keen_empty.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
-          collection: "result",
-          unpack: {
-            index: {
-              path: "timeframe -> start",
-              type: "date"
-            },
-            value: {
-              path: "value -> result",
-              type: "number"
-            },
-            label: {
-              path: "value -> parsed_user_agent.os.family",
-              type: "string"
-            }
-          }
-        });
-        console.log('keen_empty.json', dataset);
-        expect(dataset).to.have.property('table');
-        expect(dataset.table).to.be.of.length(7);
-        /*
-        expect(dataset.table[0][0]).to.eql("Event");
-        expect(dataset.table[0][1]).to.eql("Value");
-        expect(dataset.table[1][0]).to.be.eql("Visit");
-        expect(dataset.table[1][1]).to.be.eql(42);*/
-        done();
-      });
-    });
 
-    it("keen_grouped_interval_booleans.json", function(done){
-      $.getJSON("./unit/data/keen_grouped_interval_booleans.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
-          collection: "result",
-          unpack: {
-            index: {
-              path: "timeframe -> start",
-              type: "date"
-            },
-            value: {
-              path: "value -> result",
-              type: "number"
-            },
-            label: {
-              path: "value -> key",
-              type: "string"
-            }
-          }
-        });
-        console.log('keen_grouped_interval_booleans.json', dataset);
-        expect(dataset).to.have.property('table');
-        expect(dataset.table).to.be.of.length(7);
-        done();
-      });
-    });
-
-
-    it("keen_grouped_booleans.json", function(done){
-      $.getJSON("./unit/data/keen_grouped_booleans.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
-          collection: "result",
-          select: [
-            {
-              path: "switch",
-              type: "string"
-            },
-            {
-              path: "result",
-              type: "number"
-            }
-          ],
-          sort: {
-            column: 1,
-            order: 'desc'
-          }
-        });
-        console.log('keen_grouped_booleans.json', dataset);
-        expect(dataset).to.have.property('table');
-        expect(dataset.table).to.be.of.length(4);
-        expect(dataset.table[1][0]).to.eql("true");
-        expect(dataset.table[2][0]).to.eql("false");
-        done();
-      });
-    });
 
   });
 
