@@ -154,7 +154,8 @@ Keen.Dataset.prototype.insertColumn = function(index, col){
   var self = this;
   var column = (col instanceof Array ? col : []);
   each(self.data.output, function(row, i){
-    self.data.output[i].splice(index, 0, (column[i]||null));
+    var val = (typeof column[i] !== "undefined" ? column[i] : null);
+    self.data.output[i].splice(index, 0, val);
   });
   return self;
 };
@@ -162,7 +163,8 @@ Keen.Dataset.prototype.modifyColumn = function(index, mod){
   var self = this;
   if (mod instanceof Array) {
     each(self.data.output, function(row, i){
-      self.data.output[i][index] = (mod[i]||null);
+      var val = (typeof mod[i] !== "undefined" ? mod[i] : null);
+      self.data.output[i][index] = val;
     });
   } else if (typeof mod === "function") {
     each(self.data.output, function(row, i){

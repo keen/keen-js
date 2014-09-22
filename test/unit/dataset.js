@@ -463,19 +463,176 @@ describe("Keen.Dataset", function(){
       expect(this.ds.schema()).to.be.null;
     });
   });
-  
-  // describe("#selectRow", function() {});
-  // describe("#appendRow", function() {});
-  // describe("#insertRow", function() {});
-  // describe("#modifyRow", function() {});
-  // describe("#removeRow", function() {});
-  // describe("#filterRows", function() {});
-  //
-  // describe("#selectColumn", function() {});
-  // describe("#appendColumn", function() {});
-  // describe("#insertColumn", function() {});
-  // describe("#modifyColumn", function() {});
-  // describe("#removeColumn", function() {});
-  // describe("#filterColumns", function() {});
+
+
+  // ------------------------------
+  // Row access methods
+  // ------------------------------
+
+  describe("#selectRow", function() {
+    it("should return a given row", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(table[1]);
+    });
+  });
+  describe("#appendRow", function() {
+    it("should append a given row", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newRow = [2, 344, 554];
+      this.ds.output(table);
+      this.ds.appendRow(newRow);
+      expect(this.ds.selectRow(3)).to.be.an("array")
+        .and.to.deep.equal(newRow);
+    });
+  });
+  describe("#insertRow", function() {
+    it("should insert a given row at a given index", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newRow = [2, 344, 554];
+      this.ds.output(table);
+      this.ds.insertRow(1, newRow);
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(newRow);
+    });
+  });
+  describe("#modifyRow", function() {
+    it("should replace a given row by passing a new one", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newRow = ["a", 0, 0];
+      this.ds.output(table);
+      this.ds.modifyRow(1, newRow);
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(newRow);
+    });
+    it("should rewrite a given row with a function", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newRow = ["a", 0, 0];
+      this.ds.output(table);
+      this.ds.modifyRow(1, function(row){
+        return newRow;
+      });
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(newRow);
+    });
+  });
+  describe("#removeRow", function() {
+    it("should remove a given row", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.removeRow(1);
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.have.length(2);
+    });
+  });
+  describe("#filterRows", function() {
+    it("should remove rows not surviving the filter", function(){
+      var table = [["Index", "A", "B"],[0, 5, 5],[1, 10, 10]];
+      this.ds.output(table);
+      this.ds.filterRows(function(row, i){
+        var total = 0;
+        for (var i=0; i < row.length; i++){
+          if (i > 0 && !isNaN(parseInt(row[i]))) {
+            total += parseInt(row[i]);
+          }
+        }
+        return total < 11;
+      });
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.have.length(2);
+      expect(this.ds.output()[1][1]).to.be.a("number")
+        .and.to.eql(5);
+    });
+  });
+
+
+  // ------------------------------
+  // Column access methods
+  // ------------------------------
+
+  describe("#selectColumn", function() {
+    it("should return an array representing a given column", function(){
+      this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(["A", 342, 353]);
+    });
+  });
+  describe("#appendColumn", function() {
+    it("should append a given column", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newCol = ["C", 0, 0];
+      this.ds.output(table);
+      this.ds.appendColumn(newCol);
+      expect(this.ds.selectColumn(3)).to.be.an("array")
+        .and.to.deep.equal(newCol);
+    });
+  });
+  describe("#insertColumn", function() {
+    it("should insert a given column at a given index", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newCol = ["_", 0, 0];
+      this.ds.output(table);
+      this.ds.insertColumn(1, newCol);
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(newCol);
+    });
+  });
+  describe("#modifyColumn", function() {
+    it("should replace a given column by passing a new one", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newCol = ["A", 0, 0];
+      this.ds.output(table);
+      this.ds.modifyColumn(1, newCol);
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(newCol);
+    });
+    it("should rewrite each cell of given column with a function", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newCol = ["A", 0, 0];
+      this.ds.output(table);
+      this.ds.modifyColumn(1, function(col, index, row){
+        if (index == 0) return "A";
+        return 0;
+      });
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(newCol);
+    });
+  });
+  describe("#removeColumn", function() {
+    it("should remove a given column", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.removeColumn(1);
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.have.length(3);
+      expect(this.ds.output()[0]).to.be.an("array")
+        .and.to.have.length(2);
+      expect(this.ds.output()[0][1]).to.be.a("string")
+        .and.to.eql("B");
+    });
+  });
+  describe("#filterColumns", function() {
+    it("should remove columns not surviving the filter", function(){
+      var table = [["Index", "A", "B"],[0, 5, 10],[1, 10, 10]];
+      this.ds.output(table);
+      this.ds.filterColumns(function(col, index){
+        if (index < 1) return true;
+        var total = 0;
+        for (var i=0; i < col.length; i++){
+          if (i > 0 && !isNaN(parseInt(col[i]))) {
+            total += parseInt(col[i]);
+          }
+        }
+        return total > 15;
+      });
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.have.length(3);
+      expect(this.ds.output()[0]).to.be.an("array")
+        .and.to.have.length(2);
+      expect(this.ds.output()[0][1]).to.be.a("string")
+        .and.to.eql("B");
+    });
+  });
 
 });
