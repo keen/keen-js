@@ -31,6 +31,30 @@ Keen.Dataset.defaults = {
   delimeter: " -> "
 };
 
+Keen.Dataset.prototype.input = function(obj){
+  if (!arguments.length) return this.data.input;
+  this.data.input = (obj ? obj : null);
+  return this;
+};
+
+Keen.Dataset.prototype.output = function(arr){
+  if (!arguments.length) return this.data.output;
+  this.data.output = (arr instanceof Array ? arr : null);
+  return this;
+}
+
+Keen.Dataset.prototype.method = function(str){
+  if (!arguments.length) return this.meta.method;
+  this.meta.method = (str ? String(str) : null);
+  return this;
+};
+
+Keen.Dataset.prototype.schema = function(obj){
+  if (!arguments.length) return this.meta.schema;
+  this.meta.schema = (obj ? obj : null);
+  return this;
+};
+
 Keen.Dataset.prototype.parse = function(raw, schema){
   var options;
   if (raw) this.input(raw);
@@ -62,33 +86,181 @@ Keen.Dataset.prototype.parse = function(raw, schema){
   return this;
 };
 
-Keen.Dataset.prototype.input = function(obj){
-  if (!arguments.length) return this.data.input;
-  this.data.input = (obj ? obj : null);
+
+// ------------------------------
+// Row methods
+// ------------------------------
+
+Keen.Dataset.prototype.selectRow = function(index){
+  return this.data.output[index];
+};
+Keen.Dataset.prototype.appendRow = function(row){
+  this.data.output.push(row);
+  return this;
+};
+Keen.Dataset.prototype.insertRow = function(index, row){
+  // insert row of nulls if !row
+  this.data.output.splice(index, 0, row);
+  return this;
+};
+Keen.Dataset.prototype.modifyRow = function(index, mod){
+  if (mod instanceof Array) {
+    this.data.output[index] = mod;
+  } else if (typeof mod === "function") {
+    this.data.output[index] = mod.call(this, this.data.output[index]);
+  }
+  return this;
+};
+Keen.Dataset.prototype.removeRow = function(index){
+  this.data.output.splice(index, 1);
   return this;
 };
 
-Keen.Dataset.prototype.output = function(arr){
-  if (!arguments.length) return this.data.output;
-  this.data.output = (arr instanceof Array ? arr : null);
-  return this;
-}
-
-Keen.Dataset.prototype.method = function(str){
-  if (!arguments.length) return this.meta.method;
-  this.meta.method = (str ? String(str) : null);
-  return this;
+Keen.Dataset.prototype.filterRows = function(fn){
+  var self = this,
+      clone = [];
+  each(self.data.output, function(row, i){
+    if (i == 0 || fn.call(self, row, i)) {
+      clone.push(row);
+    }
+  });
+  self.output(clone);
+  return self;
 };
 
-Keen.Dataset.prototype.schema = function(obj){
-  if (!arguments.length) return this.meta.schema;
-  this.meta.schema = (obj ? obj : null);
-  return this;
+
+// ------------------------------
+// Column methods
+// ------------------------------
+
+// d.filterColumns(function(col){ return col.sum < 1000 });
+
+
+Keen.Dataset.prototype.selectColumn = function(index){
+  var result = new Array();
+  each(this.data.output, function(row, i){
+    result.push(row[index]);
+  });
+  return result;
+};
+Keen.Dataset.prototype.appendColumn = function(col){
+  var self = this;
+  each(col, function(cell, i){
+    self.data.output[i].push(cell);
+  });
+  return self;
+};
+Keen.Dataset.prototype.insertColumn = function(index, col){
+  var self = this;
+  var column = (col instanceof Array ? col : []);
+  each(self.data.output, function(row, i){
+    self.data.output[i].splice(index, 0, (column[i]||null));
+  });
+  return self;
+};
+Keen.Dataset.prototype.modifyColumn = function(index, mod){
+  var self = this;
+  if (mod instanceof Array) {
+    each(self.data.output, function(row, i){
+      self.data.output[i][index] = (mod[i]||null);
+    });
+  } else if (typeof mod === "function") {
+    each(self.data.output, function(row, i){
+      self.data.output[i][index] = mod.call(self, self.data.output[i][index], i, self.data.output[i]);
+    });
+  }
+  return self;
+};
+Keen.Dataset.prototype.removeColumn = function(index){
+  var self = this;
+  each(self.data.output, function(row, i){
+    self.data.output[i].splice(index, 1);
+  });
+  return self;
 };
 
-// Keen.Dataset.prototype.configure = function(raw, schema){
-//   return this;
+Keen.Dataset.prototype.filterColumns = function(fn){
+  var self = this, clone = new Array();
+  each(self.data.output, function(row, i){
+    clone.push([]);
+  });
+  each(self.data.output[0], function(col, i){
+    var selectedColumn = self.selectColumn(i);
+    if (fn.call(self, selectedColumn, i)) {
+      each(selectedColumn, function(cell, ri){
+        clone[ri].push(cell);
+      });
+    }
+  });
+  self.output(clone);
+  return self;
+};
+
+
+
+// Keen.Dataset.prototype.filterColumns = function(fn){
+//   var self = this;
+//   each(self.data.output, function(row, i){
+//     self.data.output[i].splice(index, 1);
+//   });
+//   return self;
 // };
+
+
+/*
+
+  var d = new Keen.Dataset();
+  d.modifyRow(0, ['Time', 'A', 'B', 'C']);
+  d.appendRow([new Date().toISOString(), 234, 432, 12]);
+  d.appendRow([new Date().toISOString(), 23, null, 3]);
+  d.appendRow([new Date().toISOString(), 43, 2, 0]);
+  d.appendRow([new Date().toISOString(), 33, 12, 445]);
+
+  d.filterColumns(function(col, index){
+    if (index < 1) return true;
+    console.log(this, col, index);
+    var total = 0;
+    for (var i=0; i < col.length; i++){
+      if (i > 0 && !isNaN(parseInt(col[i]))) {
+        total += parseInt(col[i]);
+      }
+    }
+    console.log(total);
+    return total > 400;
+  });
+
+  d.filterRows(function(row, index){
+    console.log(this, row, index);
+    var total = 0;
+    for (var i=0; i < row.length; i++){
+      if (i > 0 && !isNaN(parseInt(row[i]))) {
+        total += parseInt(row[i]);
+      }
+    }
+    console.log(total);
+    return total > 100;
+  });
+  d.output();
+
+  d.filterColumns(function(col, index){
+    console.log(this, col, index);
+  });
+
+  d.insertColumn(1, ["a", 15]);
+  d.modifyColumn(1, ["AA", 22222]);
+
+  d.appendColumn(["Total", 0]);
+  d.modifyColumn(3, function(value, index, row){
+    if (index < 1) return "Summary";
+    var total = 0;
+    for (var i=0; i < row.length; i++){
+      if (i !== 0 && i !== 3) total += row[i];
+    }
+    return total;
+  });
+
+  d.selectColumn(3);
+*/
 
 
 
