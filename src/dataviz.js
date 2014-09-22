@@ -1,7 +1,19 @@
+/*!
+  * ----------------
+  * Keen.Dataviz
+  * ----------------
+  */
+
 /* TODO:
    [x] set up dataType capability-mapping
    [x] move google defaults into adapter
-   [ ] set default lib+chart combos for types
+   [x] set default lib+chart combos for types
+   [x] import Dataset project source
+   [x] import Dataset project tests
+   [ ] fix Dataset handling of metrics
+   [ ] update Dataset API with new sketch
+   [ ] update c3.js and chart.js adapters
+   [ ] build example pages for adapters
 */
 
 _extend(Keen.utils, {
@@ -106,6 +118,29 @@ Keen.Dataviz.prototype.parseRequest = function(req){
   if (!this.title()) this.title(this.view.defaults.title);
   return this;
 };
+
+Keen.Dataviz.prototype.sort = function(str){
+  if (!arguments.length) return this.view.attributes.sort;
+  this.view.attributes.sort = (str ? String(str) : null);
+  _sortDataset.call(this, this.view.attributes.sort);
+  return this;
+};
+// Keen.Dataviz.prototype.sortIndex("desc");
+// Keen.Dataviz.prototype.sortValues("asc");
+
+function _sortDataset(str){
+  console.log(this.dataset.schema);
+  // if dataset[0].length > 2 ==> cat-chronological ?
+  // this.dataset.sortColumnsBySum("asc");
+  // this.dataset.sortRowsByColumn("asc", 0);
+  return;
+}
+
+// Keen.Dataviz.prototype.intervalIndex = function(str){
+//   if (!arguments.length) return this.view.attributes.intervalIndex;
+//   this.view.attributes.intervalIndex = (str ? String(str) : null);
+//   return this;
+// };
 
 
 // ------------------------------

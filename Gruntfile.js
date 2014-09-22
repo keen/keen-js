@@ -24,6 +24,22 @@ module.exports = function(grunt) {
         }
       },
 
+      dataset: {
+        src: [
+          "src/dataset/index.js",
+          "src/dataset/**/*.js"
+        ],
+        dest: ".tmp/dataset.js"
+      },
+
+      dataviz: {
+        src: [
+          "src/dataviz/index.js",
+          "src/dataviz/**/*.js"
+        ],
+        dest: ".tmp/dataviz.js"
+      },
+
       // Build complete version
       all: {
         src: [
@@ -34,11 +50,11 @@ module.exports = function(grunt) {
 
           , "src/lib/base64.js"
           , "src/lib/json2.js"
-          , "src/lib/keen-dataform.js"
+          //, "src/lib/keen-dataform.js"
           , "src/lib/keen-domready.js"
           , "src/lib/keen-spinner.js"
 
-          , "src/dataset.js"
+          , ".tmp/dataset.js"
           , "src/dataviz.js"
           , "src/visualization.js"
 
