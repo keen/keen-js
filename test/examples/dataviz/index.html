@@ -362,7 +362,14 @@ var multiline = new Keen.Query("count", {
 
       window.reqs['interval'].on("complete", function(res){
         req_area.parseRequest(this).render();
-        raw_area.parseRawData(res).render();
+        raw_area.parseRawData(res)
+        .render()
+        .call(function(){
+          // var dt = this.view._artifacts['datatable'].clone();
+          // var len = dt.getNumberOfRows();
+          // dt.removeRow(len-1);
+          // this.view._artifacts['googlechart'].draw(dt);
+        });
       });
 
 
