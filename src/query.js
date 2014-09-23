@@ -89,7 +89,7 @@
         handleFailure(res, index);
       };
 
-      if (query instanceof Keen.Query || query instanceof Keen.Query) {
+      if (query instanceof Keen.Query) {
         url = _build_url.call(self.instance, query.path);
         url += "?api_key=" + self.instance.client.readKey;
         url += _build_query_string.call(self.instance, query.params);
