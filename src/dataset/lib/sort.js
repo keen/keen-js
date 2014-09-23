@@ -1,25 +1,3 @@
-/*
-  TODO:
-
-  [x] import Dataset project source
-  [x] import Dataset project tests
-  [x] update Dataset API with new sketch
-  [x] fix Dataset sort method
-  [ ] write tests for new sort methods
-  [ ] fix Dataset handling of metrics
-
-  [ ] #getRowAverage
-  [ ] #getRowMedian
-  [ ] #getRowMinimum
-  [ ] #getRowMaximum
-
-  [ ] #getColumnAverage
-  [ ] #getColumnMedian
-  [ ] #getColumnMinimum
-  [ ] #getColumnMaximum
-
-*/
-
 // ------------------------------
 // Sort rows
 // ------------------------------

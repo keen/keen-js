@@ -4,6 +4,28 @@
   * ----------------
   */
 
+/*
+  TODO:
+
+  [x] import Dataset project source
+  [x] import Dataset project tests
+  [x] update Dataset API with new sketch
+  [x] fix Dataset sort method
+  [ ] write tests for new sort methods
+  [x] fix Dataset handling of metrics
+
+  [ ] #getRowAverage
+  [ ] #getRowMedian
+  [ ] #getRowMinimum
+  [ ] #getRowMaximum
+
+  [ ] #getColumnAverage
+  [ ] #getColumnMedian
+  [ ] #getColumnMinimum
+  [ ] #getColumnMaximum
+
+*/
+
 // extend(Keen.Dataset, {
 //   each: each,
 //   extend: extend,
@@ -148,29 +170,23 @@ d.selectColumn(3);
 // Select
 // --------------------------------------
 
-function _select(options){
-  //console.log('Selecting', options);
+function _select(cfg){
 
   var self = this,
+      options = cfg || {},
       target_set = [],
       unique_keys = [];
 
-  var root = (function(){
-    var root, parsed;
-    if (options.records == "") {
-      root = self.input();
-    } else {
-      parsed = parse.apply(self, [self.input()].concat(options.records.split(Keen.Dataset.defaults.delimeter)));
-      root = parsed[0];
-    }
-    if (Object.prototype.toString.call(root) !== '[object Array]') {
-      root = [root];
-    }
-    return root;
-  })();
+  var root, records_target;
+  if (options.records === "" || !options.records) {
+    root = [self.input()];
+  } else {
+    records_target = options.records.split(Keen.Dataset.defaults.delimeter);
+    root = parse.apply(self, [self.input()].concat(records_target))[0];
+  }
 
-  each(options.select, function(property, i){
-    target_set.push(property.path.split(Keen.Dataset.defaults.delimeter));
+  each(options.select, function(prop){
+    target_set.push(prop.path.split(Keen.Dataset.defaults.delimeter));
   });
 
   // Retrieve keys found in asymmetrical collections
@@ -187,25 +203,37 @@ function _select(options){
     });
   }
 
-  // Parse each record
-  each(root, function(record, interval){
-    var flat = flatten(record);
-    self.data.output.push([]);
-    each(target_set, function(target, i){
-      var flat_target = target.join(".");
-      if (interval == 0) {
-        self.data.output[0].push(flat_target);
-      }
-      if (flat[flat_target] !== void 0 || typeof flat[flat_target] == 'boolean') {
-        self.data.output[interval+1].push(flat[flat_target]);
-      } else {
-        self.data.output[interval+1].push(null);
-      }
-    });
+  var test = [[]];
+
+  // Append header row
+  each(target_set, function(props, i){
+    if (target_set.length == 1) {
+      // Static header for single value
+      test[0].push('label', 'value');
+    } else {
+      // Dynamic header for n-values
+      test[0].push(props.join("."));
+    }
   });
 
+  // Append all rows
+  each(root, function(record, i){
+    var flat = flatten(record);
+    if (target_set.length == 1) {
+      // Static row for single value
+      test.push([target_set.join("."), flat[target_set.join(".")]]);
+    } else {
+      // Dynamic row for n-values
+      test.push([]);
+      each(target_set, function(t, j){
+        var target = t.join(".");
+        test[i+1].push(flat[target]);
+      });
+    }
+  });
+
+  self.output(test);
   self.format(options.select);
-  //self.sort(options.sort);
   return self;
 }
 

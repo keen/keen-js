@@ -18,11 +18,12 @@ describe("Keen.Dataset", function(){
       expect(this.ds.schema()).to.deep.equal({ records: "", select: true });
     });
     it("should output the correct values", function(){
-      expect(this.ds.output()).to.be.an("array");
-      expect(this.ds.output()[0][0]).to.be.a("string")
-        .and.to.eql("result");
-      expect(this.ds.output()[1][0]).to.be.a("number")
-        .and.to.eql(23456);
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.be.of.length(2);
+      expect(this.ds.output()[0][0]).to.eql("label");
+      expect(this.ds.output()[0][1]).to.eql("value");
+      expect(this.ds.output()[1][0]).to.eql("result");
+      expect(this.ds.output()[1][1]).to.eql(23456);
     });
   });
 
@@ -51,8 +52,10 @@ describe("Keen.Dataset", function(){
 
         expect(dataset.output()).to.be.an("array")
           .and.to.be.of.length(2);
-        expect(dataset.output()[0][0]).to.eql("result");
-        expect(dataset.output()[1][0]).to.eql(2450);
+        expect(dataset.output()[0][0]).to.eql("label");
+        expect(dataset.output()[0][1]).to.eql("value");
+        expect(dataset.output()[1][0]).to.eql("result");
+        expect(dataset.output()[1][1]).to.eql(2450);
         //expect(dataset.output()[0][0]).to.eql("Metric");
         //expect(dataset.output()[1][0]).to.eql("$2,450.00 per month");
         done();
@@ -63,19 +66,9 @@ describe("Keen.Dataset", function(){
       $.getJSON("./unit/data/groupby.json", function(response) {
         var dataset = new Keen.Dataset().parse(response, {
           records: "result",
-          unpack: {
-            value: "result",
-            label: {
-              path: "page",
-              type: "string",
-              replace: {
-                "http://dustinlarimer.com/": "Home"
-              }
-            }
-          }
+          select: true
         });
-        console.log('groupby.json', dataset);
-
+        console.log("groupby.json", dataset);
         expect(dataset.output()).to.be.an("array")
           .and.to.be.of.length(56);
         expect(dataset.output()[0]).to.be.of.length(2);

@@ -54,7 +54,7 @@
             prefix = "",
             suffix = "",
             title = this.title() || "Result",
-            value = this.data()[1],
+            value = this.data()[1][1],
             width = this.width();
 
         if (this.chartOptions['prefix']) {

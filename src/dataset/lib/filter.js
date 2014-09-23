@@ -22,12 +22,6 @@ Keen.Dataset.prototype.filterColumns = function(fn){
         clone[ri].push(cell);
       });
     }
-    // var selectedColumn = self.selectColumn(i);
-    // if (fn.call(self, selectedColumn, i)) {
-    //   each(selectedColumn, function(cell, ri){
-    //     clone[ri].push(cell);
-    //   });
-    // }
   });
   self.output(clone);
   return self;

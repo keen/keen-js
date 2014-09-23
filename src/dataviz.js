@@ -129,7 +129,7 @@ Keen.Dataviz.prototype.sort = function(str){
 // Keen.Dataviz.prototype.sortValues("asc");
 
 function _sortDataset(str){
-  console.log(this.dataset.schema);
+  // console.log(this.dataset.schema);
   // if dataset[0].length > 2 ==> cat-chronological ?
   // this.dataset.sortColumnsBySum("asc");
   // this.dataset.sortRowsByColumn("asc", 0);
