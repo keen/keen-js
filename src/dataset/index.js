@@ -11,7 +11,6 @@
 //   flatten: flatten
 // });
 
-
 Keen.Dataset = function() {
   this.data = {
     input: {},
@@ -206,7 +205,7 @@ function _select(options){
   });
 
   self.format(options.select);
-  self.sort(options.sort);
+  //self.sort(options.sort);
   return self;
 }
 
@@ -228,8 +227,9 @@ function _unpack(options){
       label_desc = (label_set[label_set.length-1] !== "") ? label_set[label_set.length-1] : "Label",
       index_desc = (index_set[index_set.length-1] !== "") ? index_set[index_set.length-1] : "Index";
 
-  var sort_index = (options.sort && options.sort.index) ? options.sort.index : false,
-      sort_value = (options.sort && options.sort.value) ? options.sort.value : false;
+  // removed //
+  // var sort_index = (options.sort && options.sort.index) ? options.sort.index : false,
+  //     sort_value = (options.sort && options.sort.value) ? options.sort.value : false;
 
   // Prepare root for parsing
   var root = (function(){
@@ -349,7 +349,7 @@ function _unpack(options){
   });
 
   self.format(options.unpack);
-  self.sort(options.sort);
+  //self.sort(options.sort);
   return this;
 }
 
