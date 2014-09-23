@@ -596,4 +596,145 @@ describe("Keen.Dataset", function(){
     });
   });
 
+  describe("#sum", function(){
+    it("should return the sum for an unbounded range", function(){
+      var sum = this.ds.sum([10,10,10,10,10]);
+      expect(sum).to.eql(50);
+    });
+    it("should return the sum for a partially bounded range", function(){
+      var sum = this.ds.sum([10,10,10,10,10], 1);
+      expect(sum).to.eql(40);
+    });
+    it("should return the sum for a fully bounded range", function(){
+      var sum = this.ds.sum([10,10,10,10,10], 1, 3);
+      expect(sum).to.eql(30);
+    });
+  });
+
+  describe("#getRowIndex", function(){
+    it("should return the first value of a given row (array)", function(){
+      expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
+    });
+  });
+  describe("#getRowSum", function(){
+    it("should return the sum of values in a given row (array), excluding the first value", function(){
+      var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
+      expect(sum).to.eql(6);
+    });
+  });
+
+  describe("#getColumnLabel", function(){
+    it("should return the first value of a given column (array)", function(){
+      expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
+    });
+  });
+  describe("#getColumnSum", function(){
+    it("should return the sum of values in a given column (array), excluding the first value", function(){
+      var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
+      expect(sum).to.eql(6);
+    });
+  });
+
+  describe("#sortRows", function(){
+    beforeEach(function(){
+      this.ds.output([
+        ["Index", "A", "B", "C"],
+        [0, 1, 5, 10],
+        [1, 2, 10, 20],
+        [2, 4, 20, 40]
+      ]);
+    });
+    it("should sort rows properly, without calling a comparator", function(){
+      expect(this.ds.sortRows("asc").output()[1][0]).to.eql(0);
+      expect(this.ds.sortRows("desc").output()[1][0]).to.eql(2);
+    });
+    it("should sort rows properly, when calling a general comparator (sum)", function(){
+      expect(this.ds
+        .sortRows("asc", this.ds.sum, 1)
+        .output()[1][0])
+      .to.eql(0);
+      expect(this.ds
+        .sortRows("desc", this.ds.sum, 1)
+        .output()[1][0])
+      .to.eql(2);
+    });
+    it("should sort rows ascending, when calling a specific comparator (getRowSum)", function(){
+      expect(this.ds
+        .sortRows("asc", this.ds.getRowSum)
+        .output()[1][0])
+      .to.eql(0);
+      expect(this.ds
+        .sortRows("desc", this.ds.getRowSum)
+        .output()[1][0])
+      .to.eql(2);
+    });
+    it("should sort rows ascending, when calling a custom comparator", function(){
+      var demo = function(row){
+        return this.getRowSum(row);
+      };
+      expect(this.ds
+        .sortRows("asc", demo)
+        .output()[1][0])
+      .to.eql(0);
+      expect(this.ds
+        .sortRows("desc", demo)
+        .output()[1][0])
+      .to.eql(2);
+    });
+  });
+
+  describe("#sortColumns", function(){
+    beforeEach(function(){
+      this.ds.output([
+        ["Index", "A", "B", "C"],
+        [0, 1, 5, 10],
+        [1, 2, 10, 20],
+        [2, 4, 20, 40]
+      ]);
+    });
+    it("should sort columns properly, without calling a comparator", function(){
+      expect(this.ds
+        .sortColumns("asc")
+        .output()[0][1])
+      .to.eql("A");
+      expect(this.ds
+        .sortColumns("desc")
+        .output()[0][1])
+      .to.eql("C");
+    });
+    it("should sort columns properly, when calling a general comparator (sum)", function(){
+      expect(this.ds
+        .sortColumns("asc", this.ds.sum, 1)
+        .output()[0][1])
+      .to.eql("A");
+      expect(this.ds
+        .sortColumns("desc", this.ds.sum, 1)
+        .output()[0][1])
+      .to.eql("C");
+    });
+    it("should sort rows ascending, when calling a specific comparator (getRowSum)", function(){
+      expect(this.ds
+        .sortColumns("asc", this.ds.getColumnSum)
+        .output()[0][1])
+      .to.eql("A");
+      expect(this.ds
+        .sortColumns("desc", this.ds.getColumnSum)
+        .output()[0][1])
+      .to.eql("C");
+    });
+    it("should sort rows ascending, when calling a custom comparator", function(){
+      var demo = function(row){
+        return this.getColumnSum(row);
+      };
+      expect(this.ds
+        .sortColumns("asc", demo)
+        .output()[0][1])
+      .to.eql("A");
+      expect(this.ds
+        .sortColumns("desc", demo)
+        .output()[0][1])
+      .to.eql("C");
+    });
+  });
+
 });

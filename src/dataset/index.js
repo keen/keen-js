@@ -11,8 +11,8 @@
   [x] import Dataset project tests
   [x] update Dataset API with new sketch
   [x] fix Dataset sort method
-  [ ] write tests for new sort methods
   [x] fix Dataset handling of metrics
+  [x] write tests for new sort methods
 
   [ ] #getRowAverage
   [ ] #getRowMedian
