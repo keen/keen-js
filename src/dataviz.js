@@ -13,7 +13,8 @@
 
   [x] set up sortGroups and sortInterval
   [x] set up orderBy
-  
+  [x] write tests for sort/order methods
+
   [ ] update c3.js and chart.js adapters
   [ ] build example pages for adapters
 
@@ -121,7 +122,7 @@ Keen.Dataviz.prototype.parseRequest = function(req){
 
 Keen.Dataviz.prototype.orderBy = function(str){
   if (!arguments.length) return this.view.attributes.orderBy;
-  this.view.attributes.orderBy = (str ? String(str) : null);
+  this.view.attributes.orderBy = (str ? String(str) : Keen.Dataviz.defaults.orderBy);
   return this;
 };
 
@@ -336,12 +337,19 @@ Keen.Dataviz.prototype.error = function(){
 function _getAdapterActions(){
   var map = _extend({}, Keen.Dataviz.dataTypeMap),
       dataType = this.dataType(),
-      library,
-      chartType;
+      library = this.library(),
+      chartType = this.chartType() || this.defaultChartType();
 
-  library = this.library() || map[dataType].library,
-  chartType = this.chartType() || this.defaultChartType() || map[dataType].chartType;
-  return Keen.Dataviz.libraries[library][chartType];
+  // Backups
+  if (!library && map[dataType]) {
+    library = map[dataType].library;
+  }
+  if (!chartType && map[dataType]) {
+    chartType = map[dataType].chartType;
+  }
+
+  // Return if found
+  return (library && chartType) ? Keen.Dataviz.libraries[library][chartType] : {};
 }
 
 function _applyPostProcessing(){
@@ -613,12 +621,13 @@ function _runLabelReplacement(){
 }
 
 function _runSortGroups(){
+  var dt = this.dataType();
   if (!this.sortGroups()) return;
-  if (this.dataType().indexOf("chronological") > -1 || this.data()[0].length > 2) {
+  if ((dt && dt.indexOf("chronological") > -1) || this.data()[0].length > 2) {
     // Sort columns by Sum (n values)
     this.dataset.sortColumns(this.sortGroups(), this.dataset.getColumnSum);
   }
-  else if (this.dataType().indexOf("cat-") > -1 || this.dataType().indexOf("categorical") > -1) {
+  else if (dt && (dt.indexOf("cat-") > -1 || dt.indexOf("categorical") > -1)) {
     // Sort rows by Sum (1 value)
     this.dataset.sortRows(this.sortGroups(), this.dataset.getRowSum);
   }

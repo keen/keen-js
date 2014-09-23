@@ -305,18 +305,71 @@ describe("Keen.Dataviz", function(){
     });
   });
 
-  describe("#prepare", function(){
-    // it("should set el by passing a DOM element", function(){
-    //   this.dataviz.prepare(document.getElementById("chart-test"));
-    //   expect(this.dataviz.el()).to.be.an("object");
-    //   if (this.dataviz.el().nodeName) {
-    //     expect(this.dataviz.el().nodeName).to.be.a("string")
-    //       .and.to.eql("DIV");
-    //   }
-    // });
+  describe("#orderBy", function(){
+    it("should return \"timeframe.start\" by default", function(){
+      expect(this.dataviz.orderBy()).to.be.a("string")
+        .and.to.eql("timeframe.start");
+    });
+    it("should set and get a new orderBy property", function(){
+      this.dataviz.orderBy("timeframe.end");
+      expect(this.dataviz.orderBy()).to.be.a("string")
+        .and.to.eql("timeframe.end");
+    });
+    it("should revert the property to default value by passing null", function(){
+      this.dataviz.orderBy(null);
+      expect(this.dataviz.orderBy()).to.be.a("string")
+        .and.to.eql(Keen.Dataviz.defaults.orderBy);
+    });
+  });
 
-    // it("should inject a new Keen.Spinner into el", function(){});
-    // it("should ")
+  describe("#sortGroups", function(){
+    it("should return undefined by default", function(){
+      expect(this.dataviz.sortGroups()).to.be.an("undefined");
+    });
+    it("should set and get a new sortGroups property", function(){
+      this.dataviz.sortGroups("asc");
+      expect(this.dataviz.sortGroups()).to.be.a("string")
+        .and.to.eql("asc");
+    });
+    it("should unset property by passing null", function(){
+      this.dataviz.sortGroups(null);
+      expect(this.dataviz.sortGroups()).to.not.exist;
+    });
+  });
+
+  describe("#sortIntervals", function(){
+    it("should return undefined by default", function(){
+      expect(this.dataviz.sortIntervals()).to.be.an("undefined");
+    });
+    it("should set and get a new sortIntervals property", function(){
+      this.dataviz.sortIntervals("asc");
+      expect(this.dataviz.sortIntervals()).to.be.a("string")
+        .and.to.eql("asc");
+    });
+    it("should unset property by passing null", function(){
+      this.dataviz.sortIntervals(null);
+      expect(this.dataviz.sortIntervals()).to.not.exist;
+    });
+  });
+
+  describe("#prepare", function(){
+    it("should set el by passing a DOM element", function(){
+      this.dataviz.prepare(document.getElementById("chart-test"));
+      expect(this.dataviz.el()).to.be.an("object");
+      if (this.dataviz.el().nodeName) {
+        expect(this.dataviz.el().nodeName).to.be.a("string")
+          .and.to.eql("DIV");
+      }
+      // terminate the spinner instance
+      this.dataviz.initialize();
+    });
+    it("should set the view._prepared flag to true", function(){
+      expect(this.dataviz.view._prepared).to.be.false;
+      this.dataviz.el(document.getElementById("chart-test")).prepare();
+      expect(this.dataviz.view._prepared).to.be.true;
+      // terminate the spinner instance
+      this.dataviz.initialize();
+    });
   });
 
   describe("Adapter actions", function(){
@@ -329,6 +382,11 @@ describe("Keen.Dataviz", function(){
       it("should call the #initialize method of a given adapter", function(){
         this.dataviz.initialize();
         expect(Keen.Dataviz.libraries.demo.chart.initialize.called).to.be.ok;
+      });
+      it("should set the view._initialized flag to true", function(){
+        expect(this.dataviz.view._initialized).to.be.false;
+        this.dataviz.initialize();
+        expect(this.dataviz.view._initialized).to.be.true;
       });
     });
 
@@ -352,6 +410,11 @@ describe("Keen.Dataviz", function(){
       it("should NOT call the #render method if el is NOT set", function(){
         this.dataviz.render();
         expect(Keen.Dataviz.libraries.demo.chart.render.called).to.not.be.ok;
+      });
+      it("should set the view._rendered flag to true", function(){
+        expect(this.dataviz.view._rendered).to.be.false;
+        this.dataviz.render();
+        expect(this.dataviz.view._rendered).to.be.true;
       });
     });
 
