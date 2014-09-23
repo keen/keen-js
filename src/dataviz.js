@@ -4,16 +4,16 @@
   * ----------------
   */
 
-/* TODO:
-   [x] set up dataType capability-mapping
-   [x] move google defaults into adapter
-   [x] set default lib+chart combos for types
-   [x] import Dataset project source
-   [x] import Dataset project tests
-   [ ] fix Dataset handling of metrics
-   [ ] update Dataset API with new sketch
-   [ ] update c3.js and chart.js adapters
-   [ ] build example pages for adapters
+/*
+  TODO:
+
+  [x] set up dataType capability-mapping
+  [x] move google defaults into adapter
+  [x] set default lib+chart combos for types
+
+  [ ] update c3.js and chart.js adapters
+  [ ] build example pages for adapters
+
 */
 
 _extend(Keen.utils, {

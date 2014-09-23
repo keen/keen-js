@@ -88,180 +88,60 @@ Keen.Dataset.prototype.parse = function(raw, schema){
 
 
 // ------------------------------
-// Row methods
+// Manage row/column methods
 // ------------------------------
-
-Keen.Dataset.prototype.selectRow = function(index){
-  return this.data.output[index];
-};
-Keen.Dataset.prototype.appendRow = function(row){
-  this.data.output.push(row);
-  return this;
-};
-Keen.Dataset.prototype.insertRow = function(index, row){
-  // insert row of nulls if !row
-  this.data.output.splice(index, 0, row);
-  return this;
-};
-Keen.Dataset.prototype.modifyRow = function(index, mod){
-  if (mod instanceof Array) {
-    this.data.output[index] = mod;
-  } else if (typeof mod === "function") {
-    this.data.output[index] = mod.call(this, this.data.output[index]);
-  }
-  return this;
-};
-Keen.Dataset.prototype.removeRow = function(index){
-  this.data.output.splice(index, 1);
-  return this;
-};
-
-Keen.Dataset.prototype.filterRows = function(fn){
-  var self = this,
-      clone = [];
-  each(self.data.output, function(row, i){
-    if (i == 0 || fn.call(self, row, i)) {
-      clone.push(row);
-    }
-  });
-  self.output(clone);
-  return self;
-};
-
-
-// ------------------------------
-// Column methods
-// ------------------------------
-
-// d.filterColumns(function(col){ return col.sum < 1000 });
-
-
-Keen.Dataset.prototype.selectColumn = function(index){
-  var result = new Array();
-  each(this.data.output, function(row, i){
-    result.push(row[index]);
-  });
-  return result;
-};
-Keen.Dataset.prototype.appendColumn = function(col){
-  var self = this;
-  each(col, function(cell, i){
-    self.data.output[i].push(cell);
-  });
-  return self;
-};
-Keen.Dataset.prototype.insertColumn = function(index, col){
-  var self = this;
-  var column = (col instanceof Array ? col : []);
-  each(self.data.output, function(row, i){
-    var val = (typeof column[i] !== "undefined" ? column[i] : null);
-    self.data.output[i].splice(index, 0, val);
-  });
-  return self;
-};
-Keen.Dataset.prototype.modifyColumn = function(index, mod){
-  var self = this;
-  if (mod instanceof Array) {
-    each(self.data.output, function(row, i){
-      var val = (typeof mod[i] !== "undefined" ? mod[i] : null);
-      self.data.output[i][index] = val;
-    });
-  } else if (typeof mod === "function") {
-    each(self.data.output, function(row, i){
-      self.data.output[i][index] = mod.call(self, self.data.output[i][index], i, self.data.output[i]);
-    });
-  }
-  return self;
-};
-Keen.Dataset.prototype.removeColumn = function(index){
-  var self = this;
-  each(self.data.output, function(row, i){
-    self.data.output[i].splice(index, 1);
-  });
-  return self;
-};
-
-Keen.Dataset.prototype.filterColumns = function(fn){
-  var self = this, clone = new Array();
-  each(self.data.output, function(row, i){
-    clone.push([]);
-  });
-  each(self.data.output[0], function(col, i){
-    var selectedColumn = self.selectColumn(i);
-    if (fn.call(self, selectedColumn, i)) {
-      each(selectedColumn, function(cell, ri){
-        clone[ri].push(cell);
-      });
-    }
-  });
-  self.output(clone);
-  return self;
-};
-
-
-
-// Keen.Dataset.prototype.filterColumns = function(fn){
-//   var self = this;
-//   each(self.data.output, function(row, i){
-//     self.data.output[i].splice(index, 1);
-//   });
-//   return self;
-// };
-
 
 /*
+var d = new Keen.Dataset();
+d.output([["index", "A", "B", "C"]]);
+d.appendRow([0, 10, 10, 10]);
+d.appendRow([1, 5, 5, 5]);
+d.appendRow([2, 1, 1, 1]);
+d.appendRow([3, 0, 0, 0]);
 
-  var d = new Keen.Dataset();
-  d.modifyRow(0, ['Time', 'A', 'B', 'C']);
-  d.appendRow([new Date().toISOString(), 234, 432, 12]);
-  d.appendRow([new Date().toISOString(), 23, null, 3]);
-  d.appendRow([new Date().toISOString(), 43, 2, 0]);
-  d.appendRow([new Date().toISOString(), 33, 12, 445]);
 
-  d.filterColumns(function(col, index){
-    if (index < 1) return true;
-    console.log(this, col, index);
-    var total = 0;
-    for (var i=0; i < col.length; i++){
-      if (i > 0 && !isNaN(parseInt(col[i]))) {
-        total += parseInt(col[i]);
-      }
-    }
-    console.log(total);
-    return total > 400;
-  });
+var d = new Keen.Dataset();
+d.modifyRow(0, ['Time', 'A', 'B', 'C']);
+d.appendRow([new Date().toISOString(), 234, 432, 12]);
+d.appendRow([new Date().toISOString(), 23, null, 3]);
+d.appendRow([new Date().toISOString(), 43, 2, 0]);
+d.appendRow([new Date().toISOString(), 33, 12, 445]);
 
-  d.filterRows(function(row, index){
-    console.log(this, row, index);
-    var total = 0;
-    for (var i=0; i < row.length; i++){
-      if (i > 0 && !isNaN(parseInt(row[i]))) {
-        total += parseInt(row[i]);
-      }
-    }
-    console.log(total);
-    return total > 100;
-  });
-  d.output();
+d.filterColumns(function(col, index){
+  var total = this.sumColumnValue(col);
+  console.log(total);
+  return true;
+})
+.output();
 
-  d.filterColumns(function(col, index){
-    console.log(this, col, index);
-  });
+d.filterRows(function(row, index){
+  console.log(this, row, index);
+  var total = this.sumRowValue(row);
+  console.log(total);
+  return true;
+})
+.output();
 
-  d.insertColumn(1, ["a", 15]);
-  d.modifyColumn(1, ["AA", 22222]);
 
-  d.appendColumn(["Total", 0]);
-  d.modifyColumn(3, function(value, index, row){
-    if (index < 1) return "Summary";
-    var total = 0;
-    for (var i=0; i < row.length; i++){
-      if (i !== 0 && i !== 3) total += row[i];
-    }
-    return total;
-  });
+d.filterColumns(function(col, index){
+  console.log(this, col, index);
+});
 
-  d.selectColumn(3);
+d.insertColumn(1, ["a", 15]);
+d.modifyColumn(1, ["AA", 22222]);
+
+d.appendColumn(["Total", 0]);
+d.modifyColumn(3, function(value, index, row){
+  if (index < 1) return "Summary";
+  var total = 0;
+  for (var i=0; i < row.length; i++){
+    if (i !== 0 && i !== 3) total += row[i];
+  }
+  return total;
+});
+
+d.selectColumn(3);
+
 */
 
 
