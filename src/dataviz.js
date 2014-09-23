@@ -15,6 +15,10 @@
   [x] set up orderBy
   [x] write tests for sort/order methods
 
+  [x] _runLabelMapping re-runs parse(), overwrite modifications
+  [ ] _runOrderBy re-runs parse(), overwrite modifications
+
+  [x] update color palette
   [ ] update c3.js and chart.js adapters
   [ ] build example pages for adapters
 
@@ -70,8 +74,13 @@ _extend(Keen.Dataviz, {
   },
   defaults: {
     colors: [
-    "#00afd7", "#f35757", "#f0ad4e", "#8383c6", "#f9845b", "#49c5b1", "#2a99d1", "#aacc85", "#ba7fab"
-    /* Todo: add light/dark derivatives */
+    /* teal      red        yellow     purple     orange     mint       blue       green      lavender */
+    // norm
+      "#00bbde", "#fe6672", "#eeb058", "#8a8ad6", "#ff855c", "#00cfbb", "#5a9eed", "#73d483", "#c879bb",
+    // dark
+      "#00a1bf", "#df545f", "#d29847", "#7373bc", "#e0704b", "#00b2a1", "#4988d0", "5ebb6d", "#b163a4",
+    // light
+      "#24c9e8", "#ff7e88", "#f4bd70", "#9a9adf", "#ff9876", "#24dcca", "71aef3", "#86de95", "#d68ac9"
     ],
     orderBy: "timeframe.start"
   },
@@ -184,13 +193,9 @@ Keen.Dataviz.prototype.labels = function(arr){
 
 Keen.Dataviz.prototype.labelMapping = function(obj){
   if (!arguments.length) return this.view.attributes.labelMapping;
-  var self = this;
-  self.view.attributes.labelMapping = {};
-  _each(obj, function(prop, key){
-    self.view.attributes.labelMapping[key] = (prop? prop.trim() : null);
-  });
-  _runLabelMapping.call(self);
-  return self;
+  this.view.attributes.labelMapping = (obj ? obj : null);
+  _runLabelMapping.call(this);
+  return this;
 };
 
 Keen.Dataviz.prototype.height = function(int){
@@ -355,6 +360,7 @@ function _getAdapterActions(){
 
 function _applyPostProcessing(){
   this
+    //.call(_runOrderBy)
     .call(_runLabelMapping)
     .call(_runLabelReplacement)
     .call(_runColorMapping)
@@ -578,31 +584,34 @@ function _runColorMapping(){
 }
 
 function _runLabelMapping(){
-  var self = this;
-  var labelMap = this.labelMapping() || null,
-      schema = this.dataset.schema() || {};
+  var self = this,
+      labelMap = this.labelMapping(),
+      schema = this.dataset.schema() || {},
+      dt = this.dataType() || "";
 
   if (labelMap) {
-    if (schema.unpack) {
-      if (schema.unpack['index']) {
-        self.dataset.meta.schema.unpack['index'].replace = labelMap;
-      }
-      if (schema.unpack['label']) {
-        self.dataset.meta.schema.unpack['label'].replace = labelMap;
-      }
+    if (dt.indexOf("chronological") > -1 || (schema.unpack && self.dataset.output()[0].length > 2)) {
+      // loop over header cells
+      each(self.dataset.output()[0], function(c, i){
+        if (i > 0) {
+          //console.log('Mod header cell', labelMap[c] || c, i);
+          self.dataset.data.output[0][i] = labelMap[c] || c;
+        }
+      });
     }
-    if (schema.select) {
-      _each(schema.select, function(v, i){
-        self.dataset.meta.schema.select[i].replace = labelMap;
+    else if (schema.select && self.dataset.output()[0].length === 2) {
+      // modify column 0
+      self.dataset.modifyColumn(0, function(c, i){
+        //console.log('Mod column', labelMap[c] || c);
+        return labelMap[c] || c;
       });
     }
   }
-  self.dataset.parse(self.dataset.input(), self.dataset.schema());
 }
 
 function _runLabelReplacement(){
   var labelSet = this.labels() || null,
-      schema = this.dataset.schema || {};
+      schema = this.dataset.schema() || {};
   if (labelSet) {
     if (schema.unpack && dataset.output()[0].length == 2) {
       _each(dataset.output(), function(row,i){
@@ -614,7 +623,7 @@ function _runLabelReplacement(){
     if (schema.unpack && dataset.output()[0].length > 2) {
       _each(dataset.output()[0], function(cell,i){
         if (i > 0 && labelSet[i-1]) {
-          dataset.output()[0][i] = labelSetg[i-1];
+          dataset.output()[0][i] = labelSet[i-1];
         }
       });
     }
@@ -908,21 +917,21 @@ function _parseRawData(response){
 
   // Key-value label mapping
   // _runLabelMapping.call(this);
-  if (labelMap) {
-    if (schema.unpack) {
-      if (schema.unpack['index']) {
-        schema.unpack['index'].replace = labelMap;
-      }
-      if (schema.unpack['label']) {
-        schema.unpack['label'].replace = labelMap;
-      }
-    }
-    if (schema.select) {
-      _each(schema.select, function(v, i){
-        schema.select[i].replace = labelMap;
-      });
-    }
-  }
+  // if (labelMap) {
+  //   if (schema.unpack) {
+  //     if (schema.unpack['index']) {
+  //       schema.unpack['index'].replace = labelMap;
+  //     }
+  //     if (schema.unpack['label']) {
+  //       schema.unpack['label'].replace = labelMap;
+  //     }
+  //   }
+  //   if (schema.select) {
+  //     _each(schema.select, function(v, i){
+  //       schema.select[i].replace = labelMap;
+  //     });
+  //   }
+  // }
 
   dataset = new Keen.Dataset(response, schema);
 
