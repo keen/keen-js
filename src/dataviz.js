@@ -797,10 +797,11 @@ function _parseRawData(response){
           {
             path: "value",
             type: "number",
-            format: "10",
-            replace: {
-              null: 0
-            }
+            format: "10"
+            // ,
+            // replace: {
+            //   null: 0
+            // }
           }
         ]
       }
@@ -842,10 +843,11 @@ function _parseRawData(response){
           },
           value: {
             path: "value -> result",
-            type: "number",
-            replace: {
-              null: 0
-            }
+            type: "number"
+            // ,
+            // replace: {
+            //   null: 0
+            // }
           }
         }
       }
