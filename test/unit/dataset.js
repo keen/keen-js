@@ -712,7 +712,7 @@ describe("Keen.Dataset", function(){
         .output()[0][1])
       .to.eql("C");
     });
-    it("should sort rows ascending, when calling a specific comparator (getRowSum)", function(){
+    it("should sort columns ascending, when calling a specific comparator (getColumnSum)", function(){
       expect(this.ds
         .sortColumns("asc", this.ds.getColumnSum)
         .output()[0][1])
@@ -722,7 +722,7 @@ describe("Keen.Dataset", function(){
         .output()[0][1])
       .to.eql("C");
     });
-    it("should sort rows ascending, when calling a custom comparator", function(){
+    it("should sort columns ascending, when calling a custom comparator", function(){
       var demo = function(row){
         return this.getColumnSum(row);
       };

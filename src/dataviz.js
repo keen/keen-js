@@ -11,6 +11,9 @@
   [x] move google defaults into adapter
   [x] set default lib+chart combos for types
 
+  [x] set up sortGroups and sortInterval
+  [x] set up orderBy
+  
   [ ] update c3.js and chart.js adapters
   [ ] build example pages for adapters
 
@@ -68,7 +71,8 @@ _extend(Keen.Dataviz, {
     colors: [
     "#00afd7", "#f35757", "#f0ad4e", "#8383c6", "#f9845b", "#49c5b1", "#2a99d1", "#aacc85", "#ba7fab"
     /* Todo: add light/dark derivatives */
-    ]
+    ],
+    orderBy: "timeframe.start"
   },
   dependencies: {
     loading: 0,
@@ -98,10 +102,6 @@ Keen.Dataviz.prototype.data = function(data){
   } else {
     this.parseRawData(data);
   }
-  this
-    .call(_runColorMapping)
-    .call(_runLabelMapping)
-    .call(_runLabelReplacement);
   return this;
 };
 
@@ -119,28 +119,24 @@ Keen.Dataviz.prototype.parseRequest = function(req){
   return this;
 };
 
-Keen.Dataviz.prototype.sort = function(str){
-  if (!arguments.length) return this.view.attributes.sort;
-  this.view.attributes.sort = (str ? String(str) : null);
-  _sortDataset.call(this, this.view.attributes.sort);
+Keen.Dataviz.prototype.orderBy = function(str){
+  if (!arguments.length) return this.view.attributes.orderBy;
+  this.view.attributes.orderBy = (str ? String(str) : null);
   return this;
 };
-// Keen.Dataviz.prototype.sortIndex("desc");
-// Keen.Dataviz.prototype.sortValues("asc");
 
-function _sortDataset(str){
-  // console.log(this.dataset.schema);
-  // if dataset[0].length > 2 ==> cat-chronological ?
-  // this.dataset.sortColumnsBySum("asc");
-  // this.dataset.sortRowsByColumn("asc", 0);
-  return;
-}
-
-// Keen.Dataviz.prototype.intervalIndex = function(str){
-//   if (!arguments.length) return this.view.attributes.intervalIndex;
-//   this.view.attributes.intervalIndex = (str ? String(str) : null);
-//   return this;
-// };
+Keen.Dataviz.prototype.sortGroups = function(str){
+  if (!arguments.length) return this.view.attributes.sortGroups;
+  this.view.attributes.sortGroups = (str ? String(str) : null);
+  _runSortGroups.call(this);
+  return this;
+};
+Keen.Dataviz.prototype.sortIntervals = function(str){
+  if (!arguments.length) return this.view.attributes.sortIntervals;
+  this.view.attributes.sortIntervals = (str ? String(str) : null);
+  _runSortIntervals.call(this);
+  return this;
+};
 
 
 // ------------------------------
@@ -300,6 +296,7 @@ Keen.Dataviz.prototype.initialize = function(){
 
 Keen.Dataviz.prototype.render = function(el){
   var actions = _getAdapterActions.call(this);
+  _applyPostProcessing.call(this);
   if (el) this.el(el);
   if (!this.view._initialized) this.initialize();
   if (this.el() && actions.render) actions.render.apply(this, arguments);
@@ -309,6 +306,7 @@ Keen.Dataviz.prototype.render = function(el){
 
 Keen.Dataviz.prototype.update = function(){
   var actions = _getAdapterActions.call(this);
+  _applyPostProcessing.call(this);
   if (actions.update) {
     actions.update.apply(this, arguments);
   } else if (actions.render) {
@@ -344,6 +342,15 @@ function _getAdapterActions(){
   library = this.library() || map[dataType].library,
   chartType = this.chartType() || this.defaultChartType() || map[dataType].chartType;
   return Keen.Dataviz.libraries[library][chartType];
+}
+
+function _applyPostProcessing(){
+  this
+    .call(_runLabelMapping)
+    .call(_runLabelReplacement)
+    .call(_runColorMapping)
+    .call(_runSortGroups)
+    .call(_runSortIntervals);
 }
 
 
@@ -605,6 +612,26 @@ function _runLabelReplacement(){
   }
 }
 
+function _runSortGroups(){
+  if (!this.sortGroups()) return;
+  if (this.dataType().indexOf("chronological") > -1 || this.data()[0].length > 2) {
+    // Sort columns by Sum (n values)
+    this.dataset.sortColumns(this.sortGroups(), this.dataset.getColumnSum);
+  }
+  else if (this.dataType().indexOf("cat-") > -1 || this.dataType().indexOf("categorical") > -1) {
+    // Sort rows by Sum (1 value)
+    this.dataset.sortRows(this.sortGroups(), this.dataset.getRowSum);
+  }
+  return;
+}
+
+function _runSortIntervals(){
+  if (!this.sortIntervals()) return;
+  // Sort rows by index
+  this.dataset.sortRows(this.sortIntervals());
+  return;
+}
+
 function _getDefaultTitle(req){
   var analysis = req.queries[0].analysis.replace("_", " "),
       collection = req.queries[0].get('event_collection'),
@@ -708,10 +735,17 @@ function _getQueryDataType(query){
 function _parseRawData(response){
   var self = this,
       schema = {},
+      orderBy,
+      delimeter,
+      indexTarget,
       labelSet,
       labelMap,
       dataType,
       dataset;
+
+  orderBy = self.orderBy() ? self.orderBy() : Keen.Dataviz.defaults.orderBy;
+  delimeter = Keen.Dataset.defaults.delimeter;
+  indexTarget = orderBy.split(".").join(delimeter);
 
   labelSet = self.labels() || null;
   labelMap = self.labelMapping() || null;
@@ -748,7 +782,7 @@ function _parseRawData(response){
         records: "result",
         select: [
           {
-            path: "timeframe -> start",
+            path: indexTarget,
             type: "date"
           },
           {
@@ -759,11 +793,7 @@ function _parseRawData(response){
               null: 0
             }
           }
-        ],
-        sort: {
-          column: 0,
-          order: 'asc'
-        }
+        ]
       }
     }
 
@@ -773,11 +803,7 @@ function _parseRawData(response){
       dataType = "categorical";
       schema = {
         records: "result",
-        select: [],
-        sort: {
-          column: 1,
-          order: "desc"
-        }
+        select: []
       };
       for (var key in response.result[0]){
         if (response.result[0].hasOwnProperty(key) && key !== "result"){
@@ -802,7 +828,7 @@ function _parseRawData(response){
         records: "result",
         unpack: {
           index: {
-            path: "timeframe -> start",
+            path: indexTarget,
             type: "date"
           },
           value: {
@@ -812,9 +838,6 @@ function _parseRawData(response){
               null: 0
             }
           }
-        },
-        sort: {
-          value: "desc"
         }
       }
       for (var key in response.result[0].value[0]){

@@ -34,7 +34,9 @@ Keen.prototype.draw = function(query, el, cfg) {
     .prepare(el);
 
   request.on("complete", function(){
-    visual.parseRequest(this).render();
+    visual
+      .parseRequest(this)
+      .render();
   });
   request.on("error", function(response){
     visual.error({ error: response, el: el });

@@ -218,6 +218,9 @@ var multiline = new Keen.Query("count", {
 
     Keen.ready(function() {
 
+      // Keen.Dataviz.defaults.orderBy = "timeframe.end";
+      // Keen.Visualization.defaults.orderBy = "timeframe.end";
+
       var metric = new Keen.Query("count", {
         eventCollection: "pageview"
       });
@@ -302,7 +305,8 @@ var multiline = new Keen.Query("count", {
         },
         colorMapping: {
           "Direct": "#808080"
-        }
+        },
+        sortGroups: "desc"
       });
 
       var req_pie = new Keen.Dataviz()
@@ -326,8 +330,14 @@ var multiline = new Keen.Query("count", {
         .prepare(document.getElementById("2-3"));
 
       window.reqs['groupBy'].on("complete", function(res){
-        req_pie.parseRequest(this).render();
-        raw_pie.parseRawData(res).render();
+        req_pie
+          .parseRequest(this)
+          .sortGroups("desc")
+          .render();
+        raw_pie
+          .parseRawData(res)
+          .sortGroups("desc")
+          .render();
       });
 
 
@@ -343,6 +353,7 @@ var multiline = new Keen.Query("count", {
 
       var req_area = new Keen.Dataviz()
         .height(300)
+        //.orderBy("timeframe.end")
         .prepare(document.getElementById("3-2"));
 
       var raw_area = new Keen.Dataviz()
