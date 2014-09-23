@@ -1,7 +1,7 @@
 describe("Keen.Dataset", function(){
 
   beforeEach(function(){
-    this.ds = new Keen.Dataset({ result: 23456 }, {
+    this.ds = new Keen.Dataset().parse({ result: 23456 }, {
       records: "",
       select: true
     });
@@ -30,7 +30,7 @@ describe("Keen.Dataset", function(){
 
     it("metric.json", function(done){
       $.getJSON("./unit/data/metric.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "",
           select: true
           // select: [
@@ -61,7 +61,7 @@ describe("Keen.Dataset", function(){
 
     it("groupby.json", function(done){
       $.getJSON("./unit/data/groupby.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           unpack: {
             value: "result",
@@ -87,7 +87,7 @@ describe("Keen.Dataset", function(){
 
     it("groupBy-boolean.json", function(done){
       $.getJSON("./unit/data/groupBy-boolean.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           select: [
             {
@@ -112,7 +112,7 @@ describe("Keen.Dataset", function(){
 
     it("interval-groupBy-empties.json", function(done){
       $.getJSON("./unit/data/interval-groupBy-empties.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           unpack: {
             index: {
@@ -143,7 +143,7 @@ describe("Keen.Dataset", function(){
 
     it("interval-groupBy-boolean.json", function(done){
       $.getJSON("./unit/data/interval-groupBy-boolean.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           unpack: {
             index: {
@@ -169,7 +169,7 @@ describe("Keen.Dataset", function(){
 
     it("interval-groupBy-nulls.json", function(done){
       $.getJSON("./unit/data/interval-groupBy-nulls.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           unpack: {
             index: {
@@ -205,7 +205,7 @@ describe("Keen.Dataset", function(){
 
     it("extraction.json 1", function(done){
       $.getJSON("./unit/data/extraction.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           select: [
             {
@@ -240,7 +240,7 @@ describe("Keen.Dataset", function(){
 
     it("extraction.json 2", function(done){
       $.getJSON("./unit/data/extraction.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           select: [
             {
@@ -275,7 +275,7 @@ describe("Keen.Dataset", function(){
 
     it("extraction-uneven.json", function(done){
       $.getJSON("./unit/data/extraction-uneven.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           select: [
             {
@@ -301,18 +301,16 @@ describe("Keen.Dataset", function(){
 
     it("extraction-uneven.json SELECT ALL", function(done){
       $.getJSON("./unit/data/extraction-uneven.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           select: true
         });
         dataset.sortRows("asc");
         console.log('extraction-uneven.json SELECT ALL', dataset);
-
         expect(dataset.output()).to.be.an("array")
           .and.to.be.of.length(response.result.length+1);
         expect(dataset.output()[0]).to.be.of.length(7);
         expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-        //expect(dataset.output()[4][1]).to.be.eql("2014-02-05T21:39:12.155Z");
         done();
       });
     });
@@ -320,7 +318,7 @@ describe("Keen.Dataset", function(){
 
     it("funnel.json", function(done){
       $.getJSON("./unit/data/funnel.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "",
           unpack: {
             index: {
@@ -356,20 +354,12 @@ describe("Keen.Dataset", function(){
 
     it("interval-double-groupBy.json", function(done){
       $.getJSON("./unit/data/interval-double-groupBy.json", function(response) {
-        var dataset = new Keen.Dataset(response, {
+        var dataset = new Keen.Dataset().parse(response, {
           records: "result",
           unpack: {
             index: {
               path: "timeframe -> start",
-              type: "date",
-              //label: "Event",
-              /*replace: {
-                "pageview": "Visit",
-                "signup": "Join",
-                "return-login": "Return",
-                "create-post": "Contrib",
-                "send-invite": "Invite"
-              }*/
+              type: "date"
             },
             value: {
               path: "value -> result",
@@ -378,9 +368,7 @@ describe("Keen.Dataset", function(){
             label: {
               path: "value -> first.property",
               type: "string",
-              replace: {
-                //"/": "Home"
-              }
+              replace: {}
             }
           }
         });
