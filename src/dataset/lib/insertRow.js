@@ -1,9 +1,7 @@
 Keen.Dataset.prototype.insertRow = function(index, str, input){
-  var self = this,
-      args = Array.prototype.slice.call(arguments, 2),
-      label = (str !== undefined) ? str : null,
-      newRow = [];
+  var self = this, label, newRow = [];
 
+  label = (str !== undefined) ? str : null;
   newRow.push(label);
 
   if (typeof input === "function") {
@@ -11,7 +9,7 @@ Keen.Dataset.prototype.insertRow = function(index, str, input){
       var col, cell;
       if (i > 0) {
         col = self.selectColumn(i);
-        cell = input.apply(self, [col].concat(args));
+        cell = input.call(self, col, i);
         newRow.push(cell);
       }
     });
@@ -31,13 +29,3 @@ Keen.Dataset.prototype.insertRow = function(index, str, input){
 
   return this;
 };
-
-// ds.insertRow(0, "Total", ds.getColumnSum);
-// ds.insertRow(0, "Given", [1,2,3,4,5]);
-
-
-// Keen.Dataset.prototype.insertRow = function(index, row){
-//   // insert row of nulls if !row
-//   this.data.output.splice(index, 0, row);
-//   return this;
-// };

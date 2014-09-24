@@ -29,7 +29,5 @@ Keen.Dataset.prototype.appendColumn = function(str, input){
   return self;
 };
 
-// ds.appendColumn("Label", [1, 2, 3]);
-// ds.appendColumn("New Label", function(row, index){});
 // ds.appendColumn("Total", ds.getRowSum);
 // ds.appendColumn("Median", ds.getRowMedian);

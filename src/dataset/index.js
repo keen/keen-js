@@ -14,6 +14,9 @@
   [x] fix Dataset handling of metrics
   [x] write tests for new sort methods
 
+  [x] updateRow/updateColumn func iterates
+  [x] move getRow* and getColumn* into /helpers
+
   [ ] #getRowAverage
   [ ] #getRowMedian
   [ ] #getRowMinimum

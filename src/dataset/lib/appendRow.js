@@ -31,6 +31,3 @@ Keen.Dataset.prototype.appendRow = function(str, input){
 
   return this;
 };
-
-// ds.appendRow("Total", ds.getColumnSum);
-// ds.appendRow("Given", [1,2,3,4,5]);

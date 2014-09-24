@@ -425,456 +425,485 @@ describe("Keen.Dataset", function(){
     });
   });
 
+  describe("Access Rows", function(){
 
-  // ------------------------------
-  // Row access methods
-  // ------------------------------
-
-  describe("#selectRow", function() {
-    it("should return a given row", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(table[1]);
-    });
-    it("should accept a string query argument (indexOf match)", function(){
-      var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
-      this.ds.output(table);
-      expect(this.ds.selectRow("a")).to.be.an("array")
-        .and.to.deep.equal(table[1]);
-    });
-  });
-
-  describe("#appendRow", function() {
-    it("should append a row of nulls when passed nothing", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.appendRow(2);
-      expect(this.ds.selectRow(3)).to.be.an("array")
-        .and.to.deep.equal([2, null, null]);
-    });
-    it("should append a given row when passing an array", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.appendRow(2, [344, 554]);
-      expect(this.ds.selectRow(3)).to.be.an("array")
-        .and.to.deep.equal([2, 344, 554]);
-    });
-    it("should append a given row when passing a computational helper", function(){
-      var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
-      this.ds.output(table);
-      this.ds.appendRow(2, this.ds.getColumnSum);
-      expect(this.ds.selectRow(3)).to.be.an("array")
-        .and.to.deep.equal([2, 15, 25]);
-    });
-    it("should append a given row when passing a custom function", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.appendRow(0, function(c, i){
-        return 100;
+    describe("#selectRow", function() {
+      it("should return a given row", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(table[1]);
       });
-      expect(this.ds.selectRow(3)).to.be.an("array")
-        .and.to.deep.equal([0, 100, 100]);
-    });
-  });
-
-  describe("#insertRow", function() {
-    it("should insert a row of nulls at a given index when passed nothing", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertRow(1);
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal([null, null, null]);
-    });
-    it("should insert a given row at a given index", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertRow(1, 2, [344, 554]);
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal([2, 344, 554]);
-    });
-    it("should append a given row when passing a computational helper", function(){
-      var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
-      this.ds.output(table);
-      this.ds.insertRow(1, "Total", this.ds.getColumnSum);
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(["Total", 15, 25]);
-    });
-    it("should append a given row when passing a custom function", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertRow(1, "Total", function(c, i){
-        return 100;
+      it("should accept a string query argument (indexOf match)", function(){
+        var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
+        this.ds.output(table);
+        expect(this.ds.selectRow("a")).to.be.an("array")
+          .and.to.deep.equal(table[1]);
       });
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(["Total", 100, 100]);
     });
-  });
 
-  describe("#modifyRow", function() {
-    it("should replace a given row by passing a new one", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newRow = ["a", 0, 0];
-      this.ds.output(table);
-      this.ds.modifyRow(1, newRow);
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(newRow);
-    });
-    it("should accept a string query argument (indexOf match)", function(){
-      var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
-      var newRow = ["a", 0, 0];
-      this.ds.output(table);
-      this.ds.modifyRow("a", newRow);
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(newRow);
-    });
-    it("should rewrite a given row with a function", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newRow = ["a", 0, 0];
-      this.ds.output(table);
-      this.ds.modifyRow(1, function(row){
-        return newRow;
+    describe("#appendRow", function() {
+      it("should append a row of nulls when passed nothing", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendRow(2);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([2, null, null]);
       });
-      expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(newRow);
+      it("should append a given row when passing an array", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendRow(2, [344, 554]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([2, 344, 554]);
+      });
+      it("should append a given row when passing a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
+        this.ds.output(table);
+        this.ds.appendRow(2, this.ds.getColumnSum);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([2, 15, 25]);
+      });
+      it("should append a given row when passing a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendRow(0, function(c, i){
+          return 100;
+        });
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([0, 100, 100]);
+      });
     });
-  });
-  describe("#removeRow", function() {
-    it("should remove a given row", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.removeRow(1);
-      expect(this.ds.output()).to.be.an("array")
-        .and.to.have.length(2);
+
+    describe("#insertRow", function() {
+      it("should insert a row of nulls at a given index when passed nothing", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertRow(1);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([null, null, null]);
+      });
+      it("should insert a given row at a given index", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertRow(1, 2, [344, 554]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([2, 344, 554]);
+      });
+      it("should append a given row when passing a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
+        this.ds.output(table);
+        this.ds.insertRow(1, "Total", this.ds.getColumnSum);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 15, 25]);
+      });
+      it("should append a given row when passing a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertRow(1, "Total", function(c, i){
+          return 100;
+        });
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 100, 100]);
+      });
     });
-    it("should accept a string query argument (indexOf match)", function(){
-      var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
-      this.ds.output(table);
-      this.ds.removeRow("a");
-      expect(this.ds.output()).to.be.an("array")
-        .and.to.have.length(2);
+
+    describe("#updateRow", function() {
+      it("should replace a given row by passing a new one", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateRow(1, [10, 10]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([0, 10, 10]);
+      });
+      it("should accept a string query argument (indexOf match)", function(){
+        var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
+        this.ds.output(table);
+        this.ds.updateRow("a", [1, 2]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["a", 1, 2]);
+      });
+      it("should rewrite a given row with a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateRow(1, this.ds.getColumnSum);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 695, 986]);
+      });
+      it("should rewrite a given row with a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateRow(1, function(col, index){
+          return this.getColumnSum(col);
+        });
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 695, 986]);
+      });
     });
-  });
-  describe("#filterRows", function() {
-    it("should remove rows not surviving the filter", function(){
-      var table = [["Index", "A", "B"],[0, 5, 5],[1, 10, 10]];
-      this.ds.output(table);
-      this.ds.filterRows(function(row, i){
-        var total = 0;
-        for (var i=0; i < row.length; i++){
-          if (i > 0 && !isNaN(parseInt(row[i]))) {
-            total += parseInt(row[i]);
+
+    describe("#removeRow", function() {
+      it("should remove a given row", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.removeRow(1);
+        expect(this.ds.output()).to.be.an("array")
+          .and.to.have.length(2);
+      });
+      it("should accept a string query argument (indexOf match)", function(){
+        var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
+        this.ds.output(table);
+        this.ds.removeRow("a");
+        expect(this.ds.output()).to.be.an("array")
+          .and.to.have.length(2);
+      });
+    });
+
+    describe("#filterRows", function() {
+      it("should remove rows not surviving the filter", function(){
+        var table = [["Index", "A", "B"],[0, 5, 5],[1, 10, 10]];
+        this.ds.output(table);
+        this.ds.filterRows(function(row, i){
+          var total = 0;
+          for (var i=0; i < row.length; i++){
+            if (i > 0 && !isNaN(parseInt(row[i]))) {
+              total += parseInt(row[i]);
+            }
           }
-        }
-        return total < 11;
+          return total < 11;
+        });
+        expect(this.ds.output()).to.be.an("array")
+          .and.to.have.length(2);
+        expect(this.ds.output()[1][1]).to.be.a("number")
+          .and.to.eql(5);
       });
-      expect(this.ds.output()).to.be.an("array")
-        .and.to.have.length(2);
-      expect(this.ds.output()[1][1]).to.be.a("number")
-        .and.to.eql(5);
     });
-  });
 
-
-  // ------------------------------
-  // Column access methods
-  // ------------------------------
-
-  describe("#selectColumn", function() {
-    it("should return an array representing a given column", function(){
-      this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(["A", 342, 353]);
-    });
-    it("should accept a string query argument (indexOf match)", function(){
-      this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
-      expect(this.ds.selectColumn("A")).to.be.an("array")
-        .and.to.deep.equal(["A", 342, 353]);
-    });
-  });
-
-  describe("#appendColumn", function() {
-    it("should append a given column of nulls when passed nothing", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.appendColumn("C");
-      expect(this.ds.selectColumn(3)).to.be.an("array")
-        .and.to.deep.equal(["C", null, null]);
-    });
-    it("should append a given column when passing an array", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.appendColumn("C", [0, 0]);
-      expect(this.ds.selectColumn(3)).to.be.an("array")
-        .and.to.deep.equal(["C", 0, 0]);
-    });
-    it("should append a given column when passing a computational helper", function(){
-      var table = [["Index", "A", "B"],[0, 1, 1],[1, 2, 2]];
-      this.ds.output(table);
-      this.ds.appendColumn("C", this.ds.getRowSum);
-      expect(this.ds.selectColumn(3)).to.be.an("array")
-        .and.to.deep.equal(["C", 2, 4]);
-    });
-    it("should append a given column when passing a custom function", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.appendColumn("C", function(row, i){
-        return 0;
+    describe("#sortRows", function(){
+      beforeEach(function(){
+        this.ds.output([
+          ["Index", "A", "B", "C"],
+          [0, 1, 5, 10],
+          [1, 2, 10, 20],
+          [2, 4, 20, 40]
+        ]);
       });
-      expect(this.ds.selectColumn(3)).to.be.an("array")
-        .and.to.deep.equal(["C", 0, 0]);
-    });
-  });
-
-  describe("#insertColumn", function() {
-    it("should insert a column of nulls when passing nothing", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertColumn(1);
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal([null, null, null]);
-    });
-    it("should insert a given column at a given index", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertColumn(1, "_", [0, 0]);
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(["_", 0, 0]);
-    });
-    it("should insert a given column at a given index when passing a computational helper", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertColumn(1, "Total", this.ds.getRowSum);
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(["Total", 1006, 675]);
-    });
-    it("should insert a given column at a given index when passing a custom function", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.insertColumn(1, "Total", function(r){
-        return r[1] + r[2];
+      it("should sort rows properly, without calling a comparator", function(){
+        expect(this.ds.sortRows("asc").output()[1][0]).to.eql(0);
+        expect(this.ds.sortRows("desc").output()[1][0]).to.eql(2);
       });
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(["Total", 1006, 675]);
-    });
-  });
-
-  describe("#modifyColumn", function() {
-    it("should replace a given column by passing a new one", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newCol = ["A", 0, 0];
-      this.ds.output(table);
-      this.ds.modifyColumn(1, newCol);
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(newCol);
-    });
-    it("should accept a string query argument (indexOf match)", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newCol = ["a", 0, 0];
-      this.ds.output(table);
-      this.ds.modifyColumn("A", newCol);
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(newCol);
-    });
-
-    it("should rewrite each cell of given column with a function", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newCol = ["A", 0, 0];
-      this.ds.output(table);
-      this.ds.modifyColumn(1, function(col, index, row){
-        if (index == 0) return "A";
-        return 0;
+      it("should sort rows properly, when calling a general comparator (sum)", function(){
+        expect(this.ds
+          .sortRows("asc", this.ds.sum, 1)
+          .output()[1][0])
+        .to.eql(0);
+        expect(this.ds
+          .sortRows("desc", this.ds.sum, 1)
+          .output()[1][0])
+        .to.eql(2);
       });
-      expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(newCol);
+      it("should sort rows ascending, when calling a specific comparator (getRowSum)", function(){
+        expect(this.ds
+          .sortRows("asc", this.ds.getRowSum)
+          .output()[1][0])
+        .to.eql(0);
+        expect(this.ds
+          .sortRows("desc", this.ds.getRowSum)
+          .output()[1][0])
+        .to.eql(2);
+      });
+      it("should sort rows ascending, when calling a custom comparator", function(){
+        var demo = function(row){
+          return this.getRowSum(row);
+        };
+        expect(this.ds
+          .sortRows("asc", demo)
+          .output()[1][0])
+        .to.eql(0);
+        expect(this.ds
+          .sortRows("desc", demo)
+          .output()[1][0])
+        .to.eql(2);
+      });
     });
+
   });
-  describe("#removeColumn", function() {
-    it("should remove a given column", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      this.ds.output(table);
-      this.ds.removeColumn(1);
-      expect(this.ds.output()).to.be.an("array")
-        .and.to.have.length(3);
-      expect(this.ds.output()[0]).to.be.an("array")
-        .and.to.have.length(2);
-      expect(this.ds.output()[0][1]).to.be.a("string")
-        .and.to.eql("B");
+
+
+
+
+
+
+
+
+  describe("Access Columns", function(){
+
+
+    describe("#selectColumn", function() {
+      it("should return an array representing a given column", function(){
+        this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 342, 353]);
+      });
+      it("should accept a string query argument (indexOf match)", function(){
+        this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
+        expect(this.ds.selectColumn("A")).to.be.an("array")
+          .and.to.deep.equal(["A", 342, 353]);
+      });
     });
-    it("should accept a string query argument (indexOf match)", function(){
-      var table = [["Index", "A", "B"],["b", 342, 664],["b", 353, 322]];
-      this.ds.output(table);
-      this.ds.removeColumn("A");
-      expect(this.ds.output()).to.be.an("array")
-        .and.to.have.length(3);
-      expect(this.ds.output()[0]).to.be.an("array")
-        .and.to.have.length(2);
-      expect(this.ds.output()[0][1]).to.be.a("string")
-        .and.to.eql("B");
+
+    describe("#appendColumn", function() {
+      it("should append a given column of nulls when passed nothing", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendColumn("C");
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", null, null]);
+      });
+      it("should append a given column when passing an array", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendColumn("C", [0, 0]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", 0, 0]);
+      });
+      it("should append a given column when passing a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 1, 1],[1, 2, 2]];
+        this.ds.output(table);
+        this.ds.appendColumn("C", this.ds.getRowSum);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", 2, 4]);
+      });
+      it("should append a given column when passing a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendColumn("C", function(row, i){
+          return 0;
+        });
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", 0, 0]);
+      });
     });
-  });
-  describe("#filterColumns", function() {
-    it("should remove columns not surviving the filter", function(){
-      var table = [["Index", "A", "B"],[0, 5, 10],[1, 10, 10]];
-      this.ds.output(table);
-      this.ds.filterColumns(function(col, index){
-        if (index < 1) return true;
-        var total = 0;
-        for (var i=0; i < col.length; i++){
-          if (i > 0 && !isNaN(parseInt(col[i]))) {
-            total += parseInt(col[i]);
+
+    describe("#insertColumn", function() {
+      it("should insert a column of nulls when passing nothing", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertColumn(1);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal([null, null, null]);
+      });
+      it("should insert a given column at a given index", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertColumn(1, "_", [0, 0]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["_", 0, 0]);
+      });
+      it("should insert a given column at a given index when passing a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertColumn(1, "Total", this.ds.getRowSum);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 1006, 675]);
+      });
+      it("should insert a given column at a given index when passing a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertColumn(1, "Total", function(r){
+          return r[1] + r[2];
+        });
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 1006, 675]);
+      });
+    });
+
+    describe("#updateColumn", function() {
+      it("should replace a given column by passing a new one", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateColumn(1, [0, 0]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 0, 0]);
+      });
+      it("should accept a string query argument (indexOf match)", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateColumn("A", [0, 0]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 0, 0]);
+      });
+      it("should rewrite each cell of given column with a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateColumn(1, this.ds.getRowSum);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 1006, 675]);
+      });
+      it("should rewrite each cell of given column with a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateColumn(1, function(row, index){ return 5; });
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 5, 5]);
+      });
+    });
+
+    describe("#removeColumn", function() {
+      it("should remove a given column", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.removeColumn(1);
+        expect(this.ds.output()).to.be.an("array")
+          .and.to.have.length(3);
+        expect(this.ds.output()[0]).to.be.an("array")
+          .and.to.have.length(2);
+        expect(this.ds.output()[0][1]).to.be.a("string")
+          .and.to.eql("B");
+      });
+      it("should accept a string query argument (indexOf match)", function(){
+        var table = [["Index", "A", "B"],["b", 342, 664],["b", 353, 322]];
+        this.ds.output(table);
+        this.ds.removeColumn("A");
+        expect(this.ds.output()).to.be.an("array")
+          .and.to.have.length(3);
+        expect(this.ds.output()[0]).to.be.an("array")
+          .and.to.have.length(2);
+        expect(this.ds.output()[0][1]).to.be.a("string")
+          .and.to.eql("B");
+      });
+    });
+
+    describe("#filterColumns", function() {
+      it("should remove columns not surviving the filter", function(){
+        var table = [["Index", "A", "B"],[0, 5, 10],[1, 10, 10]];
+        this.ds.output(table);
+        this.ds.filterColumns(function(col, index){
+          if (index < 1) return true;
+          var total = 0;
+          for (var i=0; i < col.length; i++){
+            if (i > 0 && !isNaN(parseInt(col[i]))) {
+              total += parseInt(col[i]);
+            }
           }
-        }
-        return total > 15;
+          return total > 15;
+        });
+        expect(this.ds.output()).to.be.an("array")
+          .and.to.have.length(3);
+        expect(this.ds.output()[0]).to.be.an("array")
+          .and.to.have.length(2);
+        expect(this.ds.output()[0][1]).to.be.a("string")
+          .and.to.eql("B");
       });
-      expect(this.ds.output()).to.be.an("array")
-        .and.to.have.length(3);
-      expect(this.ds.output()[0]).to.be.an("array")
-        .and.to.have.length(2);
-      expect(this.ds.output()[0][1]).to.be.a("string")
-        .and.to.eql("B");
     });
+
+
+    describe("#sortColumns", function(){
+      beforeEach(function(){
+        this.ds.output([
+          ["Index", "A", "B", "C"],
+          [0, 1, 5, 10],
+          [1, 2, 10, 20],
+          [2, 4, 20, 40]
+        ]);
+      });
+      it("should sort columns properly, without calling a comparator", function(){
+        this.ds.sortColumns("asc");
+        expect(this.ds.output()[0][1]).to.eql("A");
+        this.ds.sortColumns("desc");
+        expect(this.ds.output()[0][1]).to.eql("C");
+      });
+      it("should sort columns properly, when calling a general comparator (sum)", function(){
+        expect(this.ds
+          .sortColumns("asc", this.ds.sum, 1)
+          .output()[0][1])
+        .to.eql("A");
+        expect(this.ds
+          .sortColumns("desc", this.ds.sum, 1)
+          .output()[0][1])
+        .to.eql("C");
+      });
+      it("should sort columns ascending, when calling a specific comparator (getColumnSum)", function(){
+        expect(this.ds
+          .sortColumns("asc", this.ds.getColumnSum)
+          .output()[0][1])
+        .to.eql("A");
+        expect(this.ds
+          .sortColumns("desc", this.ds.getColumnSum)
+          .output()[0][1])
+        .to.eql("C");
+      });
+      it("should sort columns ascending, when calling a custom comparator", function(){
+        var demo = function(row){
+          return this.getColumnSum(row);
+        };
+        expect(this.ds
+          .sortColumns("asc", demo)
+          .output()[0][1])
+        .to.eql("A");
+        expect(this.ds
+          .sortColumns("desc", demo)
+          .output()[0][1])
+        .to.eql("C");
+      });
+    });
+
+
   });
 
-  describe("#sum", function(){
-    it("should return the sum for an unbounded range", function(){
-      var sum = this.ds.sum([10,10,10,10,10]);
-      expect(sum).to.eql(50);
+
+  describe("Helpers", function(){
+
+    describe("#sum", function(){
+      it("should return the sum for an unbounded range", function(){
+        var sum = this.ds.sum([10,10,10,10,10]);
+        expect(sum).to.eql(50);
+      });
+      it("should return the sum for a partially bounded range", function(){
+        var sum = this.ds.sum([10,10,10,10,10], 1);
+        expect(sum).to.eql(40);
+      });
+      it("should return the sum for a fully bounded range", function(){
+        var sum = this.ds.sum([10,10,10,10,10], 1, 3);
+        expect(sum).to.eql(30);
+      });
     });
-    it("should return the sum for a partially bounded range", function(){
-      var sum = this.ds.sum([10,10,10,10,10], 1);
-      expect(sum).to.eql(40);
+
+    describe("#getRowSum", function(){
+      it("should return the sum of values in a given row (array), excluding the first value", function(){
+        var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
+        expect(sum).to.eql(6);
+      });
     });
-    it("should return the sum for a fully bounded range", function(){
-      var sum = this.ds.sum([10,10,10,10,10], 1, 3);
-      expect(sum).to.eql(30);
+    describe("#getColumnSum", function(){
+      it("should return the sum of values in a given column (array), excluding the first value", function(){
+        var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
+        expect(sum).to.eql(6);
+      });
     });
+
+    describe("#pick", function(){
+
+      it("should return a given index of an array", function(){
+        expect(this.ds.pick(["A","B"], 1)).to.eql("B");
+      });
+
+    });
+
+    describe("#getRowIndex", function(){
+      it("should return the first value of a given row (array)", function(){
+        expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
+      });
+    });
+
+
+    describe("#getColumnLabel", function(){
+      it("should return the first value of a given column (array)", function(){
+        expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
+      });
+    });
+
   });
 
-  describe("#getRowIndex", function(){
-    it("should return the first value of a given row (array)", function(){
-      expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
-    });
-  });
-  describe("#getRowSum", function(){
-    it("should return the sum of values in a given row (array), excluding the first value", function(){
-      var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
-      expect(sum).to.eql(6);
-    });
-  });
 
-  describe("#getColumnLabel", function(){
-    it("should return the first value of a given column (array)", function(){
-      expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
-    });
-  });
-  describe("#getColumnSum", function(){
-    it("should return the sum of values in a given column (array), excluding the first value", function(){
-      var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
-      expect(sum).to.eql(6);
-    });
-  });
-
-  describe("#sortRows", function(){
-    beforeEach(function(){
-      this.ds.output([
-        ["Index", "A", "B", "C"],
-        [0, 1, 5, 10],
-        [1, 2, 10, 20],
-        [2, 4, 20, 40]
-      ]);
-    });
-    it("should sort rows properly, without calling a comparator", function(){
-      expect(this.ds.sortRows("asc").output()[1][0]).to.eql(0);
-      expect(this.ds.sortRows("desc").output()[1][0]).to.eql(2);
-    });
-    it("should sort rows properly, when calling a general comparator (sum)", function(){
-      expect(this.ds
-        .sortRows("asc", this.ds.sum, 1)
-        .output()[1][0])
-      .to.eql(0);
-      expect(this.ds
-        .sortRows("desc", this.ds.sum, 1)
-        .output()[1][0])
-      .to.eql(2);
-    });
-    it("should sort rows ascending, when calling a specific comparator (getRowSum)", function(){
-      expect(this.ds
-        .sortRows("asc", this.ds.getRowSum)
-        .output()[1][0])
-      .to.eql(0);
-      expect(this.ds
-        .sortRows("desc", this.ds.getRowSum)
-        .output()[1][0])
-      .to.eql(2);
-    });
-    it("should sort rows ascending, when calling a custom comparator", function(){
-      var demo = function(row){
-        return this.getRowSum(row);
-      };
-      expect(this.ds
-        .sortRows("asc", demo)
-        .output()[1][0])
-      .to.eql(0);
-      expect(this.ds
-        .sortRows("desc", demo)
-        .output()[1][0])
-      .to.eql(2);
-    });
-  });
-
-  describe("#sortColumns", function(){
-    beforeEach(function(){
-      this.ds.output([
-        ["Index", "A", "B", "C"],
-        [0, 1, 5, 10],
-        [1, 2, 10, 20],
-        [2, 4, 20, 40]
-      ]);
-    });
-    it("should sort columns properly, without calling a comparator", function(){
-      expect(this.ds
-        .sortColumns("asc")
-        .output()[0][1])
-      .to.eql("A");
-      expect(this.ds
-        .sortColumns("desc")
-        .output()[0][1])
-      .to.eql("C");
-    });
-    it("should sort columns properly, when calling a general comparator (sum)", function(){
-      expect(this.ds
-        .sortColumns("asc", this.ds.sum, 1)
-        .output()[0][1])
-      .to.eql("A");
-      expect(this.ds
-        .sortColumns("desc", this.ds.sum, 1)
-        .output()[0][1])
-      .to.eql("C");
-    });
-    it("should sort columns ascending, when calling a specific comparator (getColumnSum)", function(){
-      expect(this.ds
-        .sortColumns("asc", this.ds.getColumnSum)
-        .output()[0][1])
-      .to.eql("A");
-      expect(this.ds
-        .sortColumns("desc", this.ds.getColumnSum)
-        .output()[0][1])
-      .to.eql("C");
-    });
-    it("should sort columns ascending, when calling a custom comparator", function(){
-      var demo = function(row){
-        return this.getColumnSum(row);
-      };
-      expect(this.ds
-        .sortColumns("asc", demo)
-        .output()[0][1])
-      .to.eql("A");
-      expect(this.ds
-        .sortColumns("desc", demo)
-        .output()[0][1])
-      .to.eql("C");
-    });
-  });
 
 });
