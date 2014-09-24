@@ -20,7 +20,7 @@ module.exports = function(grunt) {
         process: function(src, filepath) {
           var namespace = (grunt.option("namespace") || false);
           src = ((namespace) ? src.replace("'Keen'", "'" + namespace + "'") : src);
-          return "  // Source: " + filepath + "\n" + src;
+          return "// Source: " + filepath + "\n" + src;
         }
       },
 
@@ -50,12 +50,11 @@ module.exports = function(grunt) {
 
           , "src/lib/base64.js"
           , "src/lib/json2.js"
-          //, "src/lib/keen-dataform.js"
           , "src/lib/keen-domready.js"
           , "src/lib/keen-spinner.js"
 
           , ".tmp/dataset.js"
-          , "src/dataviz.js"
+          , ".tmp/dataviz.js"
           , "src/visualization.js"
 
           , "src/plugins/keen-googlecharts.js"
