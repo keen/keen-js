@@ -288,6 +288,10 @@ var multiline = new Keen.Query("count", {
         req_metric.parseRequest(this).render();
         raw_metric.parseRawData(res).render();
       });
+      window.reqs['metric'].on("error", function(res){
+        req_metric.error(res.message);
+        raw_metric.error(res.message);
+      });
 
 
       /*
@@ -338,6 +342,10 @@ var multiline = new Keen.Query("count", {
           .parseRawData(res)
           .sortGroups("desc")
           .render();
+      });
+      window.reqs['groupBy'].on("error", function(res){
+        req_pie.error(res.message);
+        raw_pie.error(res.message);
       });
 
 

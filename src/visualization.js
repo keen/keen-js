@@ -38,8 +38,8 @@ Keen.prototype.draw = function(query, el, cfg) {
       .parseRequest(this)
       .render();
   });
-  request.on("error", function(response){
-    visual.error({ error: response, el: el });
+  request.on("error", function(res){
+    visual.error(res.message);
   });
   return visual;
 };
