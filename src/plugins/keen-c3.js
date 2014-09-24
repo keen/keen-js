@@ -83,8 +83,22 @@
       render: function(){
         var setup = getSetupTemplate.call(this);
         setup["data"]["type"] = type;
-        if (type === "pie" || type === "donut") {
+        if (type === "gauge") {}
+        else if (type === "pie" || type === "donut") {
           setup[type] = { title: this.title() };
+        }
+        else {
+          if (this.dataType().indexOf("chron") > -1) {
+            setup["data"]["x"] = "x";
+            setup["axis"] = {
+              x: {
+                type: 'timeseries',
+                tick: {
+                  format: '%Y-%m-%d'
+                }
+              }
+            };
+          }
         }
         this.view._artifacts["c3"] = this.view._artifacts["c3"] || c3.generate(setup);
         this.update();
@@ -102,6 +116,10 @@
           });
         }
         else {
+          if (this.dataType().indexOf("chron") > -1) {
+            cols.push(self.dataset.selectColumn(0));
+            cols[0][0] = 'x';
+          }
           Keen.utils.each(self.data()[0], function(c, i){
             if (i > 0) {
               cols.push(self.dataset.selectColumn(i));
