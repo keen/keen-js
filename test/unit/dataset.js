@@ -437,33 +437,94 @@ describe("Keen.Dataset", function(){
       expect(this.ds.selectRow(1)).to.be.an("array")
         .and.to.deep.equal(table[1]);
     });
-  });
-  describe("#appendRow", function() {
-    it("should append a given row", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newRow = [2, 344, 554];
+    it("should accept a string query argument (indexOf match)", function(){
+      var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
       this.ds.output(table);
-      this.ds.appendRow(newRow);
-      expect(this.ds.selectRow(3)).to.be.an("array")
-        .and.to.deep.equal(newRow);
+      expect(this.ds.selectRow("a")).to.be.an("array")
+        .and.to.deep.equal(table[1]);
     });
   });
+
+  describe("#appendRow", function() {
+    it("should append a row of nulls when passed nothing", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.appendRow(2);
+      expect(this.ds.selectRow(3)).to.be.an("array")
+        .and.to.deep.equal([2, null, null]);
+    });
+    it("should append a given row when passing an array", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.appendRow(2, [344, 554]);
+      expect(this.ds.selectRow(3)).to.be.an("array")
+        .and.to.deep.equal([2, 344, 554]);
+    });
+    it("should append a given row when passing a computational helper", function(){
+      var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
+      this.ds.output(table);
+      this.ds.appendRow(2, this.ds.getColumnSum);
+      expect(this.ds.selectRow(3)).to.be.an("array")
+        .and.to.deep.equal([2, 15, 25]);
+    });
+    it("should append a given row when passing a custom function", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.appendRow(0, function(c, i){
+        return 100;
+      });
+      expect(this.ds.selectRow(3)).to.be.an("array")
+        .and.to.deep.equal([0, 100, 100]);
+    });
+  });
+
   describe("#insertRow", function() {
+    it("should insert a row of nulls at a given index when passed nothing", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.insertRow(1);
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal([null, null, null]);
+    });
     it("should insert a given row at a given index", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newRow = [2, 344, 554];
       this.ds.output(table);
-      this.ds.insertRow(1, newRow);
+      this.ds.insertRow(1, 2, [344, 554]);
       expect(this.ds.selectRow(1)).to.be.an("array")
-        .and.to.deep.equal(newRow);
+        .and.to.deep.equal([2, 344, 554]);
+    });
+    it("should append a given row when passing a computational helper", function(){
+      var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
+      this.ds.output(table);
+      this.ds.insertRow(1, "Total", this.ds.getColumnSum);
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(["Total", 15, 25]);
+    });
+    it("should append a given row when passing a custom function", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.insertRow(1, "Total", function(c, i){
+        return 100;
+      });
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(["Total", 100, 100]);
     });
   });
+
   describe("#modifyRow", function() {
     it("should replace a given row by passing a new one", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
       var newRow = ["a", 0, 0];
       this.ds.output(table);
       this.ds.modifyRow(1, newRow);
+      expect(this.ds.selectRow(1)).to.be.an("array")
+        .and.to.deep.equal(newRow);
+    });
+    it("should accept a string query argument (indexOf match)", function(){
+      var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
+      var newRow = ["a", 0, 0];
+      this.ds.output(table);
+      this.ds.modifyRow("a", newRow);
       expect(this.ds.selectRow(1)).to.be.an("array")
         .and.to.deep.equal(newRow);
     });
@@ -483,6 +544,13 @@ describe("Keen.Dataset", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
       this.ds.output(table);
       this.ds.removeRow(1);
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.have.length(2);
+    });
+    it("should accept a string query argument (indexOf match)", function(){
+      var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
+      this.ds.output(table);
+      this.ds.removeRow("a");
       expect(this.ds.output()).to.be.an("array")
         .and.to.have.length(2);
     });
@@ -518,27 +586,79 @@ describe("Keen.Dataset", function(){
       expect(this.ds.selectColumn(1)).to.be.an("array")
         .and.to.deep.equal(["A", 342, 353]);
     });
-  });
-  describe("#appendColumn", function() {
-    it("should append a given column", function(){
-      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newCol = ["C", 0, 0];
-      this.ds.output(table);
-      this.ds.appendColumn(newCol);
-      expect(this.ds.selectColumn(3)).to.be.an("array")
-        .and.to.deep.equal(newCol);
+    it("should accept a string query argument (indexOf match)", function(){
+      this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
+      expect(this.ds.selectColumn("A")).to.be.an("array")
+        .and.to.deep.equal(["A", 342, 353]);
     });
   });
+
+  describe("#appendColumn", function() {
+    it("should append a given column of nulls when passed nothing", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.appendColumn("C");
+      expect(this.ds.selectColumn(3)).to.be.an("array")
+        .and.to.deep.equal(["C", null, null]);
+    });
+    it("should append a given column when passing an array", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.appendColumn("C", [0, 0]);
+      expect(this.ds.selectColumn(3)).to.be.an("array")
+        .and.to.deep.equal(["C", 0, 0]);
+    });
+    it("should append a given column when passing a computational helper", function(){
+      var table = [["Index", "A", "B"],[0, 1, 1],[1, 2, 2]];
+      this.ds.output(table);
+      this.ds.appendColumn("C", this.ds.getRowSum);
+      expect(this.ds.selectColumn(3)).to.be.an("array")
+        .and.to.deep.equal(["C", 2, 4]);
+    });
+    it("should append a given column when passing a custom function", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.appendColumn("C", function(row, i){
+        return 0;
+      });
+      expect(this.ds.selectColumn(3)).to.be.an("array")
+        .and.to.deep.equal(["C", 0, 0]);
+    });
+  });
+
   describe("#insertColumn", function() {
+    it("should insert a column of nulls when passing nothing", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.insertColumn(1);
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal([null, null, null]);
+    });
     it("should insert a given column at a given index", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-      var newCol = ["_", 0, 0];
       this.ds.output(table);
-      this.ds.insertColumn(1, newCol);
+      this.ds.insertColumn(1, "_", [0, 0]);
       expect(this.ds.selectColumn(1)).to.be.an("array")
-        .and.to.deep.equal(newCol);
+        .and.to.deep.equal(["_", 0, 0]);
+    });
+    it("should insert a given column at a given index when passing a computational helper", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.insertColumn(1, "Total", this.ds.getRowSum);
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(["Total", 1006, 675]);
+    });
+    it("should insert a given column at a given index when passing a custom function", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      this.ds.output(table);
+      this.ds.insertColumn(1, "Total", function(r){
+        return r[1] + r[2];
+      });
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(["Total", 1006, 675]);
     });
   });
+
   describe("#modifyColumn", function() {
     it("should replace a given column by passing a new one", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
@@ -548,6 +668,15 @@ describe("Keen.Dataset", function(){
       expect(this.ds.selectColumn(1)).to.be.an("array")
         .and.to.deep.equal(newCol);
     });
+    it("should accept a string query argument (indexOf match)", function(){
+      var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+      var newCol = ["a", 0, 0];
+      this.ds.output(table);
+      this.ds.modifyColumn("A", newCol);
+      expect(this.ds.selectColumn(1)).to.be.an("array")
+        .and.to.deep.equal(newCol);
+    });
+
     it("should rewrite each cell of given column with a function", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
       var newCol = ["A", 0, 0];
@@ -565,6 +694,17 @@ describe("Keen.Dataset", function(){
       var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
       this.ds.output(table);
       this.ds.removeColumn(1);
+      expect(this.ds.output()).to.be.an("array")
+        .and.to.have.length(3);
+      expect(this.ds.output()[0]).to.be.an("array")
+        .and.to.have.length(2);
+      expect(this.ds.output()[0][1]).to.be.a("string")
+        .and.to.eql("B");
+    });
+    it("should accept a string query argument (indexOf match)", function(){
+      var table = [["Index", "A", "B"],["b", 342, 664],["b", 353, 322]];
+      this.ds.output(table);
+      this.ds.removeColumn("A");
       expect(this.ds.output()).to.be.an("array")
         .and.to.have.length(3);
       expect(this.ds.output()[0]).to.be.an("array")
