@@ -51,7 +51,7 @@
           this.destroy();
         }
         self.view._artifacts['googlechart'] = self.view._artifacts['googlechart'] || new google.visualization[type](self.el());
-        google.visualization.events.addListener(self.view._artifacts.googlechart, 'error', function(stack){
+        google.visualization.events.addListener(self.view._artifacts['googlechart'], 'error', function(stack){
           _handleErrors.call(self, stack);
         });
         this.update();
@@ -102,7 +102,7 @@
 
   function _handleErrors(stack){
     var message = errors[stack['id']] || stack['message'] || "An error occurred";
-    this.trigger('error', message);
+    this.error(message);
   }
 
   function _getDefaultAttributes(type){

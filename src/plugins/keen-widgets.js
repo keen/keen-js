@@ -9,6 +9,19 @@
     var Keen = lib || {},
         Metric, Error, Spinner;
 
+    Keen.Error = {
+      defaults: {
+        backgroundColor : "",
+        borderRadius    : "4px",
+        color           : "#ccc",
+        display         : "block",
+        fontFamily      : "Helvetica Neue, Helvetica, Arial, sans-serif",
+        fontSize        : "21px",
+        fontWeight      : "light",
+        textAlign       : "center"
+      }
+    };
+
     Keen.Spinner.defaults = {
       lines: 10,                    // The number of lines to draw
       length: 8,                    // The length of each line
@@ -74,29 +87,28 @@
 
     Error = {
       initialize: function(){},
-      render: function(){
+      render: function(text, style){
         var err, msg;
+
+        var defaultStyle = JSON.parse(JSON.stringify(Keen.Error.defaults));
+        var currentStyle = _extend(defaultStyle, style);
 
         err = document.createElement("div");
         err.className = "keen-error";
-        err.style.borderRadius = "8px";
+        _each(currentStyle, function(value, key){
+          err.style[key] = value;
+        });
         err.style.height = String(this.height() + "px");
+        err.style.paddingTop = (this.height() / 2 - 15) + "px";
         err.style.width = String(this.width() + "px");
 
         msg = document.createElement("span");
-        msg.style.color = "#ccc";
-        msg.style.display = "block";
-        msg.style.paddingTop = (this.height() / 2 - 15) + "px";
-        msg.style.fontFamily = "Helvetica Neue, Helvetica, Arial, sans-serif";
-        msg.style.fontSize = "21px";
-        msg.style.fontWeight = "light";
-        msg.style.textAlign = "center";
+        msg.innerHTML = text || "Yikes! An error occurred!";
 
-        msg.innerHTML = this['error'].message;
         err.appendChild(msg);
 
         this.el().innerHTML = "";
-        this.el().appendChild(errorPlaceholder);
+        this.el().appendChild(err);
       },
       destroy: function(){
         this.el().innerHTML = "";
