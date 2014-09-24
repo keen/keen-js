@@ -117,6 +117,49 @@
     })
     .render();
 
+
+  var chartjs_polar = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("polar-area")
+    .height(400)
+    //.width(600)
+    .el(document.getElementById("chart-polar-area"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+  var chartjs_pie = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("pie")
+    .height(400)
+    //.width(600)
+    .el(document.getElementById("chart-pie"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+  var chartjs_doughnut = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("doughnut")
+    .height(400)
+    //.width(600)
+    .el(document.getElementById("chart-doughnut"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
   // var chartjs_pie = new Keen.Dataviz()
   //   .library("chartjs")
   //   .chartType("pie")

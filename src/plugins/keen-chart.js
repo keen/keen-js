@@ -8,6 +8,8 @@
 (function(lib){
   var Keen = lib || {};
 
+  Chart.defaults.global.responsive = true;
+
   var dataTypes = {
     // dataType            : // chartTypes
     //"singular"             : [],
@@ -21,10 +23,58 @@
   };
 
   var ChartNameMap = {
-    "radar": "Radar"
+    "radar": "Radar",
+    "polar-area": "PolarArea",
+    "pie": "Pie",
+    "doughnut": "Doughnut"
+  };
+  var dataTransformers = {
+
+    'radar': function(){
+      var self = this,
+          result = {
+            labels: this.dataset.selectColumn(0).slice(1),
+            datasets: []
+          };
+
+      Keen.utils.each(self.dataset.selectRow(0).slice(1), function(label, i){
+        var hex = {
+          r: hexToR(self.colors()[i]),
+          g: hexToG(self.colors()[i]),
+          b: hexToB(self.colors()[i])
+        };
+        result.datasets.push({
+          label: label,
+          fillColor    : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",0.2)",
+          strokeColor  : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+          pointColor   : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+          data: self.dataset.selectColumn(+i+1).slice(1)
+        });
+      });
+      return result;
+    },
+
+    'polar-area': getCategoricalData,
+    'pie': getCategoricalData,
+    'doughnut': getCategoricalData
+
   };
 
-  Chart.defaults.global.responsive = true;
+  function getCategoricalData(){
+    var self = this, result = [];
+    Keen.utils.each(self.dataset.selectColumn(0).slice(1), function(label, i){
+      result.push({
+        value: self.dataset.selectColumn(1).slice(1)[i],
+        color: self.colors()[+i],
+        hightlight: self.colors()[+i+9],
+        label: label
+      });
+    });
+    return result;
+  }
 
   var charts = {};
   Keen.utils.each(["doughnut", "pie", "polar-area", "radar", "bar", "line"], function(type, index){
@@ -45,7 +95,9 @@
             opts = _extend({}, this.chartOptions()),
             data = dataTransformers[type].call(this);
 
-        if (this.view._artifacts["chartjs"]) this.view._artifacts["chartjs"].destroy();
+        if (this.view._artifacts["chartjs"]) {
+          this.view._artifacts["chartjs"].destroy();
+        }
         this.view._artifacts["chartjs"] = new Chart(this.view._artifacts["ctx"])[method](data, opts);
         return this;
       },
@@ -55,66 +107,9 @@
     };
   });
 
-  var dataTransformers = {
-
-    'radar': function(){
-      var self = this,
-          result = {
-            labels: this.dataset.selectColumn(0).slice(1),
-            datasets: []
-          };
-
-      each(self.dataset.selectRow(0).slice(1), function(label, i){
-        var hex = {
-          r: hexToR(self.colors()[i]),
-          g: hexToG(self.colors()[i]),
-          b: hexToB(self.colors()[i])
-        };
-        result.datasets.push({
-          label: label,
-          fillColor    : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",0.2)",
-          strokeColor  : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
-          pointColor   : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
-          data: self.dataset.selectColumn(i+1).slice(1)
-        });
-      });
-      return result;
-    }
-
-  };
-
-
-  function getConfig(){
-    // Chart.defaults.global
-
-  }
-
-  // function getSetupTemplate(){
-  //
-  //   // chartOptions:
-  //   // -------------
-  //
-  //   return Keen.utils.extend({
-  //     bindto: this.el(),
-  //     data: {
-  //       columns: []
-  //     },
-  //     color: {
-  //       pattern: this.colors()
-  //     },
-  //     size: {
-  //       height: this.height(),
-  //       width: this.width()
-  //     }
-  //   }, this.chartOptions());
-  // }
-
   function _selfDestruct(){
     if (this.view._artifacts["chartjs"]) {
-      //this.view._artifacts["c3"].destroy();
+      this.view._artifacts["chartjs"].destroy();
       this.view._artifacts["chartjs"] = null;
     }
   }
