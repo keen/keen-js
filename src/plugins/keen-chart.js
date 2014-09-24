@@ -1,233 +1,131 @@
-  /*!
-  * ----------------------
-  * Keen IO Plugin
-  * Data Visualization
-  *
-  *
-  * Chart.js sample data structure
-  * Line & Bar & Radar chart
-  * var data = {
-      labels: ["January", "February", "March", "April", "May", "June", "July"],
-      datasets: [
-          {
-              label: "My First dataset",
-              fillColor: "rgba(220,220,220,0.2)",
-              strokeColor: "rgba(220,220,220,1)",
-              pointColor: "rgba(220,220,220,1)",
-              pointStrokeColor: "#fff",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(220,220,220,1)",
-              data: [65, 59, 80, 81, 56, 55, 40]
-          },
-          {
-              label: "My Second dataset",
-              fillColor: "rgba(151,187,205,0.2)",
-              strokeColor: "rgba(151,187,205,1)",
-              pointColor: "rgba(151,187,205,1)",
-              pointStrokeColor: "#fff",
-              pointHighlightFill: "#fff",
-              pointHighlightStroke: "rgba(151,187,205,1)",
-              data: [28, 48, 40, 19, 86, 27, 90]
-          }
-      ]
+/*!
+* ----------------------
+* Keen IO Plugin
+* Data Visualization
+* ----------------------
+*/
+
+(function(lib){
+  var Keen = lib || {};
+
+  var dataTypes = {
+    // dataType            : // chartTypes
+    //"singular"             : [],
+    "categorical"          : ["doughnut", "pie", "polar-area", "radar"],
+    "cat-interval"         : ["bar", "line"],
+    "cat-ordinal"          : ["bar", "line"],
+    "chronological"        : ["line", "bar"],
+    "cat-chronological"    : ["line", "bar"]
+    // "nominal"           : [],
+    // "extraction"        : []
   };
-  *
-  * Polar Area & Pie & Doughnut charts
-  * var data = [
-      {
-          value: 300,
-          color:"#F7464A",
-          highlight: "#FF5A5E",
-          label: "Red"
-      },
-      {
-          value: 50,
-          color: "#46BFBD",
-          highlight: "#5AD3D1",
-          label: "Green"
-      },
-      {
-          value: 120,
-          color: "#4D5360",
-          highlight: "#616774",
-          label: "Dark Grey"
-      }
-    ];
-  * ----------------------
-  */
 
-  (function(lib){
-    var Keen = lib || {};
+  var ChartNameMap = {
+    "radar": "Radar"
+  };
 
-    var errors = {
-    };
+  Chart.defaults.global.responsive = true;
 
-    var colorsetLBR = [
-      {
-        fillColor: "rgba(0,175,215,0.2)",
-        strokeColor: "rgba(0,175,215,1)",
-        pointColor: "rgba(0,175,215,1)",
-        pointStrokeColor  : "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(220,220,220,1)"
-      },
-      {
-        fillColor: "rgba(240,173,78,0.2)",
-        strokeColor: "rgba(240,173,78,1)",
-        pointColor: "rgba(240,173,78,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(151,187,205,1)"
-      },
-      {
-        fillColor: "rgba(249,132,91,0.2)",
-        strokeColor: "rgba(249,132,91,1)",
-        pointColor: "rgba(249,132,91,1)",
-        pointStrokeColor: "#fff",
-        pointHighlightFill: "#fff",
-        pointHighlightStroke: "rgba(151,187,205,1)"
-      }
-    ];
-    
-    function handleErrors(stack){
-      var message = errors[stack['id']] || stack['message'] || "An error occurred";
-      this.trigger('error', message);
-    }
-
-    function handleRemoval(){
-      this._chart.clearChart();
-    }
-
-    var handleDate = function(dates) {
-      for(var i = 0; i < dates.length; i++) {
-        dates[i] = moment(dates[i]).calendar();
-      }
-      return dates;
-    };
-
-    /**
-     * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
-     * 90 degrees.
-     *
-     * @param  {[2D array]} table [the dataform 2d array]
-     * @return {[2D array]}       [the resulting array that is compatible with chart's column structure]
-     */
-    var _unpackLBR = function(table, options) {
-      var plucked = [];
-      var numberOfColumns = table[0].length;
-      // Construct new table
-      for(var x = 0; x < numberOfColumns; x++) {
-        plucked.push([]);
-      }
-      // The first item in the table will be the names
-      for(var i = 0; i < table.length; i++) {
-        for(var j = 0; j < numberOfColumns; j++) {
-          plucked[j].push(table[i][j]);
+  var charts = {};
+  Keen.utils.each(["doughnut", "pie", "polar-area", "radar", "bar", "line"], function(type, index){
+    charts[type] = {
+      initialize: function(){
+        if (this.el().nodeName.toLowerCase() !== "canvas") {
+          var canvas = document.createElement('canvas');
+          this.el().innerHTML = "";
+          this.el().appendChild(canvas);
+          this.view._artifacts["ctx"] = canvas.getContext("2d");
+        } else {
+          this.view._artifacts["ctx"] = this.el().getContext("2d");
         }
-      }
-      var datasets = [];
-      for(i = 1; i < plucked.length; i++) {
-        // Add color
-        var color = {};
-        _extend(color, colorsetLBR[i - 1], this.colors[i - 1]);
-        var set = _extend({
-          label: plucked[i].shift(),
-          data: plucked[i]
-        }, color); 
-        datasets.push(set);
-      }
+        return this;
+      },
+      render: function(){
+        var method = ChartNameMap[type],
+            opts = _extend({}, this.chartOptions()),
+            data = dataTransformers[type].call(this);
 
-      return {
-        labels: handleDate(plucked.shift().slice(1)),
-        datasets: datasets
-      };
+        if (this.view._artifacts["chartjs"]) this.view._artifacts["chartjs"].destroy();
+        this.view._artifacts["chartjs"] = new Chart(this.view._artifacts["ctx"])[method](data, opts);
+        return this;
+      },
+      destroy: function(){
+        _selfDestruct.call(this);
+      }
     };
+  });
 
-    var _unpackPPD = function(table, options) {
-      var plucked = [];
-      var numberOfColumns = table[0].length - 1;
-      for(var x = 0; x < numberOfColumns; x++) {
-        plucked.push(0);
-      }
-      for(var i = 1; i < table.length; i++) {
-        for(var j = 0; j < numberOfColumns; j++) {
-          plucked[j] += table[i][j + 1];
-        }
-      }
-      var datasets = [];
-      for(i = 0; i < plucked.length; i++) {
-        datasets.push({
-          value: plucked[i],
-          color: this.colors[i],
-          label: table[0][i + 1]
-        });
-      }
+  var dataTransformers = {
 
-      return datasets;
-    };
-
-    var chartTypes = ['Line', 'Bar', 'Radar', 'PolarArea', 'Pie', 'Doughnut'];
-    var charts = {};
-
-    // Create chart types
-    // -------------------------------
-
-    _each(chartTypes, function (chart, index) {
-      charts[chart] = Keen.Visualization.extend({
-        initialize: function(){
-          if(parseInt(index, 10) > 2) {
-            this.data.chart = _unpackPPD.call(this, this.data.table, this.chartOptions);
-          } else {
-            this.data.chart = _unpackLBR.call(this, this.data.table, this.chartOptions);
-          }
-
-          this.render();
-        },
-        render: function(){
-          var self = this;
-          // Binding and defaulting
-          var options = {
+    'radar': function(){
+      var self = this,
+          result = {
+            labels: this.dataset.selectColumn(0).slice(1),
+            datasets: []
           };
 
-          _extend(options, this.chartOptions);
-
-          // Make chart
-          var chartNode = self.el;
-          if(this.chartOptions.width) {
-            chartNode.setAttribute('width', this.chartOptions.width);
-          }
-
-          chartNode.setAttribute('height', this.height);
-          var context = chartNode.getContext("2d");
-
-          self._chart = new Chart(context)[chart](this.data.chart, options);
-        },
-        update: function(){
-          // TODO: fix updater
-          var unpacked = _unpack(this.data.table);
-          // this._chart.load({
-          //   columns: unpacked
-          // });
-        },
-        remove: function(){
-          handleRemoval.call(this);
-        }
+      each(self.dataset.selectRow(0).slice(1), function(label, i){
+        var hex = {
+          r: hexToR(self.colors()[i]),
+          g: hexToG(self.colors()[i]),
+          b: hexToB(self.colors()[i])
+        };
+        result.datasets.push({
+          label: label,
+          fillColor    : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",0.2)",
+          strokeColor  : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+          pointColor   : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+          pointStrokeColor: "#fff",
+          pointHighlightFill: "#fff",
+          pointHighlightStroke: "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+          data: self.dataset.selectColumn(i+1).slice(1)
+        });
       });
+      return result;
+    }
 
-    });
+  };
 
-    // Register library + types
-    // -------------------------------
-    
-    Keen.Visualization.register('chart.js', charts, {
-      dependencies: [{
-        type: 'script',
-        url: 'http://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.1-beta.2/Chart.js'
-      },
-      {
-        type: 'script',
-        url: 'http://cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.2/moment.min.js'
-      }]
-    });
 
-  })(Keen);
+  function getConfig(){
+    // Chart.defaults.global
+
+  }
+
+  // function getSetupTemplate(){
+  //
+  //   // chartOptions:
+  //   // -------------
+  //
+  //   return Keen.utils.extend({
+  //     bindto: this.el(),
+  //     data: {
+  //       columns: []
+  //     },
+  //     color: {
+  //       pattern: this.colors()
+  //     },
+  //     size: {
+  //       height: this.height(),
+  //       width: this.width()
+  //     }
+  //   }, this.chartOptions());
+  // }
+
+  function _selfDestruct(){
+    if (this.view._artifacts["chartjs"]) {
+      //this.view._artifacts["c3"].destroy();
+      this.view._artifacts["chartjs"] = null;
+    }
+  }
+
+  function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
+  function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
+  function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}
+  function cutHex(h) {return (h.charAt(0)=="#") ? h.substring(1,7):h}
+
+  // Register library + add dependencies + types
+  // -------------------------------
+  Keen.Dataviz.register("chartjs", charts, { capabilities: dataTypes });
+
+})(Keen);

@@ -17,6 +17,8 @@
   [x] updateRow/updateColumn func iterates
   [x] move getRow* and getColumn* into /helpers
 
+  [ ] #min, #max, #median, #average
+
   [ ] #getRowAverage
   [ ] #getRowMedian
   [ ] #getRowMinimum

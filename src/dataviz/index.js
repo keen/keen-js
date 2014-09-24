@@ -18,8 +18,8 @@
   [x] break dataviz into pieces, like dataset
 
   [x] update color palette
-  [ ] update c3.js and chart.js adapters
-  [ ] build example pages for adapters
+  [x] update keen-c3.js adapter w/ example page
+  [ ] update keen-chart.js adapter w/ example page
 
 */
 

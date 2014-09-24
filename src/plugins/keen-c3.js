@@ -64,7 +64,6 @@
   //   return colors;
   // };
 
-  var chartTypes = [];
   var dataTypes = {
     // dataType            : // chartTypes
     "singular"             : ["gauge"],
