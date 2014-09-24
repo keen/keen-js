@@ -154,7 +154,7 @@
 
     // line, pie, donut etc...
 
-    return {
+    return Keen.utils.extend({
       bindto: this.el(),
       data: {
         columns: []
@@ -166,7 +166,7 @@
         height: this.height(),
         width: this.width()
       }
-    }
+    }, this.chartOptions());
   }
 
   function _selfDestruct(){
