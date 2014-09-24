@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keen IO Comprehensive Test</title>
+  <link rel="stylesheet" href="../keen-bootstrap.min.css">
+  <link rel="stylesheet" href="../keen-dashboards.css">
+
+
+  <link href="c3.css" rel="stylesheet">
+  <script src="d3.js"></script>
+  <script src="c3.js"></script>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>C3.js Visual Tests</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <h2>Gauge</h2>
+        <div id="c3-gauge"></div>
+      </div>
+      <div class="col-sm-4">
+        <h2>Donut</h2>
+        <div id="c3-donut"></div>
+      </div>
+      <div class="col-sm-4">
+        <h2>Pie</h2>
+        <div id="c3-pie"></div>
+      </div>
+    </div>
+
+    <hr>
+
+  </div>
+
+  <script src="../../../dist/keen.js"></script>
+  <script>
+  var client = new Keen({
+    projectId: "52f2ae5905cd661a7800000a",
+    readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+    requestType: "jsonp"
+  });
+  // Not required w/ synchronous loading
+  // Keen.ready(function(){});
+
+  var c3gauge = new Keen.Dataviz()
+    .library("c3")
+    .chartType("gauge")
+    .el(document.getElementById("c3-gauge"))
+    .parseRawData({ result: 79.1 })
+    .title("Percentage of awesome")
+    .render();
+
+  var c3donut = new Keen.Dataviz()
+    .library("c3")
+    .chartType("donut")
+    .el(document.getElementById("c3-donut"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    //.title("Best Donut!")
+    .render();
+
+  var c3pie = new Keen.Dataviz()
+    .library("c3")
+    .chartType("pie")
+    .el(document.getElementById("c3-pie"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+
+  </script>
+</body>
+<html>

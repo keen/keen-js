@@ -8,18 +8,6 @@
   (function(lib){
     var Keen = lib || {};
 
-    var errors = {
-    };
-
-    function handleErrors(stack){
-      var message = errors[stack['id']] || stack['message'] || "An error occurred";
-      this.trigger('error', message);
-    }
-
-    function handleRemoval(){
-      this._chart.clearChart();
-    }
-
     /**
      * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
      * 90 degrees.
@@ -76,25 +64,178 @@
       return colors;
     };
 
-    var chartTypes = ['spline', 'pie', 'donut', 'area-spline', 'bar', 'scatter'];
-    // var conversions = {
-    //   'areachart': 'Area-Spline',
-    //   'barchart': 'Bar',
-    //   'linechart': 'Spline',
-    //   'piechart': 'Pie',
-    //   'scatterchart': 'Scatter',
-    //   'donutchart': 'Donut'
-    // };
+    var chartTypes = [];
+    var dataTypes = {
+      // dataType              chartTypes (namespace)
+      'singular':              ['gauge'],
+      'categorical':           ['donut', 'pie']
+      // 'cat-interval':       ['columnchart', 'barchart', 'table'],
+      // 'cat-ordinal':        ['barchart', 'columnchart', 'areachart', 'linechart', 'table'],
+      // 'chronological':      ['areachart', 'linechart', 'table'],
+      // 'cat-chronological':  ['linechart', 'columnchart', 'barchart', 'areachart'],
+      // 'nominal':            ['table'],
+      // 'extraction':         ['table']
+    };
+
     var charts = {};
+
+    charts['gauge'] = {
+      render: function(){
+        var setup = {
+          bindto: this.el(),
+          data: {
+            columns: []
+          },
+
+          color: {
+            pattern: this.colors()
+          },
+          size: {
+            height: this.height(),
+            width: this.width()
+          }
+
+          // chartOptions:
+          // -------------
+          // axis: {}
+          // color: {}    <-- be aware: we set values here
+          // grid: {}
+          // legend: {}
+          // point: {}
+          // regions: {}
+          // size: {}     <-- be aware: we set values here
+          // tooltip: {}
+          // zoom: {}
+
+          // line, pie, donut etc...
+        };
+        setup['data']['type'] = "gauge"; // {type}
+        this.view._artifacts["c3"] = this.view._artifacts["c3"] || c3.generate(setup);
+        this.update();
+      },
+      update: function(){
+        this.view._artifacts["c3"].load({
+          columns: [
+            [this.title(), this.data()[1][1]]
+          ]
+        })
+      },
+      destroy: function(){
+        _selfDestruct.call(this);
+      }
+    };
+
+
+    charts["donut"] = {
+      render: function(){
+        var setup = {
+          bindto: this.el(),
+          data: {
+            columns: []
+          },
+
+          color: {
+            pattern: this.colors()
+          },
+          size: {
+            height: this.height(),
+            width: this.width()
+          }
+
+          // chartOptions:
+          // -------------
+          // axis: {}
+          // color: {}    <-- be aware: we set values here
+          // grid: {}
+          // legend: {}
+          // point: {}
+          // regions: {}
+          // size: {}     <-- be aware: we set values here
+          // tooltip: {}
+          // zoom: {}
+
+          // line, pie, donut etc...
+        };
+        setup['data']['type'] = "donut"; // {type}
+        setup["donut"] = {
+          title: this.title()
+        };
+        this.view._artifacts["c3"] = this.view._artifacts["c3"] || c3.generate(setup);
+        this.update();
+      },
+      update: function(){
+        this.view._artifacts["c3"].load({
+          columns: this.dataset.data.output.slice(1)
+        });
+      },
+      destroy: function(){
+        _selfDestruct.call(this);
+      }
+    };
+
+    charts["pie"] = {
+      render: function(){
+        var setup = {
+          bindto: this.el(),
+          data: {
+            columns: []
+          },
+
+          color: {
+            pattern: this.colors()
+          },
+          size: {
+            height: this.height(),
+            width: this.width()
+          }
+
+          // chartOptions:
+          // -------------
+          // axis: {}
+          // color: {}    <-- be aware: we set values here
+          // grid: {}
+          // legend: {}
+          // point: {}
+          // regions: {}
+          // size: {}     <-- be aware: we set values here
+          // tooltip: {}
+          // zoom: {}
+
+          // line, pie, donut etc...
+        };
+        setup['data']['type'] = "pie"; // {type}
+        setup["pie"] = {
+          title: this.title()
+        };
+        this.view._artifacts["c3"] = this.view._artifacts["c3"] || c3.generate(setup);
+        this.update();
+      },
+      update: function(){
+        this.view._artifacts["c3"].load({
+          columns: this.dataset.data.output.slice(1)
+        });
+      },
+      destroy: function(){
+        _selfDestruct.call(this);
+      }
+    };
+
+
+    function _selfDestruct(){
+      if (this.view._artifacts["c3"]) {
+        this.view._artifacts["c3"].destroy();
+        this.view._artifacts["c3"] = null;
+      }
+    }
 
     // Create chart types
     // -------------------------------
     _each(chartTypes, function (chart) {
       // console.log(key, chart);
-      charts[chart] = Keen.Visualization.extend({
+      charts[chart] = {
         initialize: function(){
           this.data.c3 = _unpack(this.data.table, chart);
-          this.render();
+          //this.render();
         },
         render: function(){
           var self = this;
@@ -140,31 +281,31 @@
             columns: unpacked
           });
         },
-        remove: function(){
-          handleRemoval.call(this);
+        destroy: function(){
+          //handleRemoval.call(this);
         }
-      });
+      };
 
     });
 
     // Register library + add dependencies + types
     // -------------------------------
-    Keen.Visualization.register('c3', charts, {
-      dependencies: [
-        {
-          type: 'script',
-          url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
-          // url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
-        },
-        {
-          type: 'script',
-          url: 'http://c3js.org/js/c3.min-b4e07444.js'
-        },
-        {
-          type: 'style',
-          url: 'http://c3js.org/css/c3-f750e4d4.css'
-        }
-      ]
+    Keen.Dataviz.register('c3', charts, {
+      capabilities: dataTypes
+      // dependencies: [
+      //   {
+      //     type: 'script',
+      //     url: 'http://cdnjs.cloudflare.com/ajax/libs/d3/3.4.11/d3.min.js'
+      //   },
+      //   {
+      //     type: 'script',
+      //     url: 'http://c3js.org/js/c3.min-b4e07444.js'
+      //   },
+      //   {
+      //     type: 'style',
+      //     url: 'http://c3js.org/css/c3-f750e4d4.css'
+      //   }
+      // ]
     });
 
   })(Keen);
