@@ -1,4 +1,4 @@
-Keen.Dataset.prototype.removeRow = function(q){
+Keen.Dataset.prototype.deleteRow = function(q){
   var index = (!isNaN(parseInt(q))) ? q : this.selectColumn(0).indexOf(q);
 
   if (index > -1) {

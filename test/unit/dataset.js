@@ -541,25 +541,25 @@ describe("Keen.Dataset", function(){
       });
     });
 
-    describe("#removeRow", function() {
-      it("should remove a given row", function(){
+    describe("#deleteRow", function() {
+      it("should delete a given row", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.removeRow(1);
+        this.ds.deleteRow(1);
         expect(this.ds.output()).to.be.an("array")
           .and.to.have.length(2);
       });
       it("should accept a string query argument (indexOf match)", function(){
         var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
         this.ds.output(table);
-        this.ds.removeRow("a");
+        this.ds.deleteRow("a");
         expect(this.ds.output()).to.be.an("array")
           .and.to.have.length(2);
       });
     });
 
     describe("#filterRows", function() {
-      it("should remove rows not surviving the filter", function(){
+      it("should delete rows not surviving the filter", function(){
         var table = [["Index", "A", "B"],[0, 5, 5],[1, 10, 10]];
         this.ds.output(table);
         this.ds.filterRows(function(row, i){
@@ -748,11 +748,11 @@ describe("Keen.Dataset", function(){
       });
     });
 
-    describe("#removeColumn", function() {
-      it("should remove a given column", function(){
+    describe("#deleteColumn", function() {
+      it("should delete a given column", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.removeColumn(1);
+        this.ds.deleteColumn(1);
         expect(this.ds.output()).to.be.an("array")
           .and.to.have.length(3);
         expect(this.ds.output()[0]).to.be.an("array")
@@ -763,7 +763,7 @@ describe("Keen.Dataset", function(){
       it("should accept a string query argument (indexOf match)", function(){
         var table = [["Index", "A", "B"],["b", 342, 664],["b", 353, 322]];
         this.ds.output(table);
-        this.ds.removeColumn("A");
+        this.ds.deleteColumn("A");
         expect(this.ds.output()).to.be.an("array")
           .and.to.have.length(3);
         expect(this.ds.output()[0]).to.be.an("array")
@@ -774,7 +774,7 @@ describe("Keen.Dataset", function(){
     });
 
     describe("#filterColumns", function() {
-      it("should remove columns not surviving the filter", function(){
+      it("should delete columns not surviving the filter", function(){
         var table = [["Index", "A", "B"],[0, 5, 10],[1, 10, 10]];
         this.ds.output(table);
         this.ds.filterColumns(function(col, index){

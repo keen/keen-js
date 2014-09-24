@@ -1,4 +1,4 @@
-Keen.Dataset.prototype.removeColumn = function(q){
+Keen.Dataset.prototype.deleteColumn = function(q){
   var self = this,
       index = (!isNaN(parseInt(q))) ? q : this.output()[0].indexOf(q);
 

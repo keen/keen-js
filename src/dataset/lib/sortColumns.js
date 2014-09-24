@@ -22,7 +22,7 @@ Keen.Dataset.prototype.sortColumns = function(str, comp){
   });
   each(cols, function(col, i){
     self
-      .removeColumn(i+1)
+      .deleteColumn(i+1)
       .insertColumn(i+1, col[0], col.slice(1));
   });
   return self;

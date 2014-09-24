@@ -60,11 +60,11 @@ ds.updateRow(0, function(colSet, colIndex){
 })
 ```
 
-### Remove Row or Column
+### delete Row or Column
 
 ```
-ds.removeRow(12);
-ds.removeRow("2014-09-24");
-ds.removeColumn(12);
-ds.removeColumn("A");
+ds.deleteRow(12);
+ds.deleteRow("2014-09-24");
+ds.deleteColumn(12);
+ds.deleteColumn("A");
 ```
