@@ -1,9 +1,3 @@
-Keen.Dataset.prototype.insertRow = function(index, row){
-  // insert row of nulls if !row
-  this.data.output.splice(index, 0, row);
-  return this;
-};
-
 Keen.Dataset.prototype.insertColumn = function(index, col){
   var self = this;
   var column = (col instanceof Array ? col : []);
