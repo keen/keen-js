@@ -1,5 +1,5 @@
 Keen.Dataset.prototype.modifyRow = function(q, mod){
-  var index = (typeof q === "number") ? q : this.selectColumn(0).indexOf(q);
+  var index = (!isNaN(parseInt(q))) ? q : this.selectColumn(0).indexOf(q);
 
   if (index > -1) {
     if (mod instanceof Array) {

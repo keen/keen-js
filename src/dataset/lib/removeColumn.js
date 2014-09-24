@@ -1,6 +1,6 @@
 Keen.Dataset.prototype.removeColumn = function(q){
   var self = this,
-      index = (typeof q === "number") ? q : this.output()[0].indexOf(q);
+      index = (!isNaN(parseInt(q))) ? q : this.output()[0].indexOf(q);
 
   if (index > -1) {
     each(self.data.output, function(row, i){

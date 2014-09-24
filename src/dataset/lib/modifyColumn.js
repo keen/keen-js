@@ -1,6 +1,6 @@
 Keen.Dataset.prototype.modifyColumn = function(q, mod){
   var self = this,
-      index = (typeof q === "number") ? q : this.output()[0].indexOf(q);
+      index = (!isNaN(parseInt(q))) ? q : this.output()[0].indexOf(q);
 
   if (index > -1) {
     if (mod instanceof Array) {
