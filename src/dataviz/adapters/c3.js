@@ -8,61 +8,19 @@
 (function(lib){
   var Keen = lib || {};
 
-  /**
-   * Unpacks the data from dataform's table. Basically, it takes the table and rotates it
-   * 90 degrees.
-   * @param  {[2D array]} table [the dataform 2d array]
-   * @return {[2D array]}       [the resulting array that is compatible with C3's column structure]
-   */
-  // var _unpack = function(table, chartType) {
-  //   var plucked = [];
-  //   var isNonDate = chartType === 'pie' || chartType === 'donut';
-  //   var numberOfColumns = table[0].length;
-  //   var start = isNonDate ? 1 : 0;
-  //
-  //   // Construct new table
-  //   for(var x = 0; x < numberOfColumns; x++) {
-  //     plucked.push([]);
-  //   }
-  //
-  //   // Build new table that is compatible with c3.
-  //   // The first item in the table will be the names
-  //   for(var i = 0; i < table.length; i++) {
-  //     for(var j = start; j < numberOfColumns; j++) {
-  //       plucked[j].push(table[i][j]);
-  //     }
-  //   }
-  //   return plucked;
-  // };
+  // chartOptions:
+  // -------------
+  // axis: {}
+  // color: {}    <-- be aware: we set values here
+  // grid: {}
+  // legend: {}
+  // point: {}
+  // regions: {}
+  // size: {}     <-- be aware: we set values here
+  // tooltip: {}
+  // zoom: {}
 
-  /**
-   * Handler for determining what the x-axis will display
-   * @return {object}/undefined
-   */
-  // var handleTimeseries = function() {
-  //   var candidates = this.data.c3;
-  //   // if the first itemset is a date, then make it into a timeseries
-  //   if(candidates[0][1] instanceof Date) {
-  //     return {
-  //       x: {
-  //         type: 'timeseries',
-  //         tick: {
-  //           fit: true
-  //         }
-  //       }
-  //     };
-  //   }
-  // };
-  //
-  // var registerColors = function() {
-  //   var colors = {};
-  //   //TODO set colors as an alternative
-  //   for(var i = 1; i < this.data.c3.length; i++) {
-  //     var set = this.data.c3[i];
-  //     colors[set[0]] = this.colors[i - 1];
-  //   }
-  //   return colors;
-  // };
+  // line, pie, donut etc...
 
   var dataTypes = {
     // dataType            : // chartTypes
@@ -138,21 +96,6 @@
   });
 
   function getSetupTemplate(){
-
-    // chartOptions:
-    // -------------
-    // axis: {}
-    // color: {}    <-- be aware: we set values here
-    // grid: {}
-    // legend: {}
-    // point: {}
-    // regions: {}
-    // size: {}     <-- be aware: we set values here
-    // tooltip: {}
-    // zoom: {}
-
-    // line, pie, donut etc...
-
     return Keen.utils.extend({
       bindto: this.el(),
       data: {
