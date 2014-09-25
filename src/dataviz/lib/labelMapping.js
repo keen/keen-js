@@ -16,16 +16,14 @@ function _runLabelMapping(){
       // loop over header cells
       each(self.dataset.output()[0], function(c, i){
         if (i > 0) {
-          //console.log('Mod header cell', labelMap[c] || c, i);
           self.dataset.data.output[0][i] = labelMap[c] || c;
         }
       });
     }
     else if (schema.select && self.dataset.output()[0].length === 2) {
-      // modify column 0
-      self.dataset.modifyColumn(0, function(c, i){
-        //console.log('Mod column', labelMap[c] || c);
-        return labelMap[c] || c;
+      // update column 0
+      self.dataset.updateColumn(0, function(c, i){
+        return labelMap[c[0]] || c[0];
       });
     }
   }

@@ -127,7 +127,7 @@ d.appendRow([3, 0, 0, 0]);
 
 
 var d = new Keen.Dataset();
-d.modifyRow(0, ['Time', 'A', 'B', 'C']);
+d.updateRow(0, ['Time', 'A', 'B', 'C']);
 d.appendRow([new Date().toISOString(), 234, 432, 12]);
 d.appendRow([new Date().toISOString(), 23, null, 3]);
 d.appendRow([new Date().toISOString(), 43, 2, 0]);
@@ -154,10 +154,10 @@ d.filterColumns(function(col, index){
 });
 
 d.insertColumn(1, ["a", 15]);
-d.modifyColumn(1, ["AA", 22222]);
+d.updateColumn(1, ["AA", 22222]);
 
 d.appendColumn(["Total", 0]);
-d.modifyColumn(3, function(value, index, row){
+d.updateColumn(3, function(value, index, row){
   if (index < 1) return "Summary";
   var total = 0;
   for (var i=0; i < row.length; i++){

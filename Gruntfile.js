@@ -1,5 +1,6 @@
 var saucelabs = require('./config/saucelabs')(),
-    aws = require('./config/aws')();
+    aws = require('./config/aws')(),
+    wraps = require('./config/wrappers')();
 
 module.exports = function(grunt) {
 
@@ -15,8 +16,12 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
 
     concat: {
+
       options: {
-        stripBanners: true,
+        stripBanners: {
+          block: true,
+          line: true
+        },
         process: function(src, filepath) {
           var namespace = (grunt.option("namespace") || false);
           src = ((namespace) ? src.replace("'Keen'", "'" + namespace + "'") : src);
@@ -24,6 +29,7 @@ module.exports = function(grunt) {
         }
       },
 
+      // Assemble Keen.Dataset
       dataset: {
         src: [
           "src/dataset/index.js",
@@ -32,6 +38,7 @@ module.exports = function(grunt) {
         dest: ".tmp/dataset.js"
       },
 
+      // Assemble Keen.Dataviz
       dataviz: {
         src: [
           "src/dataviz/index.js",
@@ -40,11 +47,15 @@ module.exports = function(grunt) {
         dest: ".tmp/dataviz.js"
       },
 
-      // Build complete version
+      // Assemble keen.js (full)
       all: {
+        options: {
+          // Library Banner/Footer (makes happy AMD modules)
+          banner: wraps.libraryBanner,
+          footer: wraps.libraryFooter
+        },
         src: [
-            "src/_intro.js"
-          , "src/core.js"
+            "src/core.js"
           , "src/track.js"
           , "src/query.js"
 
@@ -56,30 +67,40 @@ module.exports = function(grunt) {
           , ".tmp/dataset.js"
           , ".tmp/dataviz.js"
           , "src/visualization.js"
-
-          , "src/plugins/keen-googlecharts.js"
-          , "src/plugins/keen-c3.js"
-          , "src/plugins/keen-chart.js"
-          , "src/plugins/keen-widgets.js"
           , "src/async.js"
-          , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
 
-      // Build tracking-only version
+      // Assemble keen-tracking.js
       tracker: {
+        options: {
+          banner: wraps.libraryBanner,
+          footer: wraps.libraryFooter
+        },
         src: [
-            "src/_intro.js"
-          , "src/core.js"
+            "src/core.js"
           , "src/track.js"
           , "src/lib/base64.js"
           , "src/lib/json2.js"
           , "src/lib/keen-domready.js"
           , "src/async.js"
-          , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
+      },
+
+      // Build adapters as stand-alone modules
+      adapters: {
+        options: {
+          // Adapter Banner/Footer (makes happy AMD modules)
+          banner: wraps.adapterBanner,
+          footer: wraps.adapterFooter
+        },
+        files: {
+          ".tmp/keen-adapter-google.js"  : ["src/dataviz/adapters/google.js"],
+          ".tmp/keen-adapter-chartjs.js" : ["src/dataviz/adapters/chartjs.js"],
+          ".tmp/keen-adapter-c3.js"      : ["src/dataviz/adapters/c3.js"]
+        }
       },
 
       // Build unit tests
@@ -94,16 +115,6 @@ module.exports = function(grunt) {
           , "test/unit/utils.js"
         ],
         dest: "test/keen-unit-all.js"
-      },
-
-      plugin_googlecharts: {
-        src: ["src/plugins/_intro.js", "src/plugins/keen-googlecharts.js", "src/plugins/_outro.js"],
-        dest: "dist/plugins/keen-googlecharts.js"
-      },
-
-      plugin_keenwidgets: {
-        src: ["src/plugins/_intro.js", "src/plugins/keen-widgets.js", "src/plugins/_outro.js"],
-        dest: "dist/plugins/keen-widgets.js"
       },
 
       loader: {
