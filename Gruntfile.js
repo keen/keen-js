@@ -97,9 +97,9 @@ module.exports = function(grunt) {
           footer: wraps.adapterFooter
         },
         files: {
-          ".tmp/keen-adapter-google.js"  : ["src/dataviz/adapters/google.js"],
-          ".tmp/keen-adapter-chartjs.js" : ["src/dataviz/adapters/chartjs.js"],
-          ".tmp/keen-adapter-c3.js"      : ["src/dataviz/adapters/c3.js"]
+          "dist/adapters/keen-adapter-google.js"  : ["src/dataviz/adapters/google.js"],
+          "dist/adapters/keen-adapter-chartjs.js" : ["src/dataviz/adapters/chartjs.js"],
+          "dist/adapters/keen-adapter-c3.js"      : ["src/dataviz/adapters/c3.js"]
         }
       },
 

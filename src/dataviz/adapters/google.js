@@ -39,7 +39,7 @@
 
   // Create chart types
   // -------------------------------
-  _each(chartTypes, function (type) {
+  Keen.utils.each(chartTypes, function (type) {
     var name = type.toLowerCase();
     chartMap[name] = {
       initialize: function(){
