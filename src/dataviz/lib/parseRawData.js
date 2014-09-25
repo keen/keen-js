@@ -6,7 +6,7 @@ Keen.Dataviz.prototype.parseRawData = function(raw){
 function _parseRawData(response){
   var self = this,
       schema = {},
-      orderBy,
+      indexBy,
       delimeter,
       indexTarget,
       labelSet,
@@ -14,9 +14,9 @@ function _parseRawData(response){
       dataType,
       dataset;
 
-  orderBy = self.orderBy() ? self.orderBy() : Keen.Dataviz.defaults.orderBy;
+  indexBy = self.indexBy() ? self.indexBy() : Keen.Dataviz.defaults.indexBy;
   delimeter = Keen.Dataset.defaults.delimeter;
-  indexTarget = orderBy.split(".").join(delimeter);
+  indexTarget = indexBy.split(".").join(delimeter);
 
   labelSet = self.labels() || null;
   labelMap = self.labelMapping() || null;

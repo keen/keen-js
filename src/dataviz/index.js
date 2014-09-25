@@ -12,7 +12,7 @@
   [x] set default lib+chart combos for types
 
   [x] set up sortGroups and sortInterval
-  [x] set up orderBy
+  [x] set up indexBy
   [x] write tests for sort/order methods
   [x] _runLabelMapping re-runs parse(), overwrites modifications
   [x] break dataviz into pieces, like dataset
@@ -78,7 +78,7 @@ _extend(Keen.Dataviz, {
     // light
       "#24c9e8", "#ff7e88", "#f4bd70", "#9a9adf", "#ff9876", "#24dcca", "71aef3", "#86de95", "#d68ac9"
     ],
-    orderBy: "timeframe.start"
+    indexBy: "timeframe.start"
   },
   dependencies: {
     loading: 0,

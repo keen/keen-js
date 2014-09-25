@@ -1,14 +1,14 @@
-Keen.Dataviz.prototype.orderBy = function(str){
-  if (!arguments.length) return this.view.attributes.orderBy;
-  this.view.attributes.orderBy = (str ? String(str) : Keen.Dataviz.defaults.orderBy);
-  _runOrderBy.call(this);
+Keen.Dataviz.prototype.indexBy = function(str){
+  if (!arguments.length) return this.view.attributes.indexBy;
+  this.view.attributes.indexBy = (str ? String(str) : Keen.Dataviz.defaults.indexBy);
+  _runIndexBy.call(this);
   return this;
 };
 
-function _runOrderBy(){
+function _runIndexBy(){
   var self = this,
       root = this.dataset.meta.schema || this.dataset.meta.unpack,
-      newOrder = this.orderBy().split(".").join(Keen.Dataset.defaults.delimeter);
+      newOrder = this.indexBy().split(".").join(Keen.Dataset.defaults.delimeter);
   // Replace in schema and re-run dataset.parse()
   each(root, function(def, i){
     // update 'select' configs

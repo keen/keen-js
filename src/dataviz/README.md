@@ -106,15 +106,15 @@ chart.labelMapping({
 chart.labelMapping(); // returns current label map
 ```
 
-### .orderBy(string)
+### .indexBy(string)
 
 Control which part of timeframes are visualized
 
 Options: "timeframe.start" (default) or "timeframe.end"
 
 ```
-chart.orderBy("timeframe.end");
-chart.orderBy(); // returns current setting
+chart.indexBy("timeframe.end");
+chart.indexBy(); // returns current setting
 ```
 
 ### .sortGroups(string)

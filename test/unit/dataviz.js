@@ -305,20 +305,20 @@ describe("Keen.Dataviz", function(){
     });
   });
 
-  describe("#orderBy", function(){
+  describe("#indexBy", function(){
     it("should return \"timeframe.start\" by default", function(){
-      expect(this.dataviz.orderBy()).to.be.a("string")
+      expect(this.dataviz.indexBy()).to.be.a("string")
         .and.to.eql("timeframe.start");
     });
-    it("should set and get a new orderBy property", function(){
-      this.dataviz.orderBy("timeframe.end");
-      expect(this.dataviz.orderBy()).to.be.a("string")
+    it("should set and get a new indexBy property", function(){
+      this.dataviz.indexBy("timeframe.end");
+      expect(this.dataviz.indexBy()).to.be.a("string")
         .and.to.eql("timeframe.end");
     });
     it("should revert the property to default value by passing null", function(){
-      this.dataviz.orderBy(null);
-      expect(this.dataviz.orderBy()).to.be.a("string")
-        .and.to.eql(Keen.Dataviz.defaults.orderBy);
+      this.dataviz.indexBy(null);
+      expect(this.dataviz.indexBy()).to.be.a("string")
+        .and.to.eql(Keen.Dataviz.defaults.indexBy);
     });
   });
 
