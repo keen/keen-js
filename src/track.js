@@ -8,6 +8,32 @@
     _uploadEvent.apply(this, arguments);
   };
 
+  Keen.prototype.addEvents = function() {
+    var isSingular = typeof arguments[0] === 'string';
+    if(isSingular) {
+      _addSingular.apply(this, arguments);
+    } else {
+      _addMultiple.apply(this, arguments);
+    }
+  };
+
+  Keen.prototype.queueEvent = function(eventCollection, payload, timeout, success, error) { 
+    timeout = timeout || 3000;
+    setTimeout(function() {
+      this.addEvent(eventCollection, payload, success, error);
+    }.bind(this), timeout);
+  };
+
+  Keen.prototype.queueEvents = function(payloads, timeout, success, error) {
+    //keen.queueEvents([{ collectionOne: [{ a : 1 }], collectionTwo: [{ a : 2 ] }], 60000, success, error)
+    timeout = timeout ? timeout : 3000;
+
+    setTimeout(function() {
+      _addMultiple.call(this, payloads, success, error);
+    }.bind(this), timeout);
+
+  };
+
   Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
 
     var evt = jsEvent,
@@ -76,6 +102,33 @@
   // Private for Keen IO Tracker JS
   // -------------------------------
 
+  /**
+   * Adds multiple events to one collection
+   * @param {[string]} eventCollection [description]
+   * @param {[array]} payloadArray    [description]
+   * @param {[function]} success         [description]
+   * @param {[function]} error           [description]
+   */
+  function _addSingular (eventCollection, payloadArray, success, error) {
+    _each(payloadArray, function (payload) {
+      _uploadEvent.apply(this, [eventCollection, payload, success, error]);
+    }.bind(this));
+  }
+
+  /**
+   * Add multiple events to multiple collections
+   * Example usage: https://github.com/keenlabs/keen-js/issues/108#issuecomment-48946445
+   * 
+   */
+  function _addMultiple (payloadArray, success, error) {
+    self     = this;
+    _each(payloadArray, function(payloads) {
+      _each(payloads, function(payload, eventCollection) {
+        _uploadEvent.apply(self, [eventCollection, payload, success, error]);
+      });
+    });
+  }
+
   function _uploadEvent(eventCollection, payload, success, error) {
     var url = _build_url.apply(this, ['/events/' + eventCollection]);
     var newEvent = {};
@@ -90,6 +143,11 @@
       if (payload.hasOwnProperty(property)) {
         newEvent[property] = payload[property];
       }
+    }
+
+    // Switch the request
+    if(this.client.requestType === 'jsonp' && newEvent.length > 2083) {
+      this.client.requestType = 'xhr';
     }
 
     // Send data
