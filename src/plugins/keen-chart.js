@@ -8,7 +8,9 @@
 (function(lib){
   var Keen = lib || {};
 
-  Chart.defaults.global.responsive = true;
+  if (typeof Chart !== "undefined") {
+    Chart.defaults.global.responsive = true;
+  }
 
   var dataTypes = {
     // dataType            : // chartTypes
@@ -26,41 +28,17 @@
     "radar": "Radar",
     "polar-area": "PolarArea",
     "pie": "Pie",
-    "doughnut": "Doughnut"
+    "doughnut": "Doughnut",
+    "line": "Line",
+    "bar": "Bar"
   };
   var dataTransformers = {
-
-    'radar': function(){
-      var self = this,
-          result = {
-            labels: this.dataset.selectColumn(0).slice(1),
-            datasets: []
-          };
-
-      Keen.utils.each(self.dataset.selectRow(0).slice(1), function(label, i){
-        var hex = {
-          r: hexToR(self.colors()[i]),
-          g: hexToG(self.colors()[i]),
-          b: hexToB(self.colors()[i])
-        };
-        result.datasets.push({
-          label: label,
-          fillColor    : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",0.2)",
-          strokeColor  : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
-          pointColor   : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
-          pointStrokeColor: "#fff",
-          pointHighlightFill: "#fff",
-          pointHighlightStroke: "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
-          data: self.dataset.selectColumn(+i+1).slice(1)
-        });
-      });
-      return result;
-    },
-
-    'polar-area': getCategoricalData,
+    'doughnut': getCategoricalData,
     'pie': getCategoricalData,
-    'doughnut': getCategoricalData
-
+    'polar-area': getCategoricalData,
+    'radar': getSeriesData,
+    'line': getSeriesData,
+    'bar': getSeriesData
   };
 
   function getCategoricalData(){
@@ -71,6 +49,43 @@
         color: self.colors()[+i],
         hightlight: self.colors()[+i+9],
         label: label
+      });
+    });
+    return result;
+  }
+
+  function getSeriesData(){
+    var self = this,
+        labels,
+        result = {
+          labels: [],
+          datasets: []
+        };
+
+    labels = this.dataset.selectColumn(0).slice(1);
+    Keen.utils.each(labels, function(l,i){
+      if (l instanceof Date) {
+        result.labels.push((l.getMonth()+1) + "-" + l.getDate() + "-" + l.getFullYear());
+      } else {
+        result.labels.push(l);
+      }
+    })
+
+    Keen.utils.each(self.dataset.selectRow(0).slice(1), function(label, i){
+      var hex = {
+        r: hexToR(self.colors()[i]),
+        g: hexToG(self.colors()[i]),
+        b: hexToB(self.colors()[i])
+      };
+      result.datasets.push({
+        label: label,
+        fillColor    : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",0.2)",
+        strokeColor  : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+        pointColor   : "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+        pointStrokeColor: "#fff",
+        pointHighlightFill: "#fff",
+        pointHighlightStroke: "rgba(" + hex.r + "," + hex.g + "," + hex.b + ",1)",
+        data: self.dataset.selectColumn(+i+1).slice(1)
       });
     });
     return result;
@@ -114,6 +129,9 @@
     }
   }
 
+
+  // Based on this awesome little demo:
+  // http://www.javascripter.net/faq/hextorgb.htm
   function hexToR(h) {return parseInt((cutHex(h)).substring(0,2),16)}
   function hexToG(h) {return parseInt((cutHex(h)).substring(2,4),16)}
   function hexToB(h) {return parseInt((cutHex(h)).substring(4,6),16)}

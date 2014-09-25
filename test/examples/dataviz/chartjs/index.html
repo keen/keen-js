@@ -98,13 +98,13 @@
   // Keen.ready(function(){});
 
   // Set as default library
-  //Keen.Dataviz.dataTypeMap["singular"] = { library: "chartjs", chartType: "gauge" };
-  // Keen.Dataviz.dataTypeMap["categorical"] = { library: "chartjs", chartType: "doughnut" };
-  // Keen.Dataviz.dataTypeMap["chronological"] = { library: "chartjs", chartType: "line" };
-  // Keen.Dataviz.dataTypeMap["cat-chronological"] = { library: "chartjs", chartType: "line" };
+  // Keen.Dataviz.dataTypeMap["singular"] = { library: "chartjs", chartType: "gauge" };
+  Keen.Dataviz.dataTypeMap["categorical"] = { library: "chartjs", chartType: "doughnut" };
+  Keen.Dataviz.dataTypeMap["chronological"] = { library: "chartjs", chartType: "line" };
+  Keen.Dataviz.dataTypeMap["cat-chronological"] = { library: "chartjs", chartType: "line" };
 
   var chartjs_radar = new Keen.Dataviz()
-    .library("chartjs")
+    // .library("chartjs")
     .chartType("radar")
     .height(400)
     .width(600)
@@ -119,7 +119,7 @@
 
 
   var chartjs_polar = new Keen.Dataviz()
-    .library("chartjs")
+    // .library("chartjs")
     .chartType("polar-area")
     .height(400)
     //.width(600)
@@ -133,7 +133,7 @@
     .render();
 
   var chartjs_pie = new Keen.Dataviz()
-    .library("chartjs")
+    // .library("chartjs")
     .chartType("pie")
     .height(400)
     //.width(600)
@@ -147,8 +147,8 @@
     .render();
 
   var chartjs_doughnut = new Keen.Dataviz()
-    .library("chartjs")
-    .chartType("doughnut")
+    // .library("chartjs")
+    // .chartType("doughnut")
     .height(400)
     //.width(600)
     .el(document.getElementById("chart-doughnut"))
@@ -160,140 +160,49 @@
     })
     .render();
 
-  // var chartjs_pie = new Keen.Dataviz()
-  //   .library("chartjs")
-  //   .chartType("pie")
-  //   .el(document.getElementById("chart-pie"))
-  //   .parseRawData({ result: [
-  //       { label: "A", result: 9 },
-  //       { label: "B", result: 7 },
-  //       { label: "C", result: 4 }
-  //     ]
-  //   })
-  //   .render();
 
   // Single Interval
 
-  // var chartjs_area = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("area")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-area"));
-  //
-  // var chartjs_line = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("line")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-line"));
-  //
-  // var chartjs_bar = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("bar")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-bar"));
-  //
-  // var chartjs_areaspline = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("area-spline")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-area-spline"));
-  //
-  // var chartjs_spline = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("spline")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-spline"));
-  //
-  // var chartjs_areastep = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("area-spline")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-area-step"));
-  //
-  // var chartjs_step = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("step")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-step"));
-  //
-  // reqInterval.on("complete", function(){
-  //   chartjs_area.parseRequest(this).render();
-  //   chartjs_line.parseRequest(this).render();
-  //   chartjs_bar.parseRequest(this).render();
-  //   chartjs_areaspline.parseRequest(this).render();
-  //   chartjs_spline.parseRequest(this).render();
-  //   chartjs_areastep.parseRequest(this).render();
-  //   chartjs_step.parseRequest(this).render();
-  // });
-  //
-  //
-  //
-  //
-  // var chartjs_area_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("area")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-area-multi"));
-  //
-  // var chartjs_line_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("line")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-line-multi"));
-  //
-  // var chartjs_bar_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("bar")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-bar-multi"));
-  //
-  // var chartjs_areaspline_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("area-spline")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-area-spline-multi"));
-  //
-  // var chartjs_spline_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("spline")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-spline-multi"));
-  //
-  // var chartjs_step_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("step")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-step-multi"));
-  //
-  // var chartjs_areastep_m = new Keen.Dataviz()
-  //   // .library("chartjs")
-  //   .chartType("area-step")
-  //   .height(300)
-  //   .labelMapping(labelMap)
-  //   .prepare(document.getElementById("chart-area-step-multi"));
-  //
-  // reqMultiline.on("complete", function(){
-  //   chartjs_area_m.parseRequest(this).render();
-  //   chartjs_line_m.parseRequest(this).render();
-  //   chartjs_bar_m.parseRequest(this).render();
-  //   chartjs_areaspline_m.parseRequest(this).render();
-  //   chartjs_spline_m.parseRequest(this).render();
-  //   chartjs_step_m.parseRequest(this).render();
-  //   chartjs_areastep_m.parseRequest(this).render();
-  // });
+  var chartjs_line = new Keen.Dataviz()
+    // .library("chartjs")
+    // .chartType("line")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-line"));
+
+  var chartjs_bar = new Keen.Dataviz()
+    // .library("chartjs")
+    .chartType("bar")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-bar"));
+
+
+  reqInterval.on("complete", function(){
+    chartjs_line.parseRequest(this).render();
+    chartjs_bar.parseRequest(this).render();
+  });
+
+
+
+  var chartjs_line_m = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("line")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-line-multi"));
+
+  var chartjs_bar_m = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("bar")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-bar-multi"));
+
+  reqMultiline.on("complete", function(){
+    chartjs_line_m.parseRequest(this).render();
+    chartjs_bar_m.parseRequest(this).render();
+  });
 
 
   </script>
