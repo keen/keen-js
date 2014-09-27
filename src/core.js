@@ -398,7 +398,11 @@
   _extend(Keen, Events);
 
   Keen.loaded = true;
-  Keen.urlMaxLength = 2000;
+
+  Keen.urlMaxLength = 16000;
+  if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+    Keen.urlMaxLength = 2083;
+  }
 
   // Expose utils
   Keen.utils = {
