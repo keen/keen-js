@@ -401,7 +401,7 @@
 
   Keen.urlMaxLength = 16000;
   if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
-    Keen.urlMaxLength = 2083;
+    Keen.urlMaxLength = 2000;
   }
 
   // Expose utils
