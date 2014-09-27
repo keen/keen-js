@@ -81,7 +81,7 @@
     };
 
     _each(self.queries, function(query, index){
-      var url = null;
+      var url;
       var successSequencer = function(res){
         handleSuccess(res, index);
       };
@@ -89,34 +89,27 @@
         handleFailure(res, index);
       };
 
-      if (query instanceof Keen.Query || query instanceof Keen.Query) {
+      if (query instanceof Keen.Query) {
         url = _build_url.call(self.instance, query.path);
-        url += "?api_key=" + self.instance.client.readKey;
-        url += _build_query_string.call(self.instance, query.params);
+        sendQuery.call(self.instance, url, query.params, successSequencer, failureSequencer);
 
       } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
         url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
-        url += "?api_key=" + self.instance.client.readKey;
+        sendQuery.call(self.instance, url, null, successSequencer, failureSequencer);
 
       } else {
         var res = {
           statusText: 'Bad Request',
-          responseText: { message: 'Error: Query ' + (i+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
+          responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
         };
         Keen.log(res.responseText.message);
         Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');
         Keen.log('https://keen.io/docs/clients/javascript/usage-guide/#analyze-and-visualize');
-        if (self.error) self.error(res.responseText.message);
+        if (self.error) {
+          self.error(res.responseText.message);
+        }
       }
-      if (url) _send_query.call(self.instance, url, successSequencer, failureSequencer);
     });
-
-    /*for (var i = 0; i < self.queries.length; i++) {
-      (function(query, index){
-
-
-      })(self.queries[i], i);
-    }*/
     return this;
   };
 
@@ -140,7 +133,7 @@
 
     // Localize timezone if none is set
     if (this.params.timezone === void 0) {
-      this.params.timezone = _build_timezone_offset();
+      this.params.timezone = getTimezoneOffset();
     }
     return this;
   };
@@ -194,11 +187,11 @@
   // Private
   // --------------------------------
 
-  function _build_timezone_offset(){
+  function getTimezoneOffset(){
     return new Date().getTimezoneOffset() * -60;
   };
 
-  function _build_query_string(params){
+  function getQueryString(params){
     var query = [];
     for (var key in params) {
       if (params[key]) {
@@ -213,10 +206,26 @@
     return "&" + query.join('&');
   };
 
-  function _send_query(url, success, error){
-    if ((_type(XMLHttpRequest)==='Object'||_type(XMLHttpRequest)==='Function') && 'withCredentials' in new XMLHttpRequest()) {
-      _request.xhr.call(this, "GET", url, null, null, this.client.readKey, success, error);
-    } else {
-      _request.jsonp.call(this, url, this.client.readKey, success, error);
+
+  function sendQuery(url, params, success, error){
+    var urlBase = url,
+        urlQueryString = "",
+        reqType = this.client.requestType;
+
+    if (urlBase.indexOf("extraction") > -1) {
+      // Extractions do not currently support JSONP
+      reqType = "xhr";
     }
-  };
+    urlQueryString += "?api_key=" + this.client.readKey;
+    urlQueryString += getQueryString.call(this, params);
+    if (reqType !== "xhr") {
+      if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {
+        sendJsonp(urlBase + urlQueryString, null, success, error);
+        return;
+      }
+    }
+    if (Keen.canXHR) {
+      sendXhr("GET", urlBase + urlQueryString, null, null, success, error);
+    }
+    return;
+  }
