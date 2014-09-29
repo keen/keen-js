@@ -129,7 +129,7 @@ function _parseRawData(response){
     if (typeof response.result[0] == "number"){
       dataType = "cat-ordinal";
       schema = {
-      records: "",
+        records: "",
         unpack: {
           index: {
             path: "steps -> event_collection",
