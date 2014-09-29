@@ -6,20 +6,23 @@ Keen.Dataviz.prototype.labels = function(arr){
 };
 
 function _runLabelReplacement(){
-  var labelSet = this.labels() || null,
-      schema = this.dataset.schema() || {};
+  var self = this,
+      labelSet = this.labels() || null,
+      schema = this.dataset.schema() || {},
+      data = this.dataset.output(),
+      dt = this.dataType() || "";
+
   if (labelSet) {
-    if (schema.unpack && dataset.output()[0].length == 2) {
-      _each(dataset.output(), function(row,i){
+    if (dt.indexOf("chronological") > -1 || (schema.unpack && data[0].length > 2)) {
+      _each(data[0], function(cell,i){
         if (i > 0 && labelSet[i-1]) {
-          dataset.output()[i][0] = labelSet[i-1];
+          self.dataset.data.output[0][i] = labelSet[i-1];
         }
       });
-    }
-    if (schema.unpack && dataset.output()[0].length > 2) {
-      _each(dataset.output()[0], function(cell,i){
+    } else {
+      _each(data, function(row,i){
         if (i > 0 && labelSet[i-1]) {
-          dataset.output()[0][i] = labelSet[i-1];
+          self.dataset.data.output[i][0] = labelSet[i-1];
         }
       });
     }

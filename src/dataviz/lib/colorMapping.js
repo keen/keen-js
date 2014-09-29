@@ -26,7 +26,6 @@ function _runColorMapping(){
         }
       });
     }
-    //else if (schema.select && data[0].length === 2) {
     else {
       _each(data, function(row, i){
         if (i > 0 && colorMap[String(row[0])] && colorSet[i-1] !== colorMap[row[0]]) {

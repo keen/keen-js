@@ -60,10 +60,6 @@ function _parseRawData(response){
             path: "value",
             type: "number",
             format: "10"
-            // ,
-            // replace: {
-            //   null: 0
-            // }
           }
         ]
       }
@@ -145,29 +141,12 @@ function _parseRawData(response){
 
   }
 
-  // Key-value label mapping
-  // _runLabelMapping.call(this);
-  // if (labelMap) {
-  //   if (schema.unpack) {
-  //     if (schema.unpack['index']) {
-  //       schema.unpack['index'].replace = labelMap;
-  //     }
-  //     if (schema.unpack['label']) {
-  //       schema.unpack['label'].replace = labelMap;
-  //     }
-  //   }
-  //   if (schema.select) {
-  //     _each(schema.select, function(v, i){
-  //       schema.select[i].replace = labelMap;
-  //     });
-  //   }
-  // }
-
   dataset = new Keen.Dataset(response, schema);
 
-  // Post-process label replacement
-  _runLabelReplacement.call(this);
+  // Post-process label mapping/replacement
+  _runLabelMapping.call(self);
+  _runLabelReplacement.call(self);
+  self.dataType(dataType);
 
-  this.dataType(dataType);
   return dataset;
 }
