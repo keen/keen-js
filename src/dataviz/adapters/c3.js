@@ -38,26 +38,8 @@
   Keen.utils.each(["gauge", "donut", "pie", "bar", "area", "area-spline", "spline", "line", "step", "area-step"], function(type, index){
     charts[type] = {
       render: function(){
-        var setup = getSetupTemplate.call(this);
-        setup["data"]["type"] = type;
-        if (type === "gauge") {}
-        else if (type === "pie" || type === "donut") {
-          setup[type] = { title: this.title() };
-        }
-        else {
-          if (this.dataType().indexOf("chron") > -1) {
-            setup["data"]["x"] = "x";
-            setup["axis"] = {
-              x: {
-                type: 'timeseries',
-                tick: {
-                  format: '%Y-%m-%d'
-                }
-              }
-            };
-          }
-        }
-        this.view._artifacts["c3"] = this.view._artifacts["c3"] || c3.generate(setup);
+        var setup = getSetupTemplate.call(this, type);
+        this.view._artifacts["c3"] = c3.generate(setup);
         this.update();
       },
       update: function(){
@@ -95,8 +77,8 @@
     };
   });
 
-  function getSetupTemplate(){
-    return Keen.utils.extend({
+  function getSetupTemplate(type){
+    var setup = {
       bindto: this.el(),
       data: {
         columns: []
@@ -108,7 +90,29 @@
         height: this.height(),
         width: this.width()
       }
-    }, this.chartOptions());
+    };
+
+    // Enforce type, sorry no overrides here
+    setup["data"]["type"] = type;
+
+    if (type === "gauge") {}
+    else if (type === "pie" || type === "donut") {
+      setup[type] = { title: this.title() };
+    }
+    else {
+      if (this.dataType().indexOf("chron") > -1) {
+        setup["data"]["x"] = "x";
+        setup["axis"] = {
+          x: {
+            type: 'timeseries',
+            tick: {
+              format: '%Y-%m-%d'
+            }
+          }
+        };
+      }
+    }
+    return Keen.utils.extend(setup, this.chartOptions());
   }
 
   function _selfDestruct(){
