@@ -242,16 +242,9 @@
       if (success && response) {
         success(response);
       };
-      // Remove this from the namespace
-      window[callbackName] = undefined;
+      delete window[callbackName];
     };
 
-    // url += "?";
-    // if (params) {
-    //   _each(params, function(value, key){
-    //     url += key + "=" + value + "&"
-    //   });
-    // }
     url += "&jsonp=" + callbackName;
 
     script.id = "keen-jsonp";
@@ -409,9 +402,6 @@
     each: _each,
     extend: _extend,
     parseParams: _parse_params
-    // xhr: sendXhr,
-    // jsonp: sendJsonp,
-    // beacon: sendBeacon
   };
 
   Keen.ready = function(callback){
