@@ -340,7 +340,7 @@ var multiline = new Keen.Query("count", {
           .render();
         raw_pie
           .parseRawData(res)
-          .sortGroups("desc")
+          .sortGroups("asc")
           .render();
       });
       window.reqs['groupBy'].on("error", function(res){
@@ -476,11 +476,13 @@ var multiline = new Keen.Query("count", {
       var req_mline = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
+        .labelMapping({ "null": "pink" })
         .prepare(document.getElementById("7-2"));
 
       var raw_mline = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
+        .colorMapping({ "null": "pink" })
         .prepare(document.getElementById("7-3"));
 
       window.reqs['multiline'].on("complete", function(res){

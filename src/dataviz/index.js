@@ -19,7 +19,9 @@
 
   [x] update color palette
   [x] update keen-c3.js adapter w/ example page
-  [ ] update keen-chart.js adapter w/ example page
+  [x] update keen-chart.js adapter w/ example page
+
+  [ ] manage a second "mapped" color set
 
 */
 

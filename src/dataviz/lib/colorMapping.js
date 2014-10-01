@@ -1,38 +1,35 @@
 Keen.Dataviz.prototype.colorMapping = function(obj){
   if (!arguments.length) return this.view.attributes.colorMapping;
-  var self = this;
-  self.view.attributes.colorMapping = {};
-  _each(obj, function(prop, key){
-    self.view.attributes.colorMapping[key] = (prop? prop.trim() : null);
-  });
-  _runColorMapping.call(self);
-  return self;
+  this.view.attributes.colorMapping = (obj ? obj : null);
+  _runColorMapping.call(this);
+  return this;
 };
 
 function _runColorMapping(){
   var self = this,
       schema = this.dataset.schema,
       data = this.dataset.output(),
-      colorSet = this.colors(),
+      colorSet = this.view.defaults.colors.slice(),
       colorMap = this.colorMapping(),
       dt = this.dataType() || "";
 
   if (colorMap) {
-
     if (dt.indexOf("chronological") > -1 || (schema.unpack && data[0].length > 2)) {
-      _each(data[0], function(cell, i){
-        if (i > 0 && colorMap[String(cell)] && colorSet[i-1] !== colorMap[String(cell)]) {
-          colorSet.splice(i-1, 0, colorMap[String(cell)]);
+      _each(data[0].slice(1), function(label, i){
+        var color = colorMap[label];
+        if (color && colorSet[i] !== color) {
+          colorSet.splice(i, 0, color);
         }
       });
     }
     else {
-      _each(data, function(row, i){
-        if (i > 0 && colorMap[String(row[0])] && colorSet[i-1] !== colorMap[row[0]]) {
-          colorSet.splice(i-1, 0, colorMap[row[0]]);
+      _each(self.dataset.selectColumn(0).slice(1), function(label, i){
+        var color = colorMap[label];
+        if (color && colorSet[i] !== color) {
+          colorSet.splice(i, 0, color);
         }
       });
     }
-    self.colors(colorSet);
+    self.view.attributes.colors = colorSet;
   }
 }
