@@ -72,15 +72,15 @@ describe("Keen Tracking", function() {
         });
       });
 
-      it("should add a script tag with a URL that has data and modified params", function(){
-
-        this.keen.addEvent(keenHelper.collection, keenHelper.properties);
-        var tag = document.getElementById("keen-jsonp");
-        expect(tag).to.exist;
-        expect(tag.src).to.contain("data=");
-        expect(tag.src).to.contain("modified=");
-
-      });
+      // it("should add a script tag with a URL that has data and modified params", function(){
+      //
+      //   this.keen.addEvent(keenHelper.collection, keenHelper.properties);
+      //   var tag = document.getElementById("keen-jsonp");
+      //   expect(tag).to.exist;
+      //   expect(tag.src).to.contain("data=");
+      //   expect(tag.src).to.contain("modified=");
+      //
+      // });
 
     });
 
