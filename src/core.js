@@ -172,13 +172,19 @@
 
   function sendXhr(method, url, headers, body, success, error){
     var ids = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'],
+        successCallback = success,
+        errorCallback = error,
         payload,
         xhr;
 
-    // via: http://codereview.stackexchange.com/a/28376/41482
+    success = null;
+    error = null;
+
     if (window.XMLHttpRequest) {
       xhr = new XMLHttpRequest();
-    } else {
+    }
+    else {
+      // Legacy IE support: look up alts if XMLHttpRequest is not available
       for (var i = 0; i < ids.length; i++) {
         try {
           xhr = new ActiveXObject(ids[i]);
@@ -195,17 +201,20 @@
             response = JSON.parse(xhr.responseText);
           } catch (e) {
             Keen.log("Could not parse HTTP response: " + xhr.responseText);
-            if (error) {
-              error(xhr, e);
+            if (errorCallback) {
+              errorCallback(xhr, e);
+              successCallback = errorCallback = null;
             }
           }
-          if (success && response) {
-            success(response);
+          if (successCallback && response) {
+            successCallback(response);
+            successCallback = errorCallback = null;
           }
         } else {
           Keen.log("HTTP request failed.");
-          if (error) {
-            error(xhr, null);
+          if (errorCallback) {
+            errorCallback(xhr, null);
+            successCallback = errorCallback = null;
           }
         }
       }
@@ -230,33 +239,46 @@
   }
 
   function sendJsonp(url, params, success, error){
-    var callbackName = "keenJSONPCallback" + new Date().getTime(),
+    var timestamp = new Date().getTime(),
+        successCallback = success,
+        errorCallback = error,
         script = document.createElement("script"),
+        parent = document.getElementsByTagName("head")[0],
+        callbackName = "keenJSONPCallback",
+        scriptId = "keen-jsonp",
         loaded = false;
+
+    success = null;
+    error = null;
+
+    callbackName += timestamp;
+    scriptId += timestamp;
 
     while (callbackName in window) {
       callbackName += "a";
     }
     window[callbackName] = function (response) {
       loaded = true;
-      if (success && response) {
-        success(response);
+      if (successCallback && response) {
+        successCallback(response);
       };
+      parent.removeChild(script);
       delete window[callbackName];
+      successCallback = errorCallback = null;
     };
 
-    url += "&jsonp=" + callbackName;
+    script.id = scriptId;
+    script.src = url + "&jsonp=" + callbackName;
 
-    script.id = "keen-jsonp";
-    script.src = url;
-    document.getElementsByTagName("head")[0].appendChild(script);
+    parent.appendChild(script);
 
     // for early IE w/ no onerror event
     script.onreadystatechange = function() {
       if (loaded === false && this.readyState === "loaded") {
         loaded = true;
-        if (error) {
-          error();
+        if (errorCallback) {
+          errorCallback();
+          successCallback = errorCallback = null;
         }
       }
     };
@@ -266,16 +288,22 @@
       // on IE9 both onerror and onreadystatechange are called
       if (loaded === false) {
         loaded = true;
-        if (error) {
-          error();
+        if (errorCallback) {
+          errorCallback();
+          successCallback = errorCallback = null;
         }
       }
     };
   }
 
   function sendBeacon(url, params, success, error){
-    var loaded = false,
+    var successCallback = success,
+        errorCallback = error,
+        loaded = false,
         img = document.createElement("img");
+
+    success = null;
+    error = null;
 
     img.onload = function() {
       loaded = true;
@@ -288,14 +316,16 @@
         this.onerror();
         return;
       }
-      if (success) {
-        success({created: true});
+      if (successCallback) {
+        successCallback({created: true});
+        successCallback = errorCallback = null;
       }
     };
     img.onerror = function() {
       loaded = true;
-      if (error) {
-        error();
+      if (errorCallback) {
+        errorCallback();
+        successCallback = errorCallback = null;
       }
     };
     img.src = url + "&c=clv1";

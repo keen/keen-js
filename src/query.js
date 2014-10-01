@@ -10,13 +10,21 @@
   // -------------------------------
 
   Keen.prototype.run = function(query, success, error) {
-    var queries = [];
+    var queries = [],
+        successCallback = success,
+        errorCallback = error;
+
+    success = null;
+    error = null;
+
     if ( _type(query) === 'Array' ) {
       queries = query;
     } else {
       queries.push(query);
     }
-    return new Keen.Request(this, queries, success, error);
+    var req = new Keen.Request(this, queries, successCallback, errorCallback);
+    successCallback = errorCallback = null;
+    return req;
   };
 
 
@@ -25,16 +33,27 @@
   // -------------------------------
 
   Keen.Request = function(instance, queries, success, error){
-    this.data;
-    this.configure(instance, queries, success, error);
+    var successCallback = success,
+        errorCallback = error;
+
+    success = null;
+    error = null;
+
+    this.configure(instance, queries, successCallback, errorCallback);
+    successCallback = errorCallback = null;
   };
   _extend(Keen.Request.prototype, Events);
 
   Keen.Request.prototype.configure = function(instance, queries, success, error){
     this.instance = instance;
     this.queries = queries;
+    this.data;
+
     this.success = success;
+    success = null;
+
     this.error = error;
+    error = null;
 
     this.refresh();
     return this;
@@ -210,7 +229,12 @@
   function sendQuery(url, params, success, error){
     var urlBase = url,
         urlQueryString = "",
-        reqType = this.client.requestType;
+        reqType = this.client.requestType,
+        successCallback = success,
+        errorCallback = error;
+
+    success = null;
+    error = null;
 
     if (urlBase.indexOf("extraction") > -1) {
       // Extractions do not currently support JSONP
@@ -220,12 +244,13 @@
     urlQueryString += getQueryString.call(this, params);
     if (reqType !== "xhr") {
       if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {
-        sendJsonp(urlBase + urlQueryString, null, success, error);
+        sendJsonp(urlBase + urlQueryString, null, successCallback, errorCallback);
         return;
       }
     }
     if (Keen.canXHR) {
-      sendXhr("GET", urlBase + urlQueryString, null, null, success, error);
+      sendXhr("GET", urlBase + urlQueryString, null, null, successCallback, errorCallback);
     }
+    successCallback = errorCallback = null;
     return;
   }
