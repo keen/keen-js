@@ -1,6 +1,6 @@
 # keen-js v3.0.9
 
-A crisp, new JS Library for the Keen IO API.
+Keen IO JS SDK for the Keen IO API.
 
 **Important:** v3 is now the current version. v2 documentation is located [here](https://github.com/keenlabs/keen-js/tree/v2).
 
@@ -142,4 +142,4 @@ Read more about building charts from query responses in our [visualization guide
 
 ## Support
 
-Need a hand with something? Join us in [HipChat](http://users.keen.io/), [IRC](http://webchat.freenode.net/?channels=keen-io), or shoot us an email at [contact@keen.io](mailto:contact@keen.io)
+Need a hand with something? Shoot us an email at [contact@keen.io](mailto:contact@keen.io)
