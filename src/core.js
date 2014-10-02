@@ -170,7 +170,7 @@
   // XHR, JSONP, Beacon utilities
   // -------------------------------
 
-  function sendXhr(method, url, headers, body, success, error){
+  function _sendXhr(method, url, headers, body, success, error){
     var ids = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'],
         successCallback = success,
         errorCallback = error,
@@ -238,7 +238,7 @@
 
   }
 
-  function sendJsonp(url, params, success, error){
+  function _sendJsonp(url, params, success, error){
     var timestamp = new Date().getTime(),
         successCallback = success,
         errorCallback = error,
@@ -296,7 +296,7 @@
     };
   }
 
-  function sendBeacon(url, params, success, error){
+  function _sendBeacon(url, params, success, error){
     var successCallback = success,
         errorCallback = error,
         loaded = false,

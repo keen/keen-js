@@ -99,15 +99,15 @@
 
       if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {
         if (reqType === "jsonp") {
-          sendJsonp(urlBase + urlQueryString, null, success, error);
+          _sendJsonp(urlBase + urlQueryString, null, success, error);
         } else {
-          sendBeacon(urlBase + urlQueryString, null, success, error);
+          _sendBeacon(urlBase + urlQueryString, null, success, error);
         }
         return;
       }
     }
     if (Keen.canXHR) {
-      sendXhr("POST", urlBase, { "Authorization": this.client.writeKey, "Content-Type": "application/json" }, data, success, error);
+      _sendXhr("POST", urlBase, { "Authorization": this.client.writeKey, "Content-Type": "application/json" }, data, success, error);
     }
     return;
   };

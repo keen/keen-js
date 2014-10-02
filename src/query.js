@@ -110,11 +110,11 @@
 
       if (query instanceof Keen.Query) {
         url = _build_url.call(self.instance, query.path);
-        sendQuery.call(self.instance, url, query.params, successSequencer, failureSequencer);
+        _sendQuery.call(self.instance, url, query.params, successSequencer, failureSequencer);
 
       } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
         url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
-        sendQuery.call(self.instance, url, null, successSequencer, failureSequencer);
+        _sendQuery.call(self.instance, url, null, successSequencer, failureSequencer);
 
       } else {
         var res = {
@@ -152,7 +152,7 @@
 
     // Localize timezone if none is set
     if (this.params.timezone === void 0) {
-      this.params.timezone = getTimezoneOffset();
+      this.params.timezone = _getTimezoneOffset();
     }
     return this;
   };
@@ -206,11 +206,11 @@
   // Private
   // --------------------------------
 
-  function getTimezoneOffset(){
+  function _getTimezoneOffset(){
     return new Date().getTimezoneOffset() * -60;
   };
 
-  function getQueryString(params){
+  function _getQueryString(params){
     var query = [];
     for (var key in params) {
       if (params[key]) {
@@ -226,7 +226,7 @@
   };
 
 
-  function sendQuery(url, params, success, error){
+  function _sendQuery(url, params, success, error){
     var urlBase = url,
         urlQueryString = "",
         reqType = this.client.requestType,
@@ -241,15 +241,15 @@
       reqType = "xhr";
     }
     urlQueryString += "?api_key=" + this.client.readKey;
-    urlQueryString += getQueryString.call(this, params);
+    urlQueryString += _getQueryString.call(this, params);
     if (reqType !== "xhr") {
       if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {
-        sendJsonp(urlBase + urlQueryString, null, successCallback, errorCallback);
+        _sendJsonp(urlBase + urlQueryString, null, successCallback, errorCallback);
         return;
       }
     }
     if (Keen.canXHR) {
-      sendXhr("GET", urlBase + urlQueryString, null, null, successCallback, errorCallback);
+      _sendXhr("GET", urlBase + urlQueryString, null, null, successCallback, errorCallback);
     }
     successCallback = errorCallback = null;
     return;
