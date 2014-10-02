@@ -11,10 +11,26 @@ module.exports = function(){
   this.browsers = [
 
     /* FIREFOX */
-    /*{
+    {
+      browserName: "firefox",
+      platform: "OS X 10.9",
+      version: "beta"
+    },
+    {
+      browserName: 'firefox',
+      platform: 'Windows 8.1',
+      version: "beta"
+    },
+    {
+      browserName: 'firefox',
+      platform: 'Windows 8',
+      version: "beta"
+    },
+
+    {
       browserName: "firefox",
       platform: "OS X 10.9"
-    },*/
+    },
     {
       browserName: "firefox",
       platform: "OS X 10.6"
@@ -25,32 +41,46 @@ module.exports = function(){
     },
     {
       browserName: 'firefox',
-      platform: 'Windows 8.1',
-      version: '27'
+      platform: 'Windows 8.1'
     },
     {
       browserName: 'firefox',
-      platform: 'Windows 8',
-      version: '27'
+      platform: 'Windows 8'
     },
     {
       browserName: "firefox",
-      platform: "Windows 7",
-      version: '27'
+      platform: "Windows 7"
     },
     {
       browserName: "firefox",
-      platform: "Windows XP",
-      version: '27'
+      platform: "Windows XP"
     },
 
 
 
     /* CHROME */
-    /*{
+
+    {
+      browserName: "chrome",
+      platform: "OS X 10.8",
+      version: "beta"
+    },
+    {
+      browserName: "chrome",
+      platform: "Windows 8.1",
+      version: "beta"
+    },
+    {
+      browserName: "chrome",
+      platform: "Windows 8",
+      version: "beta"
+    },
+
+
+    {
       browserName: "chrome",
       platform: "OS X 10.9"
-    },*/
+    },
     {
       browserName: "chrome",
       platform: "OS X 10.8"
@@ -73,20 +103,20 @@ module.exports = function(){
     },
     {
       browserName: "chrome",
-      platform: "XP"
+      platform: "Windows XP"
     },
     {
       browserName: "chrome",
-      platform: "linux"
+      platform: "Linux"
     },
 
 
     /* SAFARI */
-    /*{
+    {
       browserName: "safari",
       platform: "OS X 10.9",
       version: "7"
-    },*/
+    },
     {
       browserName: "safari",
       platform: "OS X 10.8",
@@ -107,6 +137,7 @@ module.exports = function(){
       platform: "Windows 8.1",
       version: "11"
     },
+
     {
       browserName: "internet explorer",
       platform: "Windows 8",
@@ -129,42 +160,129 @@ module.exports = function(){
       platform: "WINDOWS 7",
       version: "9"
     },
-    /*
-    {
-      browserName: "internet explorer",
-      platform: "WINDOWS 7",
-      version: "8"
-    },*/
+
+    // Testing framework not supported :\
+
+    // {
+    //   browserName: "internet explorer",
+    //   platform: "WINDOWS 7",
+    //   version: "8"
+    // }
+
+    // {
+    //   browserName: "internet explorer",
+    //   platform: "Windows XP",
+    //   version: "8"
+    // },
+    // {
+    //   browserName: "internet explorer",
+    //   platform: "Windows XP",
+    //   version: "7"
+    // },
+    // {
+    //   browserName: "internet explorer",
+    //   platform: "Windows XP",
+    //   version: "6"
+    // }
+
+    /* iOS */
 
     {
-      browserName: "internet explorer",
-      platform: "VISTA",
-      version: "10"
+      browserName: "iphone",
+      platform: "OS X 10.9",
+      version: "7.1",
+      deviceName: "iPhone"
+    },
+    {
+      browserName: "iphone",
+      platform: "OS X 10.9",
+      version: "7.0",
+      deviceName: "iPhone"
+    },
+    {
+      browserName: "iphone",
+      platform: "OS X 10.8",
+      version: "6.1",
+      deviceName: "iPhone"
+    },
+    {
+      browserName: "iphone",
+      platform: "OS X 10.8",
+      version: "6.0",
+      deviceName: "iPhone"
+    },
+
+
+    /* Android */
+
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.4"
+    },
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.4",
+      deviceName: "Google Nexus 7 HD Emulator"
+    },
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.4",
+      deviceName: "LG Nexus 4 Emulator"
+    },
+
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.3"
+    },
+
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.2"
+    },
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.2",
+      deviceName: "Samsung Galaxy Tab 3 Emulator"
+    },
+
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.1"
+    },
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.1",
+      deviceName: "Samsung Galaxy Note Emulator"
+    },
+
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.0",
+      deviceName: "Motorola Droid 4 Emulator"
+    },
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.0",
+      deviceName: "Samsung Galaxy Nexus Emulator"
+    },
+    {
+      browserName: "android",
+      platform: "Linux",
+      version: "4.0",
+      deviceName: "Samsung Galaxy Note Emulator"
     }
 
 
-    /*
-    Errors
-
-    // IE on XP
-
-    {
-      browserName: "internet explorer",
-      platform: "WINDOWS XP",
-      version: "8"
-    },
-    {
-      browserName: "internet explorer",
-      platform: "WINDOWS XP",
-      version: "7"
-    },
-    {
-      browserName: "internet explorer",
-      platform: "WINDOWS XP",
-      version: "6"
-    }
-
-    */
   ];
 
   return this;
