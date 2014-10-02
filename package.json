@@ -24,7 +24,8 @@
   },
   "scripts": {
     "start": "grunt",
-    "test": "grunt test"
+    "test": "grunt test",
+    "postinstall": "bower install"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
