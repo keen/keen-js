@@ -108,6 +108,8 @@
     }
     if (Keen.canXHR) {
       _sendXhr("POST", urlBase, { "Authorization": this.client.writeKey, "Content-Type": "application/json" }, data, success, error);
+    } else {
+      Keen.log("Event not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
     }
     return;
   };
