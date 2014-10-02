@@ -113,16 +113,6 @@ Clients have a #draw method with accepts a query, a DOM selector, and a configur
 client.draw(query, selector, config);
 ```
 
-Requests also have a draw method. The query is already known in this case, so you can omit the query from the method signature:
-
-```javascript
-var request = client.run(query, function(){
-  this.draw(document.getElementById("chart-wrapper"), {
-    title: "Custom chart title"
-  });
-});
-```
-
 A future release will add the ability to plot multiple query responses on a single chart, but for the time being only the first query response will be visualized.
 
 ### Example usage
@@ -134,11 +124,9 @@ var count = new Keen.Query("count", {
   interval: "daily",
   timeframe: "this_21_days"
 });
-var request = client.run(count, function(){
-  this.draw(document.getElementById("chart-wrapper"), {
-    chartType: "columnchart",
-    title: "Custom chart title"
-  });
+client.draw(count, document.getElementById("chart-wrapper"), {
+  chartType: "columnchart",
+  title: "Custom chart title"
 });
 ```
 
