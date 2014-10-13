@@ -1,5 +1,6 @@
 var saucelabs = require('./config/saucelabs')(),
-    aws = require('./config/aws')();
+    aws = require('./config/aws')(),
+    wraps = require('./config/wrappers')();
 
 module.exports = function(grunt) {
 
@@ -15,59 +16,106 @@ module.exports = function(grunt) {
     pkg: grunt.file.readJSON("package.json"),
 
     concat: {
+
       options: {
-        stripBanners: true,
+        stripBanners: {
+          block: true,
+          line: true
+        },
         process: function(src, filepath) {
           var namespace = (grunt.option("namespace") || false);
           src = ((namespace) ? src.replace("'Keen'", "'" + namespace + "'") : src);
-          return "  // Source: " + filepath + "\n" + src;
+          return "// Source: " + filepath + "\n" + src;
         }
       },
 
-      // Build complete version
-      all: {
+      // Assemble Keen.Dataset
+      dataset: {
         src: [
-            "src/_intro.js"
-          , "src/core.js"
+          "src/dataset/index.js",
+          "src/dataset/**/*.js"
+        ],
+        dest: ".tmp/dataset.js"
+      },
+
+      // Assemble Keen.Dataviz
+      dataviz: {
+        src: [
+          "src/dataviz/index.js",
+          "src/dataviz/**/*.js"
+        ],
+        dest: ".tmp/dataviz.js"
+      },
+
+      // Assemble keen.js (full)
+      all: {
+        options: {
+          // Library Banner/Footer (makes happy AMD modules)
+          banner: wraps.libraryBanner,
+          footer: wraps.libraryFooter
+        },
+        src: [
+            "src/core.js"
           , "src/track.js"
           , "src/query.js"
+
           , "src/lib/base64.js"
           , "src/lib/json2.js"
-          , "src/lib/keen-dataform.js"
           , "src/lib/keen-domready.js"
           , "src/lib/keen-spinner.js"
-          , "src/visualize.js"
-          , "src/plugins/keen-googlecharts.js"
-          , "src/plugins/keen-widgets.js"
+
+          , ".tmp/dataset.js"
+          , ".tmp/dataviz.js"
+          , "src/visualization.js"
           , "src/async.js"
-          , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
 
-      // Build tracking-only version
+      // Assemble keen-tracking.js
       tracker: {
+        options: {
+          banner: wraps.libraryBanner,
+          footer: wraps.libraryFooter
+        },
         src: [
-            "src/_intro.js"
-          , "src/core.js"
+            "src/core.js"
           , "src/track.js"
           , "src/lib/base64.js"
           , "src/lib/json2.js"
           , "src/lib/keen-domready.js"
           , "src/async.js"
-          , "src/_outro.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
 
-      plugin_googlecharts: {
-        src: ["src/plugins/_intro.js", "src/plugins/keen-googlecharts.js", "src/plugins/_outro.js"],
-        dest: "dist/plugins/keen-googlecharts.js"
+      // Build adapters as stand-alone modules
+      adapters: {
+        options: {
+          // Adapter Banner/Footer (makes happy AMD modules)
+          banner: wraps.adapterBanner,
+          footer: wraps.adapterFooter
+        },
+        files: {
+          "dist/adapters/keen-adapter-google.js"  : ["src/dataviz/adapters/google.js"],
+          "dist/adapters/keen-adapter-chartjs.js" : ["src/dataviz/adapters/chartjs.js"],
+          "dist/adapters/keen-adapter-c3.js"      : ["src/dataviz/adapters/c3.js"]
+        }
       },
 
-      plugin_keenwidgets: {
-        src: ["src/plugins/_intro.js", "src/plugins/keen-widgets.js", "src/plugins/_outro.js"],
-        dest: "dist/plugins/keen-widgets.js"
+      // Build unit tests
+      test: {
+        src: [
+            "test/unit/core.js"
+          , "test/unit/track.js"
+          , "test/unit/query.js"
+          , "test/unit/dataviz.js"
+          , "test/unit/dataset.js"
+          , "test/unit/visualization.js"
+          , "test/unit/utils.js"
+          , "test/unit/data/**/*.js"
+        ],
+        dest: "test/keen-unit-all.js"
       },
 
       loader: {
@@ -95,6 +143,10 @@ module.exports = function(grunt) {
       javascript: {
         files: "src/**/*.js",
         tasks: [ "concat", "uglify" ]
+      },
+      tests: {
+        files: "test/unit/**/*.js",
+        tasks: [ "concat" ]
       }
     },
 
@@ -110,16 +162,16 @@ module.exports = function(grunt) {
     'saucelabs-mocha': {
       all: {
         options: {
-          testname: new Date().toISOString(),
-          username: saucelabs.username,
-          key: saucelabs.key,
-          build: process.env.TRAVIS_JOB_ID,
-          urls: saucelabs.urls,
-          browsers: saucelabs.browsers,
-          concurrency: saucelabs.concurrency,
-          sauceConfig: {
-            'video-upload-on-pass': false
-          }
+          'testname': new Date().toISOString(),
+          'username': saucelabs.username,
+          'key': saucelabs.key,
+          'build': saucelabs.buildID,
+          'urls': saucelabs.urls,
+          'browsers': saucelabs.browsers,
+          'concurrency': saucelabs.concurrency,
+          'maxRetries': saucelabs.maxRetries,
+          'max-duration': saucelabs.maxDuration,
+          'sauceConfig': saucelabs.additionalConfig
         }
       }
     },

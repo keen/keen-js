@@ -1,4 +1,6 @@
 dist/*
+.tmp
+test/keen-unit-all.js
 node_modules
 bower_components
 *.log
