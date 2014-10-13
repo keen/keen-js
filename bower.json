@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.0.8",
+  "version": "3.1.0-beta",
   "homepage": "https://github.com/keenlabs/keen-js",
   "authors": [
     "Dustin Larimer <dustin@keen.io>"
@@ -31,7 +31,6 @@
     "*.md"
   ],
   "devDependencies": {
-    "jquery": "~2.1.0",
     "mocha": "~1.18.2",
     "chai": "~1.9.1",
     "sinon": "http://sinonjs.org/releases/sinon-1.9.0.js",

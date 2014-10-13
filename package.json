@@ -1,11 +1,24 @@
 {
   "name": "keen",
-  "version": "3.0.8",
-  "bugs": {
-    "url": "https://github.com/keenlabs/keen-js/issues"
+  "version": "3.1.0-beta",
+  "repository" : {
+    "type" : "git",
+    "url" : "https://github.com/keenlabs/keen-js.git"
   },
+  "bugs": "https://github.com/keenlabs/keen-js/issues",
   "author": "Dustin Larimer <dustin@keen.io> (http://keen.io/)",
-  "contributors": [],
+  "contributors": [
+    "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
+    "Sean Dokko <sean@keen.io> (http://seandokko.com/)",
+    "Jordan Klassen <forivall@gmail.com> (http://forivall.github.io)",
+    "Josh Dzielak <josh@keen.io> (http://dzello.com)",
+    "Ryan Spraetz <ryan@keen.io> (https://keen.io)",
+    "Dan Kador <dan@keen.io> (https://keen.io)",
+    "Cory Watson <github@onemogin.com> (http://www.onemogin.com)",
+    "Joshua Coats <joshua@keen.io> (https://github.com/joshukeen)",
+    "Micah Wolfe <micah@keen.io> (https://github.com/forzalupo)",
+    "Tim Schiller <timothy.schiller@gmail.com> (http://tmschl.com)"
+  ],
   "engines": {
     "node": "0.10.x"
   },
@@ -16,13 +29,12 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.6",
-    "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-connect": "^0.7.1",
+    "grunt-contrib-concat": "~0.3.0",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-watch": "~0.5.3",
-    "grunt-s3": "^0.2.0-alpha.3",
-    "grunt-saucelabs": "^5.1.0"
-  },
-  "homepage": "https://keen.io"
+    "grunt-saucelabs": "~8.3.2",
+    "grunt-s3": "^0.2.0-alpha.3"
+  }
 }

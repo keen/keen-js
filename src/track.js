@@ -77,46 +77,39 @@
   // -------------------------------
 
   function _uploadEvent(eventCollection, payload, success, error) {
-    var url = _build_url.apply(this, ['/events/' + eventCollection]);
-    var newEvent = {};
+    var urlBase = _build_url.call(this, "/events/" + eventCollection),
+        urlQueryString = "",
+        reqType = this.client.requestType,
+        data = {};
 
     // Add properties from client.globalProperties
     if (this.client.globalProperties) {
-      newEvent = this.client.globalProperties(eventCollection);
+      data = this.client.globalProperties(eventCollection);
     }
 
     // Add properties from user-defined event
-    for (var property in payload) {
-      if (payload.hasOwnProperty(property)) {
-        newEvent[property] = payload[property];
+    _each(payload, function(value, key){
+      data[key] = value;
+    });
+
+    if (reqType !== "xhr") {
+      urlQueryString += "?api_key="  + encodeURIComponent( this.client.writeKey );
+      urlQueryString += "&data="     + encodeURIComponent( Keen.Base64.encode( JSON.stringify(data) ) );
+      urlQueryString += "&modified=" + encodeURIComponent( new Date().getTime() );
+
+      if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {
+        if (reqType === "jsonp") {
+          _sendJsonp(urlBase + urlQueryString, null, success, error);
+        } else {
+          _sendBeacon(urlBase + urlQueryString, null, success, error);
+        }
+        return;
       }
     }
-
-    // Send data
-    switch(this.client.requestType){
-
-      case 'xhr':
-        _request.xhr.apply(this, ["POST", url, null, newEvent, this.client.writeKey, success, error]);
-        break;
-
-      case 'jsonp':
-        var jsonBody = JSON.stringify(newEvent);
-        var base64Body = Keen.Base64.encode(jsonBody);
-        url = url + "?api_key=" + this.client.writeKey;
-        url = url + "&data=" + encodeURIComponent(base64Body);
-        url = url + "&modified=" + new Date().getTime();
-        _request.jsonp.apply(this, [url, this.client.writeKey, success, error])
-        break;
-
-      case 'beacon':
-        var jsonBody = JSON.stringify(newEvent);
-        var base64Body = Keen.Base64.encode(jsonBody);
-        url = url + "?api_key=" + encodeURIComponent(this.client.writeKey);
-        url = url + "&data=" + encodeURIComponent(base64Body);
-        url = url + "&modified=" + encodeURIComponent(new Date().getTime());
-        url = url + "&c=clv1";
-        _request.beacon.apply(this, [url, null, success, error]);
-        break;
-
+    if (Keen.canXHR) {
+      _sendXhr("POST", urlBase, { "Authorization": this.client.writeKey, "Content-Type": "application/json" }, data, success, error);
+    } else {
+      Keen.log("Event not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
     }
+    return;
   };

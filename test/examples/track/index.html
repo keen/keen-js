@@ -10,36 +10,13 @@
 
 		var client = new Keen({
 			projectId: "52f00ec205cd66404b000000",
-			writeKey: "554a723d023da6cb24e51c56a9a54555e9dcf8403d4b71ffa37e9112295622e78a10eed43a13c83b14ce171b0f1317bb09aa8df43d50f73b77709ab431af611ea47ed65f4d74c0ea5f2bde8407322ab70559afef294673ee6c224308b1744c9e069508799edefc51264b3f75a1ba9e26",
-			//protocol: "https"
-			//host: 'analytics.yourdomain.com',
-			//requestType: "xhr",
-
-			// pageviews: true
-			pageviews: {
-				collection: 'test-auto-pageviews',
-				//params: ['utm_one', 'utm_two', 'utm_three'],
-				ip_to_geo: { input: 'ip_address', output: 'visitor.geo' },
-				ua_parser: { input: 'user_agent', output: 'visitor.tech' }
-				/*
-				,
-				data: {
-					referrer: 'Direct',
-					page: document.title,
-					keen: {
-						timestamp: "override!",
-						location: {
-							coordinates: [-88.21337, 40.11041]
-						},
-						addons: []
-					}
-				}*/
-
-			}
-
-
-
+			writeKey: "554a723d023da6cb24e51c56a9a54555e9dcf8403d4b71ffa37e9112295622e78a10eed43a13c83b14ce171b0f1317bb09aa8df43d50f73b77709ab431af611ea47ed65f4d74c0ea5f2bde8407322ab70559afef294673ee6c224308b1744c9e069508799edefc51264b3f75a1ba9e26"
+			//, protocol: "https"
+			//, host: 'analytics.yourdomain.com'
+			, requestType: "beacon"
 		});
+
+    client.addEvent('pageview', {page:'this one'});
 
 		/*
 		client.addEvent('pageview', {page:'this one'});

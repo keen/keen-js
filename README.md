@@ -1,6 +1,6 @@
-# keen-js v3.0.7
+# keen-js v3.0.9
 
-A crisp, new JS Library for the Keen IO API.
+Keen IO JS SDK for the Keen IO API.
 
 **Important:** v3 is now the current version. v2 documentation is located [here](https://github.com/keenlabs/keen-js/tree/v2).
 
@@ -23,7 +23,7 @@ Install the Keen JS SDK on your page by copy/pasting this snippet of JavaScript 
 
 ```html
 <script type="text/javascript">
-  !function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="https://d26b395fwzu5fz.cloudfront.net/3.0.7/keen.min.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
+  !function(a,b){if(void 0===b[a]){b["_"+a]={},b[a]=function(c){b["_"+a].clients=b["_"+a].clients||{},b["_"+a].clients[c.projectId]=this,this._config=c},b[a].ready=function(c){b["_"+a].ready=b["_"+a].ready||[],b["_"+a].ready.push(c)};for(var c=["addEvent","setGlobalProperties","trackExternalLink","on"],d=0;d<c.length;d++){var e=c[d],f=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};b[a].prototype[e]=f(e)}var g=document.createElement("script");g.type="text/javascript",g.async=!0,g.src="https://d26b395fwzu5fz.cloudfront.net/3.0.9/keen.min.js";var h=document.getElementsByTagName("script")[0];h.parentNode.insertBefore(g,h)}}("Keen",this);
 </script>
 ```
 
@@ -105,19 +105,15 @@ Read more about advanced queries in our [query guide](https://github.com/keenlab
 
 ## Visualization
 
-Visualize query results with just a few lines of code.
+Building charts from queries is easier than ever.
 
-Client instances have a **.draw()** method that accepts the following arguments:
-
-1. Keen.Query instance
-2. DOM element
-3. Configuration hash (optional)
-
-This method will execute a query request behind the scenes and visualize the response, like so:
+Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
 
 ```javascript
-client.draw(query, el, config);
+client.draw(query, selector, config);
 ```
+
+A future release will add the ability to plot multiple query responses on a single chart, but for the time being only the first query response will be visualized.
 
 ### Example usage
 
@@ -128,15 +124,13 @@ var count = new Keen.Query("count", {
   interval: "daily",
   timeframe: "this_21_days"
 });
-var chart = client.draw(count, document.getElementById("chart-wrapper"), {
+client.draw(count, document.getElementById("chart-wrapper"), {
   chartType: "columnchart",
-  title: "Custom chart title",
-  height: 250,
-  width: 450
+  title: "Custom chart title"
 });
 ```
 
-Read more in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization).
+Read more about building charts from query responses in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization).
 
 ## Resources
 
@@ -148,4 +142,4 @@ Read more in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/
 
 ## Support
 
-Need a hand with something? Join us in [HipChat](http://users.keen.io/), [IRC](http://webchat.freenode.net/?channels=keen-io), or shoot us an email at [contact@keen.io](mailto:contact@keen.io)
+Need a hand with something? Shoot us an email at [contact@keen.io](mailto:contact@keen.io)

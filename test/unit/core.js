@@ -203,4 +203,15 @@ describe("Keen (core)", function() {
     });
 
   });
+
+  describe("Keen.urlMaxLength threshold", function(){
+    it("should be 2000 for IE, and 16000 otherwise", function(){
+      if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+        expect(Keen.urlMaxLength).to.eql(2000);
+      } else {
+        expect(Keen.urlMaxLength).to.eql(16000);
+      }
+    });
+  });
+
 });
