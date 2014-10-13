@@ -1,4 +1,4 @@
-{
+var data_extraction = {
   "result": [
     {
       "keen": {
@@ -100,4 +100,4 @@
       "referrer": ""
     }
   ]
-}
+};

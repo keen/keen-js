@@ -1,12 +1,20 @@
 module.exports = function(){
 
   this.username = 'keenlabs-js';
-  this.urls = ['http://127.0.0.1:9999/index.html'];
-  this.concurrency = 3;
 
-  if (typeof process.env.SAUCE_ACCESS_KEY !== "undefined") {
-    this.key = process.env.SAUCE_ACCESS_KEY;
-  }
+  this.key = process.env.SAUCE_ACCESS_KEY;
+  this.buildID = process.env.TRAVIS_JOB_ID;
+
+  this.urls = ['http://127.0.0.1:9999/index.html'];
+  this.concurrency = 2;
+  this.maxRetries = 2;
+  this.maxDuration = 120;
+
+  this.additionalConfig = {
+    'record-video': false,
+    'video-upload-on-pass': false,
+    'record-screenshots': false
+  };
 
   this.browsers = [
 
@@ -220,18 +228,18 @@ module.exports = function(){
       platform: "Linux",
       version: "4.4"
     },
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.4",
-      deviceName: "Google Nexus 7 HD Emulator"
-    },
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.4",
-      deviceName: "LG Nexus 4 Emulator"
-    },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.4",
+    //   deviceName: "Google Nexus 7 HD Emulator"
+    // },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.4",
+    //   deviceName: "LG Nexus 4 Emulator"
+    // },
 
     {
       browserName: "android",
@@ -239,48 +247,48 @@ module.exports = function(){
       version: "4.3"
     },
 
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.2"
-    },
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.2",
-      deviceName: "Samsung Galaxy Tab 3 Emulator"
-    },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.2"
+    // },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.2",
+    //   deviceName: "Samsung Galaxy Tab 3 Emulator"
+    // },
 
     {
       browserName: "android",
       platform: "Linux",
       version: "4.1"
     },
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.1",
-      deviceName: "Samsung Galaxy Note Emulator"
-    },
-
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.0",
-      deviceName: "Motorola Droid 4 Emulator"
-    },
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.0",
-      deviceName: "Samsung Galaxy Nexus Emulator"
-    },
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.0",
-      deviceName: "Samsung Galaxy Note Emulator"
-    }
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.1",
+    //   deviceName: "Samsung Galaxy Note Emulator"
+    // },
+    //
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.0",
+    //   deviceName: "Motorola Droid 4 Emulator"
+    // },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.0",
+    //   deviceName: "Samsung Galaxy Nexus Emulator"
+    // },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.0",
+    //   deviceName: "Samsung Galaxy Note Emulator"
+    // }
 
 
   ];

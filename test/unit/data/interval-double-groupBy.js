@@ -1,4 +1,4 @@
-{
+var data_interval_double_groupBy = {
   "result": [
     {
       "timeframe": { "start":"2014-04-22T07:00:00.000Z", "end":"2014-04-23T07:00:00.000Z" },
@@ -28,4 +28,4 @@
       ]
     }
   ]
-}
+};

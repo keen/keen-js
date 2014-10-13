@@ -1,4 +1,4 @@
-{
+var data_funnel = {
   "result": [
     42,
     32,
@@ -43,4 +43,4 @@
       "timeframe": null
     }
   ]
-}
+};

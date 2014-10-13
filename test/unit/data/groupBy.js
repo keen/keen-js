@@ -1,4 +1,4 @@
-{
+var data_groupBy = {
   "result": [
     {
       "page": "http://dustinlarimer.com/",
@@ -221,4 +221,4 @@
       "result": 1
     }
   ]
-}
+};

@@ -1,4 +1,4 @@
-{"result":[
+var data_extraction_uneven = {"result":[
   {
     "keen": {
       "timestamp": "2014-02-12T01:44:25.310Z",
@@ -58,3 +58,4 @@
     "agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36",
     "referrer": ""
   }, {"keen": {"timestamp": "2014-02-12T01:26:48.875Z", "created_at": "2014-02-12T01:26:49.973Z", "id": "52facdd905cd662f7c21ded0"}, "page": "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html", "agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_8_5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/32.0.1700.107 Safari/537.36", "referrer": ""}, {"keen": {"timestamp": "2014-02-05T21:41:23.219Z", "created_at": "2014-02-05T21:41:23.219Z", "id": "52f2b00305cd66727803f1d2"}, "key": "value2"}, {"keen": {"timestamp": "2014-02-05T21:39:55.245Z", "created_at": "2014-02-05T21:39:55.245Z", "id": "52f2afab73f4bb07735e45e0"}, "key": "value2"}, {"keen": {"timestamp": "2014-02-05T21:39:12.155Z", "created_at": "2014-02-05T21:39:12.155Z", "id": "52f2af8073f4bb0769a26861"}, "key": "value2"},{},{},{}]}
+;

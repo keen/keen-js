@@ -1,4 +1,4 @@
-{
+var data_interval_groupBy_boolean = {
   "result": [
     {
       "value": [
@@ -97,4 +97,4 @@
       }
     }
   ]
-}
+};

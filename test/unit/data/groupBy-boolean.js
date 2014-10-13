@@ -1,4 +1,4 @@
-{
+var data_groupBy_boolean = {
   "result": [
     {
       "switch": false,
@@ -13,4 +13,4 @@
       "result": 354
     }
   ]
-}
+};

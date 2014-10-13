@@ -113,6 +113,7 @@ module.exports = function(grunt) {
           , "test/unit/dataset.js"
           , "test/unit/visualization.js"
           , "test/unit/utils.js"
+          , "test/unit/data/**/*.js"
         ],
         dest: "test/keen-unit-all.js"
       },
@@ -161,16 +162,16 @@ module.exports = function(grunt) {
     'saucelabs-mocha': {
       all: {
         options: {
-          testname: new Date().toISOString(),
-          username: saucelabs.username,
-          key: saucelabs.key,
-          build: process.env.TRAVIS_JOB_ID,
-          urls: saucelabs.urls,
-          browsers: saucelabs.browsers,
-          concurrency: saucelabs.concurrency,
-          sauceConfig: {
-            'video-upload-on-pass': false
-          }
+          'testname': new Date().toISOString(),
+          'username': saucelabs.username,
+          'key': saucelabs.key,
+          'build': saucelabs.buildID,
+          'urls': saucelabs.urls,
+          'browsers': saucelabs.browsers,
+          'concurrency': saucelabs.concurrency,
+          'maxRetries': saucelabs.maxRetries,
+          'max-duration': saucelabs.maxDuration,
+          'sauceConfig': saucelabs.additionalConfig
         }
       }
     },
