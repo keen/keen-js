@@ -17,20 +17,20 @@ Keen.prototype.draw = function(query, el, cfg) {
       request = new Keen.Request(this, [query]),
       config = cfg || {};
 
-  if (cfg.chartType) {
-    visual.chartType(cfg.chartType);
+  if (config.chartType) {
+    visual.chartType(config.chartType);
     delete cfg.chartType;
   }
-  if (cfg.library) {
-    visual.library(cfg.library);
+  if (config.library) {
+    visual.library(config.library);
     delete cfg.library;
   }
-  if (cfg.chartOptions) {
-    visual.chartOptions(cfg.chartOptions);
+  if (config.chartOptions) {
+    visual.chartOptions(config.chartOptions);
     delete cfg.chartOptions;
   }
   visual
-    .attributes(_extend(DEFAULTS, cfg))
+    .attributes(_extend(DEFAULTS, config))
     .prepare(el);
 
   request.on("complete", function(){
