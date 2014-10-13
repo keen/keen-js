@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keen IO Comprehensive Test</title>
+  <link rel="stylesheet" href="../keen-bootstrap.min.css">
+  <link rel="stylesheet" href="../keen-dashboards.css">
+
+
+  <link href="c3.css" rel="stylesheet">
+  <script src="d3.js"></script>
+  <script src="c3.js"></script>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>C3.js Visual Tests</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <h2>Gauge</h2>
+        <div id="c3-gauge"></div>
+      </div>
+      <div class="col-sm-4">
+        <h2>Donut</h2>
+        <div id="c3-donut"></div>
+      </div>
+      <div class="col-sm-4">
+        <h2>Pie</h2>
+        <div id="c3-pie"></div>
+      </div>
+    </div>
+
+    <hr>
+
+    <h2>Area</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-area"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-area-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Line</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-line"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-line-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Bar</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-bar"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-bar-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Area-Spline</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-area-spline"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-area-spline-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Spline</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-spline"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-spline-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Area-Step</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-area-step"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-area-step-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Step</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="c3-step"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="c3-step-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+  </div>
+
+  <script src="../../../dist/keen.js"></script>
+  <script>
+  var client = new Keen({
+    projectId: "52f2ae5905cd661a7800000a",
+    readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+    requestType: "jsonp"
+  });
+
+  var interval = new Keen.Query("count", {
+    eventCollection: "pageview",
+    timeframe: "this_12_months",
+    interval: "monthly"
+  });
+
+  var multiline = new Keen.Query("count", {
+    event_collection: "pageview",
+    group_by: "page",
+    timeframe: "this_12_months",
+    interval: "monthly"
+  });
+
+  var labelMap = {
+    "null": "Direct",
+    "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+    "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+  };
+
+  var reqInterval = client.run(interval);
+  var reqMultiline = client.run(multiline);
+
+  // Not required w/ synchronous loading
+  // Keen.ready(function(){});
+
+  // Set as default library
+  Keen.Dataviz.dataTypeMap["singular"] = { library: "c3", chartType: "gauge" };
+  Keen.Dataviz.dataTypeMap["categorical"] = { library: "c3", chartType: "donut" };
+  Keen.Dataviz.dataTypeMap["chronological"] = { library: "c3", chartType: "area" };
+  Keen.Dataviz.dataTypeMap["cat-chronological"] = { library: "c3", chartType: "line" };
+
+  // Better ?
+  // Keen.Dataviz.setLibrary("c3"); // use all
+  // Keen.Dataviz.setLibrary("c3", ["gauge", "donut"]); // use these
+
+  var c3gauge = new Keen.Dataviz()
+    //.library("c3")
+    //.chartType("gauge")
+    .el(document.getElementById("c3-gauge"))
+    .parseRawData({ result: 79.1 })
+    .title("Percentage of awesome")
+    .render();
+
+  var c3donut = new Keen.Dataviz()
+    //.library("c3")
+    //.chartType("donut")
+    .el(document.getElementById("c3-donut"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    //.title("Best Donut!")
+    .render();
+
+  var c3pie = new Keen.Dataviz()
+    .library("c3")
+    .chartType("pie")
+    .el(document.getElementById("c3-pie"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+  // Single Interval
+
+  var c3area = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("area")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-area"));
+
+  var c3line = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("line")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-line"));
+
+  var c3bar = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("bar")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-bar"));
+
+  var c3areaspline = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("area-spline")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-area-spline"));
+
+  var c3spline = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("spline")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-spline"));
+
+  var c3areastep = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("area-spline")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-area-step"));
+
+  var c3step = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("step")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-step"));
+
+  reqInterval.on("complete", function(){
+    c3area.parseRequest(this).render();
+    c3line.parseRequest(this).render();
+    c3bar.parseRequest(this).render();
+    c3areaspline.parseRequest(this).render();
+    c3spline.parseRequest(this).render();
+    c3areastep.parseRequest(this).render();
+    c3step.parseRequest(this).render();
+  });
+
+
+
+
+  var c3area_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("area")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-area-multi"));
+
+  var c3line_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("line")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-line-multi"));
+
+  var c3bar_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("bar")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-bar-multi"));
+
+  var c3areaspline_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("area-spline")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-area-spline-multi"));
+
+  var c3spline_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("spline")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-spline-multi"));
+
+  var c3step_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("step")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-step-multi"));
+
+  var c3areastep_m = new Keen.Dataviz()
+    // .library("c3")
+    .chartType("area-step")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("c3-area-step-multi"));
+
+  reqMultiline.on("complete", function(){
+    c3area_m.parseRequest(this).render();
+    c3line_m.parseRequest(this).render();
+    c3bar_m.parseRequest(this).render();
+    c3areaspline_m.parseRequest(this).render();
+    c3spline_m.parseRequest(this).render();
+    c3step_m.parseRequest(this).render();
+    c3areastep_m.parseRequest(this).render();
+  });
+
+
+  </script>
+</body>
+<html>

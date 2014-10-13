@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keen IO Comprehensive Test</title>
+  <link rel="stylesheet" href="keen-bootstrap.min.css">
+  <link rel="stylesheet" href="keen-dashboards.css">
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Keen.Dataviz Visual Tests</h1>
+    </div>
+<pre class="pre-scrollable">
+var client = new Keen({
+  projectId: "your_project_id",
+  readKey: "your_read_key"
+});</pre>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <h2>[client].draw(q)</h2>
+      </div>
+      <div class="col-sm-4">
+        <h2>[dataviz].parseRequest()</h2>
+      </div>
+      <div class="col-sm-4">
+        <h2>[dataviz].parseRawData()</h2>
+      </div>
+    </div>
+    <hr>
+
+
+    <h3>Metric</h3>
+<pre class="pre-scrollable">
+var metric = new Keen.Query("count", {
+  eventCollection: "pageview"
+});
+</pre><br>
+
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="1-1">A</div><br>
+<pre class="pre-scrollable">
+var m1 = document.getElementById("1-1");
+var cfg = {
+  colors: ["#f35757"],
+  height: 138,
+  title: "Total Pageviews"
+};
+var metric = client.draw(metric, m1, cfg);
+</pre>
+      </div>
+      <div class="col-sm-4">
+        <div id="1-2"></div><br>
+<pre class="pre-scrollable">
+var m2 = document.getElementById("1-2");
+var req_metric = new Keen.Dataviz()
+  .height(138)
+  .colors(["#f0ad4e"])
+  .prepare(m2);
+
+client.run(metric, function(){
+  req_metric
+    .parseRequest(this)
+    .render();
+});
+</pre>
+      </div>
+      <div class="col-sm-4">
+        <div id="1-3"></div><br>
+<pre class="pre-scrollable">
+var m3 = document.getElementById("1-3");
+var req_metric = new Keen.Dataviz()
+  .height(138)
+  .colors(["#8383c6"])
+  .prepare(m3);
+
+client.run(metric, function(res){
+  req_metric
+    .parseRawData(res)
+    .render();
+});
+</pre>
+      </div>
+    </div>
+    <hr>
+
+
+    <h3>Categorical</h3>
+<pre class="pre-scrollable">
+var groupBy = new Keen.Query("count", {
+  eventCollection: "pageview",
+  groupBy: "page"
+});
+</pre><br>
+    <h4>Pie chart</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="2-1"></div>
+      </div>
+      <div class="col-sm-4">
+        <div id="2-2"></div>
+      </div>
+      <div class="col-sm-4">
+        <div id="2-3"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h3>Interval</h3>
+<pre class="pre-scrollable">
+var interval = new Keen.Query("count", {
+  eventCollection: "pageview",
+  timeframe: "this_12_months",
+  interval: "monthly"
+});
+</pre>
+    <h4>Area chart</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="3-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="3-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="3-3">C</div>
+      </div>
+    </div>
+    <hr>
+
+    <h4>Bar chart</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="4-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="4-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="4-3">C</div>
+      </div>
+    </div>
+
+    <h4>Column chart</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="5-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="5-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="5-3">C</div>
+      </div>
+    </div>
+
+    <h4>Line chart (single)</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="6-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="6-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="6-3">C</div>
+      </div>
+    </div>
+
+    <h3>Categorical Interval</h3>
+<pre class="pre-scrollable">
+var multiline = new Keen.Query("count", {
+  eventCollection: "pageview",
+  groupBy: "page",
+  timeframe: "this_12_months",
+  interval: "monthly"
+});
+</pre>
+
+    <h4>Line chart (multi)</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="7-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="7-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="7-3">C</div>
+      </div>
+    </div>
+
+    <h4>Table</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="8-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="8-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="8-3">C</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="../../dist/keen.js"></script>
+  <script>
+
+    window.client = new Keen({
+      projectId: "52f2ae5905cd661a7800000a",
+      readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+      requestType: "jsonp"
+    });
+
+    Keen.ready(function() {
+
+      // Keen.Dataviz.defaults.orderBy = "timeframe.end";
+      // Keen.Visualization.defaults.orderBy = "timeframe.end";
+
+      var metric = new Keen.Query("count", {
+        eventCollection: "pageview"
+      });
+
+      var groupBy = new Keen.Query("count", {
+        eventCollection: "pageview",
+        groupBy: "page"
+      });
+
+      var interval = new Keen.Query("count", {
+        eventCollection: "pageview",
+        timeframe: "this_12_months",
+        interval: "monthly"
+      });
+
+      var multiline = new Keen.Query("count", {
+        event_collection: "pageview",
+        group_by: "page",
+        timeframe: "this_12_months",
+        interval: "monthly"
+      });
+
+      window.reqs = {
+        metric: client.run(metric),
+        groupBy: client.run(groupBy),
+        interval: client.run(interval),
+        multiline: client.run(multiline)
+      };
+
+      // var generateRandomData = function(res) {
+      //   var newData = res;
+      //   for (var i = 0; i < res.result.length; i++) {
+      //     for (var j = 0; j < res.result[i].value.length; j++) {
+      //       newData.result[i].value[j].result = Math.floor(Math.random() * (500 - 100 + 1)) + 100;
+      //     }
+      //   }
+      //   return newData;
+      // }
+
+
+      /*
+       *  ------------------------------
+       *  Metrics
+       *  ------------------------------
+       */
+
+      var drawn_metric = client.draw(metric, document.getElementById("1-1"), {
+        colors: ["#f35757"],
+        height: 138,
+        title: "Total Pageviews"
+      });
+
+      var req_metric = new Keen.Dataviz()
+        .height(138)
+        .colors([Keen.Dataviz.defaults.colors[2]])
+        .prepare(document.getElementById("1-2"));
+
+      var raw_metric = new Keen.Dataviz()
+        .height(138)
+        .colors([Keen.Dataviz.defaults.colors[3]])
+        .prepare(document.getElementById("1-3"));
+
+      window.reqs['metric'].on("complete", function(res){
+        //this.draw(document.getElementById("1-1"), { height: 138 });
+        req_metric.parseRequest(this).render();
+        raw_metric.parseRawData(res).render();
+      });
+      window.reqs['metric'].on("error", function(res){
+        req_metric.error(res.message);
+        raw_metric.error(res.message);
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Pie Charts
+       *  ------------------------------
+       */
+
+      var drawn_pie = client.draw(groupBy, document.getElementById("2-1"), {
+        height: 300,
+        labelMapping: {
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        },
+        colorMapping: {
+          "Direct": "#808080"
+        },
+        sortGroups: "desc"
+      });
+
+      var req_pie = new Keen.Dataviz()
+        .height(300)
+        .labelMapping({
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        })
+        .colorMapping({ "Direct": "#808080" })
+        .prepare(document.getElementById("2-2"));
+
+      var raw_pie = new Keen.Dataviz()
+        .height(300)
+        .labelMapping({
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        })
+        .colorMapping({ "Direct": "#808080" })
+        .prepare(document.getElementById("2-3"));
+
+      window.reqs['groupBy'].on("complete", function(res){
+        req_pie
+          .parseRequest(this)
+          .sortGroups("desc")
+          .render();
+        raw_pie
+          .parseRawData(res)
+          .sortGroups("asc")
+          .render();
+      });
+      window.reqs['groupBy'].on("error", function(res){
+        req_pie.error(res.message);
+        raw_pie.error(res.message);
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Area Charts
+       *  ------------------------------
+       */
+
+      var drawn_area = client.draw(interval, document.getElementById("3-1"), {
+        height: 300
+      });
+
+      var req_area = new Keen.Dataviz()
+        .height(300)
+        //.orderBy("timeframe.end")
+        .prepare(document.getElementById("3-2"));
+
+      var raw_area = new Keen.Dataviz()
+        .height(300)
+        .prepare(document.getElementById("3-3"));
+
+      window.reqs['interval'].on("complete", function(res){
+        req_area.parseRequest(this).render();
+        raw_area.parseRawData(res)
+        .render()
+        .call(function(){
+          // var dt = this.view._artifacts['datatable'].clone();
+          // var len = dt.getNumberOfRows();
+          // dt.removeRow(len-1);
+          // this.view._artifacts['googlechart'].draw(dt);
+        });
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Bar Charts
+       *  ------------------------------
+       */
+
+      var drawn_bar = client.draw(interval, document.getElementById("4-1"), {
+        chartType: "barchart",
+        height: 300
+      });
+
+      var req_bar = new Keen.Dataviz()
+        .height(300)
+        .chartType("barchart")
+        .prepare(document.getElementById("4-2"));
+
+      var raw_bar = new Keen.Dataviz()
+        .height(300)
+        .chartType("barchart")
+        .prepare(document.getElementById("4-3"));
+
+      window.reqs['interval'].on("complete", function(res){
+        req_bar.parseRequest(this).render();
+        raw_bar.parseRawData(res).render();
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Column Charts
+       *  ------------------------------
+       */
+
+      var drawn_col = client.draw(interval, document.getElementById("5-1"), {
+        chartType: "columnchart",
+        height: 300
+      });
+
+      var req_col = new Keen.Dataviz()
+        .height(300)
+        .chartType("columnchart")
+        .prepare(document.getElementById("5-2"));
+
+      var raw_col = new Keen.Dataviz()
+        .height(300)
+        .chartType("columnchart")
+        .prepare(document.getElementById("5-3"));
+
+      window.reqs['interval'].on("complete", function(res){
+        req_col.parseRequest(this).render();
+        raw_col.parseRawData(res).render();
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Line Charts
+       *  ------------------------------
+       */
+
+      var drawn_line = client.draw(interval, document.getElementById("6-1"), {
+        chartType: "linechart",
+        height: 300
+      });
+
+      var req_line = new Keen.Dataviz()
+        .height(300)
+        .chartType("linechart")
+        .prepare(document.getElementById("6-2"));
+
+      var raw_line = new Keen.Dataviz()
+        .height(300)
+        .chartType("linechart")
+        .prepare(document.getElementById("6-3"));
+
+      window.reqs['interval'].on("complete", function(res){
+        req_line.parseRequest(this).render();
+        raw_line.parseRawData(res).render();
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Multiline Charts
+       *  ------------------------------
+       */
+
+      var drawn_mline = client.draw(multiline, document.getElementById("7-1"), {
+        chartType: "linechart",
+        height: 300
+      });
+
+      var req_mline = new Keen.Dataviz()
+        .height(300)
+        .chartType("linechart")
+        .labelMapping({ "null": "pink" })
+        .prepare(document.getElementById("7-2"));
+
+      var raw_mline = new Keen.Dataviz()
+        .height(300)
+        .chartType("linechart")
+        .colorMapping({ "null": "pink" })
+        .prepare(document.getElementById("7-3"));
+
+      window.reqs['multiline'].on("complete", function(res){
+        req_mline.parseRequest(this).render();
+        raw_mline.parseRawData(res).render();
+      });
+
+
+      /*
+       *  ------------------------------
+       *  Tables
+       *  ------------------------------
+       */
+
+      var drawn_table = client.draw(multiline, document.getElementById("8-1"), {
+        chartType: "table",
+        height: 300,
+        labelMapping: {
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        }
+      });
+
+      var req_table = new Keen.Dataviz()
+        .height(300)
+        .labelMapping({
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        })
+        .chartType("table")
+        .prepare(document.getElementById("8-2"));
+
+      var raw_table = new Keen.Dataviz()
+        .height(300)
+        .labelMapping({
+          "null": "Direct",
+          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        })
+        .chartType("table")
+        .prepare(document.getElementById("8-3"));
+
+      window.reqs['multiline'].on("complete", function(res){
+        req_table.parseRequest(this).render();
+        raw_table.parseRawData(res).render();
+      });
+
+    });
+  </script>
+
+</body>
+</html>

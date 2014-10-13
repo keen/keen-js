@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Keen IO Comprehensive Test</title>
+  <link rel="stylesheet" href="../keen-bootstrap.min.css">
+  <link rel="stylesheet" href="../keen-dashboards.css">
+
+  <script src="Chart.js"></script>
+</head>
+<body>
+  <div class="container">
+
+    <div class="page-header">
+      <h1>Chart.js Visual Tests</h1>
+    </div>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <h2>Radar</h2>
+        <!-- <canvas id="chart-radar"></canvas> -->
+        <div id="chart-radar"></div>
+      </div>
+      <div class="col-sm-6">
+        <h2>Polar-Area</h2>
+        <div id="chart-polar-area"></div>
+      </div>
+    </div>
+    <hr>
+
+    <div class="row">
+      <div class="col-sm-6">
+        <h2>Pie</h2>
+        <div id="chart-pie"></div>
+      </div>
+      <div class="col-sm-6">
+        <h2>Doughnut</h2>
+        <div id="chart-doughnut"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Line</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="chart-line"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="chart-line-multi"></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Bar</h2>
+    <div class="row">
+      <div class="col-sm-6">
+        <div id="chart-bar"></div>
+      </div>
+      <div class="col-sm-6">
+        <div id="chart-bar-multi"></div>
+      </div>
+    </div>
+
+    <br><br>
+
+  </div>
+
+  <script src="../../../dist/keen.js"></script>
+  <script>
+  var client = new Keen({
+    projectId: "52f2ae5905cd661a7800000a",
+    readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
+    requestType: "jsonp"
+  });
+
+  var interval = new Keen.Query("count", {
+    eventCollection: "pageview",
+    timeframe: "this_12_months",
+    interval: "monthly"
+  });
+
+  var multiline = new Keen.Query("count", {
+    event_collection: "pageview",
+    group_by: "page",
+    timeframe: "this_12_months",
+    interval: "monthly"
+  });
+
+  var labelMap = {
+    "null": "Direct",
+    "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
+    "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+  };
+
+  var reqInterval = client.run(interval);
+  var reqMultiline = client.run(multiline);
+
+  // Not required w/ synchronous loading
+  // Keen.ready(function(){});
+
+  // Set as default library
+  // Keen.Dataviz.dataTypeMap["singular"] = { library: "chartjs", chartType: "gauge" };
+  Keen.Dataviz.dataTypeMap["categorical"] = { library: "chartjs", chartType: "doughnut" };
+  Keen.Dataviz.dataTypeMap["chronological"] = { library: "chartjs", chartType: "line" };
+  Keen.Dataviz.dataTypeMap["cat-chronological"] = { library: "chartjs", chartType: "line" };
+
+  var chartjs_radar = new Keen.Dataviz()
+    // .library("chartjs")
+    .chartType("radar")
+    .height(400)
+    .width(600)
+    .el(document.getElementById("chart-radar"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+
+  var chartjs_polar = new Keen.Dataviz()
+    // .library("chartjs")
+    .chartType("polar-area")
+    .height(400)
+    //.width(600)
+    .el(document.getElementById("chart-polar-area"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+  var chartjs_pie = new Keen.Dataviz()
+    // .library("chartjs")
+    .chartType("pie")
+    .height(400)
+    //.width(600)
+    .el(document.getElementById("chart-pie"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+  var chartjs_doughnut = new Keen.Dataviz()
+    // .library("chartjs")
+    // .chartType("doughnut")
+    .height(400)
+    //.width(600)
+    .el(document.getElementById("chart-doughnut"))
+    .parseRawData({ result: [
+        { label: "A", result: 9 },
+        { label: "B", result: 7 },
+        { label: "C", result: 4 }
+      ]
+    })
+    .render();
+
+
+  // Single Interval
+
+  var chartjs_line = new Keen.Dataviz()
+    // .library("chartjs")
+    // .chartType("line")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-line"));
+
+  var chartjs_bar = new Keen.Dataviz()
+    // .library("chartjs")
+    .chartType("bar")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-bar"));
+
+
+  reqInterval.on("complete", function(){
+    chartjs_line.parseRequest(this).render();
+    chartjs_bar.parseRequest(this).render();
+  });
+
+
+
+  var chartjs_line_m = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("line")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-line-multi"));
+
+  var chartjs_bar_m = new Keen.Dataviz()
+    .library("chartjs")
+    .chartType("bar")
+    .height(300)
+    .labelMapping(labelMap)
+    .prepare(document.getElementById("chart-bar-multi"));
+
+  reqMultiline.on("complete", function(){
+    chartjs_line_m.parseRequest(this).render();
+    chartjs_bar_m.parseRequest(this).render();
+  });
+
+
+  </script>
+</body>
+<html>
