@@ -1,7 +1,7 @@
 describe("Keen.Visualization", function(){
   beforeEach(function(){
     var el = document.getElementById("chart-test");
-    this.viz = new Keen.Visualization({ result: 0 }, el, {});
+    this.viz = new Keen.Visualization({ result: 0 }, el);
   });
   afterEach(function(){
     this.viz.destroy();
