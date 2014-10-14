@@ -29,7 +29,7 @@ Alternatively, you can load the library synchronously from our CDN:
 <script src="https://d26b395fwzu5fz.cloudfront.net/3.0.9/keen.min.js"></script>
 ```
 
-Read our [Installation guide](blob/master/docs/installation.md) to learn about all the ways this library can fit into your workflow.
+Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
 
 
 ## Configure a new Keen JS client
@@ -75,7 +75,7 @@ client.addEvent("purchases", purchase);
 
 Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
 
-Read more about all the ways you can track events in our [tracking guide](blob/master/docs/track.md).
+Read more about all the ways you can track events in our [tracking guide](./docs/track.md).
 
 Wondering what else you should track? Browse our [data modeling guide](https://github.com/keenlabs/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
 
@@ -110,7 +110,7 @@ client.run(count, function(response){
 });
 ```
 
-Read more about advanced queries in our [query guide](blob/master/docs/query.md).
+Read more about advanced queries in our [query guide](./docs/query.md).
 
 ## Visualization
 
@@ -139,7 +139,7 @@ client.draw(count, document.getElementById("chart-wrapper"), {
 });
 ```
 
-Read more about building charts from query responses in our [visualization guide](blob/master/docs/visualization.md).
+Read more about building charts from query responses in our [visualization guide](./docs/visualization.md).
 
 ## Resources
 
