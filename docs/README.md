@@ -26,7 +26,7 @@ Read our [Installation guide](./installation.md) to learn about all the ways thi
 
 When instantiating a new Keen JS client, there are a number of possible configuration options. A `projectId` is required at all times, and `writeKey` and `readKey` are required for sending or querying data, respectively.
 
-```javascript
+```html
 <script type="text/javascript">
   var client = new Keen({
     projectId: "your_project_id",       // String (required)
