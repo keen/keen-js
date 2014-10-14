@@ -1,9 +1,4 @@
-Read our [Getting Started guide](./Getting-Started) to learn about connecting to projects from your Keen IO account.
-
-Read our [Installation guide](./Installation) to learn about all the ways this library can fit into your workflow.
-
-
-## Record Events
+# Track Events
 
 Hey, let's record some data!
 
@@ -29,7 +24,7 @@ client.addEvent("purchases", purchase);
 
 Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
 
-### A few simple guidelines
+## A few simple guidelines
 
 **Property names** must follow these rules:
 
@@ -72,13 +67,13 @@ document.getElementById("some-form").onsubmit = function(event){
 ```
 
 
-### Inline link tracking
+## Inline link tracking
 
 ```javascript
 <a href="http://www.google.com" onclick="return client.trackExternalLink(event, 'visit_google', {'user_id' : 12345});">Click me!</a>
 ```
 
-### Inline form tracking
+## Inline form tracking
 
 ```javascript
 <form action="http://foo.com" method="POST" onsubmit="return client.trackExternalLink(event, 'submit_form', {'form_property_1' : 12345});">
@@ -86,7 +81,7 @@ document.getElementById("some-form").onsubmit = function(event){
 </form>
 ```
 
-### Tracking click events with [jQuery](http://jquery.com)
+## Tracking click events with [jQuery](http://jquery.com)
 
 ```javascript
 $("a").click(function(event){

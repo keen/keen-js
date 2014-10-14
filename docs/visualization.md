@@ -1,6 +1,4 @@
-Read our [Getting Started guide](./Getting-Started) to learn about connecting to projects from your Keen IO account.
-
-Read our [Installation guide](./Installation) to learn about all the ways this library can fit into your workflow.
+# Visualization
 
 ## How it works
 

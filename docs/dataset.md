@@ -1,4 +1,10 @@
-# Dataset API
+# Keen.Dataset
+
+## Create a new Dataset instance
+
+```
+var ds = new Keen.Dataset();
+```
 
 ### Select Row or Column
 ```

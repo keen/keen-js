@@ -1,4 +1,4 @@
-Read our [Getting Started guide](./Getting-Started) to learn about connecting to projects from your Keen IO account.
+# Installation
 
 ## Asynchronous Loading
 

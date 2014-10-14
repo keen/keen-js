@@ -1,3 +1,5 @@
+# Query Events
+
 ## How it works
 
 Queries are first-class citizens, complete with parameter getters and setters. In order to run queries, you must be using the full Keen JS SDK (not the tracking only version) and if the library is loaded asynchronously, you need to wrap all querying in the `ready` function.

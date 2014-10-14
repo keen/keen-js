@@ -1,8 +1,7 @@
-Recipes show you how to make mashup Keen IO queries in novel ways.
+# Recipes
 
-For basic queries & charts see the docs on [Querying](/keenlabs/keen-js/wiki/Query) and [Visualization](/keenlabs/keen-js/wiki/Visualization).
+Recipes show you how to make mashup Keen IO queries in novel ways. Got some cool recipes to share? Add 'em here!
 
-Got some cool recipes to share? Add 'em here!
 
 ## Combine two line charts
 
@@ -12,7 +11,7 @@ Here's an example that takes the data from two different line charts and plots t
 
 ```javascript
 // use a variable to ensure timeframe & interval for both queries match
-var interval = "daily" 
+var interval = "daily"
 var timeframe = "last_30_days"
 
 var pageviews = new Keen.Query("count", { // first query
@@ -29,7 +28,7 @@ var uniqueVisitors = new Keen.Query("count_unique", { // second query
 });
 
 client.run([pageviews, uniqueVisitors], function(response){ // run the queries
-	
+
 	var result1 = response[0].result  // data from first query
 	var result2 = response[1].result  // data from second query
 	var data = []  // place for combined results
@@ -62,7 +61,7 @@ client.run([pageviews, uniqueVisitors], function(response){ // run the queries
 ```
 
 ## Divide 2 Line Charts
-This recipe can be used to calculate stuff like average number of connections per device, posts per user, pageviews per visitor, errors per server, logins per account, etc. 
+This recipe can be used to calculate stuff like average number of connections per device, posts per user, pageviews per visitor, errors per server, logins per account, etc.
 
 In one query you determine the number of items over a time period (e.g. number of posts daily for the past 30 days).
 
@@ -74,9 +73,9 @@ Then you divide the two to determine the average.
 
 ```javascript
 Keen.ready(function(){
-  
+
   // use a variable to ensure timeframe & interval for both queries match
-  var interval = "daily" 
+  var interval = "daily"
   var timeframe = "last_30_days"
 
   var posts = new Keen.Query("count", { // first query
@@ -128,7 +127,7 @@ Keen.ready(function(){
 
 ## Day X Retention
 
-This recipe helps you figure out what percentage of users come back and use your app/site/device X days after some activity (e.g. activation). 
+This recipe helps you figure out what percentage of users come back and use your app/site/device X days after some activity (e.g. activation).
 
 This kind of analysis is used very commonly in gaming. Game developers want to answer questions like: Are people coming back to play my game the next day? On day 10? On day 30? Is the new version of my game retaining users better than the last?
 
@@ -214,7 +213,7 @@ Each data point on the line chart tells you what percentage of users who signed 
               end: secondStepDateEnd.toISOString().replace("Z","") + TIMEZONE_OFFSET
             }
           };
-          
+
           var funnel = new Keen.Query('funnel', {steps: [step1, step2]});
 
           client.run(funnel, function(response){

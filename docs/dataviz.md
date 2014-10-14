@@ -1,6 +1,6 @@
-# Dataviz API
+# Keen.Dataviz
 
-### Create a new Dataviz instance
+## Create a new Dataviz instance
 
 ```
 var chart = new Keen.Dataviz();
