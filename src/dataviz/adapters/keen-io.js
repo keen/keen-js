@@ -68,13 +68,14 @@
             suffix = "",
             title = this.title() || "Result",
             value = this.data()[1][1],
-            width = this.width();
+            width = this.width(),
+            opts = this.chartOptions() || {};
 
-        if (this.chartOptions['prefix']) {
-          prefix = '<span class="keen-metric-prefix">' + this.chartOptions()['prefix'] + '</span>';
+        if (opts['prefix']) {
+          prefix = '<span class="keen-metric-prefix">' + opts['prefix'] + '</span>';
         }
-        if (this.chartOptions['suffix']) {
-          suffix = '<span class="keen-metric-suffix">' + this.chartOptions()['suffix'] + '</span>';
+        if (opts['suffix']) {
+          suffix = '<span class="keen-metric-suffix">' + opts['suffix'] + '</span>';
         }
 
         this.el().innerHTML = '' +

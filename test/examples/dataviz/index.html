@@ -281,6 +281,7 @@ var multiline = new Keen.Query("count", {
       var raw_metric = new Keen.Dataviz()
         .height(138)
         .colors([Keen.Dataviz.defaults.colors[3]])
+        .chartOptions({ prefix: "$", suffix: "/mo" })
         .prepare(document.getElementById("1-3"));
 
       window.reqs['metric'].on("complete", function(res){
