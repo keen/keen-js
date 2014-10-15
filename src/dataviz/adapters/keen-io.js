@@ -67,9 +67,13 @@
             prefix = "",
             suffix = "",
             title = this.title() || "Result",
-            value = this.data()[1][1],
+            value = this.data()[1][1] || 0,
             width = this.width(),
             opts = this.chartOptions() || {};
+
+        if (typeof opts.prettyNumber === 'undefined' || opts.prettyNumber == true) {
+          value = Keen.utils.prettyNumber(value);
+        }
 
         if (opts['prefix']) {
           prefix = '<span class="keen-metric-prefix">' + opts['prefix'] + '</span>';
