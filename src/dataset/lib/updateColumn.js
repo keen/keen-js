@@ -8,8 +8,12 @@ Keen.Dataset.prototype.updateColumn = function(q, input){
     if (typeof input === "function") {
 
       each(self.output(), function(row, i){
+        var cell;
         if (i > 0) {
-          self.data.output[i][index] = input.call(self, row, i);
+          cell = input.call(self, row, i);
+          if (typeof cell !== "undefined") {
+            self.data.output[i][index] = cell;
+          }
         }
       });
 
