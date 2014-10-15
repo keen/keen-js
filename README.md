@@ -7,15 +7,15 @@
 
 _Tracking is manually tested and validated on Internet Explorer 6, 7, and 8._
 
+
 ## Get Project ID & API Keys
 
 If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/add-project). The Project ID and API Keys are available on the Project Overview page. You will need these for the next steps.
 
-Read our [Installation guide](https://github.com/keenlabs/keen-js/wiki/Installation) to learn about all the ways this library can fit into your workflow.
 
-## Quick Setup
+## Install the library
 
-Install the Keen JS SDK on your page by copy/pasting this snippet of JavaScript above the `</head>` tag of your page.
+Load this library asynchronously from our CDN by copy/pasting this snippet of JavaScript above the `</head>` tag of your page.
 
 ```html
 <script type="text/javascript">
@@ -23,20 +23,33 @@ Install the Keen JS SDK on your page by copy/pasting this snippet of JavaScript 
 </script>
 ```
 
-The Keen IO JS Library is built around instances of your project(s). Once configured, these objects take on super powers, allowing you to send and query data with minimal effort.
+Alternatively, you can load the library synchronously from our CDN:
 
 ```html
-<script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.0.9/keen.min.js"></script>
+```
+
+Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
+
+
+## Configure a new Keen JS client
+
+When instantiating a new Keen JS client, there are a number of possible configuration options. A `projectId` is required at all times, and `writeKey` and `readKey` are required for sending or querying data, respectively.
+
+```html
+<script type="text/javascript">
   var client = new Keen({
-    projectId: "your_project_id",
-    writeKey: "your_write_key",
-    readKey: "your_read_key"
+    projectId: "your_project_id",       // String (required)
+    writeKey: "your_project_write_key", // String (required for sending data)
+    readKey: "your_project_read_key",   // String (required for querying data)
+    protocol: "https",                  // String (optional: https | http | auto)
+    host: "api.keen.io/3.0",            // String (optional)
+    requestType: "jsonp"                // String (optional: jsonp, xhr, beacon)
   });
 </script>
 ```
 
-You can configure new instances for as many projects as necessary. [Read more about configuration here](https://github.com/keenlabs/keen-js/wiki/Configuration).
-
+You can configure new instances for as many projects as necessary.
 
 ## Tracking Events
 
@@ -62,7 +75,7 @@ client.addEvent("purchases", purchase);
 
 Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
 
-Read more about all the ways you can track events in our [tracking guide](https://github.com/keenlabs/keen-js/wiki/Track).
+Read more about all the ways you can track events in our [tracking guide](./docs/track.md).
 
 Wondering what else you should track? Browse our [data modeling guide](https://github.com/keenlabs/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
 
@@ -97,7 +110,7 @@ client.run(count, function(response){
 });
 ```
 
-Read more about advanced queries in our [query guide](https://github.com/keenlabs/keen-js/wiki/Query).
+Read more about advanced queries in our [query guide](./docs/query.md).
 
 ## Visualization
 
@@ -126,7 +139,7 @@ client.draw(count, document.getElementById("chart-wrapper"), {
 });
 ```
 
-Read more about building charts from query responses in our [visualization guide](https://github.com/keenlabs/keen-js/wiki/Visualization).
+Read more about building charts from query responses in our [visualization guide](./docs/visualization.md).
 
 ## Resources
 
