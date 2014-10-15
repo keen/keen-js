@@ -67,14 +67,19 @@
             prefix = "",
             suffix = "",
             title = this.title() || "Result",
-            value = this.data()[1][1],
-            width = this.width();
+            value = this.data()[1][1] || 0,
+            width = this.width(),
+            opts = this.chartOptions() || {};
 
-        if (this.chartOptions['prefix']) {
-          prefix = '<span class="keen-metric-prefix">' + this.chartOptions()['prefix'] + '</span>';
+        if (typeof opts.prettyNumber === 'undefined' || opts.prettyNumber == true) {
+          value = Keen.utils.prettyNumber(value);
         }
-        if (this.chartOptions['suffix']) {
-          suffix = '<span class="keen-metric-suffix">' + this.chartOptions()['suffix'] + '</span>';
+
+        if (opts['prefix']) {
+          prefix = '<span class="keen-metric-prefix">' + opts['prefix'] + '</span>';
+        }
+        if (opts['suffix']) {
+          suffix = '<span class="keen-metric-suffix">' + opts['suffix'] + '</span>';
         }
 
         this.el().innerHTML = '' +

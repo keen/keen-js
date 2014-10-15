@@ -270,7 +270,11 @@ var multiline = new Keen.Query("count", {
       var drawn_metric = client.draw(metric, document.getElementById("1-1"), {
         colors: ["#f35757"],
         height: 138,
-        title: "Total Pageviews"
+        title: "Single Metric",
+        chartOptions: {
+          suffix: "/mo",
+          prefix: "$"
+        }
       });
 
       var req_metric = new Keen.Dataviz()
@@ -281,12 +285,13 @@ var multiline = new Keen.Query("count", {
       var raw_metric = new Keen.Dataviz()
         .height(138)
         .colors([Keen.Dataviz.defaults.colors[3]])
+        .chartOptions({ prettyNumber: false, prefix: "$" })
         .prepare(document.getElementById("1-3"));
 
       window.reqs['metric'].on("complete", function(res){
         //this.draw(document.getElementById("1-1"), { height: 138 });
         req_metric.parseRequest(this).render();
-        raw_metric.parseRawData(res).render();
+        raw_metric.parseRawData({ result: 3123 }).render();
       });
       window.reqs['metric'].on("error", function(res){
         req_metric.error(res.message);
