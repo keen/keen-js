@@ -11,7 +11,7 @@ Keen.Dataset.prototype.appendRow = function(str, input){
       var col, cell;
       if (i > 0) {
         col = self.selectColumn(i);
-        cell = input.apply(self, [col].concat(args));
+        cell = input.call(self, col, i);
         newRow.push(cell);
       }
     });
