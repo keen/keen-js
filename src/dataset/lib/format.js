@@ -126,23 +126,6 @@ function _applyFormat(value, opts){
   var output = value,
       options = opts || {};
 
-  if (options.method) {
-    var copy = output, method = window;
-    each(options.method.split("."), function(str, i){
-      if (method[str]){
-        method = method[str];
-      }
-    });
-    if (typeof method === 'function') {
-      try {
-        output = method.apply(null, [output, options]);
-      }
-      catch (e) {
-        output = copy;
-      }
-    }
-  }
-
   if (options.replace) {
     each(options.replace, function(val, key){
       if (output == key || String(output) == String(key) || parseFloat(output) == parseFloat(key)) {
@@ -213,14 +196,6 @@ function _applyFormat(value, opts){
       }
 
     }
-  }
-
-  if (options.prefix) {
-    output = String(options.prefix) + output;
-  }
-
-  if (options.suffix) {
-    output = output + String(options.suffix);
   }
 
   return output;

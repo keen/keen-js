@@ -113,65 +113,6 @@ Keen.Dataset.prototype.parse = function(raw, schema){
 };
 
 
-// ------------------------------
-// Manage row/column methods
-// ------------------------------
-
-/*
-var d = new Keen.Dataset();
-d.output([["index", "A", "B", "C"]]);
-d.appendRow([0, 10, 10, 10]);
-d.appendRow([1, 5, 5, 5]);
-d.appendRow([2, 1, 1, 1]);
-d.appendRow([3, 0, 0, 0]);
-
-
-var d = new Keen.Dataset();
-d.updateRow(0, ['Time', 'A', 'B', 'C']);
-d.appendRow([new Date().toISOString(), 234, 432, 12]);
-d.appendRow([new Date().toISOString(), 23, null, 3]);
-d.appendRow([new Date().toISOString(), 43, 2, 0]);
-d.appendRow([new Date().toISOString(), 33, 12, 445]);
-
-d.filterColumns(function(col, index){
-  var total = this.sumColumnValue(col);
-  console.log(total);
-  return true;
-})
-.output();
-
-d.filterRows(function(row, index){
-  console.log(this, row, index);
-  var total = this.sumRowValue(row);
-  console.log(total);
-  return true;
-})
-.output();
-
-
-d.filterColumns(function(col, index){
-  console.log(this, col, index);
-});
-
-d.insertColumn(1, ["a", 15]);
-d.updateColumn(1, ["AA", 22222]);
-
-d.appendColumn(["Total", 0]);
-d.updateColumn(3, function(value, index, row){
-  if (index < 1) return "Summary";
-  var total = 0;
-  for (var i=0; i < row.length; i++){
-    if (i !== 0 && i !== 3) total += row[i];
-  }
-  return total;
-});
-
-d.selectColumn(3);
-
-*/
-
-
-
 // Select
 // --------------------------------------
 
@@ -243,7 +184,6 @@ function _select(cfg){
 }
 
 
-
 // Unpack
 // --------------------------------------
 
@@ -259,10 +199,6 @@ function _unpack(options){
   var value_desc = (value_set[value_set.length-1] !== "") ? value_set[value_set.length-1] : "Value",
       label_desc = (label_set[label_set.length-1] !== "") ? label_set[label_set.length-1] : "Label",
       index_desc = (index_set[index_set.length-1] !== "") ? index_set[index_set.length-1] : "Index";
-
-  // removed //
-  // var sort_index = (options.sort && options.sort.index) ? options.sort.index : false,
-  //     sort_value = (options.sort && options.sort.value) ? options.sort.value : false;
 
   // Prepare root for parsing
   var root = (function(){

@@ -31,12 +31,7 @@ function _parseRawData(response){
       select: [{
         path: "result",
         type: "string",
-        label: "Metric",
-        format: false,
-        method: "Keen.utils.prettyNumber",
-        replace: {
-          null: 0
-        }
+        label: "Metric"
       }]
     }
   }
@@ -58,8 +53,8 @@ function _parseRawData(response){
           },
           {
             path: "value",
-            type: "number",
-            format: "10"
+            type: "number"
+            // format: "10"
           }
         ]
       }
@@ -102,10 +97,6 @@ function _parseRawData(response){
           value: {
             path: "value -> result",
             type: "number"
-            // ,
-            // replace: {
-            //   null: 0
-            // }
           }
         }
       }
