@@ -507,6 +507,18 @@ describe("Keen.Dataset", function(){
       });
     });
 
+    describe("#formatRow", function() {
+      it("should format each cell in a row with a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.formatRow(1, function(cell, index){
+          if (index > 0) return cell + 0.25;
+        });
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([0, 342.25, 664.25]);
+      });
+    });
+
     describe("#deleteRow", function() {
       it("should delete a given row", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
@@ -732,6 +744,18 @@ describe("Keen.Dataset", function(){
         this.ds.updateColumn(1, function(){});
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 342, 353]);
+      });
+    });
+
+    describe("#formatColumn", function() {
+      it("should format each cell in column with a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.formatColumn("A", function(cell, index){
+          return cell + 0.25;
+        });
+        expect(this.ds.selectColumn("A")).to.be.an("array")
+          .and.to.deep.equal(["A", 342.25, 353.25]);
       });
     });
 
