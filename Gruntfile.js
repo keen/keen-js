@@ -191,10 +191,10 @@ module.exports = function(grunt) {
       },
       release: {
         upload: [
-          {
-            src: 'dist/*',
-            dest: 'latest/'
-          },
+          // {
+          //   src: 'dist/*',
+          //   dest: 'latest/'
+          // },
           {
             src: 'dist/*',
             dest: '<%= pkg.version %>/'
