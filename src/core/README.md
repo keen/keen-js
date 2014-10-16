@@ -47,7 +47,7 @@ Source:
 
 ```javascript
 Keen.prototype.url = function(path){
-  return this.config.protocol + "://" + this.config.host + "/projects/" + this.projectId() + path;
+  return this.config.protocol + "://" + this.config.host + path;
 };
 
 ```
@@ -55,6 +55,6 @@ Keen.prototype.url = function(path){
 Example usage:
 
 ```javascript
-client.url("/events/pageviews");
-  // returns "https://api.keen.io/3.0/projects/<project_id>/events/pageviews"
+client.url("/projects/" + client.projectId() + "/events/pageviews");
+  // returns "https://api.keen.io/3.0/projects/9dv12390sd87f987fs9d97f9s/events/pageviews"
 ```

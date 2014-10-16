@@ -1,5 +1,5 @@
 function _uploadEvent(eventCollection, payload, success, error) {
-  var urlBase = this.url("/events/" + eventCollection),
+  var urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection),
       urlQueryString = "",
       reqType = this.config.requestType,
       data = {};

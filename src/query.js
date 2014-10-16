@@ -109,14 +109,13 @@
       };
 
       if (query instanceof Keen.Query) {
-        url = self.instance.url(query.path);
+        url = self.instance.url("/projects/" + self.instance.projectId() + query.path);
         // url = _build_url.call(self.instance, query.path);
         _sendQuery.call(self.instance, url, query.params, successSequencer, failureSequencer);
 
       }
       else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-        url = self.instance.url('/saved_queries/' + encodeURIComponent(query) + '/result');
-        // url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
+        url = self.instance.url("/projects/" + self.instance.projectId() + "/saved_queries/" + encodeURIComponent(query) + "/result");
         _sendQuery.call(self.instance, url, null, successSequencer, failureSequencer);
 
       }
