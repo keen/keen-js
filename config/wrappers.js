@@ -20,6 +20,7 @@ module.exports = function(){
           '});' +
         '}, 0);' +
       '}' +
+      '_loadAsync();' +
       '\n\nreturn Keen; \n\n});',
 
     adapterBanner: '!function(name, context, definition){' +

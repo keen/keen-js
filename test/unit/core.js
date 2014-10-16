@@ -12,25 +12,12 @@ describe("Keen (core)", function() {
     it("should create a new Keen instance", function(){
       expect(this.project).to.be.an.instanceof(Keen);
     });
-    it("should error if no configuration object", function() {
-      expect(function() {
-          (keen = new Keen());
-        }).to.throw(Error);
-    });
     it("should create a new client object", function(){
       expect(this.project.config).to.be.ok;
     });
   });
 
   describe("projectId", function(){
-
-    it("should error if projectId is absent", function() {
-
-      expect(function() {
-        (keen = new Keen());
-      }).to.throw(Error);
-
-    });
 
     it("should set the projectId (string)", function() {
 

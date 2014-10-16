@@ -4,7 +4,7 @@
   <title>Keen IO Loader JS Test</title>
   <script type="text/javascript">
 		// Source: src/loader.js
-    (function(i,o){i("Keen","../../dist/keen.min.js",o);}(function(t,h,x){
+    (function(i,o){i("Keen","../../dist/keen.js",o);}(function(t,h,x){
       // t = context
       // h = file
       // x = context
@@ -49,43 +49,6 @@
       tag.parentNode.insertBefore(script,tag);
 
     }, this));
-
-    // !function(n,c){
-    //   if (c[n] === void 0) {
-    //
-    //     c['_'+n] = {};
-    //     c[n] = function(e) {
-    //       c['_'+n]['clients'] = c['_'+n]['clients'] || {};
-    //       c['_'+n]['clients'][e.projectId] = this;
-    //       this._config = e;
-    //     };
-    //
-    //     // Keen.ready(function(){});
-    //     c[n]['ready'] = function(callback){
-    //       c['_'+n]['ready'] = c['_'+n]['ready'] || [];
-    //       c['_'+n]['ready'].push(callback);
-    //     };
-    //
-    //     var methods = ['addEvent', 'setGlobalProperties', 'trackExternalLink', 'on'];
-    //     for (var i = 0; i < methods.length; i++){
-    //       var method = methods[i];
-    //       var action = function(method){
-    //         return function() {
-    //           this['_'+method] = this['_'+method] || [];
-    //           this['_'+method].push(arguments);
-    //           return this;
-    //         }
-    //       };
-    //       c[n].prototype[method] = action(method);
-    //     }
-    //
-    //     var s = document.createElement("script");
-    //     s.type = "text/javascript", s.async = !0, s.src = "../../dist/keen.js";
-    //
-    //     var t = document.getElementsByTagName("script")[0];
-    //     t.parentNode.insertBefore(s,t);
-    //   }
-    // }('Keen', this);
 
 		var keen = new Keen({
 			projectId: "52f00ec205cd66404b000000",
