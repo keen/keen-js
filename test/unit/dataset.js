@@ -482,17 +482,10 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["a", 1, 2]);
       });
-      it("should rewrite a given row with a computational helper", function(){
-        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-        this.ds.output(table);
-        this.ds.updateRow(1, this.ds.getColumnSum);
-        expect(this.ds.selectRow(1)).to.be.an("array")
-          .and.to.deep.equal([1, 695, 986]);
-      });
       it("should rewrite a given row with a custom function", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.updateRow(1, function(col, index){
+        this.ds.updateRow(1, function(value, index, col){
           return this.getColumnSum(col);
         });
         expect(this.ds.selectRow(1)).to.be.an("array")
@@ -505,17 +498,14 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal([0, 342, 664]);
       });
-    });
-
-    describe("#formatRow", function() {
-      it("should format each cell in a row with a custom function", function(){
+      it("should rewrite a given row with a computational helper", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.formatRow(1, function(cell, index){
-          if (index > 0) return cell + 0.25;
+        this.ds.updateRow(1, function(value, index, col){
+          return this.getColumnSum(col);
         });
         expect(this.ds.selectRow(1)).to.be.an("array")
-          .and.to.deep.equal([0, 342.25, 664.25]);
+          .and.to.deep.equal([1, 695, 986]);
       });
     });
 
@@ -724,17 +714,10 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 0, 0]);
       });
-      it("should rewrite each cell of given column with a computational helper", function(){
-        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-        this.ds.output(table);
-        this.ds.updateColumn(1, this.ds.getRowSum);
-        expect(this.ds.selectColumn(1)).to.be.an("array")
-          .and.to.deep.equal(["A", 1006, 675]);
-      });
       it("should rewrite each cell of given column with a custom function", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.updateColumn(1, function(row, index){ return 5; });
+        this.ds.updateColumn(1, function(value, index, row){ return 5; });
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 5, 5]);
       });
@@ -745,17 +728,14 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 342, 353]);
       });
-    });
-
-    describe("#formatColumn", function() {
-      it("should format each cell in column with a custom function", function(){
+      it("should rewrite each cell of given column with a computational helper", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.formatColumn("A", function(cell, index){
-          return cell + 0.25;
+        this.ds.updateColumn(1, function(value, index, row){
+          return this.getRowSum(row);
         });
-        expect(this.ds.selectColumn("A")).to.be.an("array")
-          .and.to.deep.equal(["A", 342.25, 353.25]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 1006, 675]);
       });
     });
 

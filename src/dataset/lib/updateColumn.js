@@ -10,7 +10,7 @@ Keen.Dataset.prototype.updateColumn = function(q, input){
       each(self.output(), function(row, i){
         var cell;
         if (i > 0) {
-          cell = input.call(self, row, i);
+          cell = input.call(self, row[index], i, row);
           if (typeof cell !== "undefined") {
             self.data.output[i][index] = cell;
           }
