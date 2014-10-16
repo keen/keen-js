@@ -123,7 +123,7 @@
       else {
         var res = {
           statusText: 'Bad Request',
-          responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
+          responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.instance.projectId() + ' is not a valid request' }
         };
         Keen.log(res.responseText.message);
         Keen.log('Check out our JavaScript SDK Usage Guide for Data Analysis:');

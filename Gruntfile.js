@@ -33,6 +33,8 @@ module.exports = function(grunt) {
       core: {
         src: [
           "src/core/index.js",
+          "src/core/events.js",
+          "src/core/async.js",
           "src/core/**/*.js"
         ],
         dest: ".tmp/core.js"
@@ -65,7 +67,6 @@ module.exports = function(grunt) {
         },
         src: [
             ".tmp/core.js"
-          , "src/track.js"
           , "src/query.js"
 
           , "src/utils/base64.js"
@@ -76,7 +77,7 @@ module.exports = function(grunt) {
           , ".tmp/dataset.js"
           , ".tmp/dataviz.js"
           , "src/visualization.js"
-          , "src/async.js"
+
         ],
         dest: "dist/<%= pkg.name %>.js"
       },
@@ -89,11 +90,10 @@ module.exports = function(grunt) {
         },
         src: [
             ".tmp/core.js"
-          , "src/track.js"
           , "src/utils/base64.js"
           , "src/utils/json2.js"
           , "src/utils/keen-domready.js"
-          , "src/async.js"
+
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"
       },
