@@ -29,6 +29,15 @@ module.exports = function(grunt) {
         }
       },
 
+      // Assemble Keen (core)
+      core: {
+        src: [
+          "src/core/index.js",
+          "src/core/**/*.js"
+        ],
+        dest: ".tmp/core.js"
+      },
+
       // Assemble Keen.Dataset
       dataset: {
         src: [
@@ -55,14 +64,15 @@ module.exports = function(grunt) {
           footer: wraps.libraryFooter
         },
         src: [
-            "src/core.js"
+          //  "src/core.js"
+            ".tmp/core.js"
           , "src/track.js"
           , "src/query.js"
 
-          , "src/lib/base64.js"
-          , "src/lib/json2.js"
-          , "src/lib/keen-domready.js"
-          , "src/lib/keen-spinner.js"
+          , "src/utils/base64.js"
+          , "src/utils/json2.js"
+          , "src/utils/keen-domready.js"
+          , "src/utils/keen-spinner.js"
 
           , ".tmp/dataset.js"
           , ".tmp/dataviz.js"
@@ -81,9 +91,9 @@ module.exports = function(grunt) {
         src: [
             "src/core.js"
           , "src/track.js"
-          , "src/lib/base64.js"
-          , "src/lib/json2.js"
-          , "src/lib/keen-domready.js"
+          , "src/utils/base64.js"
+          , "src/utils/json2.js"
+          , "src/utils/keen-domready.js"
           , "src/async.js"
         ],
         dest: "dist/<%= pkg.name %>-tracker.js"

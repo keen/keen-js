@@ -65,9 +65,9 @@
   };
 
   Keen.prototype.setGlobalProperties = function(newGlobalProperties) {
-    if (!this.client) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
+    if (!this.config) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
     if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
-      this.client.globalProperties = newGlobalProperties;
+      this.config.globalProperties = newGlobalProperties;
     } else {
       throw new Error('Invalid value for global properties: ' + newGlobalProperties);
     }
@@ -77,14 +77,14 @@
   // -------------------------------
 
   function _uploadEvent(eventCollection, payload, success, error) {
-    var urlBase = _build_url.call(this, "/events/" + eventCollection),
+    var urlBase = this.url("/events/" + eventCollection),
         urlQueryString = "",
-        reqType = this.client.requestType,
+        reqType = this.config.requestType,
         data = {};
 
     // Add properties from client.globalProperties
-    if (this.client.globalProperties) {
-      data = this.client.globalProperties(eventCollection);
+    if (this.config.globalProperties) {
+      data = this.config.globalProperties(eventCollection);
     }
 
     // Add properties from user-defined event
@@ -93,7 +93,7 @@
     });
 
     if (reqType !== "xhr") {
-      urlQueryString += "?api_key="  + encodeURIComponent( this.client.writeKey );
+      urlQueryString += "?api_key="  + encodeURIComponent( this.config.writeKey );
       urlQueryString += "&data="     + encodeURIComponent( Keen.Base64.encode( JSON.stringify(data) ) );
       urlQueryString += "&modified=" + encodeURIComponent( new Date().getTime() );
 
@@ -107,7 +107,7 @@
       }
     }
     if (Keen.canXHR) {
-      _sendXhr("POST", urlBase, { "Authorization": this.client.writeKey, "Content-Type": "application/json" }, data, success, error);
+      _sendXhr("POST", urlBase, { "Authorization": this.config.writeKey, "Content-Type": "application/json" }, data, success, error);
     } else {
       Keen.log("Event not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
     }

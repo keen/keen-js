@@ -17,7 +17,7 @@
     success = null;
     error = null;
 
-    if ( _type(query) === 'Array' ) {
+    if (query instanceof Array) {
       queries = query;
     } else {
       queries.push(query);
@@ -109,14 +109,18 @@
       };
 
       if (query instanceof Keen.Query) {
-        url = _build_url.call(self.instance, query.path);
+        url = self.instance.url(query.path);
+        // url = _build_url.call(self.instance, query.path);
         _sendQuery.call(self.instance, url, query.params, successSequencer, failureSequencer);
 
-      } else if ( Object.prototype.toString.call(query) === '[object String]' ) {
-        url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
+      }
+      else if ( Object.prototype.toString.call(query) === '[object String]' ) {
+        url = self.instance.url('/saved_queries/' + encodeURIComponent(query) + '/result');
+        // url = _build_url.call(self.instance, '/saved_queries/' + encodeURIComponent(query) + '/result');
         _sendQuery.call(self.instance, url, null, successSequencer, failureSequencer);
 
-      } else {
+      }
+      else {
         var res = {
           statusText: 'Bad Request',
           responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.instance.client.projectId + ' is not a valid request' }
@@ -175,9 +179,9 @@
         key = k.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });
       }
       self.params[key] = value;
-      if (_type(value)==="Array") {
+      if (value instanceof Array) {
         _each(value, function(dv, index){
-          if (_type(dv)==="Object") {
+          if (dv instanceof Array == false && typeof dv === "object") { //  _type(dv)==="Object"
             _each(dv, function(deepValue, deepKey){
               if (deepKey.match(new RegExp("[A-Z]"))) {
                 var _deepKey = deepKey.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });
