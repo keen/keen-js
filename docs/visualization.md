@@ -6,39 +6,39 @@ Building charts from queries is easier than ever.
 
 Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
 
-```
+```javascript
 client.draw(query, selector, config);
 ```
 
 Charts can also be instantiated with the `Keen.Visualization` class. Just be sure to include the `library` (default is `google`) and `chartType` properties with the chart configuration.
 
-```
+```javascript
 client.run(query, function(response){
   var newData = response;
   response.result = response.result / 100;
   this.data = newData;
 
   // Pass in raw data, or reference to "this" (request instance)
-  var myChart = new Keen.Visualization(this, document.getElementById(“chart-wrapper”), {
+  var myChart = new Keen.Visualization(this, document.getElementById("chart-wrapper"), {
     library: "google",
-    chartType: “columnchart”,
-    title: “Custom chart title”
+    chartType: "columnchart",
+    title: "Custom chart title"
   });
 });
 ```
 
 ## Example usage
 
-```
-var count = new Keen.Query(“count”, {
-  eventCollection: “pageviews”,
-  groupBy: “visitor.geo.country”
-  interval: “daily”,
-  timeframe: “this_21_days”
+```javascript
+var count = new Keen.Query("count", {
+  eventCollection: "pageviews",
+  groupBy: "visitor.geo.country"
+  interval: "daily",
+  timeframe: "this_21_days"
 });
-var chart = client.draw(count, document.getElementById(“chart-wrapper”), {
-  title: “Custom chart title”,
-  chartType: “columnchart”
+var chart = client.draw(count, document.getElementById("chart-wrapper"), {
+  title: "Custom chart title",
+  chartType: "columnchart"
 });
 
 // or
@@ -47,9 +47,9 @@ var chart;
 var req = client.run(count, function(){
   if (chart) chart.remove();
   // Pass in raw data, or reference to "this" (request instance)
-  chart = new Keen.Visualization(this, document.getElementById(“chart-wrapper”), {
-    title: “Custom chart title”,
-    chartType: “columnchart”
+  chart = new Keen.Visualization(this, document.getElementById("chart-wrapper"), {
+    title: "Custom chart title",
+    chartType: "columnchart"
   });
 });
 ```
@@ -58,14 +58,14 @@ var req = client.run(count, function(){
 
 The first argument for the `#draw` method is a reference to the DOM element where your chart will appear. This should be a block level element, like a `<div>` tag, referenced by its ID attribute:
 
-`document.getElementById(“chart-wrapper”)`
+`document.getElementById("chart-wrapper")`
 
 
 ## Configuration
 
 Configuration options and their defaults:
 
-```
+```javascript
 {
   colors: [ "#ff0000", "#222", "lightblue" ], //
   title: "",		// string or null
@@ -86,7 +86,7 @@ Configuration options and their defaults:
 
 **Selective replacement:**
 
-```
+```javascript
 labelMapping: {
   "https://yourdomain.com/": "Home",
   "https://yourdomain.com/gallery.html": "Gallery"
@@ -95,7 +95,7 @@ labelMapping: {
 
 **Total replacement:**
 
-```
+```javascript
 {
   labelMapping: [
     "Step 1",
@@ -110,7 +110,7 @@ labelMapping: {
 
 `colorMapping`: object that corresponds labels (key) with desired colors (value).
 
-```
+```javascript
 colorMapping: {
   "Home": "#ff0000",
   "Gallery": "purple"
@@ -121,7 +121,7 @@ colorMapping: {
 
 `chartOptions`: config object passed to the underlying visualization library (Google Charts).
 
-```
+```javascript
 chartOptions: {
   isStacked: true,
   legend: { position: "none" },
@@ -148,7 +148,7 @@ chartOptions: {
 
 Area, bar, column and line charts all operate on the same underlying query/response type: numeric values on an interval. So, the demos for these chart types will all utilize the following query, but will specify their own respective `chartType` property.
 
-```
+```javascript
 var total_pageviews = new Keen.Query("count", {
   eventCollection: "pageviews",
   groupBy: "channel",
@@ -161,7 +161,7 @@ var total_pageviews = new Keen.Query("count", {
 
 ![Area chart](http://d26b395fwzu5fz.cloudfront.net/images/Keen-demo-areachart.png)
 
-```
+```javascript
 client.draw(total_pageviews, document.getElementById("total-daily-revenue-areachart"), {
   chartType: "areachart",
   title: "Daily revenue (7 days)",
@@ -180,7 +180,7 @@ Find additional configuration options for area charts [here](https://developers.
 
 ![Bar chart](http://d26b395fwzu5fz.cloudfront.net/images/Keen-demo-barchart.png)
 
-```
+```javascript
 client.draw(total_pageviews, document.getElementById("total-daily-revenue-barchart"), {
   chartType: "barchart",
   title: "Daily revenue (7 days)",
@@ -200,7 +200,7 @@ Find additional configuration options for bar charts [here](https://developers.g
 
 ![Column chart](http://d26b395fwzu5fz.cloudfront.net/images/Keen-demo-columnchart.png)
 
-```
+```javascript
 client.draw(total_pageviews, document.getElementById("total-daily-revenue-columnchart"), {
   chartType: "columnchart",
   title: "Daily revenue (7 days)",
@@ -210,7 +210,7 @@ client.draw(total_pageviews, document.getElementById("total-daily-revenue-column
 });
 ```
 
-```
+```html
 <div id="total-daily-revenue-columnchart"></div>
 ```
 Find additional configuration options for column charts [here](https://developers.google.com/chart/interactive/docs/gallery/columnchart#Configuration_Options).
@@ -220,14 +220,14 @@ Find additional configuration options for column charts [here](https://developer
 
 ![Line chart](http://d26b395fwzu5fz.cloudfront.net/images/Keen-demo-linechart.png)
 
-```
+```javascript
 client.draw(total_pageviews, document.getElementById("total-daily-revenue-linechart"), {
   chartType: "linechart",
   title: "Daily revenue (7 days)"
 });
 ```
 
-```
+```html
 <div id="total-daily-revenue-linechart"></div>
 ```
 Find additional configuration options for line charts [here](https://developers.google.com/chart/interactive/docs/gallery/linechart#Configuration_Options).
@@ -239,7 +239,7 @@ Find additional configuration options for line charts [here](https://developers.
 
 Visualize single numeric query responses, such as a count, sum, average, etc.
 
-```
+```javascript
 var count = new Keen.Query("count", {
   eventCollection: "pageviews"
 });
@@ -250,7 +250,7 @@ client.draw(count, document.getElementById("count-pageviews-metric"), {
 });
 ```
 
-```
+```html
 <div id="count-pageviews-metric"></div>
 ```
 
@@ -266,7 +266,7 @@ client.draw(count, document.getElementById("count-pageviews-metric"), {
 
 Pie charts can render `groupBy` queries that do not include an interval.
 
-```
+```javascript
 var visitor_origins = new Keen.Query("count", {
   eventCollection: "pageviews",
   groupBy: "referrer"
@@ -276,7 +276,7 @@ client.draw(visitor_origins, document.getElementById("count-pageviews-piechart")
   title: "Visitor Referrers"
 });
 ```
-```
+```hmtl
 <div id="count-pageviews-piechart"></div>
 ```
 
@@ -284,7 +284,7 @@ client.draw(visitor_origins, document.getElementById("count-pageviews-piechart")
 
 Tables can render any query response, including extractions.
 
-```
+```javascript
 var all = new Keen.Query("extraction", {
   eventCollection: "pageviews",
   timeframe: "this_7_days"
@@ -295,7 +295,7 @@ client.draw(all, document.getElementById("extract-pageviews-table"), {
 });
 ```
 
-```
+```html
 <div id="extract-pageviews-table"></div>
 ```
 Find additional configuration options for tables [here](https://developers.google.com/chart/interactive/docs/gallery/table#Configuration_Options).
@@ -318,7 +318,7 @@ To display a modified query result or data from another source into a visualizat
 
 Here's an example that takes a hard-coded value "1896" and draws it as a number.
 
-```
+```javascript
   window.chart = new Keen.Visualization({result: 1896}, document.getElementById('my-div'), {
     chartType: 'metric',
     title: "Wow!",
@@ -420,7 +420,7 @@ client.run([pageviews, uniqueVisitors], function(response){ // run the queries
 
 Visualizations are bound to their underlying queries. Modify and re-run a query request, and the visualization will automagically update when the new data arrives.
 
-```
-count.set({ interval: “weekly”, timeframe: “this_48_weeks” });
+```javascript
+count.set({ interval: "weekly", timeframe: "this_48_weeks" });
 request.refresh();
 ```
