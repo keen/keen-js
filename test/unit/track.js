@@ -12,7 +12,7 @@ describe("Keen tracking methods", function() {
           host: keenHelper.host,
           requestType: 'xhr'
         });
-        self.postUrl = self.project.client.endpoint + "/projects/" + self.project.client.projectId + "/events/" + keenHelper.collection;
+        self.postUrl = self.project.url("/projects/" + self.project.projectId() + "/events/" + keenHelper.collection);
         self.server = sinon.fakeServer.create();
         self.respondWith = function(code, body){
           self.server.respondWith("POST", self.postUrl,
