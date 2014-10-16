@@ -25,6 +25,7 @@ module.exports = function(grunt) {
         process: function(src, filepath) {
           var namespace = (grunt.option("namespace") || false);
           src = ((namespace) ? src.replace("'Keen'", "'" + namespace + "'") : src);
+          src = src.replace("BUILD_VERSION", grunt.file.readJSON("package.json")["version"]);
           return "// Source: " + filepath + "\n" + src;
         }
       },

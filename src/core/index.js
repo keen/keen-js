@@ -40,6 +40,8 @@
     Keen.trigger('client', this, config);
   }
 
+  Keen.version = "BUILD_VERSION"; // replaced
+
   Keen.utils = {};
 
   Keen.canXHR = false;
