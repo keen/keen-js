@@ -64,7 +64,6 @@ module.exports = function(grunt) {
           footer: wraps.libraryFooter
         },
         src: [
-          //  "src/core.js"
             ".tmp/core.js"
           , "src/track.js"
           , "src/query.js"
@@ -89,7 +88,7 @@ module.exports = function(grunt) {
           footer: wraps.libraryFooter
         },
         src: [
-            "src/core.js"
+            ".tmp/core.js"
           , "src/track.js"
           , "src/utils/base64.js"
           , "src/utils/json2.js"

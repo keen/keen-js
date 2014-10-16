@@ -233,7 +233,7 @@
   function _sendQuery(url, params, success, error){
     var urlBase = url,
         urlQueryString = "",
-        reqType = this.client.requestType,
+        reqType = this.config.requestType,
         successCallback = success,
         errorCallback = error;
 
@@ -244,7 +244,7 @@
       // Extractions do not currently support JSONP
       reqType = "xhr";
     }
-    urlQueryString += "?api_key=" + this.client.readKey;
+    urlQueryString += "?api_key=" + this.readKey();
     urlQueryString += _getQueryString.call(this, params);
     if (reqType !== "xhr") {
       if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {

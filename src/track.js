@@ -65,7 +65,6 @@
   };
 
   Keen.prototype.setGlobalProperties = function(newGlobalProperties) {
-    if (!this.config) return Keen.log('Check out our JavaScript SDK Usage Guide: https://keen.io/docs/clients/javascript/usage-guide/');
     if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
       this.config.globalProperties = newGlobalProperties;
     } else {
@@ -93,7 +92,7 @@
     });
 
     if (reqType !== "xhr") {
-      urlQueryString += "?api_key="  + encodeURIComponent( this.config.writeKey );
+      urlQueryString += "?api_key="  + encodeURIComponent( this.writeKey() );
       urlQueryString += "&data="     + encodeURIComponent( Keen.Base64.encode( JSON.stringify(data) ) );
       urlQueryString += "&modified=" + encodeURIComponent( new Date().getTime() );
 
@@ -107,7 +106,7 @@
       }
     }
     if (Keen.canXHR) {
-      _sendXhr("POST", urlBase, { "Authorization": this.config.writeKey, "Content-Type": "application/json" }, data, success, error);
+      _sendXhr("POST", urlBase, { "Authorization": this.writeKey(), "Content-Type": "application/json" }, data, success, error);
     } else {
       Keen.log("Event not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
     }
