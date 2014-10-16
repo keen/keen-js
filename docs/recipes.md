@@ -137,7 +137,7 @@ Each data point on the line chart tells you what percentage of users who signed 
 
 ![combined line chart](http://f.cl.ly/items/1o0K1L0Z3K3h2d223i0w/Screen%20Shot%202014-07-10%20at%2012.01.07%20PM.png)
 
-```
+```html
 <!DOCTYPE html>
 <html lang='en'>
 <head>

@@ -61,7 +61,7 @@ We want to make this library AMD/CommonJS-friendly, so if you run into any confl
 
 The library is loaded with an explicitly named module ID ("keen"), which presents a light configuration step, but prevents anonymous define() mismatch mayhem. To use this module, configure a `paths` record, like so:
 
-```
+```javascript
 requirejs.config({
   "paths": {
     "keen": "https://d26b395fwzu5fz.cloudfront.net/latest/keen.js"
@@ -93,11 +93,11 @@ For production implementations, we recommend sticking with a specific version of
 
 Build your own custom versions of this library with [Grunt](http://gruntjs.com/getting-started) (requires Node.js/npm).
 
-```
-$  git clone https://github.com/keenlabs/keen-js.git && cd keen-js
-$  npm install
-$  bower install
-$  grunt build
+```bash
+$ git clone https://github.com/keenlabs/keen-js.git && cd keen-js
+$ npm install
+$ bower install
+$ grunt build
 ```
 
 Built files will be placed in the `dist` directory.
@@ -107,8 +107,8 @@ Built files will be placed in the `dist` directory.
 
 Fire up the test server
 
-```
-grunt dev
+```bash
+$ grunt dev
 ```
 
 Results are available at `http://localhost:9999`

@@ -1,7 +1,7 @@
 # Dataset API
 
 ### Select Row or Column
-```
+```javascript
 ds.selectRow(12);
 ds.selectRow("2014-09-24");
 ds.selectColumn(12);
@@ -10,7 +10,7 @@ ds.selectColumn("A");
 
 ### Append Row or Column
 
-```
+```javascript
 // Populate with known data
 ds.appendRow("2014-09-24", [1,2,3,4,5]);
 ds.appendColumn("A", [1,2,3,4,5]);
@@ -22,7 +22,7 @@ ds.appendColumn("Total", ds.getRowSum);
 
 ### Insert Row or Column
 
-```
+```javascript
 // Populate with known data
 ds.insertRow(12, "2014-09-24", [1,2,3,4,5]);
 ds.insertColumn(12, "A", [1,2,3,4,5]);
@@ -35,7 +35,7 @@ ds.insertColumn(12, "Total", ds.getRowSum);
 
 ### Update each value in a Row or Column
 
-```
+```javascript
 // Populate with known data (complete row)
 ds.updateRow(12, [1,2,3,4,5]);
 ds.updateRow("2014-09-24", [1,2,3,4,5]);
@@ -72,7 +72,7 @@ ds.updateColumn("A", function(value, index, row){
 
 ### delete Row or Column
 
-```
+```javascript
 ds.deleteRow(12);
 ds.deleteRow("2014-09-24");
 ds.deleteColumn(12);

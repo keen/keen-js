@@ -114,7 +114,7 @@ var mashup = client.run([avg_revenue, max_revenue], function(res){
 
 ## Get/Set Parameters and Refresh Queries
 
-```
+```javascript
 // Based on previous example
 
 // Update parameters
