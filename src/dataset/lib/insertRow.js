@@ -10,6 +10,9 @@ Keen.Dataset.prototype.insertRow = function(index, str, input){
       if (i > 0) {
         col = self.selectColumn(i);
         cell = input.call(self, col, i);
+        if (typeof cell === "undefined") {
+          cell = null;
+        }
         newRow.push(cell);
       }
     });

@@ -10,6 +10,9 @@ Keen.Dataset.prototype.insertColumn = function(index, str, input){
       var cell;
       if (i > 0) {
         cell = input.call(self, row, i);
+        if (typeof cell === "undefined") {
+          cell = null;
+        }
         self.data.output[i].splice(index, 0, cell);
       }
     });

@@ -7,10 +7,12 @@ Keen.Dataset.prototype.updateRow = function(q, input){
 
     if (typeof input === "function") {
 
-      each(self.output()[index], function(c, i){
+      each(self.output()[index], function(value, i){
         var col = self.selectColumn(i),
-            cell = input.call(self, col, i);
-        self.data.output[index][i] = cell;
+            cell = input.call(self, value, i, col);
+        if (typeof cell !== "undefined") {
+          self.data.output[index][i] = cell;
+        }
       });
 
     } else if (!input || input instanceof Array) {

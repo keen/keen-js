@@ -8,7 +8,10 @@ Keen.Dataset.prototype.appendColumn = function(str, input){
     each(self.output(), function(row, i){
       var cell;
       if (i > 0) {
-        cell = input.apply(self, [row].concat(args));
+        cell = input.call(self, row, i);
+        if (typeof cell === "undefined") {
+          cell = null;
+        }
         self.data.output[i].push(cell);
       }
     });
@@ -28,6 +31,3 @@ Keen.Dataset.prototype.appendColumn = function(str, input){
 
   return self;
 };
-
-// ds.appendColumn("Total", ds.getRowSum);
-// ds.appendColumn("Median", ds.getRowMedian);

@@ -413,10 +413,17 @@ describe("Keen.Dataset", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
         this.ds.appendRow(0, function(c, i){
-          return 100;
+          return 0;
         });
         expect(this.ds.selectRow(3)).to.be.an("array")
-          .and.to.deep.equal([0, 100, 100]);
+          .and.to.deep.equal([0, 0, 0]);
+      });
+      it("should append an empty row when nothing returned from a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendRow(2, function(){});
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([2, null, null]);
       });
     });
 
@@ -435,21 +442,28 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal([2, 344, 554]);
       });
-      it("should append a given row when passing a computational helper", function(){
+      it("should insert a given row when passing a computational helper", function(){
         var table = [["Index", "A", "B"],[0, 10, 20],[1, 5, 5]];
         this.ds.output(table);
         this.ds.insertRow(1, "Total", this.ds.getColumnSum);
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["Total", 15, 25]);
       });
-      it("should append a given row when passing a custom function", function(){
+      it("should insert a given row when passing a custom function", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
         this.ds.insertRow(1, "Total", function(c, i){
-          return 100;
+          return 0;
         });
         expect(this.ds.selectRow(1)).to.be.an("array")
-          .and.to.deep.equal(["Total", 100, 100]);
+          .and.to.deep.equal(["Total", 0, 0]);
+      });
+      it("should insert an empty row when nothing is returned from a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertRow(1, "Total", function(){});
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", null, null]);
       });
     });
 
@@ -468,17 +482,26 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["a", 1, 2]);
       });
-      it("should rewrite a given row with a computational helper", function(){
-        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-        this.ds.output(table);
-        this.ds.updateRow(1, this.ds.getColumnSum);
-        expect(this.ds.selectRow(1)).to.be.an("array")
-          .and.to.deep.equal([1, 695, 986]);
-      });
       it("should rewrite a given row with a custom function", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.updateRow(1, function(col, index){
+        this.ds.updateRow(1, function(value, index, col){
+          return this.getColumnSum(col);
+        });
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 695, 986]);
+      });
+      it("should keep the previous cell value if nothing is returne from a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateRow(1, function(){});
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([0, 342, 664]);
+      });
+      it("should rewrite a given row with a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateRow(1, function(value, index, col){
           return this.getColumnSum(col);
         });
         expect(this.ds.selectRow(1)).to.be.an("array")
@@ -627,6 +650,13 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(3)).to.be.an("array")
           .and.to.deep.equal(["C", 0, 0]);
       });
+      it("should append a column of empty values nothing is returned from a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.appendColumn("C", function(){});
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", null, null]);
+      });
     });
 
     describe("#insertColumn", function() {
@@ -655,10 +685,17 @@ describe("Keen.Dataset", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
         this.ds.insertColumn(1, "Total", function(r){
-          return r[1] + r[2];
+          return 0;
         });
         expect(this.ds.selectColumn(1)).to.be.an("array")
-          .and.to.deep.equal(["Total", 1006, 675]);
+          .and.to.deep.equal(["Total", 0, 0]);
+      });
+      it("should insert an empty column when nothing is returned from a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.insertColumn(1, "Total", function(){});
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", null, null]);
       });
     });
 
@@ -677,19 +714,28 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 0, 0]);
       });
-      it("should rewrite each cell of given column with a computational helper", function(){
-        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
-        this.ds.output(table);
-        this.ds.updateColumn(1, this.ds.getRowSum);
-        expect(this.ds.selectColumn(1)).to.be.an("array")
-          .and.to.deep.equal(["A", 1006, 675]);
-      });
       it("should rewrite each cell of given column with a custom function", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
         this.ds.output(table);
-        this.ds.updateColumn(1, function(row, index){ return 5; });
+        this.ds.updateColumn(1, function(value, index, row){ return 5; });
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 5, 5]);
+      });
+      it("should keep the previous cell value when nothing returned from a custom function", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateColumn(1, function(){});
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 342, 353]);
+      });
+      it("should rewrite each cell of given column with a computational helper", function(){
+        var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
+        this.ds.output(table);
+        this.ds.updateColumn(1, function(value, index, row){
+          return this.getRowSum(row);
+        });
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 1006, 675]);
       });
     });
 
