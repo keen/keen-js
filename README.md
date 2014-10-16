@@ -26,7 +26,7 @@ Load this library asynchronously from our CDN by copy/pasting this snippet of Ja
 Alternatively, you can load the library synchronously from our CDN:
 
 ```html
-<script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/3.0.9/keen.min.js"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.0.9/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
