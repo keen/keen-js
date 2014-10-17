@@ -302,53 +302,53 @@ Find additional configuration options for tables [here](https://developers.googl
 
 ### Funnels
 
-Funnels can be rendered as column (default), bar, area, or line charts. Just specify the `chartType` property in the chart configuration.
+[Funnels](https://keen.io/docs/data-analysis/funnels/) are a fancy analysis type that allow you to see what percentage of users (or devices) complete various steps. 
+
 
 ![Funnel as a bar chart](img/funnel-barchart.png)
 
 ```javascript
 var watch_activation_funnel = new Keen.Query("funnel", {
-steps: [
-  {
-     event_collection: "purchases",
-     actor_property: "user.id",
-     filters: [
-        {
-          "property_name" : "product",
-          "operator" : "eq",
-          "property_value" : "telekinetic watch"
-        }
-     ],
-     timeframe: "last_7_days"
-  },
-  {
-    event_collection: "activations", // how many activated the device?
-    actor_property: "user.id",
-    optional: true
-  },
-  {
-    event_collection: "sessions", // how many had a session?
-    actor_property: "user.id",
-    optional: true
-  },
-  {
-    event_collection: "sessions",
-    actor_property: "user.id",
-    filters: [
-        {
-          "property_name" : "lifetime_session_count",
-          "operator" : "gt",
-          "property_value" : 1 // how many had more than 1 session
-        }
-     ],
-     optional: true
-  },
-  {
-    event_collection: "send_invitations",
-    actor_property: "user.id",
-    optional: true
-  }
-]
+  steps: [
+    {
+       event_collection: "purchases",
+       actor_property: "user.id",
+       filters: [
+          {
+            "property_name" : "product",
+            "operator" : "eq",
+            "property_value" : "telekinetic watch"
+          }
+       ],
+       timeframe: "last_7_days"
+    },
+    {
+      event_collection: "activations", // how many activated the device?
+      actor_property: "user.id",
+      optional: true
+    },
+    {
+      event_collection: "sessions", // how many had a session?
+      actor_property: "user.id",
+      optional: true
+    },
+    {
+      event_collection: "sessions",
+      actor_property: "user.id",
+      filters: [
+          {
+            "property_name" : "lifetime_session_count",
+            "operator" : "gt",
+            "property_value" : 1 // how many had more than 1 session
+          }
+       ],
+       optional: true
+    },
+    {
+      event_collection: "send_invitations",
+      actor_property: "user.id"
+    }
+  ]
 });
 
 client.draw(watch_activation_funnel, document.getElementById("chart-05"), {
