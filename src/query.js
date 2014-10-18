@@ -68,7 +68,7 @@
     var handleSuccess = function(res, index){
       response[index] = res;
       self.queries[index].data = res;
-      self.queries[index].trigger('complete', self.queries[index].data);
+      self.queries[index].trigger("complete", self.queries[index].data);
 
       // Increment completion count
       completions++;
@@ -82,21 +82,34 @@
         }
 
         // Trigger completion event on query
-        self.trigger('complete', self.data);
+        self.trigger("complete", self.data);
 
         // Fire callback
-        if (self.success) self.success(self.data);
+        if (self.success) {
+          self.success(self.data);
+        }
       }
 
     };
 
     var handleFailure = function(res, req){
-      var response = JSON.parse(res.responseText);
-      self.trigger('error', response);
-      if (self.error) {
-        self.error(res, req);
+      var response, status;
+      if (res) {
+        response = JSON.parse(res.responseText);
+        status = res.status + " " + res.statusText;
+      } else {
+        response = {
+          message: "Your query could not be completed, and the exact error message could not be captured (limitation of JSONP requests)",
+          error_code: "JS SDK"
+        };
+        status = "Error";
       }
-      Keen.log(res.statusText + ' (' + response.error_code + '): ' + response.message);
+
+      self.trigger("error", response);
+      if (self.error) {
+        self.error(response);
+      }
+      Keen.log(status + " (" + response.error_code + "): " + response.message);
     };
 
     _each(self.queries, function(query, index){
@@ -242,12 +255,14 @@
     }
     urlQueryString += "?api_key=" + this.readKey();
     urlQueryString += _getQueryString.call(this, params);
+
     if (reqType !== "xhr") {
       if ( String(urlBase + urlQueryString).length < Keen.urlMaxLength ) {
         _sendJsonp(urlBase + urlQueryString, null, successCallback, errorCallback);
         return;
       }
     }
+
     if (Keen.canXHR) {
       _sendXhr("GET", urlBase + urlQueryString, null, null, successCallback, errorCallback);
     } else {
