@@ -4,7 +4,7 @@ function _each(o, cb, s){
     return 0;
   }
   s = !s ? o : s;
-  if (o instanceof Array){ // is(o.length)
+  if (o instanceof Array){
     // Indexed arrays, needed for Safari
     for (n=0; n<o.length; n++) {
       if (cb.call(s, o[n], n, o) === false){

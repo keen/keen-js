@@ -8,7 +8,7 @@
   <script type="text/javascript">
 
 		var keen = new Keen({
-			projectId: "52f2ae5905cd661a7800000a",
+			projectId: "52f2ae5905cd661a7800000a", // 52f2ae5905cd661a7800000a
 			readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b"
 			// , protocol: "https"
 			// , host: 'analytics.yourdomain.com'
@@ -20,11 +20,11 @@
 		*/
 
 		var count = new Keen.Query("count", { eventCollection: "purchase" });
-    keen.run(count, function(){
-      console.log("count (cb)", this.data);
+    keen.run(count, function(res){
+      console.log("single request", res);
     });
     count.on('complete', function(res){
-      console.log("count (ev)", this.data);
+      console.log("query listener (count)", res);
     });
 
 
@@ -32,8 +32,8 @@
       eventCollection: "purchase",
 			targetProperty: 'amount'
 		});
-    keen.run(count_unique, function(){
-      console.log(this.data);
+    keen.run(count_unique, function(res){
+      console.log("count_unique", res);
     });
 
 
@@ -41,8 +41,8 @@
       eventCollection: "purchase",
 			targetProperty: 'amount'
 		});
-    keen.run(sum, function(){
-      console.log(this.data);
+    keen.run(sum, function(res){
+      console.log(res);
     });
 
 
@@ -50,8 +50,8 @@
       eventCollection: "purchase",
 			targetProperty: 'amount'
 		});
-    keen.run(max, function(){
-      console.log(this.data);
+    keen.run(max, function(res){
+      console.log(res);
     });
 
 
@@ -59,8 +59,8 @@
       eventCollection: "purchase",
 			targetProperty: 'amount'
 		});
-    keen.run(min, function(){
-      console.log(this.data);
+    keen.run(min, function(res){
+      console.log(res);
     });
 
 
@@ -68,8 +68,8 @@
       eventCollection: "purchase",
 			targetProperty: 'amount'
 		});
-    keen.run(avg, function(){
-      console.log(this.data);
+    keen.run(avg, function(res){
+      console.log(res);
     });
 
 
@@ -77,14 +77,14 @@
       eventCollection: "purchase",
 			targetProperty: 'amount'
 		});
-    keen.run(select_unique, function(){
-      console.log(this.data);
+    keen.run(select_unique, function(res){
+      console.log(res);
     });
 
 
 		var extraction = new Keen.Query('extraction', { eventCollection: "purchase" });
-    keen.run(extraction, function(){
-      console.log(this.data);
+    keen.run(extraction, function(res){
+      console.log('EXTRACTION', res);
     });
 
 
@@ -105,17 +105,16 @@
 		// Add/remove event listeners
 		req.on('complete', reqDone);
 		req.off('complete', reqDone);
-		function reqDone(response){};
+		function reqDone(response){
+      console.log("THIS SHOULD NOT APPEAR");
+    };
 		// Run .refresh() to execute again
 		// req.refresh();
 
 
 		// Multiple anonymous queries
 		keen.run([count, count_unique, sum, max, min, avg, select_unique, extraction], function(responses){
-			console.log('-->', responses);
-			for (var i = 0; i < responses.length; i++){
-				console.log('Response #' + i, responses[i]);
-			}
+			console.log(responses.length + ' responses: ', responses);
 		});
 
 
@@ -171,20 +170,11 @@
 
 		// Multiple funnels
 		var funtimes = keen.run([funnel, fun2], function(response){
-			console.log('---------FUNNEL---------');
-			console.log(response);
-			console.log(response[0].result[0], response[0].result[1], response[0].result[2], response[0].result[3]);
-			console.log(response[1].result[0], response[1].result[1], response[1].result[2], response[1].result[3]);
-			console.log('------------------------');
+			console.log("2 Funnels (callback)", response);
 		});
-
-
-		// Listening in can be fun
-		var morefun = keen.run([funnel, fun2]);
-		morefun.on('complete', function(res){
-			console.log('morefunnnnel', res);
-		});
-
+    funtimes.on("complete", function(response){
+      console.log('2 Funnels (listener)', response);
+    });
 
 		// Mock Error
 		setTimeout(function(){

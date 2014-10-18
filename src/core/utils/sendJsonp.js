@@ -5,31 +5,25 @@ function _sendJsonp(url, params, success, error){
       script = document.createElement("script"),
       parent = document.getElementsByTagName("head")[0],
       callbackName = "keenJSONPCallback",
-      scriptId = "keen-jsonp",
       loaded = false;
 
   success = null;
   error = null;
 
   callbackName += timestamp;
-  scriptId += timestamp;
-
   while (callbackName in window) {
     callbackName += "a";
   }
-  window[callbackName] = function (response) {
+  window[callbackName] = function(response) {
+    if (loaded === true) return;
     loaded = true;
     if (successCallback && response) {
       successCallback(response);
     };
-    parent.removeChild(script);
-    delete window[callbackName];
-    successCallback = errorCallback = null;
+    cleanup();
   };
 
-  script.id = scriptId;
   script.src = url + "&jsonp=" + callbackName;
-
   parent.appendChild(script);
 
   // for early IE w/ no onerror event
@@ -38,7 +32,6 @@ function _sendJsonp(url, params, success, error){
       loaded = true;
       if (errorCallback) {
         errorCallback();
-        successCallback = errorCallback = null;
       }
     }
   };
@@ -50,8 +43,14 @@ function _sendJsonp(url, params, success, error){
       loaded = true;
       if (errorCallback) {
         errorCallback();
-        successCallback = errorCallback = null;
       }
+      cleanup();
     }
   };
+
+  function cleanup(){
+    delete window[callbackName];
+    successCallback = errorCallback = null;
+    parent.removeChild(script);
+  }
 }
