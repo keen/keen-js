@@ -87,7 +87,7 @@
       url: 'https://www.google.com/jsapi',
       cb: function(done) {
         if(typeof google === 'undefined'){
-          throw new Error("Problem loading Google Charts library. Please contact us!");
+          Keen.log("Problem loading Google Charts library. Please contact us!");
         } else {
           google.load('visualization', '1.1', {
               packages: ['corechart', 'table'],
