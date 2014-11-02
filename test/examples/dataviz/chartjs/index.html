@@ -168,14 +168,16 @@
     // .chartType("line")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("chart-line"));
+    .el(document.getElementById("chart-line"))
+    .prepare();
 
   var chartjs_bar = new Keen.Dataviz()
     // .library("chartjs")
     .chartType("bar")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("chart-bar"));
+    .el(document.getElementById("chart-bar"))
+    .prepare();
 
 
   reqInterval.on("complete", function(){
@@ -190,14 +192,16 @@
     .chartType("line")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("chart-line-multi"));
+    .el(document.getElementById("chart-line-multi"))
+    .prepare();
 
   var chartjs_bar_m = new Keen.Dataviz()
     .library("chartjs")
     .chartType("bar")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("chart-bar-multi"));
+    .el(document.getElementById("chart-bar-multi"))
+    .prepare();
 
   reqMultiline.on("complete", function(){
     chartjs_line_m.parseRequest(this).render();

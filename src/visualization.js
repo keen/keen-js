@@ -31,7 +31,8 @@ Keen.prototype.draw = function(query, el, cfg) {
   }
   visual
     .attributes(_extend(DEFAULTS, config))
-    .prepare(el);
+    .el(el)
+    .prepare();
 
   request.on("complete", function(){
     visual
