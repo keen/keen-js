@@ -35,19 +35,14 @@ Put this awesome chart somewhere!
 chart.el(document.getElementById("myChart"));
 ```
 
-### .prepare(DOMElement)
+### .prepare()
 
-Optional method for setting `el` _and_ kicking off a loading indicator
+Clears `el` DOM element and kicks off a loading indicator
 
 ```javascript
 chart
-  .prepare(document.getElementById("myChart")); // loading indicator begins
-```
-
-If you have already set `el` you can omit this.
-
-```javascript
-chart.prepare(); // spinning like crazy!
+  .el(document.getElementById("myChart"))
+  .prepare(); // loading indicator begins
 ```
 
 

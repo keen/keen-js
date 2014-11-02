@@ -46,7 +46,7 @@
         // Nothing to do here
       },
       render: function(){
-        if(!google) {
+        if(typeof google === "undefined") {
           this.error("The Google Charts library could not be loaded.");
           return;
         }
@@ -92,6 +92,7 @@
       cb: function(done) {
         if (typeof google === 'undefined'){
           Keen.log("Problem loading Google Charts library. Please contact us!");
+          done();
         } else {
           google.load('visualization', '1.1', {
               packages: ['corechart', 'table'],
