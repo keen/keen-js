@@ -46,6 +46,10 @@
         // Nothing to do here
       },
       render: function(){
+        if(!google) {
+          this.error("The Google Charts library could not be loaded.");
+          return;
+        }
         var self = this;
         if (self.view._artifacts['googlechart']) {
           this.destroy();
@@ -87,7 +91,7 @@
       url: 'https://www.google.com/jsapi',
       cb: function(done) {
         if(typeof google === 'undefined'){
-          throw new Error("Problem loading Google Charts library. Please contact us!");
+          Keen.log("Problem loading Google Charts library. Please contact us!");
         } else {
           google.load('visualization', '1.1', {
               packages: ['corechart', 'table'],

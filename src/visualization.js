@@ -15,7 +15,7 @@ Keen.prototype.draw = function(query, el, cfg) {
   var DEFAULTS = JSON.parse(JSON.stringify(Keen.Visualization.defaults)),
       visual = new Keen.Dataviz(),
       request = new Keen.Request(this, [query]),
-      config = cfg || {};
+      config = cfg ? _clone(cfg) : {};
 
   if (config.chartType) {
     visual.chartType(config.chartType);
@@ -67,7 +67,7 @@ Keen.Request.prototype.draw = function(el, cfg) {
 Keen.Visualization = function(dataset, el, cfg){
   var DEFAULTS = JSON.parse(JSON.stringify(Keen.Visualization.defaults)),
       visual = new Keen.Dataviz().data(dataset).el(el),
-      config = cfg || {};
+      config = cfg ? _clone(cfg) : {};
 
   if (config.chartType) {
     visual.chartType(config.chartType);
