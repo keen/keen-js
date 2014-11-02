@@ -395,7 +395,7 @@ describe("Keen.Dataviz", function(){
       });
       it("should set the view._rendered flag to true", function(){
         expect(this.dataviz.view._rendered).to.be.false;
-        this.dataviz.render();
+        this.dataviz.el(document.getElementById("chart-test")).render();
         expect(this.dataviz.view._rendered).to.be.true;
       });
     });
