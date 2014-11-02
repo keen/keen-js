@@ -423,11 +423,6 @@ describe("Keen.Dataviz", function(){
         this.dataviz.error();
         expect(Keen.Dataviz.libraries.demo.chart.error.called).to.be.ok;
       });
-      it('should handle if google secondary dependency fails to load', function (){
-        google = null;
-        this.dataviz.initialize();
-        expect(Keen.Dataviz.libraries.demo.chart.error.called).to.be.ok;
-      });
     });
 
   });

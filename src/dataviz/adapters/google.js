@@ -90,7 +90,7 @@
       type: 'script',
       url: 'https://www.google.com/jsapi',
       cb: function(done) {
-        if(typeof google === 'undefined'){
+        if (typeof google === 'undefined'){
           Keen.log("Problem loading Google Charts library. Please contact us!");
         } else {
           google.load('visualization', '1.1', {
