@@ -12,26 +12,27 @@
 // ------------------------------
 
 Keen.prototype.draw = function(query, el, cfg) {
-  var DEFAULTS = JSON.parse(JSON.stringify(Keen.Visualization.defaults)),
+  var DEFAULTS = _clone(Keen.Visualization.defaults),
       visual = new Keen.Dataviz(),
       request = new Keen.Request(this, [query]),
-      config = cfg || {};
+      config = cfg ? _clone(cfg) : {};
 
   if (config.chartType) {
     visual.chartType(config.chartType);
-    delete cfg.chartType;
+    delete config.chartType;
   }
   if (config.library) {
     visual.library(config.library);
-    delete cfg.library;
+    delete config.library;
   }
   if (config.chartOptions) {
     visual.chartOptions(config.chartOptions);
-    delete cfg.chartOptions;
+    delete config.chartOptions;
   }
   visual
     .attributes(_extend(DEFAULTS, config))
-    .prepare(el);
+    .el(el)
+    .prepare();
 
   request.on("complete", function(){
     visual
@@ -65,9 +66,9 @@ Keen.Request.prototype.draw = function(el, cfg) {
 // ------------------------------
 
 Keen.Visualization = function(dataset, el, cfg){
-  var DEFAULTS = JSON.parse(JSON.stringify(Keen.Visualization.defaults)),
+  var DEFAULTS = _clone(Keen.Visualization.defaults),
       visual = new Keen.Dataviz().data(dataset).el(el),
-      config = cfg || {};
+      config = cfg ? _clone(cfg) : {};
 
   if (config.chartType) {
     visual.chartType(config.chartType);
@@ -91,4 +92,4 @@ Keen.Visualization = function(dataset, el, cfg){
 Keen.Visualization.defaults = _extend({
   height: 400
   //width: 600
-}, JSON.parse(JSON.stringify(Keen.Dataviz.defaults)));
+}, _clone(Keen.Dataviz.defaults));

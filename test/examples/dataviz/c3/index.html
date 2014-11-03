@@ -196,49 +196,56 @@
     .chartType("area")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-area"));
+    .el(document.getElementById("c3-area"))
+    .prepare();
 
   var c3line = new Keen.Dataviz()
     // .library("c3")
     .chartType("line")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-line"));
+    .el(document.getElementById("c3-line"))
+    .prepare();
 
   var c3bar = new Keen.Dataviz()
     // .library("c3")
     .chartType("bar")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-bar"));
+    .el(document.getElementById("c3-bar"))
+    .prepare();
 
   var c3areaspline = new Keen.Dataviz()
     // .library("c3")
     .chartType("area-spline")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-area-spline"));
+    .el(document.getElementById("c3-area-spline"))
+    .prepare();
 
   var c3spline = new Keen.Dataviz()
     // .library("c3")
     .chartType("spline")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-spline"));
+    .el(document.getElementById("c3-spline"))
+    .prepare();
 
   var c3areastep = new Keen.Dataviz()
     // .library("c3")
     .chartType("area-spline")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-area-step"));
+    .el(document.getElementById("c3-area-step"))
+    .prepare();
 
   var c3step = new Keen.Dataviz()
     // .library("c3")
     .chartType("step")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-step"));
+    .el(document.getElementById("c3-step"))
+    .prepare();
 
   reqInterval.on("complete", function(){
     c3area.parseRequest(this).render();
@@ -258,49 +265,56 @@
     .chartType("area")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-area-multi"));
+    .el(document.getElementById("c3-area-multi"))
+    .prepare();
 
   var c3line_m = new Keen.Dataviz()
     // .library("c3")
     .chartType("line")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-line-multi"));
+    .el(document.getElementById("c3-line-multi"))
+    .prepare();
 
   var c3bar_m = new Keen.Dataviz()
     // .library("c3")
     .chartType("bar")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-bar-multi"));
+    .el(document.getElementById("c3-bar-multi"))
+    .prepare();
 
   var c3areaspline_m = new Keen.Dataviz()
     // .library("c3")
     .chartType("area-spline")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-area-spline-multi"));
+    .el(document.getElementById("c3-area-spline-multi"))
+    .prepare();
 
   var c3spline_m = new Keen.Dataviz()
     // .library("c3")
     .chartType("spline")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-spline-multi"));
+    .el(document.getElementById("c3-spline-multi"))
+    .prepare();
 
   var c3step_m = new Keen.Dataviz()
     // .library("c3")
     .chartType("step")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-step-multi"));
+    .el(document.getElementById("c3-step-multi"))
+    .prepare();
 
   var c3areastep_m = new Keen.Dataviz()
     // .library("c3")
     .chartType("area-step")
     .height(300)
     .labelMapping(labelMap)
-    .prepare(document.getElementById("c3-area-step-multi"));
+    .el(document.getElementById("c3-area-step-multi"))
+    .prepare();
 
   reqMultiline.on("complete", function(){
     c3area_m.parseRequest(this).render();

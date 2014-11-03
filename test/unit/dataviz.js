@@ -353,16 +353,6 @@ describe("Keen.Dataviz", function(){
   });
 
   describe("#prepare", function(){
-    it("should set el by passing a DOM element", function(){
-      this.dataviz.prepare(document.getElementById("chart-test"));
-      expect(this.dataviz.el()).to.be.an("object");
-      if (this.dataviz.el().nodeName) {
-        expect(this.dataviz.el().nodeName).to.be.a("string")
-          .and.to.eql("DIV");
-      }
-      // terminate the spinner instance
-      this.dataviz.initialize();
-    });
     it("should set the view._prepared flag to true", function(){
       expect(this.dataviz.view._prepared).to.be.false;
       this.dataviz.el(document.getElementById("chart-test")).prepare();
@@ -391,20 +381,12 @@ describe("Keen.Dataviz", function(){
     });
 
     describe("#render", function(){
-      it("should set el by passing a DOM element", function(){
-        this.dataviz.render(document.getElementById("chart-test"));
-        expect(this.dataviz.el()).to.be.an("object");
-        if (this.dataviz.el().nodeName) {
-          expect(this.dataviz.el().nodeName).to.be.a("string")
-            .and.to.eql("DIV");
-        }
-      });
       it("should call the #initialize method of a given adapter", function(){
         this.dataviz.initialize();
         expect(Keen.Dataviz.libraries.demo.chart.initialize.called).to.be.ok;
       });
       it("should call the #render method of a given adapter", function(){
-        this.dataviz.render(document.getElementById("chart-test"));
+        this.dataviz.el(document.getElementById("chart-test")).render();
         expect(Keen.Dataviz.libraries.demo.chart.render.called).to.be.ok;
       });
       it("should NOT call the #render method if el is NOT set", function(){
@@ -413,7 +395,7 @@ describe("Keen.Dataviz", function(){
       });
       it("should set the view._rendered flag to true", function(){
         expect(this.dataviz.view._rendered).to.be.false;
-        this.dataviz.render();
+        this.dataviz.el(document.getElementById("chart-test")).render();
         expect(this.dataviz.view._rendered).to.be.true;
       });
     });

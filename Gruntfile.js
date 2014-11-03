@@ -6,9 +6,10 @@ module.exports = function(grunt) {
 
   grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-contrib-concat");
-  grunt.loadNpmTasks("grunt-contrib-uglify");
+  // grunt.loadNpmTasks("grunt-contrib-uglify");
   grunt.loadNpmTasks("grunt-contrib-watch");
   grunt.loadNpmTasks('grunt-s3');
+  grunt.loadNpmTasks('grunt-yui-compressor');
 
   grunt.loadNpmTasks('grunt-saucelabs');
 
@@ -132,18 +133,18 @@ module.exports = function(grunt) {
       }
     },
 
-    uglify: {
-      options : {
-        beautify : {
-          ascii_only : true
-        }
+    min: {
+      "keen": {
+        src: "dist/<%= pkg.name %>.js",
+        dest: "dist/<%= pkg.name %>.min.js"
       },
-      dist: {
-        files: {
-          "dist/<%= pkg.name %>.min.js": "dist/<%= pkg.name %>.js",
-          "dist/<%= pkg.name %>-tracker.min.js": "dist/<%= pkg.name %>-tracker.js",
-          "dist/<%= pkg.name %>-loader.min.js": "dist/<%= pkg.name %>-loader.js"
-        }
+      "keen-tracker": {
+        src: "dist/<%= pkg.name %>-tracker.js",
+        dest: "dist/<%= pkg.name %>-tracker.min.js"
+      },
+      "keen-loader": {
+        src: "dist/<%= pkg.name %>-loader.js",
+        dest: "dist/<%= pkg.name %>-loader.min.js"
       }
     },
 
@@ -233,7 +234,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['concat', 'uglify']);
+  grunt.registerTask('build', ['concat', 'min']); // uglify
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
   grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
   grunt.registerTask('default', ['build']);

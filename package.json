@@ -1,9 +1,9 @@
 {
   "name": "keen",
   "version": "3.1.0-beta",
-  "repository" : {
-    "type" : "git",
-    "url" : "https://github.com/keenlabs/keen-js.git"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keenlabs/keen-js.git"
   },
   "bugs": "https://github.com/keenlabs/keen-js/issues",
   "author": "Dustin Larimer <dustin@keen.io> (http://keen.io/)",
@@ -29,12 +29,13 @@
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.6",
-    "grunt-contrib-connect": "^0.7.1",
     "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-connect": "^0.7.1",
     "grunt-contrib-copy": "^0.5.0",
     "grunt-contrib-uglify": "~0.2.0",
     "grunt-contrib-watch": "~0.5.3",
+    "grunt-s3": "^0.2.0-alpha.3",
     "grunt-saucelabs": "~8.3.2",
-    "grunt-s3": "^0.2.0-alpha.3"
+    "grunt-yui-compressor": "^0.3.3"
   }
 }

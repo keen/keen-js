@@ -58,7 +58,8 @@ var m2 = document.getElementById("1-2");
 var req_metric = new Keen.Dataviz()
   .height(138)
   .colors(["#f0ad4e"])
-  .prepare(m2);
+  .el(m2)
+  .prepare();
 
 client.run(metric, function(){
   req_metric
@@ -74,7 +75,8 @@ var m3 = document.getElementById("1-3");
 var req_metric = new Keen.Dataviz()
   .height(138)
   .colors(["#8383c6"])
-  .prepare(m3);
+  .el(m3)
+  .prepare();
 
 client.run(metric, function(res){
   req_metric
@@ -280,13 +282,15 @@ var multiline = new Keen.Query("count", {
       var req_metric = new Keen.Dataviz()
         .height(138)
         .colors([Keen.Dataviz.defaults.colors[2]])
-        .prepare(document.getElementById("1-2"));
+        .el(document.getElementById("1-2"))
+        .prepare();
 
       var raw_metric = new Keen.Dataviz()
         .height(138)
         .colors([Keen.Dataviz.defaults.colors[3]])
         .chartOptions({ prettyNumber: false, prefix: "$" })
-        .prepare(document.getElementById("1-3"));
+        .el(document.getElementById("1-3"))
+        .prepare();
 
       window.reqs['metric'].on("complete", function(res){
         //this.draw(document.getElementById("1-1"), { height: 138 });
@@ -326,7 +330,8 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .colorMapping({ "Direct": "#808080" })
-        .prepare(document.getElementById("2-2"));
+        .el(document.getElementById("2-2"))
+        .prepare();
 
       var raw_pie = new Keen.Dataviz()
         .height(300)
@@ -336,7 +341,8 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .colorMapping({ "Direct": "#808080" })
-        .prepare(document.getElementById("2-3"));
+        .el(document.getElementById("2-3"))
+        .prepare();
 
       window.reqs['groupBy'].on("complete", function(res){
         req_pie
@@ -367,11 +373,13 @@ var multiline = new Keen.Query("count", {
       var req_area = new Keen.Dataviz()
         .height(300)
         //.orderBy("timeframe.end")
-        .prepare(document.getElementById("3-2"));
+        .el(document.getElementById("3-2"))
+        .prepare();
 
       var raw_area = new Keen.Dataviz()
         .height(300)
-        .prepare(document.getElementById("3-3"));
+        .el(document.getElementById("3-3"))
+        .prepare();
 
       window.reqs['interval'].on("complete", function(res){
         req_area.parseRequest(this).render();
@@ -400,12 +408,14 @@ var multiline = new Keen.Query("count", {
       var req_bar = new Keen.Dataviz()
         .height(300)
         .chartType("barchart")
-        .prepare(document.getElementById("4-2"));
+        .el(document.getElementById("4-2"))
+        .prepare();
 
       var raw_bar = new Keen.Dataviz()
         .height(300)
         .chartType("barchart")
-        .prepare(document.getElementById("4-3"));
+        .el(document.getElementById("4-3"))
+        .prepare();
 
       window.reqs['interval'].on("complete", function(res){
         req_bar.parseRequest(this).render();
@@ -427,12 +437,14 @@ var multiline = new Keen.Query("count", {
       var req_col = new Keen.Dataviz()
         .height(300)
         .chartType("columnchart")
-        .prepare(document.getElementById("5-2"));
+        .el(document.getElementById("5-2"))
+        .prepare();
 
       var raw_col = new Keen.Dataviz()
         .height(300)
         .chartType("columnchart")
-        .prepare(document.getElementById("5-3"));
+        .el(document.getElementById("5-3"))
+        .prepare();
 
       window.reqs['interval'].on("complete", function(res){
         req_col.parseRequest(this).render();
@@ -454,12 +466,14 @@ var multiline = new Keen.Query("count", {
       var req_line = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
-        .prepare(document.getElementById("6-2"));
+        .el(document.getElementById("6-2"))
+        .prepare();
 
       var raw_line = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
-        .prepare(document.getElementById("6-3"));
+        .el(document.getElementById("6-3"))
+        .prepare();
 
       window.reqs['interval'].on("complete", function(res){
         req_line.parseRequest(this).render();
@@ -482,13 +496,15 @@ var multiline = new Keen.Query("count", {
         .height(300)
         .chartType("linechart")
         .labelMapping({ "null": "pink" })
-        .prepare(document.getElementById("7-2"));
+        .el(document.getElementById("7-2"))
+        .prepare();
 
       var raw_mline = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
         .colorMapping({ "null": "pink" })
-        .prepare(document.getElementById("7-3"));
+        .el(document.getElementById("7-3"))
+        .prepare();
 
       window.reqs['multiline'].on("complete", function(res){
         req_mline.parseRequest(this).render();
@@ -520,7 +536,8 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .chartType("table")
-        .prepare(document.getElementById("8-2"));
+        .el(document.getElementById("8-2"))
+        .prepare();
 
       var raw_table = new Keen.Dataviz()
         .height(300)
@@ -530,7 +547,8 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .chartType("table")
-        .prepare(document.getElementById("8-3"));
+        .el(document.getElementById("8-3"))
+        .prepare();
 
       window.reqs['multiline'].on("complete", function(res){
         req_table.parseRequest(this).render();
