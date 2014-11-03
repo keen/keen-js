@@ -241,11 +241,11 @@ module.exports = function(){
     //   deviceName: "LG Nexus 4 Emulator"
     // },
 
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.3"
-    },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.3"
+    // },
 
     // {
     //   browserName: "android",
