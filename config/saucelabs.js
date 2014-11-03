@@ -7,8 +7,8 @@ module.exports = function(){
 
   this.urls = ['http://127.0.0.1:9999/index.html'];
   this.concurrency = 2;
-  this.maxRetries = 2;
-  this.maxDuration = 120;
+  this.maxRetries = 3;
+  this.maxDuration = 240;
 
   this.additionalConfig = {
     'record-video': false,
@@ -201,24 +201,24 @@ module.exports = function(){
       version: "7.1",
       deviceName: "iPhone"
     },
-    {
-      browserName: "iphone",
-      platform: "OS X 10.9",
-      version: "7.0",
-      deviceName: "iPhone"
-    },
+    // {
+    //   browserName: "iphone",
+    //   platform: "OS X 10.9",
+    //   version: "7.0",
+    //   deviceName: "iPhone"
+    // },
     {
       browserName: "iphone",
       platform: "OS X 10.8",
       version: "6.1",
       deviceName: "iPhone"
     },
-    {
-      browserName: "iphone",
-      platform: "OS X 10.8",
-      version: "6.0",
-      deviceName: "iPhone"
-    },
+    // {
+    //   browserName: "iphone",
+    //   platform: "OS X 10.8",
+    //   version: "6.0",
+    //   deviceName: "iPhone"
+    // },
 
 
     /* Android */
@@ -241,11 +241,11 @@ module.exports = function(){
     //   deviceName: "LG Nexus 4 Emulator"
     // },
 
-    {
-      browserName: "android",
-      platform: "Linux",
-      version: "4.3"
-    },
+    // {
+    //   browserName: "android",
+    //   platform: "Linux",
+    //   version: "4.3"
+    // },
 
     // {
     //   browserName: "android",

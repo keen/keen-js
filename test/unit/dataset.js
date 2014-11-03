@@ -857,41 +857,121 @@ describe("Keen.Dataset", function(){
         var sum = this.ds.sum([10,10,10,10,10], 1, 3);
         expect(sum).to.eql(30);
       });
+      describe("#getRowSum", function(){
+        it("should return the sum of values in a given row (array), excluding the first value", function(){
+          var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
+          expect(sum).to.eql(6);
+        });
+      });
+      describe("#getColumnSum", function(){
+        it("should return the sum of values in a given column (array), excluding the first value", function(){
+          var sum = this.ds.getColumnSum([2, 0, 1, 2, 3]);
+          expect(sum).to.eql(6);
+        });
+      });
     });
 
-    describe("#getRowSum", function(){
-      it("should return the sum of values in a given row (array), excluding the first value", function(){
-        var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
-        expect(sum).to.eql(6);
+    describe("#average", function(){
+      it("should return the average for an unbounded range", function(){
+        var avg = this.ds.average([1,2,3,4,5]);
+        expect(avg).to.eql(3);
+      });
+      it("should return the average for a partially bounded range", function(){
+        var avg = this.ds.average([1,2,3,4,5], 1);
+        expect(avg).to.eql(3.5);
+      });
+      it("should return the average for a fully bounded range", function(){
+        var avg = this.ds.average([1,2,3,4,5], 1, 3);
+        expect(avg).to.eql(3);
+      });
+      describe("#getRowAverage", function(){
+        it("should return the average of values in a given row (array), excluding the first value", function(){
+          var avg = this.ds.getRowAverage(["Exclude", 0, 1, 2, 3]);
+          expect(avg).to.eql(1.5);
+        });
+      });
+      describe("#getColumnAverage", function(){
+        it("should return the average of values in a given column (array), excluding the first value", function(){
+          var avg = this.ds.getColumnAverage(["Exclude", 0, 1, 2, 3]);
+          expect(avg).to.eql(1.5);
+        });
       });
     });
-    describe("#getColumnSum", function(){
-      it("should return the sum of values in a given column (array), excluding the first value", function(){
-        var sum = this.ds.getRowSum([2, 0, 1, 2, 3]);
-        expect(sum).to.eql(6);
+
+
+    describe("#minimum", function(){
+      it("should return the minimum for an unbounded range", function(){
+        var min = this.ds.minimum([1,2,3,4,5]);
+        expect(min).to.eql(1);
+      });
+      it("should return the minimum for a partially bounded range", function(){
+        var min = this.ds.minimum([1,2,3,4,5], 1);
+        expect(min).to.eql(2);
+      });
+      it("should return the minimum for a fully bounded range", function(){
+        var min = this.ds.minimum([1,2,3,4,5], 1, 3);
+        expect(min).to.eql(2);
+      });
+      describe("#getRowMinimum", function(){
+        it("should return the minimum of values in a given row (array), excluding the first value", function(){
+          var min = this.ds.getRowMinimum(["Exclude", 0, 1, 2, 3]);
+          expect(min).to.eql(0);
+        });
+      });
+      describe("#getColumnMinimum", function(){
+        it("should return the minimum of values in a given column (array), excluding the first value", function(){
+          var min = this.ds.getColumnMinimum(["Exclude", 0, 1, 2, 3]);
+          expect(min).to.eql(0);
+        });
       });
     });
+
+    describe("#maximum", function(){
+      it("should return the maximum for an unbounded range", function(){
+        var max = this.ds.maximum([1,2,3,4,5]);
+        expect(max).to.eql(5);
+      });
+      it("should return the maximum for a partially bounded range", function(){
+        var max = this.ds.maximum([1,2,3,4,5], 1);
+        expect(max).to.eql(5);
+      });
+      it("should return the maximum for a fully bounded range", function(){
+        var max = this.ds.maximum([1,2,3,4,5], 1, 3);
+        expect(max).to.eql(4);
+      });
+      describe("#getRowMaximum", function(){
+        it("should return the maximum of values in a given row (array), excluding the first value", function(){
+          var max = this.ds.getRowMaximum(["Exclude", 0, 1, 2, 3]);
+          expect(max).to.eql(3);
+        });
+      });
+      describe("#getColumnMaximum", function(){
+        it("should return the maximum of values in a given column (array), excluding the first value", function(){
+          var max = this.ds.getColumnMaximum(["Exclude", 0, 1, 2, 3]);
+          expect(max).to.eql(3);
+        });
+      });
+    });
+
+
 
     describe("#pick", function(){
-
       it("should return a given index of an array", function(){
         expect(this.ds.pick(["A","B"], 1)).to.eql("B");
       });
-
-    });
-
-    describe("#getRowIndex", function(){
-      it("should return the first value of a given row (array)", function(){
-        expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
+      describe("#getRowIndex", function(){
+        it("should return the first value of a given row (array)", function(){
+          expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
+        });
+      });
+      describe("#getColumnLabel", function(){
+        it("should return the first value of a given column (array)", function(){
+          expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
+        });
       });
     });
 
 
-    describe("#getColumnLabel", function(){
-      it("should return the first value of a given column (array)", function(){
-        expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
-      });
-    });
 
   });
 
