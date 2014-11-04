@@ -2,8 +2,10 @@
 
 **Important:** v3 is now the current version. v2 source and docs are located [here](https://github.com/keenlabs/keen-js/tree/v2).
 
+<!--
 [![Build Status](https://api.travis-ci.org/keenlabs/keen-js.png?branch=master)](https://travis-ci.org/keenlabs/keen-js)
 [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
+-->
 
 _Tracking is manually tested and validated on Internet Explorer 6, 7, and 8._
 
