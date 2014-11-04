@@ -3,9 +3,9 @@
   "version": "3.1.0-beta",
   "repository": {
     "type": "git",
-    "url": "https://github.com/keenlabs/keen-js.git"
+    "url": "https://github.com/keen/keen-js.git"
   },
-  "bugs": "https://github.com/keenlabs/keen-js/issues",
+  "bugs": "https://github.com/keen/keen-js/issues",
   "author": "Dustin Larimer <dustin@keen.io> (http://keen.io/)",
   "contributors": [
     "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
