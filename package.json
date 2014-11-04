@@ -1,6 +1,6 @@
 {
   "name": "keen",
-  "version": "3.1.0-beta",
+  "version": "3.1.0",
   "repository": {
     "type": "git",
     "url": "https://github.com/keen/keen-js.git"

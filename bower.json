@@ -1,9 +1,18 @@
 {
   "name": "keen-js",
-  "version": "3.1.0-beta",
+  "version": "3.1.0",
   "homepage": "https://github.com/keen/keen-js",
   "authors": [
-    "Dustin Larimer <dustin@keen.io>"
+    "Dustin Larimer <dustin@keen.io>",
+    "Sean Dokko <sean@keen.io>",
+    "Jordan Klassen <forivall@gmail.com>",
+    "Josh Dzielak <josh@keen.io>",
+    "Ryan Spraetz <ryan@keen.io>",
+    "Dan Kador <dan@keen.io>",
+    "Cory Watson <github@onemogin.com>",
+    "Joshua Coats <joshua@keen.io>",
+    "Micah Wolfe <micah@keen.io>",
+    "Tim Schiller <timothy.schiller@gmail.com>"
   ],
   "description": "JS Library for the Keen IO API",
   "keywords": [
