@@ -1,7 +1,6 @@
   /*!
   * ----------------------
-  * Keen IO Plugin
-  * Data Visualization
+  * Keen IO Adapter
   * ----------------------
   */
 

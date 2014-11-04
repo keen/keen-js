@@ -1,8 +1,8 @@
-/**
+/*!
  * Copyright (c) 2011-2014 Felix Gnass
  * Licensed under the MIT license
+ * Modified header to work internally w/ Keen lib
  */
-// Modified to work internally with Keen lib
 (function(root, factory) {
   root.Spinner = factory();
 }

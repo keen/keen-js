@@ -4,27 +4,6 @@
   * ----------------
   */
 
-/*
-  TODO:
-
-  [x] set up dataType capability-mapping
-  [x] move google defaults into adapter
-  [x] set default lib+chart combos for types
-
-  [x] set up sortGroups and sortInterval
-  [x] set up indexBy
-  [x] write tests for sort/order methods
-  [x] _runLabelMapping re-runs parse(), overwrites modifications
-  [x] break dataviz into pieces, like dataset
-
-  [x] update color palette
-  [x] update keen-c3.js adapter w/ example page
-  [x] update keen-chart.js adapter w/ example page
-
-  [ ] manage a second "mapped" color set
-
-*/
-
 _extend(Keen.utils, {
   prettyNumber: _prettyNumber,
   loadScript: _loadScript,

@@ -1,9 +1,8 @@
 /*!
-* ----------------------
-* Keen IO Plugin
-* Data Visualization
-* ----------------------
-*/
+ * ----------------------
+ * C3.js Adapter
+ * ----------------------
+ */
 
 (function(lib){
   var Keen = lib || {};

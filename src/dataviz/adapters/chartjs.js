@@ -1,9 +1,8 @@
 /*!
-* ----------------------
-* Keen IO Plugin
-* Data Visualization
-* ----------------------
-*/
+ * ----------------------
+ * Chart.js Adapter
+ * ----------------------
+ */
 
 (function(lib){
   var Keen = lib || {};

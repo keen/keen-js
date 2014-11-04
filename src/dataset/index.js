@@ -1,35 +1,8 @@
 /*!
-  * ----------------
-  * Keen.Dataset
-  * ----------------
-  */
-
-/*
-  TODO:
-
-  [x] import Dataset project source
-  [x] import Dataset project tests
-  [x] update Dataset API with new sketch
-  [x] fix Dataset sort method
-  [x] fix Dataset handling of metrics
-  [x] write tests for new sort methods
-
-  [x] updateRow/updateColumn func iterates
-  [x] move getRow* and getColumn* into /helpers
-
-  [ ] #min, #max, #median, #average
-
-  [ ] #getRowAverage
-  [ ] #getRowMedian
-  [ ] #getRowMinimum
-  [ ] #getRowMaximum
-
-  [ ] #getColumnAverage
-  [ ] #getColumnMedian
-  [ ] #getColumnMinimum
-  [ ] #getColumnMaximum
-
-*/
+ * ----------------------
+ * Keen.Dataset
+ * ----------------------
+ */
 
 // extend(Keen.Dataset, {
 //   each: each,

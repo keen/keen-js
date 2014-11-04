@@ -1,9 +1,6 @@
 /*!
   * domready (c) Dustin Diaz 2012 - License MIT
-  */
-// Modified header to work internally w/ Keen lib
-/*!
-  * domready (c) Dustin Diaz 2012 - License MIT
+  * Modified header to work internally w/ Keen lib
   */
 (function(root, factory) {
   root.utils.domready = factory();

@@ -1,7 +1,7 @@
-// -------------------------------
-// Keen.Events
-// We <3 BackboneJS!
-// -------------------------------
+//  ----------------------
+//  Keen.Events
+//  We <3 BackboneJS!
+// ----------------------
 
 var Events = Keen.Events = {
   on: function(name, callback) {
