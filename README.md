@@ -9,7 +9,9 @@ _Tracking is manually tested and validated on Internet Explorer 6, 7, and 8._
 
 ## Documentation
 
-Docs have been moved into the master branch, so they stay in sync with each release. Check out the latest [here](./docs).
+Docs have been moved into the master branch, so they stay in sync with each release.
+
+Check out the latest [here](./docs).
 
 ## Get Project ID & API Keys
 
