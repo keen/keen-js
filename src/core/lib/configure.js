@@ -1,11 +1,5 @@
-Keen.prototype.configure = function(config){
-  if (!config) {
-    Keen.log("Check out our JavaScript SDK Usage Guide: https://github.com/keenlabs/keen-js/tree/master/docs");
-  }
-
-  if (!config.projectId) {
-    Keen.log("Please provide a projectId");
-  }
+Keen.prototype.configure = function(cfg){
+  var config = cfg || {};
 
   if (!Keen.canXHR && config.requestType === "xhr") {
     config.requestType = "jsonp";
