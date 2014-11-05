@@ -150,11 +150,11 @@ module.exports = function(grunt) {
     watch: {
       javascript: {
         files: "src/**/*.js",
-        tasks: [ "concat", "uglify" ]
+        tasks: [ "build" ]
       },
       tests: {
         files: "test/unit/**/*.js",
-        tasks: [ "concat" ]
+        tasks: [ "build" ]
       }
     },
 
