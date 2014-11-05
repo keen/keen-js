@@ -2,6 +2,22 @@ describe("Keen tracking methods", function() {
 
   describe("#addEvent", function() {
 
+    describe("enforce correct arguments for #addEvent", function(){
+
+      beforeEach(function() {
+        this.project = new Keen({ projectId: "123" });
+      });
+
+      it("should return an error message if event collection is omitted", function(){
+        var success = sinon.spy(),
+            error = sinon.spy();
+        this.project.addEvent(null, { test: "data" }, success, error);
+        expect(success.calledOnce).not.to.be.ok;
+        expect(error.calledOnce).to.be.ok;
+      });
+
+    });
+
     describe("via XHR/CORS (if supported)", function(){
 
       beforeEach(function() {
