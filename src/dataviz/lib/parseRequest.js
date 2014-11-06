@@ -8,12 +8,14 @@ Keen.Dataviz.prototype.parseRequest = function(req){
 };
 
 function _parseRequest(req){
-  var dataset;
+  var dataType = _getQueryDataType.call(this, req.queries[0]),
+      dataset;
+
   /*
     TODO: Handle multiple queries
   */
   // First-pass at dataType detection
-  this.dataType(_getQueryDataType.call(this, req.queries[0]));
+  this.dataType(dataType);
   if (this.dataType() !== "extraction") {
     // Run data thru raw parser
     dataset = _parseRawData.call(this, (req.data instanceof Array ? req.data[0] : req.data));
@@ -25,18 +27,18 @@ function _parseRequest(req){
 }
 
 function _parseExtraction(req){
-  var names = req.queries[0].get('property_names'),
+  var data = (req.data instanceof Array ? req.data[0] : req.data),
+      names = req.queries[0].get("property_names") || [],
       schema = { records: "result", select: true };
 
   if (names) {
     schema.select = [];
     _each(names, function(p){
-      schema.select.push({
-        path: p
-      })
+      schema.select.push({ path: p });
     });
   }
-  return new Keen.Dataset(req.data[0], schema);
+
+  return new Keen.Dataset(data, schema);
 }
 
 // function _parse2xGroupBy(req){}

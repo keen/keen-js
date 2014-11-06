@@ -1,8 +1,20 @@
 function _uploadEvent(eventCollection, payload, success, error) {
-  var urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection),
-      urlQueryString = "",
-      reqType = this.config.requestType,
-      data = {};
+  var urlBase, urlQueryString, reqType, data;
+
+  if (!this.projectId()) {
+    Keen.log("Event not recorded: Missing projectId property");
+    return;
+  }
+
+  if (!this.writeKey()) {
+    Keen.log("Event not recorded: Missing writeKey property");
+    return;
+  }
+
+  urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection);
+  urlQueryString = "";
+  reqType = this.config.requestType;
+  data = {};
 
   // Add properties from client.globalProperties
   if (this.config.globalProperties) {

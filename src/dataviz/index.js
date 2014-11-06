@@ -47,7 +47,8 @@ _extend(Keen.Dataviz, {
     "cat-interval":      { library: "google",  chartType: "columnchart" },
     "cat-ordinal":       { library: "google",  chartType: "barchart"    },
     "chronological":     { library: "google",  chartType: "areachart"   },
-    "cat-chronological": { library: "google",  chartType: "linechart"   }
+    "cat-chronological": { library: "google",  chartType: "linechart"   },
+    "extraction":        { library: "google",  chartType: "table"       }
   },
   defaults: {
     colors: [

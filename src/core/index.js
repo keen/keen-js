@@ -5,9 +5,7 @@
  */
 
 function Keen(config) {
-  if (config) {
-    this.configure(config);
-  }
+  this.configure(config || {});
 }
 
 Keen.version = "BUILD_VERSION"; // replaced

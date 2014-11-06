@@ -130,6 +130,11 @@ function _parseRawData(response){
       }
     }
 
+    if (dataType === void 0) {
+      dataType = "extraction";
+      schema = { records: "result", select: true };
+    }
+
   }
 
   dataset = new Keen.Dataset(response, schema);

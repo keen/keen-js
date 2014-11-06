@@ -12,8 +12,12 @@ describe("Keen (core)", function() {
     it("should create a new Keen instance", function(){
       expect(this.project).to.be.an.instanceof(Keen);
     });
-    it("should create a new client object", function(){
+    it("should create a new config object", function(){
       expect(this.project.config).to.be.ok;
+    });
+    it("should create a new config object when config argument is omitted", function(){
+      var empty = new Keen();
+      expect(empty.config).to.be.ok;
     });
   });
 

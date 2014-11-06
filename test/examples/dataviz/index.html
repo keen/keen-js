@@ -207,6 +207,19 @@ var multiline = new Keen.Query("count", {
       </div>
     </div>
 
+    <h4>Extractions</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="9-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="9-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="9-3">C</div>
+      </div>
+    </div>
+
   </div>
 
   <script src="../../dist/keen.js"></script>
@@ -245,11 +258,18 @@ var multiline = new Keen.Query("count", {
         interval: "monthly"
       });
 
+      var extraction = new Keen.Query("extraction", {
+        event_collection: "pageview",
+        latest: 100
+        // propertyNames: [""]
+      });
+
       window.reqs = {
         metric: client.run(metric),
         groupBy: client.run(groupBy),
         interval: client.run(interval),
-        multiline: client.run(multiline)
+        multiline: client.run(multiline),
+        extraction: client.run(extraction)
       };
 
       // var generateRandomData = function(res) {
@@ -555,6 +575,13 @@ var multiline = new Keen.Query("count", {
         raw_table.parseRawData(res).render();
       });
 
+      var drawn_ext = client.draw(extraction, document.getElementById("9-1"), { height: 300 });
+      var req_ext = new Keen.Dataviz().height(300).chartType("table").el(document.getElementById("9-2")).prepare();
+      var raw_ext = new Keen.Dataviz().height(300).chartType("table").el(document.getElementById("9-3")).prepare();
+      window.reqs['extraction'].on("complete", function(res){
+        req_ext.parseRequest(this).render();
+        raw_ext.parseRawData(res).render();
+      });
     });
   </script>
 
