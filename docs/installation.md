@@ -13,10 +13,17 @@ Copy+paste this snippet of JavaScript above the `</head>` tag of your page.
 `addEvent`, `setGlobalProperties`, `trackExternalLink` and `ready` methods are available immediately, but data will be cached locally. Once the library has loaded, any methods you have called will be "replayed" and cached data will be sent to our service.
 
 ```javascript
+// paste async code snippet here
+var client = new Keen({
+  projectId: "your_project_id",
+  writeKey: "your_write_key"
+});
 client.addEvent("pageview", { key: "value" });
 ```
 
-**Important:** Additional methods and classes, such as `Keen.Query` or `Keen.Visualization` won't be available until the library has finished loading and `Keen.ready()` has been triggered.
+### Keen.ready(fn)
+
+Unlike the core `Keen` object and its tracking-related methods, `Keen.Query`, `Keen.Visualization`, `Keen.Dataviz` and `Keen.Dataset` won't be available until the library has finished loading. Use our ready callback, `Keen.ready()`, to safely wrap any references to these objects. 
 
 ```javascript
 Keen.ready(function(){
@@ -28,6 +35,8 @@ Keen.ready(function(){
 });
 ```
 
+**Important:** `Keen.ready()` also waits to fire until after the DOM is ready (using [domready](https://github.com/ded/domready)) and the Google Visualization library has been loaded into the page.
+
 
 ## Synchronous Loading
 
@@ -36,13 +45,13 @@ Simple, synchronous loading.
 **Specified version:** (recommended)
 
 ```html
- <script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js"></script>
+<script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js"></script>
 ```
 
 **Latest build:**
 
 ```html
- <script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/latest/keen.min.js"></script>
+<script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/latest/keen.min.js"></script>
 ```
 
 ## Bower
@@ -86,7 +95,7 @@ or for the latest version:
 https://d26b395fwzu5fz.cloudfront.net/latest/keen-tracker.min.js
 ```
 
-For production implementations, we recommend sticking with a specific version of the library, rather than `latest/`, to ensure future changes won't cause unforeseen issues.
+For production implementations, we highly recommend sticking with a specific version of the library, rather than `latest/`, to ensure future changes won't cause unforeseen issues.
 
 
 ## Custom Builds
