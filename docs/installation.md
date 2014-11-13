@@ -45,13 +45,13 @@ Simple, synchronous loading.
 **Specified version:** (recommended)
 
 ```html
-<script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js" type="text/javascript"></script>
 ```
 
 **Latest build:**
 
 ```html
-<script type="text/javascript" src="https://d26b395fwzu5fz.cloudfront.net/latest/keen.min.js"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/latest/keen.min.js" type="text/javascript"></script>
 ```
 
 ## Bower
