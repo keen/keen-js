@@ -30,7 +30,10 @@ function _loadAsync(){
         // Run Configuration
         if (client._config) {
           client.configure.call(client, client._config);
-          delete client._config;
+          client._config = undefined;
+          try{
+            delete client._config;
+          }catch(e){}
         }
 
         // Add Global Properties
@@ -39,7 +42,10 @@ function _loadAsync(){
           for (var i = 0; i < globals.length; i++) {
             client.setGlobalProperties.apply(client, globals[i]);
           }
-          delete client._setGlobalProperties;
+          client._setGlobalProperties = undefined;
+          try{
+            delete client._setGlobalProperties;
+          }catch(e){}
         }
 
         // Send Queued Events
@@ -48,7 +54,10 @@ function _loadAsync(){
           for (var i = 0; i < queue.length; i++) {
             client.addEvent.apply(client, queue[i]);
           }
-          delete client._addEvent;
+          client._addEvent = undefined;
+          try{
+            delete client._addEvent;
+          }catch(e){}
         }
 
         // Create "on" Events
@@ -58,7 +67,10 @@ function _loadAsync(){
             client.on.apply(client, callback[i]);
           }
           client.trigger('ready');
-          delete client._on;
+          client._on = undefined;
+          try{
+            delete client._on;
+          }catch(e){}
         }
 
       }
