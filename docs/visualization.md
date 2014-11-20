@@ -390,13 +390,13 @@ Here's an example that runs two queries, divides them, and then outputs the resu
   var sessions_count = new Keen.Query("count_unique", {
     eventCollection: "screen_view", // Use this collection because there is at least 1 screenview per session
     targetProperty: "session.id",
-    timeframe: last_7_days
+    timeframe: "last_7_days"
   });
 
   var paid_sessions_count = new Keen.Query("count_unique", { // Find number of sessions with payments
     eventCollection: "payment",
     targetProperty: "session.id",
-    timeframe: last_7_days
+    timeframe: "last_7_days"
   });
 
   var mashup = client.run([sessions_count, paid_sessions_count], function(res){  // Send query to Keen IO
