@@ -49,7 +49,10 @@ function _sendJsonp(url, params, success, error){
   };
 
   function cleanup(){
-    delete window[callbackName];
+    window[callbackName] = undefined;
+    try{
+      delete window[callbackName];
+    }catch(e){}
     successCallback = errorCallback = null;
     parent.removeChild(script);
   }
