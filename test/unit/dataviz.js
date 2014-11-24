@@ -136,6 +136,33 @@ describe("Keen.Dataviz", function(){
       this.dataviz.labelMapping({ "_a_": null });
       expect(this.dataviz.labelMapping()._a_).to.not.exist;
     });
+    it("should provide full text replacement of categorical values", function(){
+      var num_viz = new Keen.Dataviz()
+        .call(function(){
+          this.dataset.output([
+            [ "Index", "Count" ],
+            [ "Sunday", 10 ],
+            [ "Monday", 11 ],
+            [ "Tuesday", 12 ],
+            [ "Wednesday", 13 ]
+          ]);
+          this.dataset.meta.schema = { records: "result", select: true };
+          this.dataType("categorical");
+        })
+        .labelMapping({
+          "Sunday"    : "Sun",
+          "Monday"    : "Mon",
+          "Tuesday"   : "Tues"
+        });
+      expect(num_viz.dataset.output()[1][0]).to.be.a("string")
+        .and.to.eql("Sun");
+      expect(num_viz.dataset.output()[2][0]).to.be.a("string")
+        .and.to.eql("Mon");
+      expect(num_viz.dataset.output()[3][0]).to.be.a("string")
+        .and.to.eql("Tues");
+      expect(num_viz.dataset.output()[4][0]).to.be.a("string")
+        .and.to.eql("Wednesday");
+    });
   });
 
   describe("#height", function(){

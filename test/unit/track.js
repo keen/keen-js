@@ -2,6 +2,24 @@ describe("Keen tracking methods", function() {
 
   describe("#addEvent", function() {
 
+    describe("Keen.enabled", function(){
+
+      beforeEach(function() {
+        this.project = new Keen({ projectId: "123" });
+      });
+
+      it("should not send events if set to \"false\"", function(){
+        var success = sinon.spy(),
+            error = sinon.spy();
+        Keen.enabled = false;
+        this.project.addEvent("not-going", { test: "data" }, success, error);
+        Keen.enabled = true;
+        expect(success.calledOnce).not.to.be.ok;
+        expect(error.calledOnce).not.to.be.ok;
+      });
+
+    });
+
     describe("enforce correct arguments for #addEvent", function(){
 
       beforeEach(function() {

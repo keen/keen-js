@@ -1,6 +1,11 @@
 function _uploadEvent(eventCollection, payload, success, error) {
   var urlBase, urlQueryString, reqType, data;
 
+  if (!Keen.enabled) {
+    Keen.log("Event not recorded: Keen.enabled = false");
+    return;
+  }
+
   if (!this.projectId()) {
     Keen.log("Event not recorded: Missing projectId property");
     return;
