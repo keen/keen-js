@@ -24,6 +24,7 @@ if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('
   Keen.urlMaxLength = 2000;
 }
 
+Keen.enabled = true;
 Keen.loaded = true;
 Keen.ready = function(callback){
   if (Keen.loaded) {
