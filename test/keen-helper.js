@@ -13,3 +13,4 @@ var keenHelper = {
     error: '{\"error\": true }'
   }
 };
+Keen.debug = true;

@@ -25,6 +25,7 @@ if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('
 }
 
 Keen.enabled = true;
+
 Keen.loaded = true;
 Keen.ready = function(callback){
   if (Keen.loaded) {
@@ -34,8 +35,9 @@ Keen.ready = function(callback){
   }
 };
 
+Keen.debug = false;
 Keen.log = function(message) {
-  if (typeof console == "object") {
+  if (Keen.debug && typeof console == "object") {
     console.log('[Keen IO]', message);
   }
 };
