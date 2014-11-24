@@ -23,7 +23,7 @@ function _runLabelMapping(){
     else if (schema.select && self.dataset.output()[0].length === 2) {
       // update column 0
       self.dataset.updateColumn(0, function(c, i){
-        return labelMap[c[0]] || c[0];
+        return labelMap[c] || c;
       });
     }
   }
