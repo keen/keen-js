@@ -1,30 +1,26 @@
-/*!
- * ----------------------
- * Keen IO Core
- * ----------------------
- */
+var each = require("./utils/each"),
+    events = require("./events"),
+    extend = require("./utils/extend"),
+    parseParams = require("./utils/parseParams");
 
 function Keen(config) {
   this.configure(config || {});
+  // this.on("error", function(msg){
+  //   Keen.log(msg);
+  // });
+  Keen.trigger("client", this);
 }
 
-Keen.version = "BUILD_VERSION"; // replaced
+extend(Keen, events);
 
-Keen.utils = {};
-
-Keen.canXHR = false;
-if (typeof XMLHttpRequest === "object" || typeof XMLHttpRequest === "function") {
-  if ("withCredentials" in new XMLHttpRequest()) {
-    Keen.canXHR = true;
-  }
-}
-
-Keen.urlMaxLength = 16000;
-if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
-  Keen.urlMaxLength = 2000;
-}
-
+Keen.version = "BUILD_VERSION"; // Overwritten @ build
 Keen.enabled = true;
+
+Keen.utils = {
+  "each": each,
+  "extend": extend,
+  "parseParams": parseParams
+};
 
 Keen.loaded = true;
 Keen.ready = function(callback){
@@ -41,3 +37,27 @@ Keen.log = function(message) {
     console.log('[Keen IO]', message);
   }
 };
+
+Keen.urlMaxLength = 16000;
+var root = "undefined" == typeof window ? this : window;
+if (typeof root == "window") {
+  if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+    Keen.urlMaxLength = 2000;
+  }
+}
+
+extend(Keen.prototype, events);
+extend(Keen.prototype, {
+  "configure"           : require("./lib/configure"),
+  "masterKey"           : require("./lib/masterKey"),
+  "projectId"           : require("./lib/projectId"),
+  "readKey"             : require("./lib/readKey"),
+  "setGlobalProperties" : require("./lib/setGlobalProperties"),
+  "url"                 : require("./lib/url"),
+  "writeKey"            : require("./lib/writeKey")
+});
+
+// from superagent.js
+// var context = (typeof root == 'window') ? "browser" : "server";
+
+module.exports = Keen;

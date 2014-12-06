@@ -1,7 +1,9 @@
-Keen.prototype.configure = function(cfg){
+var xhr = require("../utils/getXhr");
+
+module.exports = function(cfg){
   var config = cfg || {};
 
-  if (!Keen.canXHR && config.requestType === "xhr") {
+  if (!xhr() && config.requestType === "xhr") {
     config.requestType = "jsonp";
   }
 
@@ -25,5 +27,4 @@ Keen.prototype.configure = function(cfg){
   };
 
   this.trigger('ready');
-  Keen.trigger('client', this, config);
 };

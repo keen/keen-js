@@ -1,4 +1,4 @@
-  /*! 
+  /*!
   * --------------------------------------------
   * JSON2.js
   * https://github.com/douglascrockford/JSON-js
@@ -88,7 +88,7 @@
       if (typeof rep === 'function') {
         value = rep.call(holder, key, value);
       }
-    
+
       // What happens next depends on the value's type.
       switch (typeof value) {
         case 'string':
@@ -163,7 +163,7 @@
           return v;
         }
       }
-    
+
       // If the JSON object does not yet have a stringify method, give it one.
       if (typeof JSON.stringify !== 'function') {
         JSON.stringify = function (value, replacer, space) {
@@ -193,7 +193,7 @@
           if (replacer && typeof replacer !== 'function' && (typeof replacer !== 'object' || typeof replacer.length !== 'number')) {
             throw new Error('JSON.stringify');
           }
-        
+
           // Make a fake root object containing our value under the key of ''.
           // Return the result of stringifying the value.
           return str('', {'': value});

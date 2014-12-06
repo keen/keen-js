@@ -1,24 +1,18 @@
-function _sendXhr(method, url, headers, body, success, error){
-  var ids = ['MSXML2.XMLHTTP.3.0', 'MSXML2.XMLHTTP', 'Microsoft.XMLHTTP'],
+var getXhr = require("./getXhr");
+
+function sendXhr(method, url, headers, body, success, error, async){
+  var isAsync = async || true,
       successCallback = success,
       errorCallback = error,
-      payload,
-      xhr;
+      xhr = getXhr(),
+      payload;
 
   success = null;
   error = null;
 
-  if (window.XMLHttpRequest) {
-    xhr = new XMLHttpRequest();
-  }
-  else {
-    // Legacy IE support: look up alts if XMLHttpRequest is not available
-    for (var i = 0; i < ids.length; i++) {
-      try {
-        xhr = new ActiveXObject(ids[i]);
-        break;
-      } catch(e) {}
-    }
+  if (!xhr) {
+    Keen.log("XHR requests are not supported");
+    return;
   }
 
   xhr.onreadystatechange = function() {
@@ -48,7 +42,7 @@ function _sendXhr(method, url, headers, body, success, error){
     }
   };
 
-  xhr.open(method, url, true);
+  xhr.open(method, url, isAsync);
 
   _each(headers, function(value, key){
     xhr.setRequestHeader(key, value);
@@ -65,3 +59,5 @@ function _sendXhr(method, url, headers, body, success, error){
   }
 
 }
+
+module.exports = sendXhr;

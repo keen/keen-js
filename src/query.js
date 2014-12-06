@@ -262,7 +262,7 @@
       }
     }
 
-    if (Keen.canXHR) {
+    if (_getXHR()) {
       _sendXhr("GET", urlBase + urlQueryString, null, null, successCallback, errorCallback);
     } else {
       Keen.log("Event not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");

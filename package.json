@@ -26,6 +26,13 @@
     "start": "grunt",
     "test": "grunt test"
   },
+  "dependencies": {
+    "JSON2": "^0.1.0",
+    "base-64": "^0.1.0",
+    "domready": "^1.0.7",
+    "spin.js": "^2.0.1",
+    "superagent": "^0.21.0"
+  },
   "devDependencies": {
     "grunt": "~0.4.1",
     "grunt-cli": "~0.1.6",

@@ -3,8 +3,8 @@
 // ----------------------
 
 function _loadAsync(){
-  var loaded = window['Keen'],
-      cached = window['_' + 'Keen'] || {},
+  var loaded = (context === "browser") ? window['Keen'] : null,
+      cached = (context === "browser") ? (window['_' + 'Keen'] || {}) : null,
       clients,
       ready;
 

@@ -3,7 +3,7 @@
 //  We <3 BackboneJS!
 // ----------------------
 
-var Events = Keen.Events = {
+module.exports = {
   on: function(name, callback) {
     this.listeners || (this.listeners = {});
     var events = this.listeners[name] || (this.listeners[name] = []);
@@ -94,6 +94,3 @@ function _once(func) {
     return memo;
   };
 }
-
-_extend(Keen.prototype, Events);
-_extend(Keen, Events);

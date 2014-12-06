@@ -1,3 +1,3 @@
-function _clone(target) {
-  return JSON.parse(JSON.stringify(target));
-}
+module.exports = function(target) {
+  return JSON.parse( JSON.stringify( target ) );
+};

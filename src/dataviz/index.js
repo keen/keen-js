@@ -73,6 +73,7 @@ _extend(Keen.Dataviz, {
 // ------------------------------
 
 Keen.Dataviz.register = function(name, methods, config){
+  if (context !== "browser") return;
   var self = this;
   var loadHandler = function(st) {
     st.loaded++;
@@ -81,6 +82,7 @@ Keen.Dataviz.register = function(name, methods, config){
       Keen.trigger('ready');
     }
   };
+
   Keen.Dataviz.libraries[name] = Keen.Dataviz.libraries[name] || {};
 
   // Add method to library hash

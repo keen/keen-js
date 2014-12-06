@@ -2,11 +2,11 @@
   * domready (c) Dustin Diaz 2012 - License MIT
   * Modified header to work internally w/ Keen lib
   */
-(function(root, factory) {
-  root.utils.domready = factory();
-}(Keen, function (ready) {
+!function(lib) {
 
-  var fns = [], fn, f = false
+  lib.utils.domready = function (ready) {
+
+    var fns = [], fn, f = false
     , doc = document
     , testEl = doc.documentElement
     , hack = testEl.doScroll
@@ -17,27 +17,27 @@
     , loadedRgx = hack ? /^loaded|^c/ : /^loaded|c/
     , loaded = loadedRgx.test(doc[readyState])
 
-  function flush(f) {
-    loaded = 1
-    while (f = fns.shift()) f()
-  }
-
-  doc[addEventListener] && doc[addEventListener](domContentLoaded, fn = function () {
-    doc.removeEventListener(domContentLoaded, fn, f)
-    flush()
-  }, f)
-
-
-  hack && doc.attachEvent(onreadystatechange, fn = function () {
-    if (/^c/.test(doc[readyState])) {
-      doc.detachEvent(onreadystatechange, fn)
-      flush()
+    function flush(f) {
+      loaded = 1
+      while (f = fns.shift()) f();
     }
-  })
 
-  return (ready = hack ?
-    function (fn) {
-      self != top ?
+    doc[addEventListener] && doc[addEventListener](domContentLoaded, fn = function () {
+      doc.removeEventListener(domContentLoaded, fn, f);
+      flush();
+    }, f);
+
+
+    hack && doc.attachEvent(onreadystatechange, fn = function () {
+      if (/^c/.test(doc[readyState])) {
+        doc.detachEvent(onreadystatechange, fn)
+        flush()
+      }
+    });
+
+    return (ready = hack ?
+      function (fn) {
+        self != top ?
         loaded ? fn() : fns.push(fn) :
         function () {
           try {
@@ -47,8 +47,10 @@
           }
           fn()
         }()
-    } :
-    function (fn) {
-      loaded ? fn() : fns.push(fn)
-    })
-}));
+      } :
+      function (fn) {
+        loaded ? fn() : fns.push(fn)
+      }
+    );
+  };
+}(Keen);

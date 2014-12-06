@@ -1,4 +1,4 @@
-function _each(o, cb, s){
+module.exports = function(o, cb, s){
   var n;
   if (!o){
     return 0;
@@ -22,5 +22,4 @@ function _each(o, cb, s){
     }
   }
   return 1;
-}
-_extend(Keen.utils, { each: _each });
+};

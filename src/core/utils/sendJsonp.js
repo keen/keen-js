@@ -1,4 +1,4 @@
-function _sendJsonp(url, params, success, error){
+function sendJsonp(url, params, success, error){
   var timestamp = new Date().getTime(),
       successCallback = success,
       errorCallback = error,
@@ -57,3 +57,5 @@ function _sendJsonp(url, params, success, error){
     parent.removeChild(script);
   }
 }
+
+module.exports = sendJsonp;

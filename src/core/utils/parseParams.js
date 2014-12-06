@@ -1,4 +1,4 @@
-function _parseParams(str){
+module.exports = function(str){
   // via: http://stackoverflow.com/a/2880929/2511985
   var urlParams = {},
       match,
@@ -11,5 +11,5 @@ function _parseParams(str){
     urlParams[decode(match[1])] = decode(match[2]);
   }
   return urlParams;
-}
-_extend(Keen.utils, { parseParams: _parseParams });
+};
+// _extend(Keen.utils, { parseParams: _parseParams });
