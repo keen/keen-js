@@ -5,14 +5,16 @@ var Keen = require("../index"),
     JSON2 = require("JSON2"),
     sendXhr = require("./sendXhr"),
     sendJsonp = require("./sendJsonp"),
-    sendBeacon = require("./sendBeacon");
+    sendBeacon = require("./sendBeacon"),
+    getUrlMaxLength = require("./getUrlMaxLength");
 
 module.exports = function(url, data, api_key, success, error, async){
   var reqType = this.config.requestType,
       queryString = "",
       successCallback = success,
       errorCallback = error,
-      isAsync = async || true;
+      isAsync = async || true,
+      stringMax;
 
   success = error = null;
 
@@ -20,7 +22,7 @@ module.exports = function(url, data, api_key, success, error, async){
     queryString += "?api_key="  + encodeURIComponent( this.writeKey() );
     queryString += "&data="     + encodeURIComponent( base64.encode( JSON2.stringify(data) ) );
     queryString += "&modified=" + encodeURIComponent( new Date().getTime() );
-    if ( String(url + queryString).length < Keen.urlMaxLength ) {
+    if ( String(url + queryString).length < getUrlMaxLength() ) {
       if (reqType === "jsonp") {
         sendJsonp(url + queryString, null, successCallback, errorCallback);
       }

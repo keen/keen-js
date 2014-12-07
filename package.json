@@ -6,10 +6,10 @@
     "url": "https://github.com/keen/keen-js.git"
   },
   "bugs": "https://github.com/keen/keen-js/issues",
-  "author": "Dustin Larimer <dustin@keen.io> (http://keen.io/)",
+  "author": "Dustin Larimer <dustin@keen.io> (https://keen.io/)",
   "contributors": [
     "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
-    "Sean Dokko <sean@keen.io> (http://seandokko.com/)",
+    "Sean Dokko <dokko1230@gmail.com> (http://seandokko.com/)",
     "Jordan Klassen <forivall@gmail.com> (http://forivall.github.io)",
     "Josh Dzielak <josh@keen.io> (http://dzello.com)",
     "Ryan Spraetz <ryan@keen.io> (https://keen.io)",
@@ -29,7 +29,7 @@
   "dependencies": {
     "JSON2": "^0.1.0",
     "base-64": "^0.1.0",
-    "domready": "^1.0.7",
+    "domready": "0.3.0",
     "spin.js": "^2.0.1",
     "superagent": "^0.21.0"
   },

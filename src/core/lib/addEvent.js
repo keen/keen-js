@@ -1,7 +1,8 @@
 var uploadEvent = require("../utils/uploadEvent");
-module.exports = function(eventCollection, payload, success, error) {
+
+module.exports = function(collection, payload, success, error) {
   var response;
-  if (!eventCollection || typeof eventCollection !== "string") {
+  if (!collection || typeof collection !== "string") {
     response = "Event not recorded: Collection name must be a string";
     this.trigger("error", response);
     if (error) {

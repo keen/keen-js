@@ -1,10 +1,8 @@
-// ----------------------
-// Keen IO Async Loader
-// ----------------------
+var Keen = require("./index");
 
-function _loadAsync(){
-  var loaded = (context === "browser") ? window['Keen'] : null,
-      cached = (context === "browser") ? (window['_' + 'Keen'] || {}) : null,
+module.exports = function(){
+  var loaded = window['Keen'] || null,
+      cached = window['_' + 'Keen'] || null,
       clients,
       ready;
 

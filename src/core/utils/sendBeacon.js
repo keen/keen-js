@@ -1,4 +1,4 @@
-function _sendBeacon(url, params, success, error){
+function sendBeacon(url, params, success, error){
   var successCallback = success,
       errorCallback = error,
       loaded = false,
@@ -32,3 +32,5 @@ function _sendBeacon(url, params, success, error){
   };
   img.src = url + "&c=clv1";
 }
+
+module.exports = sendBeacon;

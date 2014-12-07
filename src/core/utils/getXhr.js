@@ -1,4 +1,6 @@
-module.exports = function() {
+function getXhr() {
+  // yay, superagent!
+  var root = 'undefined' == typeof window ? this : window;
   if (root.XMLHttpRequest && ('file:' != root.location.protocol || !root.ActiveXObject)) {
     return new XMLHttpRequest;
   } else {
@@ -9,3 +11,5 @@ module.exports = function() {
   }
   return false;
 };
+
+module.exports = getXhr;

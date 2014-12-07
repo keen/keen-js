@@ -1,6 +1,7 @@
-// ../utils/uploadEvent.js
+var Keen = require("../index"),
+    uploadEvent = require("../utils/uploadEvent");
 
-Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
+module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
 
   var evt = jsEvent,
       target = (evt.currentTarget) ? evt.currentTarget : (evt.srcElement || evt.target),

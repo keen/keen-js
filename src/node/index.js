@@ -4,10 +4,10 @@
 
 var Keen = require("../core");
 
-// tell the lib which requestHandler to use
-
 Keen.requestHandler = require("../core/utils/requestHandler");
 // Keen.requestHandler = require("../node/utils/requestHandler");
+// Keen.utils.domready = require("domready");
+// Keen.Spinner = require("spin.js");
 
 Keen.utils.extend(Keen.prototype, {
   "addEvent": require("../core/lib/addEvent")
