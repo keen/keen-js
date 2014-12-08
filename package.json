@@ -24,10 +24,6 @@
   "engines": {
     "node": "0.10.x"
   },
-  "scripts": {
-    "start": "grunt",
-    "test": "grunt test"
-  },
   "dependencies": {
     "JSON2": "^0.1.0",
     "base-64": "^0.1.0",
