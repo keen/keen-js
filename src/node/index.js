@@ -1,12 +1,20 @@
 var Keen = require("../core"),
     extend = require("../core/utils/extend");
 
-extend(Keen.prototype, {
-  "addEvent"            : require("../core/lib/addEvent"),
-  "setGlobalProperties" : require("../core/lib/setGlobalProperties")
-});
+var addEvent = require("../core/lib/addEvent"),
+    setGlobalProperties = require("../core/lib/setGlobalProperties"),
+    get = require("./lib/get"),
+    post = require("./lib/post"),
+    del = require("./lib/del");
 
-Keen.requestHandler = require("./utils/requestHandler");
+extend(Keen.prototype, {
+  "addEvent"            : addEvent,
+  "setGlobalProperties" : setGlobalProperties,
+  "get": get,
+  "post": post,
+  "put": post,
+  "del": del
+});
 
 module.exports = Keen;
 

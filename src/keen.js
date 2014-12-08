@@ -24,21 +24,33 @@
 })(function() {
 
   var Keen = require("./core"),
-      extend = require("./core/utils/extend");
+      extend = require("./core/utils/extend"),
+      parseParams = require("./core/utils/parseParams");
 
-  Keen.requestHandler = require("./core/utils/requestHandler");
-  Keen.Spinner = require("spin.js");
+  var Spinner = require("spin.js"),
+      domready = require("domready");
+
+  var addEvent = require("./core/lib/addEvent"),
+      setGlobalProperties = require("./core/lib/setGlobalProperties"),
+      trackExternalLink = require("./core/lib/trackExternalLink"),
+      get = require("./core/lib/get"),
+      post = require("./core/lib/post");
 
   extend(Keen.prototype, {
-    "addEvent"            : require("./core/lib/addEvent"),
-    "setGlobalProperties" : require("./core/lib/setGlobalProperties"),
-    "trackExternalLink"   : require("./core/lib/trackExternalLink")
+    "addEvent"            : addEvent,
+    "setGlobalProperties" : setGlobalProperties,
+    "trackExternalLink"   : trackExternalLink,
+    "get"                 : get,
+    "post"                : post,
+    "put"                 : post
   });
 
   extend(Keen.utils, {
-    "parseParams" : require("./core/utils/parseParams"),
-    "domready"    : require("domready")
+    "parseParams" : parseParams,
+    "domready"    : domready
   });
+
+  Keen.Spinner = Spinner;
 
   return Keen;
 });

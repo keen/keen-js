@@ -1,8 +1,12 @@
 var Keen = require("../index"),
-    each = require("./each");
+    each = require("./each"),
+    getXHR = require("./getXhr");
 
 function uploadEvent(eventCollection, payload, success, error, async) {
-  var urlBase, data = {};
+  // var urlBase, data = {};
+  var method = ( this.config.requestType === "xhr" && getXHR() ) ? "post" : "get",
+      data = {},
+      urlBase;
 
   if (!Keen.enabled) {
     this.trigger("error", "Event not recorded: Keen.enabled = false");
@@ -29,7 +33,12 @@ function uploadEvent(eventCollection, payload, success, error, async) {
   });
 
   urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection);
-  Keen.requestHandler.call(this, urlBase, data, this.writeKey(), success, error, async);
+  // Keen.requestHandler.call(this, urlBase, data, this.writeKey(), success, error, async);
+  this[method](urlBase, data, this.writeKey(), success, error, async);
+  /*
+  this.get(url, data, success, error);
+  this.post(url, data, success, error, async);
+  */
   return;
 };
 

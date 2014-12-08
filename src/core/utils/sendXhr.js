@@ -1,6 +1,6 @@
-var each = require("./each"),
-    getXhr = require("./getXhr"),
-    JSON2 = require("JSON2");
+var JSON2 = require("JSON2"),
+    each = require("./each"),
+    getXhr = require("./getXhr");
 
 function sendXhr(method, url, headers, body, success, error, async){
   var self = this,
@@ -46,7 +46,6 @@ function sendXhr(method, url, headers, body, success, error, async){
             successCallback = errorCallback = null;
           }
         }
-
         if (errorCallback && response) {
           errorCallback(xhr, response);
           successCallback = errorCallback = null;
