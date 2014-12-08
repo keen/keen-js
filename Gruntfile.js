@@ -132,7 +132,7 @@ module.exports = function(grunt) {
           , "test/unit/utils.js"
           // , "test/unit/data/**/*.js"
         ],
-        dest: "test/keen-unit-all.js"
+        dest: "test/browser/keen-unit-all.js"
       },
 
       loader: {
@@ -170,7 +170,7 @@ module.exports = function(grunt) {
     connect: {
       server: {
         options: {
-          base: 'test',
+          base: 'test/browser',
           port: 9999
         }
       }

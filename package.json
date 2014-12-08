@@ -1,6 +1,8 @@
 {
   "name": "keen",
   "version": "3.1.0",
+  "main": "src/node/index.js",
+  "browser": "src/keen.js",
   "repository": {
     "type": "git",
     "url": "https://github.com/keen/keen-js.git"
