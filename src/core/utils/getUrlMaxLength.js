@@ -1,5 +1,5 @@
 module.exports = function(){
-  if (navigator) {
+  if ("undefined" !== typeof window) {
     if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
       return 2000;
     }

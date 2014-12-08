@@ -18,7 +18,7 @@ module.exports = function(url, data, api_key, success, error, async){
 
   success = error = null;
 
-  if (reqType === "jsonp" || reqType === "beacon") {
+  if ( (reqType === "jsonp" || reqType === "beacon") || !getXHR() ) {
     queryString += "?api_key="  + encodeURIComponent( this.writeKey() );
     queryString += "&data="     + encodeURIComponent( base64.encode( JSON2.stringify(data) ) );
     queryString += "&modified=" + encodeURIComponent( new Date().getTime() );
@@ -32,7 +32,7 @@ module.exports = function(url, data, api_key, success, error, async){
       return;
     }
   }
-  if (getXHR()) {
+  if ( getXHR() ) {
     sendXhr("POST", url, {
         "Authorization": this.writeKey(),
         "Content-Type": "application/json"

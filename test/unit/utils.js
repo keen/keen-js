@@ -7,12 +7,12 @@ describe('Keen.utils', function() {
       .and.to.be.a('function');
     expect(Keen.utils.parseParams).to.exist
       .and.to.be.a('function');
-    expect(Keen.utils.prettyNumber).to.exist
-      .and.to.be.a('function');
-    expect(Keen.utils.loadScript).to.exist
-      .and.to.be.a('function');
-    expect(Keen.utils.loadStyle).to.exist
-      .and.to.be.a('function');
+    // expect(Keen.utils.prettyNumber).to.exist
+    //   .and.to.be.a('function');
+    // expect(Keen.utils.loadScript).to.exist
+    //   .and.to.be.a('function');
+    // expect(Keen.utils.loadStyle).to.exist
+    //   .and.to.be.a('function');
   });
 
   // describe('#each', function(){

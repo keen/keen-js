@@ -48,10 +48,9 @@ describe("Keen tracking methods", function() {
         });
         self.postUrl = self.project.url("/projects/" + self.project.projectId() + "/events/" + keenHelper.collection);
         self.server = sinon.fakeServer.create();
-        self.respondWith = function(code, body){
-          self.server.respondWith("POST", self.postUrl,
-            [code, { "Content-Type": "application/json"}, body]);
-        };
+        // self.respondWith = function(code, body){
+        //   self.server.respondWith("POST", self.postUrl, [code, { "Content-Type": "application/json"}, body]);
+        // };
       });
 
       afterEach(function(){
@@ -60,33 +59,30 @@ describe("Keen tracking methods", function() {
 
       if ('withCredentials' in new XMLHttpRequest()) {
 
-        it("should post to the API using xhr where CORS is supported", function() {
-
-          var callbacks = [sinon.spy(), sinon.spy()];
-          this.respondWith(200, keenHelper.responses.success);
+        it("should POST to the API using XHR where CORS is supported", function() {
+          var callbacks = [ sinon.spy(), sinon.spy() ];
           this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+          this.server.respondWith( "POST", this.postUrl,
+              [ 200, { "Content-Type": "application/json"}, keenHelper.responses.success ]
+            );
           this.server.respond();
-
-          expect(this.server.requests[0].requestBody)
-            .to.equal(JSON.stringify(keenHelper.properties));
+          expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["success"]);
           expect(callbacks[0].calledOnce).to.be.ok;
-          expect(callbacks[0].calledWith(JSON.parse(keenHelper.responses.success))).to.be.ok;
+          expect(callbacks[0].calledWith(JSON.parse(keenHelper.responses["success"]))).to.be.ok;
           expect(callbacks[1].calledOnce).not.to.be.ok;
-
         });
 
         it("should call the error callback on error", function() {
-
-          var callbacks = [sinon.spy(), sinon.spy()];
-          this.respondWith(500, keenHelper.responses.error);
+          var callbacks = [ sinon.spy(), sinon.spy() ];
           this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+          this.server.respondWith( "POST", this.postUrl,
+              [ 500, { "Content-Type": "application/json"}, keenHelper.responses["error"] ]
+            );
           this.server.respond();
-
-          expect(this.server.requests[0].requestBody)
-            .to.equal(JSON.stringify(keenHelper.properties));
+          expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["error"]);
           expect(callbacks[0].calledOnce).not.to.be.ok;
           expect(callbacks[1].calledOnce).to.be.ok;
-
+          // expect(callbacks[1].calledWith(JSON.parse(keenHelper.responses["error"]))).to.be.ok;
         });
 
       }

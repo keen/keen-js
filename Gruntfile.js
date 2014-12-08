@@ -4,6 +4,7 @@ var saucelabs = require('./config/saucelabs')(),
 
 module.exports = function(grunt) {
 
+  grunt.loadNpmTasks('grunt-browserify');
   grunt.loadNpmTasks("grunt-contrib-connect");
   grunt.loadNpmTasks("grunt-contrib-concat");
   grunt.loadNpmTasks("grunt-contrib-watch");
@@ -14,6 +15,14 @@ module.exports = function(grunt) {
 
   grunt.initConfig({
     pkg: grunt.file.readJSON("package.json"),
+
+    browserify: {
+      core: {
+        files: {
+          'dist/keen.js': ['src/keen.js'],
+        }
+      }
+    },
 
     concat: {
 
@@ -116,12 +125,12 @@ module.exports = function(grunt) {
         src: [
             "test/unit/core.js"
           , "test/unit/track.js"
-          , "test/unit/query.js"
-          , "test/unit/dataviz.js"
-          , "test/unit/dataset.js"
-          , "test/unit/visualization.js"
+          // , "test/unit/query.js"
+          // , "test/unit/dataviz.js"
+          // , "test/unit/dataset.js"
+          // , "test/unit/visualization.js"
           , "test/unit/utils.js"
-          , "test/unit/data/**/*.js"
+          // , "test/unit/data/**/*.js"
         ],
         dest: "test/keen-unit-all.js"
       },
@@ -154,7 +163,7 @@ module.exports = function(grunt) {
       },
       tests: {
         files: "test/unit/**/*.js",
-        tasks: [ "build" ]
+        tasks: [ "build", "concat:test" ]
       }
     },
 
@@ -233,7 +242,7 @@ module.exports = function(grunt) {
 
   });
 
-  grunt.registerTask('build', ['concat', 'min']); // uglify
+  grunt.registerTask('build', ['browserify', 'min']); // uglify
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
   grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
   grunt.registerTask('default', ['build']);

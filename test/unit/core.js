@@ -108,22 +108,22 @@ describe("Keen (core)", function() {
 
     });
 
-    it("should set request type to \"xhr\" if designated and CORS supported, otherwise fall back \"JSONP\"", function(){
-
-      var keen = new Keen({ projectId: '123', requestType: 'xhr' });
-      if ('withCredentials' in new XMLHttpRequest()) {
-        expect(keen.config)
-          .to.have.property('requestType')
-          .that.is.a('string')
-          .that.equals('xhr');
-      } else {
-        expect(keen.config)
-          .to.have.property('requestType')
-          .that.is.a('string')
-          .that.equals('jsonp');
-      }
-
-    });
+    // it("should set request type to \"xhr\" if designated and CORS supported, otherwise fall back \"JSONP\"", function(){
+    //
+    //   var keen = new Keen({ projectId: '123', requestType: 'xhr' });
+    //   if ('withCredentials' in new XMLHttpRequest()) {
+    //     expect(keen.config)
+    //       .to.have.property('requestType')
+    //       .that.is.a('string')
+    //       .that.equals('xhr');
+    //   } else {
+    //     expect(keen.config)
+    //       .to.have.property('requestType')
+    //       .that.is.a('string')
+    //       .that.equals('jsonp');
+    //   }
+    //
+    // });
 
     it("should set request type to \"jsonp\" if designated", function(){
 
@@ -147,14 +147,14 @@ describe("Keen (core)", function() {
 
   });
 
-  describe("Keen.urlMaxLength threshold", function(){
-    it("should be 2000 for IE, and 16000 otherwise", function(){
-      if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
-        expect(Keen.urlMaxLength).to.eql(2000);
-      } else {
-        expect(Keen.urlMaxLength).to.eql(16000);
-      }
-    });
-  });
+  // describe("Keen.urlMaxLength threshold", function(){
+  //   it("should be 2000 for IE, and 16000 otherwise", function(){
+  //     if (navigator.userAgent.indexOf('MSIE') !== -1 || navigator.appVersion.indexOf('Trident/') > 0) {
+  //       expect(Keen.urlMaxLength).to.eql(2000);
+  //     } else {
+  //       expect(Keen.urlMaxLength).to.eql(16000);
+  //     }
+  //   });
+  // });
 
 });

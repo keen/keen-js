@@ -1,4 +1,6 @@
-var getXhr = require("./getXhr");
+var each = require("./each"),
+    getXhr = require("./getXhr"),
+    JSON2 = require("JSON2");
 
 function sendXhr(method, url, headers, body, success, error, async){
   var isAsync = async || true,
@@ -7,8 +9,7 @@ function sendXhr(method, url, headers, body, success, error, async){
       xhr = getXhr(),
       payload;
 
-  success = null;
-  error = null;
+  success = error = null;
 
   if (!xhr) {
     Keen.log("XHR requests are not supported");
@@ -20,7 +21,7 @@ function sendXhr(method, url, headers, body, success, error, async){
     if (xhr.readyState == 4) {
       if (xhr.status >= 200 && xhr.status < 300) {
         try {
-          response = JSON.parse(xhr.responseText);
+          response = JSON2.parse(xhr.responseText);
         } catch (e) {
           Keen.log("Could not parse HTTP response: " + xhr.responseText);
           if (errorCallback) {
@@ -34,8 +35,18 @@ function sendXhr(method, url, headers, body, success, error, async){
         }
       } else {
         Keen.log("HTTP request failed.");
-        if (errorCallback) {
-          errorCallback(xhr, null);
+        try {
+          response = JSON2.parse(xhr.responseText);
+        }
+        catch (e) {
+          response = null;
+          if (errorCallback) {
+            errorCallback(xhr, e);
+            successCallback = errorCallback = null;
+          }
+        }
+        if (errorCallback && response) {
+          errorCallback(xhr, response);
           successCallback = errorCallback = null;
         }
       }
@@ -44,12 +55,12 @@ function sendXhr(method, url, headers, body, success, error, async){
 
   xhr.open(method, url, isAsync);
 
-  _each(headers, function(value, key){
+  each(headers, function(value, key){
     xhr.setRequestHeader(key, value);
   });
 
   if (body) {
-    payload = JSON.stringify(body);
+    payload = JSON2.stringify(body);
   }
 
   if (method && method.toUpperCase() === "GET") {
