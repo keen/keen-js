@@ -1,40 +1,57 @@
 var Keen = require("../index"),
+    getQueryString = require("../../core/utils/getQueryString"),
     request = require("superagent");
 
-module.exports = function(url, data, api_key, success, error, async){
-  console.log("Handle request with superagent");
-  return;
+var methods = {
+  "GET"    : get,
+  "POST"   : post,
+  "PUT"    : post,
+  "DELETE" : del
+};
 
-  // var reqType = this.config.requestType,
-  //     handler = Keen.requestHandlers[reqType],
-  //     queryString = "",
-  //     successCallback = success,
-  //     errorCallback = error,
-  //     isAsync = async || true;
-  //
-  // success = error = null;
-  //
-  // if (reqType === "jsonp" || reqType === "beacon") {
-  //   queryString += "?api_key="  + encodeURIComponent( this.writeKey() );
-  //   queryString += "&data="     + encodeURIComponent( base64.encode( JSON2.stringify(data) ) );
-  //   queryString += "&modified=" + encodeURIComponent( new Date().getTime() );
-  //   if ( String(url + queryString).length < Keen.urlMaxLength ) {
-  //     if (reqType === "jsonp") {
-  //       sendJsonp(url + queryString, null, successCallback, errorCallback);
-  //     }
-  //     else {
-  //       sendBeacon(url + queryString, null, successCallback, errorCallback);
-  //     }
-  //     return;
-  //   }
-  // }
-  // if (getXHR()) {
-  //   sendXhr("POST", url, {
-  //       "Authorization": this.writeKey(),
-  //       "Content-Type": "application/json"
-  //     }, data, successCallback, errorCallback, async);
-  // }
-  // else {
-  //   Keen.log("Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
-  // }
+module.exports = function(url, data, api_key, success, error, async){
+  // console.log("Handle request with superagent");
+  methods["GET"].apply(this, arguments);
+  return;
+}
+
+function get(url, data, api_key, callback) {
+  request
+  .get(url+getQueryString(data))
+  .set("Authorization", api_key)
+  .end(function(error, response){
+    processResponse(error, response, callback);
+  });
+}
+
+function post(url, data, api_key, callback) {
+  request
+  .post(url)
+  .set("Authorization", api_key)
+  .set("Content-Type", "application/json")
+  .send(data || {})
+  .end(function(error, response) {
+    processResponse(error, response, callback);
+  });
+}
+
+function del(url, data, api_key, callback) {
+  request
+  .del(url)
+  .set("Authorization", api_key)
+  .set("Content-Type", "application/json")
+  .end(function(err, res) {
+    processResponse(err, res, callback);
+  });
+}
+
+function processResponse(err, res, callback) {
+  var cb = callback || function() {};
+  if (res && !res.ok && !err) {
+    var is_err = res.body && res.body.error_code;
+    err = new Error(is_err ? res.body.message : 'Unknown error occurred');
+    err.code = is_err ? res.body.error_code : 'UnknownError';
+  }
+  if (err) return cb(err);
+  return cb(null, res.body);
 }

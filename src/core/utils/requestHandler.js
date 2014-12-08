@@ -39,6 +39,6 @@ module.exports = function(url, data, api_key, success, error, async){
       }, data, successCallback, errorCallback, async);
   }
   else {
-    Keen.log("Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
+    this.trigger("error", "Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
   }
 }

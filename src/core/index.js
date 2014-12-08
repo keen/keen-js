@@ -31,6 +31,9 @@ Keen.prototype.configure = function(cfg){
     protocol    : config["protocol"] || "https",
     globalProperties: null
   };
+  if (Keen.debug) {
+    this.on("error", Keen.log);
+  }
   this.trigger('ready');
 };
 

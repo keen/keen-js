@@ -12,7 +12,7 @@ function sendXhr(method, url, headers, body, success, error, async){
   success = error = null;
 
   if (!xhr) {
-    Keen.log("XHR requests are not supported");
+    this.trigger("error", "XHR requests are not supported");
     return;
   }
 
@@ -23,7 +23,7 @@ function sendXhr(method, url, headers, body, success, error, async){
         try {
           response = JSON2.parse(xhr.responseText);
         } catch (e) {
-          Keen.log("Could not parse HTTP response: " + xhr.responseText);
+          this.trigger("error", "Could not parse HTTP response: " + xhr.responseText);
           if (errorCallback) {
             errorCallback(xhr, e);
             successCallback = errorCallback = null;
@@ -34,7 +34,7 @@ function sendXhr(method, url, headers, body, success, error, async){
           successCallback = errorCallback = null;
         }
       } else {
-        Keen.log("HTTP request failed.");
+        this.trigger("error", "HTTP request failed.");
         try {
           response = JSON2.parse(xhr.responseText);
         }

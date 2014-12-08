@@ -12,14 +12,19 @@ module.exports = Keen;
 
 // -------------------------
 
+// Keen.enabled = false;
 Keen.debug = true;
 Keen.on("client", function(client){
-  client.writeKey("write-key");
-  client.readKey("read-key");
+  client.writeKey("123456789");
+  client.readKey("987654321");
   console.log(client);
 });
+
 var client = new Keen({
   masterKey: "TADA!",
   projectId: "234234"
 });
-client.addEvent("test");
+
+client.addEvent("test", {}, function(err, res){
+  console.log(err, res);
+});
