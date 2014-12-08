@@ -36,6 +36,7 @@
     "superagent": "^0.21.0"
   },
   "devDependencies": {
+    "chai": "^1.10.0",
     "grunt": "~0.4.1",
     "grunt-browserify": "^3.2.1",
     "grunt-cli": "~0.1.6",
@@ -46,6 +47,8 @@
     "grunt-contrib-watch": "~0.5.3",
     "grunt-s3": "^0.2.0-alpha.3",
     "grunt-saucelabs": "~8.3.2",
-    "grunt-yui-compressor": "^0.3.3"
+    "grunt-yui-compressor": "^0.3.3",
+    "mocha": "^2.0.1",
+    "sinon": "^1.12.1"
   }
 }

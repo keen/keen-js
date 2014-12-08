@@ -2,24 +2,15 @@
 <html>
 <head>
   <meta http-equiv="X-UA-Compatible" content="IE=edge" >
-  <title>Keen IO JS SDK Test</title>
+  <title>Keen IO JavaScript SDK</title>
 
 	<!-- Test Framework Assets -->
 	<link rel="stylesheet" href="./assets/mocha/mocha.css" />
 	<script src="./assets/mocha/mocha.js"></script>
-	<script src="./assets/chai/chai.js"></script>
-	<script src="./assets/sinon/index.js"></script>
-	<script src="./assets/sinon-ie/index.js"></script>
+  <script>mocha.setup('bdd')</script>
 
   <!-- Test under presence of RequireJS -->
   <script src="./assets/requirejs-bower/require.js"></script>
-
-	<!-- File(s) to be tested -->
-	<script src="./dist/keen.js"></script>
-
-	<!-- Setup -->
-	<script>mocha.setup('bdd')</script>
-	<script src="./keen-helper.js"></script>
 
 	<!-- Load Tests -->
 	<script src="./keen-unit-all.js"></script>
@@ -27,19 +18,14 @@
 	<!-- Initialize -->
 	<script>
 		var init = function(){
-
 			var runner = mocha.run();
-
 			var failedTests = [];
 			runner.on('end', function(){
 				window.mochaResults = runner.stats;
 				window.mochaResults.reports = failedTests;
 			});
-
 			runner.on('fail', logFailure);
-
 			function logFailure(test, err){
-
 				var flattenTitles = function(test){
 					var titles = [];
 					while (test.parent.title){
@@ -48,11 +34,9 @@
 					}
 					return titles.reverse();
 				};
-
 				failedTests.push({name: test.title, result: false, message: err.message, stack: err.stack, titles: flattenTitles(test) });
 			};
 		};
-
 		if ( window.addEventListener ) {
 			window.addEventListener( "load", init, false );
 		}
@@ -61,7 +45,6 @@
 		} else if ( window.onLoad ) {
 			window.onload = init;
 		}
-
 	</script>
 </head>
 <body>

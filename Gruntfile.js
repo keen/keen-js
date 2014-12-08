@@ -21,6 +21,11 @@ module.exports = function(grunt) {
         files: {
           'dist/keen.js': ['src/keen.js'],
         }
+      },
+      tests: {
+        files: {
+          "test/browser/keen-unit-all.js": ["test/unit/core.js"]
+        }
       }
     },
 
@@ -161,9 +166,13 @@ module.exports = function(grunt) {
         files: "src/**/*.js",
         tasks: [ "build" ]
       },
+      // tests: {
+      //   files: "test/unit/**/*.js",
+      //   tasks: [ "build", "concat:test" ]
+      // }
       tests: {
         files: "test/unit/**/*.js",
-        tasks: [ "build", "concat:test" ]
+        tasks: [ "browserify:tests" ]
       }
     },
 
@@ -244,6 +253,7 @@ module.exports = function(grunt) {
 
   grunt.registerTask('build', ['browserify', 'min']); // uglify
   grunt.registerTask('dev', ['build', 'connect', 'watch']);
-  grunt.registerTask('test', ['build', 'connect', 'saucelabs-mocha']);
-  grunt.registerTask('default', ['build']);
+  grunt.registerTask('test', ['build', 'connect', '']);
+  grunt.registerTask('test:sauce', ['build', 'connect', 'saucelabs-mocha']);
+  grunt.registerTask('default', ['dev']);
 };

@@ -35,10 +35,6 @@ function uploadEvent(eventCollection, payload, success, error, async) {
   urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection);
   // Keen.requestHandler.call(this, urlBase, data, this.writeKey(), success, error, async);
   this[method](urlBase, data, this.writeKey(), success, error, async);
-  /*
-  this.get(url, data, success, error);
-  this.post(url, data, success, error, async);
-  */
   return;
 };
 
