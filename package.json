@@ -1,7 +1,7 @@
 {
   "name": "keen",
   "version": "3.1.0",
-  "main": "src/node/index.js",
+  "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {
     "type": "git",
