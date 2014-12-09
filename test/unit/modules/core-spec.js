@@ -2,8 +2,8 @@ var chai = require("chai"),
     expect = require("chai").expect,
     sinon = require("sinon");
 
-var Keen = require("../../src/core"),
-    keenHelper = require("./helpers/test-config");
+var Keen = require("../../../src/core"),
+    keenHelper = require("../helpers/test-config");
 
 describe("Keen (core)", function() {
 

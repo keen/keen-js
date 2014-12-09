@@ -44,7 +44,13 @@
     "grunt-s3": "^0.2.0-alpha.3",
     "grunt-saucelabs": "~8.3.2",
     "grunt-yui-compressor": "^0.3.3",
+    "gulp": "^3.8.10",
+    "gulp-clean": "^0.3.1",
+    "gulp-connect": "^2.2.0",
+    "gulp-mocha-phantomjs": "^0.5.1",
     "mocha": "^2.0.1",
-    "sinon": "^1.12.1"
+    "run-sequence": "^1.0.2",
+    "sinon": "^1.12.1",
+    "vinyl-source-stream": "^1.0.0"
   }
 }

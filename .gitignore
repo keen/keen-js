@@ -1,7 +1,8 @@
-dist/*
-.tmp
-test/keen-unit-all.js
-node_modules
-bower_components
 *.log
 .DS_Store
+.tmp
+dist/*
+bower_components
+node_modules
+test/keen-unit-all.js
+test/unit/build/*
