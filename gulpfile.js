@@ -3,6 +3,7 @@ var gulp = require("gulp");
 var browserify = require("browserify"),
     clean = require("gulp-clean"),
     connect = require("gulp-connect"),
+    mocha = require('gulp-mocha'),
     mochaPhantomJS = require("gulp-mocha-phantomjs"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
@@ -31,7 +32,7 @@ gulp.task("browserify", function() {
 
 gulp.task("connect", function () {
   connect.server({
-    root: [ __dirname, "test/browser" ],
+    root: [ __dirname, "test", "test/unit", "test/vendor" ],
     port: 9999
   });
 });
@@ -46,11 +47,12 @@ gulp.task("watch-with-tests", function() {
 
 
 // -------------------------
-// Unit test tasks
+// Test tasks
 // -------------------------
 
 gulp.task("test:unit", function(callback) {
   runSequence(
+    "test:server",
     "test:unit:clean",
     "test:unit:build",
     "test:unit:run",
@@ -78,9 +80,14 @@ gulp.task("test:unit:run", function () {
   .pipe(mochaPhantomJS());
 });
 
+gulp.task("test:server", function () {
+  return gulp.src("./test/unit/server.js", { read: false })
+  .pipe(mocha({ reporter: "nyan" }));
+});
+
 
 // -------------------------
-// Main tasks
+// Bundled tasks
 // -------------------------
 
 gulp.task("default", function(callback){
@@ -94,6 +101,7 @@ gulp.task("default", function(callback){
 
 gulp.task("with-tests", function(callback){
   runSequence(
+    "test:unit",
     "build",
     "connect",
     "watch-with-tests",

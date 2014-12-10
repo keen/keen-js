@@ -1,11 +1,9 @@
-var chai = require("chai"),
-    expect = require("chai").expect,
-    sinon = require("sinon");
+var expect = require("chai").expect;
 
 var Keen = require("../../../../src/core"),
     keenHelper = require("../../helpers/test-config");
 
-describe("Keen (core)", function() {
+describe("Client", function() {
 
   beforeEach(function() {
     this.project = new Keen({
