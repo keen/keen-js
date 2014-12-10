@@ -1,12 +1,17 @@
 var Keen = require("../index"),
     each = require("./each"),
+    getContext = require("./getContext"),
     getXHR = require("./getXhr");
 
 function uploadEvent(eventCollection, payload, success, error, async) {
-  // var urlBase, data = {};
-  var method = ( this.config.requestType === "xhr" && getXHR() ) ? "post" : "get",
+  var method = "post",
       data = {},
       urlBase;
+
+  // Use GET if requested in browser configuration
+  if ( getContext() === "browser" && this.config.requestType === "xhr" && getXHR() ) {
+    method = "get";
+  }
 
   if (!Keen.enabled) {
     this.trigger("error", "Event not recorded: Keen.enabled = false");
@@ -33,7 +38,7 @@ function uploadEvent(eventCollection, payload, success, error, async) {
   });
 
   urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection);
-  // Keen.requestHandler.call(this, urlBase, data, this.writeKey(), success, error, async);
+
   this[method](urlBase, data, this.writeKey(), success, error, async);
   return;
 };
