@@ -1,14 +1,18 @@
 var root = this;
 var previous_Keen = root.Keen;
 
-var each = require("./utils/each"),
-    events = require("./events"),
+var events = require("./events"),
     extend = require("./utils/extend");
 
 function Keen(config) {
   this.configure(config || {});
   Keen.trigger("client", this);
 }
+
+Keen.debug = false;
+Keen.enabled = true;
+Keen.loaded = true;
+Keen.version = "BUILD_VERSION"; // Overwritten @ build
 
 extend(Keen, events);
 extend(Keen.prototype, events);
@@ -65,11 +69,6 @@ Keen.prototype.url = function(path){
   return this.config.protocol + "://" + this.config.host + path;
 };
 
-Keen.debug = false;
-Keen.enabled = true;
-Keen.loaded = true;
-Keen.version = "BUILD_VERSION"; // Overwritten @ build
-
 Keen.log = function(message) {
   if (Keen.debug && typeof console == "object") {
     console.log("[Keen IO]", message);
@@ -87,11 +86,6 @@ Keen.ready = function(fn){
   } else {
     Keen.on("ready", fn);
   }
-};
-
-Keen.utils = {
-  "each": each,
-  "extend": extend,
 };
 
 module.exports = Keen;

@@ -24,6 +24,7 @@
 })(function() {
 
   var Keen = require("./core"),
+      each = require("./core/utils/each"),
       extend = require("./core/utils/extend"),
       parseParams = require("./core/utils/parseParams");
 
@@ -45,10 +46,12 @@
     "put"                 : post
   });
 
-  extend(Keen.utils, {
+  Keen.utils = {
+    "each"        : each,
+    "extend"      : extend,
     "parseParams" : parseParams,
     "domready"    : domready
-  });
+  };
 
   Keen.Spinner = Spinner;
 

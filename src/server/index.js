@@ -1,4 +1,5 @@
 var Keen = require("../core"),
+    each = require("../core/utils/each"),
     extend = require("../core/utils/extend");
 
 var addEvent = require("../core/lib/addEvent"),
@@ -10,10 +11,15 @@ var addEvent = require("../core/lib/addEvent"),
 extend(Keen.prototype, {
   "addEvent"            : addEvent,
   "setGlobalProperties" : setGlobalProperties,
-  "get": get,
-  "post": post,
-  "put": post,
-  "del": del
+  "get"                 : get,
+  "post"                : post,
+  "put"                 : post,
+  "del"                 : del
 });
+
+Keen.utils = {
+  "each"   : each,
+  "extend" : extend
+};
 
 module.exports = Keen;
