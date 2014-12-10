@@ -1,4 +1,4 @@
-var uploadEvent = require("../utils/uploadEvent");
+var sendEvent = require("../utils/sendEvent");
 
 module.exports = function(collection, payload, success, error) {
   var response;
@@ -10,5 +10,5 @@ module.exports = function(collection, payload, success, error) {
     }
     return;
   }
-  uploadEvent.apply(this, arguments);
+  sendEvent.apply(this, arguments);
 };

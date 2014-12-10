@@ -1,7 +1,7 @@
 var Keen = require("../index"),
     each = require("./each"),
-    getContext = require("./getContext"),
-    getXHR = require("./getXhr");
+    getContext = require("../helpers/getContext"),
+    getXHR = require("../helpers/getXhrObject");
 
 function uploadEvent(eventCollection, payload, success, error, async) {
   var method = "post",

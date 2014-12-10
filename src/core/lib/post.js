@@ -1,4 +1,4 @@
-var sendXhr = require("../utils/sendXhr");
+var sendXhr = require("../helpers/sendXMLHttpRequest");
 
 module.exports = function(url, data, api_key, success, error, async){
   var successCallback = success,

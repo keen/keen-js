@@ -1,6 +1,6 @@
 var JSON2 = require("JSON2"),
-    each = require("./each"),
-    getXhr = require("./getXhr");
+    each = require("../utils/each"),
+    getXhr = require("./getXhrObject");
 
 function sendXhr(method, url, headers, body, success, error, async){
   var self = this,

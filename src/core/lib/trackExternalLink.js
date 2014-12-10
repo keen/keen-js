@@ -1,4 +1,4 @@
-var uploadEvent = require("../utils/uploadEvent");
+var sendEvent = require("../utils/sendEvent");
 
 module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
   var evt = jsEvent,
@@ -46,7 +46,7 @@ module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCal
       }
     };
   }
-  uploadEvent.call(this, eventCollection, payload, callback, callback);
+  sendEvent.call(this, eventCollection, payload, callback, callback);
 
   setTimeout(callback, timer);
 

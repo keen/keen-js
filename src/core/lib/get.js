@@ -1,9 +1,9 @@
 var base64 = require("base-64"),
     JSON2 = require("JSON2"),
-    getUrlMaxLength = require("../utils/getUrlMaxLength"),
-    getXHR = require("../utils/getXhr"),
-    sendJsonp = require("../utils/sendJsonp"),
-    sendBeacon = require("../utils/sendBeacon");
+    getUrlMaxLength = require("../helpers/getUrlMaxLength"),
+    getXHR = require("../helpers/getXhrObject"),
+    sendJsonp = require("../helpers/sendJsonpRequest"),
+    sendBeacon = require("../helpers/sendBeaconRequest");
 
 module.exports = function(url, data, api_key, success, error){
   var reqType = this.config.requestType,

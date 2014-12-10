@@ -28,14 +28,14 @@
       extend = require("./core/utils/extend"),
       parseParams = require("./core/utils/parseParams");
 
-  var Spinner = require("spin.js"),
-      domready = require("domready");
-
   var addEvent = require("./core/lib/addEvent"),
       setGlobalProperties = require("./core/lib/setGlobalProperties"),
       trackExternalLink = require("./core/lib/trackExternalLink"),
       get = require("./core/lib/get"),
       post = require("./core/lib/post");
+
+  var Spinner = require("spin.js"),
+      domready = require("domready");
 
   extend(Keen.prototype, {
     "addEvent"            : addEvent,
@@ -52,6 +52,12 @@
     "parseParams" : parseParams,
     "domready"    : domready
   };
+
+  Keen.Query = require("./core/query");
+  // Keen.Request = Request;
+  // extend(Keen.prototype, {
+  //   "run"         : runQuery
+  // });
 
   Keen.Spinner = Spinner;
 
