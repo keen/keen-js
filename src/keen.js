@@ -25,6 +25,7 @@
 
   var Keen = require("./core"),
       each = require("./core/utils/each"),
+      events = require("./core/events"),
       extend = require("./core/utils/extend"),
       parseParams = require("./core/utils/parseParams");
 
@@ -53,6 +54,7 @@
     "domready"    : domready
   };
 
+  Keen.Events = events;
   Keen.Query = require("./core/query");
   // Keen.Request = Request;
   // extend(Keen.prototype, {

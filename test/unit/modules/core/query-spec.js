@@ -1,3 +1,8 @@
+var expect = require("chai").expect;
+
+var Keen = require("../../../../src/core"),
+    keenHelper = require("../../helpers/test-config");
+
 describe("Keen.Query", function() {
 
   beforeEach(function() {
@@ -23,10 +28,6 @@ describe("Keen.Query", function() {
 
     it("should have a correct analysis propery", function(){
       expect(this.query).to.have.property("analysis").eql("count");
-    });
-
-    it("should have a correct path propery", function(){
-      expect(this.query).to.have.property("path").eql("/queries/count");
     });
 
     it("should have a params object", function(){
@@ -115,82 +116,6 @@ describe("Keen.Query", function() {
 
   });
 
-  describe("#on", function(){
-    it("should attach custom event listeners with #on", function(){
-      this.query.on("whatever", sinon.spy());
-      expect(this.query).to.have.property("listeners")
-        .that.is.an("object")
-        .that.has.property("whatever")
-        .that.is.an("array")
-        .with.deep.property('[0]')
-        .that.is.an("object")
-        .that.has.property("callback");
-    });
-  });
 
-  describe("#trigger", function(){
-    it("should call bound functions when triggered", function(){
-      var callback = sinon.spy();
-      this.query.on("whatever", callback);
-      this.query.trigger("whatever");
-      expect(callback.calledOnce).to.be.ok;
-    });
-
-    it("should pass arguments to bound functions when triggered", function(){
-      var callback = sinon.spy(),
-          payload = { status: "ok" };
-      this.query.on("whatever", callback);
-      this.query.trigger("whatever", payload);
-      expect(callback.calledWith(payload)).to.be.ok;
-    });
-
-    it("should call bound functions multiple when triggered multiple times", function(){
-      var callback = sinon.spy();
-      this.query.on("whatever", callback);
-      this.query.trigger("whatever");
-      this.query.trigger("whatever");
-      this.query.trigger("whatever");
-      expect(callback.callCount).to.eql(3);
-    });
-  });
-
-  describe("#off", function(){
-    it("should remove all listeners for an event name with #off(name)", function(){
-      var callback = sinon.spy();
-      this.query.on("whatever", callback);
-      this.query.on("whatever", callback);
-      this.query.off("whatever");
-      this.query.trigger("whatever");
-      expect(callback.callCount).to.eql(0);
-    });
-
-    it("should remove specified listeners with #off(name, callback)", function(){
-      var callback = sinon.spy(),
-          fakeback = function(){
-            throw Error("Don't call me!");
-          };
-      this.query.on("whatever", callback);
-      this.query.on("whatever", fakeback);
-      this.query.off("whatever", fakeback);
-      this.query.trigger("whatever");
-      expect(callback.callCount).to.eql(1);
-    });
-  });
-
-  describe("#once", function() {
-    it("should call once handlers once when triggered", function(){
-      var query = this.query;
-      var callbackA = sinon.spy();
-      var callbackB = sinon.spy();
-      this.query.once('event', callbackA);
-      this.query.once('event', callbackB);
-      this.query.trigger('event');
-      expect(callbackA.callCount).to.eql(1);
-      expect(callbackB.callCount).to.eql(1);
-      this.query.trigger('event');
-      expect(callbackA.callCount).to.eql(1);
-      expect(callbackB.callCount).to.eql(1);
-    });
-  });
 
 });

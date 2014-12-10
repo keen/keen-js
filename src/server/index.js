@@ -8,6 +8,8 @@ var addEvent = require("../core/lib/addEvent"),
     post = require("./lib/post"),
     del = require("./lib/del");
 
+Keen.Query = require("../core/query");
+
 extend(Keen.prototype, {
   "addEvent"            : addEvent,
   "setGlobalProperties" : setGlobalProperties,

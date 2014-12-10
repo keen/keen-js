@@ -11,7 +11,6 @@ extend(Query.prototype, events);
 
 Query.prototype.configure = function(analysisType, params) {
   this.analysis = analysisType;
-  this.path = '/queries/' + analysisType;
 
   // Apply params w/ #set method
   this.params = this.params || {};
@@ -19,7 +18,7 @@ Query.prototype.configure = function(analysisType, params) {
 
   // Localize timezone if none is set
   if (this.params.timezone === void 0) {
-    this.params.timezone = _getTimezoneOffset();
+    this.params.timezone = getTimezoneOffset();
   }
   return this;
 };

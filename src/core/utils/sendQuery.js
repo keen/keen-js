@@ -1,7 +1,7 @@
 var getContext = require("../helpers/getContext"),
     getXHR = require("../helpers/getXhrObject");
 
-module.exports = function(analysisType, params, success, error){
+module.exports = function(path, params, success, error){
   var method = "post",
       successCallback = success,
       errorCallback = error,
@@ -25,11 +25,11 @@ module.exports = function(analysisType, params, success, error){
   }
 
   // Extractions do not currently support JSONP
-  if (analysisType === "extraction") {
+  if (path.indexOf("extraction") > -1) {
     method = "post";
   }
 
-  urlBase = this.url("/projects/" + this.projectId() + "/queries/" + analysisType);
+  urlBase = this.url("/projects/" + this.projectId() + path);
 
   this[method](urlBase, params, this.readKey(), success, error, async);
 
