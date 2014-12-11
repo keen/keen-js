@@ -16,7 +16,7 @@ var aws = require("gulp-awspublish"),
 /*
   TODO:
   [x] minify src/loader.js
-  [ ] S3->CDN release task
+  [x] S3->CDN release task
   [ ] Saucelabs or comparable
 */
 
@@ -30,7 +30,7 @@ gulp.task("build", function(callback) {
       "browserify-complete",
       "browserify-tracker",
       "compress",
-      "gzip",
+      // "gzip",
       callback
     );
 });
@@ -139,13 +139,22 @@ gulp.task("test:server", function () {
 // Deployment task
 // -------------------------
 
-gulp.task("deploy", function() {
+gulp.task("deploy", function(callback){
+  runSequence(
+    "build",
+    "test:unit",
+    "aws",
+    callback
+  );
+});
+
+gulp.task("aws", function() {
 
   if (!process.env.AWS_KEY || !process.env.AWS_SECRET) {
     throw "AWS credentials are required!";
   }
 
-  var publisher = awspublish.create({
+  var publisher = aws.create({
     key: process.env.AWS_KEY,
     secret: process.env.AWS_SECRET,
     bucket: pkg.name
@@ -153,22 +162,26 @@ gulp.task("deploy", function() {
 
   var headers = {
     // Cache policy (1000 * 60 * 60 * 1) // 1 hour
-    "Cache-Control": "max-age=3600000, public",
-    "Expires": new Date(Date.now() + 3600000).toUTCString()
+    // "Cache-Control": "max-age=3600000, public",
+    // "Expires": new Date(Date.now() + 3600000).toUTCString()
+    "Cache-Control": "max-age=1000, public",
+    "Expires": new Date(Date.now() + 1000).toUTCString()
   };
 
   return gulp.src([
+      "./dist/keen.js",
       "./dist/keen.min.js",
+      "./dist/keen-tracker.js",
       "./dist/keen-tracker.min.js"
     ])
     .pipe(rename(function(path) {
       path.dirname += "/" + pkg["version"];
-      path.basename += "-test";
+      // path.basename += "-test";
     }))
-    .pipe(aws.gzip({ ext: '.gz' }))
+    .pipe(aws.gzip())
     .pipe(publisher.publish(headers))
     .pipe(publisher.cache())
-    .pipe(awspublish.reporter());
+    .pipe(aws.reporter());
 
 });
 

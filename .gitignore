@@ -1,6 +1,7 @@
 *.log
 .DS_Store
 .tmp
+.awspublish-*
 dist/*
 bower_components
 node_modules

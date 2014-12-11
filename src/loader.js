@@ -1,4 +1,4 @@
-(function(i,o){i("Keen","/3.1.0/keen.min.js",o);}(function(t,h,x){
+(function(i,o){i("Keen","/3.2.0/keen.min.js",o);}(function(t,h,x){
   // t = context
   // h = file
   // x = context
