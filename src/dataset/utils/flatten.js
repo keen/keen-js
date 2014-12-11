@@ -1,7 +1,7 @@
 // Pure awesomeness by Will Rayner (penguinboy)
 // https://gist.github.com/penguinboy/762197
-
-module.exports = function(ob) {
+module.exports = flatten;
+function flatten(ob) {
   var toReturn = {};
   for (var i in ob) {
     if (!ob.hasOwnProperty(i)) continue;

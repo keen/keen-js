@@ -56,16 +56,16 @@ output["sum"] = function(arr, start, end){
   return sum;
 };
 
+// Convenience methods
+
 each(arr, function(v,i){
-  output["getColumn"+v.toUpperCase()] = output["getRow"+v.toUpperCase()] = analyzeSeries;
+  output["getColumn"+v.toUpperCase()] = output["getRow"+v.toUpperCase()] = function(arr){
+    return this[arr[i]](arr, i);
+  };
 });
 
-output["getColumnLabel"] = output["getRowLabel"] = function(arr, i){
+output["getColumnLabel"] = output["getRowIndex"] = function(arr){
   return arr[0];
 };
-
-function analyzeSeries(arr){
-  return this[arr[i]](arr, i);
-}
 
 module.exports = output;

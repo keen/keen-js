@@ -1,7 +1,8 @@
-var Dataviz = require("../dataviz");
+var Dataviz = require("../dataviz"),
+    extend = require("../../core/utils/extend")
 
 module.exports = function(){
-  var map = _extend({}, Dataviz.dataTypeMap),
+  var map = extend({}, Dataviz.dataTypeMap),
       dataType = this.dataType(),
       library = this.library(),
       chartType = this.chartType() || this.defaultChartType();
@@ -20,7 +21,7 @@ module.exports = function(){
   if (library && !chartType && map[dataType]) {
     chartType = map[dataType].chartType;
   }
-  
+
   // Return if found
   return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
 };

@@ -1,3 +1,6 @@
+var each = require("../../core/utils/each"),
+    Dataset = require("../../dataset");
+
 module.exports = {
   "extraction": parseExtraction
 };
@@ -9,7 +12,7 @@ function parseExtraction(req){
 
   if (names) {
     schema.select = [];
-    _each(names, function(p){
+    each(names, function(p){
       schema.select.push({ path: p });
     });
   }
