@@ -1,4 +1,4 @@
-function _prettyNumber(_input) {
+module.exports = function(_input) {
   // If it has 3 or fewer sig figs already, just return the number.
   var input = Number(_input),
       sciNo = input.toPrecision(3),
@@ -63,4 +63,4 @@ function _prettyNumber(_input) {
       return recurse(Number(input) / 1000, iteration + 1);
     }
   }
-}
+};

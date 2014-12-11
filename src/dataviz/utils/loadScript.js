@@ -1,4 +1,4 @@
-function _loadScript(url, cb) {
+module.exports = function(url, cb) {
   var doc = document;
   var handler;
   var head = doc.head || doc.getElementsByTagName("head");
@@ -37,4 +37,4 @@ function _loadScript(url, cb) {
       doc.readyState = "complete";
     }, false);
   }
-}
+};

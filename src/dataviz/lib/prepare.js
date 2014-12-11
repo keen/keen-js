@@ -1,11 +1,13 @@
-Keen.Dataviz.prototype.prepare = function(){
+var Dataviz = require("../dataviz");
+
+module.exports = function(){
   var loader;
   if (this.view._rendered) {
     this.destroy();
   }
   if (this.el()) {
     this.el().innerHTML = "";
-    loader = Keen.Dataviz.libraries[this.view.loader.library][this.view.loader.chartType];
+    loader = Dataviz.libraries[this.view.loader.library][this.view.loader.chartType];
     if (loader.initialize) {
       loader.initialize.apply(this, arguments);
     }

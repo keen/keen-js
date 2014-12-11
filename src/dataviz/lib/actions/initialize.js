@@ -1,6 +1,9 @@
-Keen.Dataviz.prototype.initialize = function(){
-  var actions = _getAdapterActions.call(this);
-  var loader = Keen.Dataviz.libraries[this.view.loader.library][this.view.loader.chartType];
+var getAdapterActions = require("../../helpers/getAdapterActions"),
+    Dataviz = require("../../dataviz");
+
+module.exports = function(){
+  var actions = getAdapterActions.call(this);
+  var loader = Dataviz.libraries[this.view.loader.library][this.view.loader.chartType];
   if (this.view._prepared) {
     if (loader.destroy) loader.destroy.apply(this, arguments);
   } else {

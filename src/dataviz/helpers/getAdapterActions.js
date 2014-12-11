@@ -1,5 +1,7 @@
-function _getAdapterActions(){
-  var map = _extend({}, Keen.Dataviz.dataTypeMap),
+var Dataviz = require("../dataviz");
+
+module.exports = function(){
+  var map = _extend({}, Dataviz.dataTypeMap),
       dataType = this.dataType(),
       library = this.library(),
       chartType = this.chartType() || this.defaultChartType();
@@ -11,14 +13,14 @@ function _getAdapterActions(){
 
   // Use this library's default chartType for this dataType
   if (library && !chartType && dataType) {
-    chartType = Keen.Dataviz.libraries[library]._defaults[dataType][0];
+    chartType = Dataviz.libraries[library]._defaults[dataType][0];
   }
 
   // Still no luck?
   if (library && !chartType && map[dataType]) {
     chartType = map[dataType].chartType;
   }
-
+  
   // Return if found
-  return (library && chartType) ? Keen.Dataviz.libraries[library][chartType] : {};
-}
+  return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
+};

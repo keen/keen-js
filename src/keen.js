@@ -31,10 +31,13 @@
 
   var addEvent = require("./core/lib/addEvent"),
       setGlobalProperties = require("./core/lib/setGlobalProperties"),
-      trackExternalLink = require("./core/lib/trackExternalLink"),
-      get = require("./core/lib/get"),
-      post = require("./core/lib/post"),
-      runQuery = require("./core/lib/run");
+      trackExternalLink = require("./core/lib/trackExternalLink");
+
+  var get = require("./core/lib/get"),
+      post = require("./core/lib/post");
+
+  var runQuery = require("./core/lib/run");
+  var drawQuery = require("./dataviz/extensions/draw");
 
   var Spinner = require("spin.js"),
       domready = require("domready");
@@ -49,15 +52,23 @@
     "get"                 : get,
     "post"                : post,
     "put"                 : post,
-    "run"                 : runQuery
+    "run"                 : runQuery,
+    "draw"                : drawQuery
   });
 
   Keen.utils = {
-    "each"        : each,
-    "extend"      : extend,
-    "parseParams" : parseParams,
-    "domready"    : domready
+    "each"         : each,
+    "extend"       : extend,
+    "parseParams"  : parseParams,
+    "domready"     : domready
   };
+
+  Keen.Dataviz = require("./dataviz");
+  extend(Keen.utils, {
+    "loadScript"   : require("./dataviz/utils/loadScript"),
+    "loadStyle"    : require("./dataviz/utils/loadStyle"),
+    "prettyNumber" : require("./dataviz/utils/prettyNumber")
+  });
 
   // Keen.Events = require("./core/events");
   // Keen.Query = require("./core/query");
@@ -67,6 +78,13 @@
   // });
 
   Keen.Spinner = Spinner;
+
+  require("./dataviz/adapters/keen-io")();
+  require("./dataviz/adapters/google")();
+
+  // extend(Keen.Dataviz.libraries), {
+  //   "google": require("./dataviz/adapters/google")
+  // });
 
   return Keen;
 });

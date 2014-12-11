@@ -1,11 +1,11 @@
-Keen.Dataviz.prototype.sortGroups = function(str){
-  if (!arguments.length) return this.view.attributes.sortGroups;
-  this.view.attributes.sortGroups = (str ? String(str) : null);
-  _runSortGroups.call(this);
+module.exports = function(str){
+  if (!arguments.length) return this.view["attributes"].sortGroups;
+  this.view["attributes"].sortGroups = (str ? String(str) : null);
+  runSortGroups.call(this);
   return this;
 };
 
-function _runSortGroups(){
+function runSortGroups(){
   var dt = this.dataType();
   if (!this.sortGroups()) return;
   if ((dt && dt.indexOf("chronological") > -1) || this.data()[0].length > 2) {

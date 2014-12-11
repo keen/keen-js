@@ -14,8 +14,14 @@
 
 */
 
-(function(lib){
-  var Keen = lib || {};
+var Dataviz = require("../dataviz"),
+    each = require("../../core/utils/each"),
+    extend = require("../../core/utils/extend");
+
+module.exports = function(){
+
+// (function(lib){
+  // var Keen = lib || {};
 
   var errors = {
     "google-visualization-errors-0": "No results to visualize"
@@ -38,7 +44,7 @@
 
   // Create chart types
   // -------------------------------
-  Keen.utils.each(chartTypes, function (type) {
+  each(chartTypes, function (type) {
     var name = type.toLowerCase();
     chartMap[name] = {
       initialize: function(){
@@ -61,7 +67,7 @@
       },
       update: function(){
         var options = _getDefaultAttributes.call(this, type);
-        Keen.utils.extend(options, this.chartOptions(), this.attributes());
+        extend(options, this.chartOptions(), this.attributes());
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
         // if (this.view._artifacts['datatable']) {}
         if (this.view._artifacts['googlechart']) {
@@ -83,14 +89,15 @@
   // Register library + types
   // -------------------------------
 
-  Keen.Dataviz.register('google', chartMap, {
+  Dataviz.register('google', chartMap, {
     capabilities: dataTypes,
     dependencies: [{
       type: 'script',
       url: 'https://www.google.com/jsapi',
       cb: function(done) {
         if (typeof google === 'undefined'){
-          Keen.log("Problem loading Google Charts library. Please contact us!");
+          this.trigger("error", "Problem loading Google Charts library. Please contact us!");
+          // Keen.log("Problem loading Google Charts library. Please contact us!");
           done();
         } else {
           google.load('visualization', '1.1', {
@@ -194,4 +201,4 @@
     return output;
   }
 
-})(Keen);
+}; //)(Keen);

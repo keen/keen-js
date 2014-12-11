@@ -1,6 +1,9 @@
-Keen.Dataviz.prototype.render = function(){
-  var actions = _getAdapterActions.call(this);
-  _applyPostProcessing.call(this);
+var getAdapterActions = require("../../helpers/getAdapterActions"),
+    applyTransforms = require("../../utils/applyTransforms");
+
+module.exports = function(){
+  var actions = getAdapterActions.call(this);
+  applyTransforms.call(this);
   if (!this.view._initialized) {
     this.initialize();
   }
