@@ -7,17 +7,6 @@
     "type": "git",
     "url": "https://github.com/keen/keen-js.git"
   },
-  "testling": {
-    "harness": "mocha-bdd",
-    "html": "test/unit/index.html",
-    "browsers": [
-      "ie/9..latest",
-      "chrome/latest",
-      "firefox/latest",
-      "safari/latest"
-    ],
-    "server": "npm test"
-  },
   "scripts": {
     "start": "gulp with-tests",
     "test": "gulp test:unit"
