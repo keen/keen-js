@@ -397,7 +397,15 @@ describe("Keen.Dataviz", function(){
 
   describe("Adapter actions", function(){
     beforeEach(function(){
-      registerDemoAdapter();
+      Keen.Dataviz.register("demo", {
+        "chart": {
+          initialize: sinon.spy(),
+          render: sinon.spy(),
+          update: sinon.spy(),
+          destroy: sinon.spy(),
+          error: sinon.spy()
+        }
+      });
       this.dataviz.adapter({ library: "demo", chartType: "chart" });
     });
 
@@ -461,16 +469,3 @@ describe("Keen.Dataviz", function(){
   });
 
 });
-
-
-function registerDemoAdapter(){
-  Keen.Dataviz.register("demo", {
-    "chart": {
-      initialize: sinon.spy(),
-      render: sinon.spy(),
-      update: sinon.spy(),
-      destroy: sinon.spy(),
-      error: sinon.spy()
-    }
-  });
-}

@@ -47,8 +47,12 @@
     "gulp": "^3.8.10",
     "gulp-clean": "^0.3.1",
     "gulp-connect": "^2.2.0",
+    "gulp-gzip": "0.0.8",
     "gulp-mocha": "^2.0.0",
     "gulp-mocha-phantomjs": "^0.5.1",
+    "gulp-obfuscate": "^0.2.9",
+    "gulp-rename": "^1.2.0",
+    "gulp-yuicompressor": "0.0.3",
     "nock": "^0.51.0",
     "run-sequence": "^1.0.2",
     "vinyl-source-stream": "^1.0.0"

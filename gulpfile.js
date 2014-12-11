@@ -3,8 +3,11 @@ var gulp = require("gulp");
 var browserify = require("browserify"),
     clean = require("gulp-clean"),
     connect = require("gulp-connect"),
-    mocha = require('gulp-mocha'),
+    compress = require("gulp-yuicompressor"),
+    gzip = require("gulp-gzip"),
+    mocha = require("gulp-mocha"),
     mochaPhantomJS = require("gulp-mocha-phantomjs"),
+    rename = require("gulp-rename"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
 
@@ -14,35 +17,71 @@ var browserify = require("browserify"),
 // -------------------------
 
 gulp.task("build", function(callback) {
-  runSequence(
-    "browserify",
-    callback
-  );
+  return runSequence(
+      "browserify-complete",
+      "browserify-tracker",
+      "compress",
+      "gzip",
+      callback
+    );
 });
 
-gulp.task("browserify", function() {
+gulp.task("browserify-complete", function() {
   return browserify("./src/keen.js", {
-    // insertGlobals: true,
-    // debug: true
-  })
-  .bundle()
-  .pipe(source("keen.js"))
-  .pipe(gulp.dest("./dist/"));
+      // insertGlobals: true,
+      // debug: true
+    })
+    .bundle()
+    .pipe(source("keen.js"))
+    .pipe(gulp.dest("./dist/"));
+});
+
+gulp.task("browserify-tracker", function() {
+  return browserify("./src/keen-tracker.js")
+    .bundle()
+    .pipe(source("keen-tracker.js"))
+    .pipe(gulp.dest("./dist/"));
+});
+
+gulp.task("compress", function(){
+  return gulp.src([
+      "./dist/keen.js",
+      "./dist/keen-tracker.js"
+    ])
+    .pipe(compress({ type: "js" }))
+    .pipe(rename({ suffix: ".min" }))
+    .pipe(gulp.dest("./dist/"));
+});
+
+gulp.task("gzip", function(){
+  return gulp.src([
+    "./dist/keen.min.js",
+    "./dist/keen-tracker.min.js"
+    ])
+    .pipe(gzip({ append: true }))
+    .pipe(gulp.dest("./dist/"));
 });
 
 gulp.task("connect", function () {
-  connect.server({
-    root: [ __dirname, "test", "test/unit", "test/vendor", "test/browser/examples" ],
-    port: 9999
-  });
+  return connect.server({
+      root: [ __dirname, "test", "test/unit", "test/vendor", "test/browser/examples" ],
+      port: 9999
+    });
 });
 
 gulp.task("watch", function() {
-  gulp.watch(["src/**/*.js"], ["build"]);
+  return gulp.watch([
+      "src/**/*.js",
+      "gulpfile.js"
+    ], ["build"]);
 });
 
 gulp.task("watch-with-tests", function() {
-  gulp.watch(["src/**/*.js", "test/unit/**/*.*"], ["build", "test:unit"]);
+  return gulp.watch([
+      "src/**/*.js",
+      "test/unit/**/*.*",
+      "gulpfile.js"
+    ], ["build", "test:unit"]);
 });
 
 
