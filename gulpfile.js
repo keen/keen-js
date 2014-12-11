@@ -1,6 +1,8 @@
-var gulp = require("gulp");
+var gulp = require("gulp"),
+    pkg = require("./package.json");
 
-var browserify = require("browserify"),
+var aws = require("gulp-awspublish"),
+    browserify = require("browserify"),
     clean = require("gulp-clean"),
     connect = require("gulp-connect"),
     compress = require("gulp-yuicompressor"),
@@ -10,6 +12,13 @@ var browserify = require("browserify"),
     rename = require("gulp-rename"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
+
+/*
+  TODO:
+  [x] minify src/loader.js
+  [ ] S3->CDN release task
+  [ ] Saucelabs or comparable
+*/
 
 
 // -------------------------
@@ -46,7 +55,8 @@ gulp.task("browserify-tracker", function() {
 gulp.task("compress", function(){
   return gulp.src([
       "./dist/keen.js",
-      "./dist/keen-tracker.js"
+      "./dist/keen-tracker.js",
+      "./src/loader.js"
     ])
     .pipe(compress({ type: "js" }))
     .pipe(rename({ suffix: ".min" }))
@@ -122,6 +132,44 @@ gulp.task("test:unit:run", function () {
 gulp.task("test:server", function () {
   return gulp.src("./test/unit/server.js", { read: false })
   .pipe(mocha({ reporter: "nyan" }));
+});
+
+
+// -------------------------
+// Deployment task
+// -------------------------
+
+gulp.task("deploy", function() {
+
+  if (!process.env.AWS_KEY || !process.env.AWS_SECRET) {
+    throw "AWS credentials are required!";
+  }
+
+  var publisher = awspublish.create({
+    key: process.env.AWS_KEY,
+    secret: process.env.AWS_SECRET,
+    bucket: pkg.name
+  });
+
+  var headers = {
+    // Cache policy (1000 * 60 * 60 * 1) // 1 hour
+    "Cache-Control": "max-age=3600000, public",
+    "Expires": new Date(Date.now() + 3600000).toUTCString()
+  };
+
+  return gulp.src([
+      "./dist/keen.min.js",
+      "./dist/keen-tracker.min.js"
+    ])
+    .pipe(rename(function(path) {
+      path.dirname += "/" + pkg["version"];
+      path.basename += "-test";
+    }))
+    .pipe(aws.gzip({ ext: '.gz' }))
+    .pipe(publisher.publish(headers))
+    .pipe(publisher.cache())
+    .pipe(awspublish.reporter());
+
 });
 
 

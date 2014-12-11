@@ -1,6 +1,6 @@
 {
-  "name": "keen",
-  "version": "3.1.0",
+  "name": "keen-js",
+  "version": "3.2.0",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {
@@ -45,6 +45,7 @@
     "grunt-saucelabs": "~8.3.2",
     "grunt-yui-compressor": "^0.3.3",
     "gulp": "^3.8.10",
+    "gulp-awspublish": "0.0.23",
     "gulp-clean": "^0.3.1",
     "gulp-connect": "^2.2.0",
     "gulp-gzip": "0.0.8",
