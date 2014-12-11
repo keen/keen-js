@@ -1,13 +1,15 @@
-function sendJsonp(url, params, success, error){
-  var timestamp = new Date().getTime(),
-      successCallback = success,
-      errorCallback = error,
+function sendJsonp(url, params, callback){
+  var self = this,
+      timestamp = new Date().getTime(),
+      cb = callback,
       script = document.createElement("script"),
       parent = document.getElementsByTagName("head")[0],
       callbackName = "keenJSONPCallback",
       loaded = false;
 
-  success = error = null;
+  var error_msg = "Event not recorded: JSONP could not be sent";
+
+  callback = null;
 
   callbackName += timestamp;
   while (callbackName in window) {
@@ -16,8 +18,8 @@ function sendJsonp(url, params, success, error){
   window[callbackName] = function(response) {
     if (loaded === true) return;
     loaded = true;
-    if (successCallback && response) {
-      successCallback(response);
+    if (cb && response) {
+      cb(null, response);
     };
     cleanup();
   };
@@ -29,8 +31,9 @@ function sendJsonp(url, params, success, error){
   script.onreadystatechange = function() {
     if (loaded === false && this.readyState === "loaded") {
       loaded = true;
-      if (errorCallback) {
-        errorCallback();
+      self.trigger("error", error_msg);
+      if (cb) {
+        cb(error_msg, null);
       }
     }
   };
@@ -40,8 +43,9 @@ function sendJsonp(url, params, success, error){
     // on IE9 both onerror and onreadystatechange are called
     if (loaded === false) {
       loaded = true;
-      if (errorCallback) {
-        errorCallback();
+      self.trigger("error", error_msg);
+      if (cb) {
+        cb(error_msg, null);
       }
       cleanup();
     }
@@ -52,7 +56,7 @@ function sendJsonp(url, params, success, error){
     try{
       delete window[callbackName];
     }catch(e){}
-    successCallback = errorCallback = null;
+    cb = null;
     parent.removeChild(script);
   }
 }

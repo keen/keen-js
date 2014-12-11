@@ -78,7 +78,7 @@ var req_metric = new Keen.Dataviz()
   .el(m3)
   .prepare();
 
-client.run(metric, function(res){
+client.run(metric, function(err, res){
   req_metric
     .parseRawData(res)
     .render();

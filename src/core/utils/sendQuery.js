@@ -1,14 +1,13 @@
 var getContext = require("../helpers/getContext"),
     getXHR = require("../helpers/getXhrObject");
 
-module.exports = function(path, params, success, error){
+module.exports = function(path, params, callback){
   var urlBase = this.url("/projects/" + this.projectId() + path),
       reqType = this.config.requestType,
-      successCallback = success,
-      errorCallback = error,
+      cb = callback,
       sent = false;
 
-  success = error = null;
+  callback = null;
 
   if (!this.projectId()) {
     this.trigger("error", "Query not sent: Missing projectId property");
@@ -25,22 +24,23 @@ module.exports = function(path, params, success, error){
     if ((reqType !== "xhr" || !getXHR()) && path.indexOf("extraction") < 0) {
       try {
         sent = true;
-        this.get(urlBase, params, this.readKey(), successCallback, errorCallback);
+        this.get(urlBase, params, this.readKey(), cb);
       }
       catch(e){
         sent = false;
       }
     }
     if ((reqType === "xhr" || !sent) && getXHR()) {
-      this.post(urlBase, params, this.readKey(), successCallback, errorCallback, true);
+      this.post(urlBase, params, this.readKey(), cb, true);
+      cb = null;
     }
     else {
       this.trigger("error", "Query not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
     }
   }
   else {
-    this.post(urlBase, params, this.readKey(), successCallback, errorCallback, true);
+    this.post(urlBase, params, this.readKey(), cb, true);
+    cb = null;
   }
-  successCallback = errorCallback = null;
   return;
 }

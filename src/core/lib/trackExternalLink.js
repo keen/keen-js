@@ -46,7 +46,7 @@ module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCal
       }
     };
   }
-  sendEvent.call(this, eventCollection, payload, callback, callback);
+  sendEvent.call(this, eventCollection, payload, callback);
 
   setTimeout(callback, timer);
 

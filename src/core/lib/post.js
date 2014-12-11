@@ -1,13 +1,12 @@
 var sendXhr = require("../helpers/sendXMLHttpRequest");
 
-module.exports = function(url, data, api_key, success, error, async){
-  var successCallback = success,
-      errorCallback = error,
+module.exports = function(url, data, api_key, callback, async){
+  var cb = callback,
       isAsync = async || true;
 
-  success = error = null;
   sendXhr.call(this, "POST", url, {
     "Authorization": api_key,
     "Content-Type": "application/json"
-  }, data, successCallback, errorCallback, isAsync);
+  }, data, cb, isAsync);
+  cb = callback = null;
 }

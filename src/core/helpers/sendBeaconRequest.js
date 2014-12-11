@@ -1,12 +1,12 @@
-function sendBeacon(url, params, success, error){
-  var successCallback = success,
-      errorCallback = error,
+function sendBeacon(url, params, callback){
+  var self = this,
+      cb = callback,
       loaded = false,
       img = document.createElement("img");
 
-  success = null;
-  error = null;
+  var error_msg = "Event not recorded: Beacon could not be sent";
 
+  callback = null;
   img.onload = function() {
     loaded = true;
     if ('naturalHeight' in this) {
@@ -18,16 +18,17 @@ function sendBeacon(url, params, success, error){
       this.onerror();
       return;
     }
-    if (successCallback) {
-      successCallback({created: true});
-      successCallback = errorCallback = null;
+    if (cb) {
+      cb(null, { created: true });
+      cb = null;
     }
   };
   img.onerror = function() {
     loaded = true;
-    if (errorCallback) {
-      errorCallback();
-      successCallback = errorCallback = null;
+    self.trigger("error", error_msg);
+    if (cb) {
+      cb(error_msg, null);
+      cb = null;
     }
   };
   img.src = url + "&c=clv1";

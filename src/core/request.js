@@ -3,28 +3,23 @@ var each = require("./utils/each"),
     extend = require("./utils/extend"),
     sendQuery = require("./utils/sendQuery");
 
-function Request(client, queries, success, error){
-  var successCallback = success,
-      errorCallback = error;
-  success = error = null;
-  this.configure(client, queries, successCallback, errorCallback);
-  successCallback = errorCallback = null;
+function Request(client, queries, callback){
+  var cb = callback;
+  this.configure(client, queries, cb);
+  cb = callback = null;
 };
 extend(Request.prototype, events);
 
-Request.prototype.configure = function(instance, queries, success, error){
-  var successCallback = success,
-      errorCallback = error;
-  success = error = null;
+Request.prototype.configure = function(instance, queries, callback){
+  var cb = callback;
   extend(this, {
-    "instance": instance,
-    "queries" : queries,
-    "data"    : {},
-    "success" : successCallback,
-    "error"   : errorCallback
+    "instance" : instance,
+    "queries"  : queries,
+    "data"     : {},
+    "callback" : cb
   });
   this.refresh();
-  successCallback = errorCallback = null;
+  cb = callback = null;
   return this;
 };
 
@@ -46,8 +41,8 @@ Request.prototype.refresh = function(){
         self.data = response;
       }
       self.trigger("complete", self.data);
-      if (self.success) {
-        self.success(self.data);
+      if (self.callback) {
+        self.callback(null, self.data);
       }
     }
 
@@ -66,27 +61,29 @@ Request.prototype.refresh = function(){
       status = "Error";
     }
     self.trigger("error", response);
-    if (self.error) {
-      self.error(response);
+    if (self.callback) {
+      self.callback(response, null);
     }
   };
 
   each(self.queries, function(query, index){
     var path;
-    var successSequencer = function(res){
-      handleSuccess(res, index);
-    };
-    var failureSequencer = function(res){
-      handleFailure(res, index);
+    var cbSequencer = function(err, res){
+      if (err) {
+        handleFailure(res, index);
+      }
+      else {
+        handleSuccess(res, index);
+      }
     };
 
     if (query instanceof Keen.Query) {
       path = "/queries/" + query.analysis;
-      sendQuery.call(self.instance, path, query.params, successSequencer, failureSequencer);
+      sendQuery.call(self.instance, path, query.params, cbSequencer);
     }
     else if ( Object.prototype.toString.call(query) === '[object String]' ) {
       path = "/saved_queries/" + encodeURIComponent(query) + "/result";
-      sendQuery.call(self.instance, path, null, successSequencer, failureSequencer);
+      sendQuery.call(self.instance, path, null, cbSequencer);
     }
     else {
       var res = {
@@ -94,8 +91,8 @@ Request.prototype.refresh = function(){
         responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.instance.projectId() + ' is not a valid request' }
       };
       self.trigger("error", res.responseText.message);
-      if (self.error) {
-        self.error(res.responseText.message);
+      if (self.callback) {
+        self.callback(res.responseText.message, null);
       }
     }
   });

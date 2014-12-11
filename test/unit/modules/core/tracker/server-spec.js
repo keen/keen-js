@@ -40,20 +40,23 @@ describe("Tracking (server)", function() {
     });
 
     it("should not make an HTTP request if Keen.enabled is set to \"false\"", function(done){
-      var spy = chai.spy();
       Keen.enabled = false;
-      this.client.addEvent( keenHelper.collection, keenHelper.properties, spy);
+      this.client.addEvent( keenHelper.collection, keenHelper.properties, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.not.exist;
+        done();
+      });
       Keen.enabled = true;
-      expect(spy).to.not.have.been.called.once;
-      done();
     });
 
-    it("should return an error message if event collection is omitted", function(){
-      var spy = chai.spy();
-      this.client.on("error", spy);
-      this.client.addEvent( keenHelper.properties, spy);
-      this.client.off("error", spy);
-      expect(spy).to.have.been.called.once;
+    it("should return an error message if event collection is omitted", function(done){
+      // this.client.on("error", spy);
+      this.client.addEvent( null, keenHelper.properties, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.not.exist;
+        done();
+      });
+      // this.client.off("error", spy);
     });
 
   });

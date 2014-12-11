@@ -7,30 +7,43 @@ var Keen = require("../index"),
     getXHR = require("../helpers/getXhrObject"),
     getQueryString = require("../helpers/getQueryString");
 
-module.exports = function(collection, payload, success, error, async) {
+module.exports = function(collection, payload, callback, async) {
   var urlBase = this.url("/projects/" + this.projectId() + "/events/" + collection),
       reqType = this.config.requestType,
       queryString = "",
       data = {},
-      successCallback = success,
-      errorCallback = error,
+      cb = callback,
       isAsync = async || true,
       sent = false;
 
-  success = error = null;
+  var error_msg;
+
+  callback = null;
 
   if (!Keen.enabled) {
-    this.trigger("error", "Event not recorded: Keen.enabled = false");
+    error_msg = "Event not recorded: Keen.enabled = false";
+    this.trigger("error", error_msg);
+    if (cb) {
+      cb.call(this, error_msg, null);
+    }
     return;
   }
 
   if (!this.projectId()) {
-    this.trigger("error", "Event not recorded: Missing projectId property");
+    error_msg = "Event not recorded: Missing projectId property";
+    this.trigger("error", error_msg);
+    if (cb) {
+      cb.call(this, error_msg, null);
+    }
     return;
   }
 
   if (!this.writeKey()) {
-    this.trigger("error", "Event not recorded: Missing writeKey property");
+    error_msg = "Event not recorded: Missing writeKey property";
+    this.trigger("error", error_msg);
+    if (cb) {
+      cb.call(this, error_msg, null);
+    }
     return;
   }
 
@@ -52,22 +65,23 @@ module.exports = function(collection, payload, success, error, async) {
           "data"     : base64.encode(JSON2.stringify(data)),
           "modified" : new Date().getTime()
         });
-        this.get(urlBase+queryString, null, null, successCallback, errorCallback);
+        this.get(urlBase+queryString, null, null, cb);
       }
       catch(e) {
         sent = false;
       }
     }
     if ((reqType === "xhr" || !sent) && getXHR()) {
-      this.post(urlBase, data, this.writeKey(), successCallback, errorCallback, isAsync);
+      this.post(urlBase, data, this.writeKey(), cb, isAsync);
+      cb = null;
     }
     else{
       this.trigger("error", "Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
     }
   }
   else {
-    this.post(urlBase, data, this.writeKey(), successCallback, errorCallback, isAsync);
+    this.post(urlBase, data, this.writeKey(), cb, isAsync);
+    cb = null;
   }
-  successCallback = errorCallback = null;
   return;
 };

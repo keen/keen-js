@@ -2,15 +2,14 @@ var JSON2 = require("JSON2"),
     each = require("../utils/each"),
     getXhr = require("./getXhrObject");
 
-function sendXhr(method, url, headers, body, success, error, async){
+function sendXhr(method, url, headers, body, callback, async){
   var self = this,
       isAsync = async || true,
-      successCallback = success,
-      errorCallback = error,
+      cb = callback,
       xhr = getXhr(),
       payload;
 
-  success = error = null;
+  callback = null;
 
   if (!xhr) {
     self.trigger("error", "XHR requests are not supported");
@@ -25,14 +24,14 @@ function sendXhr(method, url, headers, body, success, error, async){
           response = JSON2.parse(xhr.responseText);
         } catch (e) {
           self.trigger("error", "Could not parse HTTP response: " + xhr.responseText);
-          if (errorCallback) {
-            errorCallback(xhr, e);
-            successCallback = errorCallback = null;
+          if (cb) {
+            cb("Could not parse HTTP response: " + xhr.responseText, null);
+            cb = null;
           }
         }
-        if (successCallback && response) {
-          successCallback(response);
-          successCallback = errorCallback = null;
+        if (cb && response) {
+          cb(null, response);
+          cb = null;
         }
       } else {
         self.trigger("error", "HTTP request failed.");
@@ -41,14 +40,14 @@ function sendXhr(method, url, headers, body, success, error, async){
         }
         catch (e) {
           response = void 0;
-          if (errorCallback) {
-            errorCallback(xhr, e);
-            successCallback = errorCallback = null;
+          if (cb) {
+            cb("HTTP request failed.", e);
+            cb = null;
           }
         }
-        if (errorCallback && response) {
-          errorCallback(xhr, response);
-          successCallback = errorCallback = null;
+        if (cb && response) {
+          cb(response, null);
+          cb = null;
         }
       }
     }

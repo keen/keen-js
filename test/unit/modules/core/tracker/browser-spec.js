@@ -15,15 +15,12 @@ describe("Tracker (browser)", function() {
       });
 
       it("should not send events if set to \"false\"", function(){
-        var success = sinon.spy(),
-            error = sinon.spy();
-
         Keen.enabled = false;
-        this.project.addEvent("not-going", { test: "data" }, success, error);
+        this.project.addEvent("not-going", { test: "data" }, function(err, res){
+          expect(err).to.exist;
+          expect(res).to.be.null;
+        });
         Keen.enabled = true;
-
-        expect(success.calledOnce).not.to.be.ok;
-        expect(error.calledOnce).not.to.be.ok;
       });
 
     });
@@ -35,11 +32,10 @@ describe("Tracker (browser)", function() {
       });
 
       it("should return an error message if event collection is omitted", function(){
-        var success = sinon.spy(),
-        error = sinon.spy();
-        this.project.addEvent(null, { test: "data" }, success, error);
-        expect(success.calledOnce).not.to.be.ok;
-        expect(error.calledOnce).to.be.ok;
+        this.project.addEvent(null, { test: "data" }, function(err, res){
+          expect(err).to.exist;
+          expect(res).to.be.null;
+        });
       });
 
     });
@@ -65,24 +61,27 @@ describe("Tracker (browser)", function() {
       if ('withCredentials' in new XMLHttpRequest()) {
 
         it("should POST to the API using XHR", function() {
-          var callbacks = [ sinon.spy(), sinon.spy() ];
-          this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+          var callback = sinon.spy();
+          this.project.addEvent(keenHelper.collection, keenHelper.properties, callback);
           this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, keenHelper.responses.success ] );
           this.server.respond();
           expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["success"]);
-          expect(callbacks[0].calledOnce).to.be.ok;
-          expect(callbacks[0].calledWith(JSON.parse(keenHelper.responses["success"]))).to.be.ok;
-          expect(callbacks[1].calledOnce).not.to.be.ok;
+          expect(callback.calledOnce).to.be.ok;
+          expect(callback.calledWith(null, JSON.parse(keenHelper.responses["success"]))).to.be.ok;
+          // expect(callback.calledOnce).not.to.be.ok;
         });
 
         it("should call the error callback on error", function() {
-          var callbacks = [ sinon.spy(), sinon.spy() ];
-          this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
+          var callback = sinon.spy();
+          this.project.addEvent(keenHelper.collection, keenHelper.properties, function(err, res){
+            expect(err).to.exist;
+            expect(res).to.be.null;
+          });
           this.server.respondWith( "POST", this.postUrl, [ 500, { "Content-Type": "application/json"}, keenHelper.responses["error"] ] );
           this.server.respond();
           expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["error"]);
-          expect(callbacks[0].calledOnce).not.to.be.ok;
-          expect(callbacks[1].calledOnce).to.be.ok;
+          // expect(callback.calledWith(n)).not.to.be.ok;
+          // expect(callbacks[1].calledOnce).to.be.ok;
           // expect(callbacks[1].calledWith(JSON.parse(keenHelper.responses["error"]))).to.be.ok;
         });
 

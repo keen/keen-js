@@ -1,16 +1,15 @@
 var Request = require("../request");
-module.exports = function(query, success, error) {
+module.exports = function(query, callback) {
   var queries = [],
-      successCallback = success,
-      errorCallback = error,
+      cb = callback,
       request;
-  success = error = null;
+
   if (query instanceof Array) {
     queries = query;
   } else {
     queries.push(query);
   }
-  request = new Request(this, queries, successCallback, errorCallback);
-  successCallback = errorCallback = null;
+  request = new Request(this, queries, cb);
+  cb = callback = null;
   return request;
 };
