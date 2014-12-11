@@ -81,9 +81,7 @@
       })
     }, 0);
   }
-  if (!Keen.synced) {
-    require("./core/async")();
-  }
+  require("./core/async")();
 
   return Keen;
 });

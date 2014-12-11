@@ -31,4 +31,8 @@ Keen.utils = {
   "extend" : extend
 };
 
+// .addEvents
+// .encryptScopedKey
+// .decryptScopedKey
+
 module.exports = Keen;

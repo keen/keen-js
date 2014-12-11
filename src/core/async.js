@@ -72,5 +72,8 @@ module.exports = function(){
       Keen.once("ready", cb);
     });
   }
-  Keen.synced = true;
+
+  window['_' + 'Keen'] = undefined;
+  try {
+  } catch(e) {}
 };
