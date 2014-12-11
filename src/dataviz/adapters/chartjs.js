@@ -4,8 +4,11 @@
  * ----------------------
  */
 
-(function(lib){
-  var Keen = lib || {};
+var Dataviz = require("../dataviz"),
+    each = require("../../core/utils/each"),
+    extend = require("../../core/utils/extend");
+
+module.exports = function(){
 
   if (typeof Chart !== "undefined") {
     Chart.defaults.global.responsive = true;
@@ -42,7 +45,7 @@
 
   function getCategoricalData(){
     var self = this, result = [];
-    Keen.utils.each(self.dataset.selectColumn(0).slice(1), function(label, i){
+    each(self.dataset.selectColumn(0).slice(1), function(label, i){
       result.push({
         value: self.dataset.selectColumn(1).slice(1)[i],
         color: self.colors()[+i],
@@ -62,7 +65,7 @@
         };
 
     labels = this.dataset.selectColumn(0).slice(1);
-    Keen.utils.each(labels, function(l,i){
+    each(labels, function(l,i){
       if (l instanceof Date) {
         result.labels.push((l.getMonth()+1) + "-" + l.getDate() + "-" + l.getFullYear());
       } else {
@@ -70,7 +73,7 @@
       }
     })
 
-    Keen.utils.each(self.dataset.selectRow(0).slice(1), function(label, i){
+    each(self.dataset.selectRow(0).slice(1), function(label, i){
       var hex = {
         r: hexToR(self.colors()[i]),
         g: hexToG(self.colors()[i]),
@@ -91,7 +94,7 @@
   }
 
   var charts = {};
-  Keen.utils.each(["doughnut", "pie", "polar-area", "radar", "bar", "line"], function(type, index){
+  each(["doughnut", "pie", "polar-area", "radar", "bar", "line"], function(type, index){
     charts[type] = {
       initialize: function(){
         if (this.el().nodeName.toLowerCase() !== "canvas") {
@@ -106,7 +109,7 @@
       },
       render: function(){
         var method = ChartNameMap[type],
-            opts = _extend({}, this.chartOptions()),
+            opts = extend({}, this.chartOptions()),
             data = dataTransformers[type].call(this);
 
         if (this.view._artifacts["chartjs"]) {
@@ -138,6 +141,6 @@
 
   // Register library + add dependencies + types
   // -------------------------------
-  Keen.Dataviz.register("chartjs", charts, { capabilities: dataTypes });
+  Dataviz.register("chartjs", charts, { capabilities: dataTypes });
 
-})(Keen);
+};

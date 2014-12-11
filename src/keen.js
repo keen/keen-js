@@ -75,6 +75,8 @@
 
   require("./dataviz/adapters/keen-io")();
   require("./dataviz/adapters/google")();
+  require("./dataviz/adapters/c3")();
+  require("./dataviz/adapters/chartjs")();
 
   // extend(Keen.Dataviz.libraries), {
   //   "google": require("./dataviz/adapters/google")

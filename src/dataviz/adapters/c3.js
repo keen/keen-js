@@ -4,8 +4,11 @@
  * ----------------------
  */
 
-(function(lib){
-  var Keen = lib || {};
+var Dataviz = require("../dataviz"),
+    each = require("../../core/utils/each"),
+    extend = require("../../core/utils/extend");
+
+module.exports = function(){
 
   // chartOptions:
   // -------------
@@ -34,7 +37,7 @@
   };
 
   var charts = {};
-  Keen.utils.each(["gauge", "donut", "pie", "bar", "area", "area-spline", "spline", "line", "step", "area-step"], function(type, index){
+  each(["gauge", "donut", "pie", "bar", "area", "area-spline", "spline", "line", "step", "area-step"], function(type, index){
     charts[type] = {
       render: function(){
         var setup = getSetupTemplate.call(this, type);
@@ -58,7 +61,7 @@
             cols.push(self.dataset.selectColumn(0));
             cols[0][0] = 'x';
           }
-          Keen.utils.each(self.data()[0], function(c, i){
+          each(self.data()[0], function(c, i){
             if (i > 0) {
               cols.push(self.dataset.selectColumn(i));
             }
@@ -111,7 +114,7 @@
         };
       }
     }
-    return Keen.utils.extend(setup, this.chartOptions());
+    return extend(setup, this.chartOptions());
   }
 
   function _selfDestruct(){
@@ -123,6 +126,6 @@
 
   // Register library + add dependencies + types
   // -------------------------------
-  Keen.Dataviz.register('c3', charts, { capabilities: dataTypes });
+  Dataviz.register('c3', charts, { capabilities: dataTypes });
 
-})(Keen);
+};
