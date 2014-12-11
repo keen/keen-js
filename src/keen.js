@@ -1,5 +1,4 @@
 ;(function (f) {
-  var g = null;
   // RequireJS
   if (typeof define === "function" && define.amd) {
     // define([], f);
@@ -10,7 +9,8 @@
     module.exports = f();
   }
   // Global
-  else if (typeof window !== "undefined") {
+  var g = null;
+  if (typeof window !== "undefined") {
     g = window;
   } else if (typeof global !== "undefined") {
     g = global;
@@ -81,7 +81,9 @@
       })
     }, 0);
   }
-  require("./core/async")();
+  if (!Keen.synced) {
+    require("./core/async")();
+  }
 
   return Keen;
 });

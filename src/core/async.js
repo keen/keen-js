@@ -72,4 +72,5 @@ module.exports = function(){
       Keen.once("ready", cb);
     });
   }
-}
+  Keen.synced = true;
+};

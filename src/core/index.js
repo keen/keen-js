@@ -12,6 +12,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
+Keen.synced = false;
 Keen.version = "BUILD_VERSION"; // Overwritten @ build
 
 extend(Keen, events);
