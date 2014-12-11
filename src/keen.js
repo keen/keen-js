@@ -1,4 +1,5 @@
 ;(function (f) {
+  var g = null;
   // RequireJS
   if (typeof define === "function" && define.amd) {
     // define([], f);
@@ -9,8 +10,7 @@
     module.exports = f();
   }
   // Global
-  var g = null;
-  if (typeof window !== "undefined") {
+  else if (typeof window !== "undefined") {
     g = window;
   } else if (typeof global !== "undefined") {
     g = global;
@@ -20,12 +20,10 @@
   if (g) {
     g.Keen = f();
   }
-
 })(function() {
 
   var Keen = require("./core"),
       each = require("./core/utils/each"),
-      // events = require("./core/events"),
       extend = require("./core/utils/extend"),
       parseParams = require("./core/utils/parseParams");
 
@@ -64,7 +62,6 @@
   };
 
   Keen.Spinner = Spinner;
-
   Keen.Dataset = require("./dataset");
   Keen.Dataviz = require("./dataviz");
   extend(Keen.utils, {
@@ -72,15 +69,19 @@
     "loadStyle"    : require("./dataviz/utils/loadStyle"),
     "prettyNumber" : require("./dataviz/utils/prettyNumber")
   });
-
   require("./dataviz/adapters/keen-io")();
   require("./dataviz/adapters/google")();
   require("./dataviz/adapters/c3")();
   require("./dataviz/adapters/chartjs")();
 
-  // extend(Keen.Dataviz.libraries), {
-  //   "google": require("./dataviz/adapters/google")
-  // });
+  if (Keen.loaded) {
+    setTimeout(function(){
+      domready(function(){
+        Keen.trigger("ready");
+      })
+    }, 0);
+  }
+  require("./core/async")();
 
   return Keen;
 });

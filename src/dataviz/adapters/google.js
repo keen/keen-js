@@ -16,12 +16,12 @@
 
 var Dataviz = require("../dataviz"),
     each = require("../../core/utils/each"),
-    extend = require("../../core/utils/extend");
+    extend = require("../../core/utils/extend"),
+    Keen = require("../../core");
 
 module.exports = function(){
 
-// (function(lib){
-  // var Keen = lib || {};
+  Keen.loaded = false;
 
   var errors = {
     "google-visualization-errors-0": "No results to visualize"
@@ -97,9 +97,9 @@ module.exports = function(){
       cb: function(done) {
         if (typeof google === 'undefined'){
           this.trigger("error", "Problem loading Google Charts library. Please contact us!");
-          // Keen.log("Problem loading Google Charts library. Please contact us!");
           done();
-        } else {
+        }
+        else {
           google.load('visualization', '1.1', {
               packages: ['corechart', 'table'],
               callback: function(){
@@ -201,4 +201,4 @@ module.exports = function(){
     return output;
   }
 
-}; //)(Keen);
+};

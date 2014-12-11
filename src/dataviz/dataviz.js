@@ -6,7 +6,6 @@ var clone = require("../core/utils/clone"),
     loadStyle = require("./utils/loadStyle");
 
 var Keen = require("../core");
-Keen.loaded = false;
 
 var Dataset = require("../dataset");
 

@@ -38,7 +38,7 @@ Keen.prototype.configure = function(cfg){
   if (Keen.debug) {
     this.on("error", Keen.log);
   }
-  this.trigger('ready');
+  this.trigger("ready");
 };
 
 Keen.prototype.projectId = function(str){
@@ -84,7 +84,7 @@ Keen.ready = function(fn){
   if (Keen.loaded) {
     fn();
   } else {
-    Keen.on("ready", fn);
+    Keen.once("ready", fn);
   }
 };
 
