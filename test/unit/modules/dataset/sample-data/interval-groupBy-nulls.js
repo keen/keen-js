@@ -1,4 +1,4 @@
-var data_interval_groupBy_nulls = {
+module.exports = {
   "result": [
     {
       "value": [

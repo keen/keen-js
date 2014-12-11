@@ -63,21 +63,15 @@
     "domready"     : domready
   };
 
+  Keen.Spinner = Spinner;
+
+  Keen.Dataset = require("./dataset");
   Keen.Dataviz = require("./dataviz");
   extend(Keen.utils, {
     "loadScript"   : require("./dataviz/utils/loadScript"),
     "loadStyle"    : require("./dataviz/utils/loadStyle"),
     "prettyNumber" : require("./dataviz/utils/prettyNumber")
   });
-
-  // Keen.Events = require("./core/events");
-  // Keen.Query = require("./core/query");
-  // Keen.Request = require("./core/request");
-  // extend(Keen.prototype, {
-  //
-  // });
-
-  Keen.Spinner = Spinner;
 
   require("./dataviz/adapters/keen-io")();
   require("./dataviz/adapters/google")();

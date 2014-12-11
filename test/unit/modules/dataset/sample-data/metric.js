@@ -1,3 +1,3 @@
-var data_metric = {
+module.exports = {
   "result": 2450
 };

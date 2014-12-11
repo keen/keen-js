@@ -1,4 +1,4 @@
-var data_groupBy_boolean = {
+module.exports = {
   "result": [
     {
       "switch": false,

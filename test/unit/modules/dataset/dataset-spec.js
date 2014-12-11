@@ -1,3 +1,19 @@
+var expect = require("chai").expect;
+
+var Keen = require("../../../../src/core"),
+    keenHelper = require("../../helpers/test-config");
+
+var data_extraction = require("./sample-data/extraction"),
+    data_extraction_uneven = require("./sample-data/extraction-uneven")
+    data_metric = require("./sample-data/metric"),
+    data_groupBy = require("./sample-data/groupBy"),
+    data_groupBy_boolean = require("./sample-data/groupBy-boolean"),
+    data_interval_double_groupBy = require("./sample-data/interval-double-groupBy"),
+    data_interval_groupBy_empties = require("./sample-data/interval-groupBy-empties"),
+    data_interval_groupBy_boolean = require("./sample-data/interval-groupBy-boolean"),
+    data_interval_groupBy_nulls = require("./sample-data/interval-groupBy-nulls"),
+    data_funnel = require("./sample-data/funnel");
+
 describe("Keen.Dataset", function(){
 
   beforeEach(function(){
@@ -955,19 +971,15 @@ describe("Keen.Dataset", function(){
 
 
 
-    describe("#pick", function(){
-      it("should return a given index of an array", function(){
-        expect(this.ds.pick(["A","B"], 1)).to.eql("B");
+    describe("#getRowIndex", function(){
+      it("should return the first value of a given row (array)", function(){
+        expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
       });
-      describe("#getRowIndex", function(){
-        it("should return the first value of a given row (array)", function(){
-          expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
-        });
-      });
-      describe("#getColumnLabel", function(){
-        it("should return the first value of a given column (array)", function(){
-          expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
-        });
+    });
+    
+    describe("#getColumnLabel", function(){
+      it("should return the first value of a given column (array)", function(){
+        expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
       });
     });
 

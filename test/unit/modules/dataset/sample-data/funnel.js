@@ -1,4 +1,4 @@
-var data_funnel = {
+module.exports = {
   "result": [
     42,
     32,

@@ -22,8 +22,8 @@ gulp.task("build", function(callback) {
 
 gulp.task("browserify", function() {
   return browserify("./src/keen.js", {
-    insertGlobals: true,
-    debug: true
+    // insertGlobals: true,
+    // debug: true
   })
   .bundle()
   .pipe(source("keen.js"))

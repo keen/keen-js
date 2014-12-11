@@ -1,4 +1,4 @@
-var data_extraction_uneven = {"result":[
+module.exports = {"result":[
   {
     "keen": {
       "timestamp": "2014-02-12T01:44:25.310Z",

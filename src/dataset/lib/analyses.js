@@ -1,11 +1,11 @@
 var each = require("../../core/utils/each"),
-    arr = ["average", "maximum", "minimum", "sum"],
+    arr = ["Average", "Maximum", "Minimum", "Sum"],
     output = {};
 
 output["average"] = function(arr, start, end){
   var set = arr.slice(start||0, (end ? end+1 : arr.length)),
-  sum = 0,
-  avg = null;
+      sum = 0,
+      avg = null;
 
   // Add numeric values
   each(set, function(val, i){
@@ -18,7 +18,7 @@ output["average"] = function(arr, start, end){
 
 output["maximum"] = function(arr, start, end){
   var set = arr.slice(start||0, (end ? end+1 : arr.length)),
-  nums = [];
+      nums = [];
 
   // Pull numeric values
   each(set, function(val, i){
@@ -31,7 +31,7 @@ output["maximum"] = function(arr, start, end){
 
 output["minimum"] = function(arr, start, end){
   var set = arr.slice(start||0, (end ? end+1 : arr.length)),
-  nums = [];
+      nums = [];
 
   // Pull numeric values
   each(set, function(val, i){
@@ -45,7 +45,7 @@ output["minimum"] = function(arr, start, end){
 output["sum"] = function(arr, start, end){
   // Copy set with given range
   var set = arr.slice(start||0, (end ? end+1 : arr.length)),
-  sum = 0;
+      sum = 0;
 
   // Add numeric values
   each(set, function(val, i){
@@ -59,8 +59,8 @@ output["sum"] = function(arr, start, end){
 // Convenience methods
 
 each(arr, function(v,i){
-  output["getColumn"+v.toUpperCase()] = output["getRow"+v.toUpperCase()] = function(arr){
-    return this[arr[i]](arr, i);
+  output["getColumn"+v] = output["getRow"+v] = function(arr){
+    return this[v.toLowerCase()](arr, 1);
   };
 });
 

@@ -1,4 +1,4 @@
-var data_interval_groupBy_empties = {
+module.exports = {
   "result": [
     {
       "value": [],

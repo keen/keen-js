@@ -1,3 +1,9 @@
+/* globals: sinon */
+var expect = require("chai").expect;
+
+var Keen = require("../../../../src/core"),
+    keenHelper = require("../../helpers/test-config");
+
 describe("Keen.Dataviz", function(){
 
   beforeEach(function(){

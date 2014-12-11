@@ -1,4 +1,4 @@
-var data_extraction = {
+module.exports = {
   "result": [
     {
       "keen": {

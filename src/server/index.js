@@ -14,6 +14,7 @@ var runQuery = require("../core/lib/run");
 // Keen.Events = require("../core/events");
 Keen.Query = require("../core/query");
 Keen.Request = require("../core/request");
+Keen.Dataset = require("../dataset")
 
 extend(Keen.prototype, {
   "addEvent"            : addEvent,

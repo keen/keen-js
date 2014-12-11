@@ -29,8 +29,8 @@ function sortColumns(str, comp){
   });
   each(cols, function(col, i){
     self
-    .deleteColumn(i+1)
-    .insertColumn(i+1, col[0], col.slice(1));
+      .deleteColumn(i+1)
+      .insertColumn(i+1, col[0], col.slice(1));
   });
   return self;
 }

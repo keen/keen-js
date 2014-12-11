@@ -1,9 +1,11 @@
-var Dataviz = require("../dataviz");
+var Dataset = require("../../dataset"),
+    Dataviz = require("../dataviz"),
+    each = require("../../core/utils/each");
 
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"].indexBy;
   this.view["attributes"].indexBy = (str ? String(str) : Dataviz.defaults.indexBy);
-  runIndexBy.call(this);
+  indexBy.call(this);
   return this;
 };
 

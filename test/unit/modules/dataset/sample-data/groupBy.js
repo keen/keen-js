@@ -1,4 +1,4 @@
-var data_groupBy = {
+module.exports = {
   "result": [
     {
       "page": "http://dustinlarimer.com/",
