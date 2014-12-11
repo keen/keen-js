@@ -32,7 +32,7 @@ gulp.task("browserify", function() {
 
 gulp.task("connect", function () {
   connect.server({
-    root: [ __dirname, "test", "test/unit", "test/vendor" ],
+    root: [ __dirname, "test", "test/unit", "test/vendor", "test/browser/examples" ],
     port: 9999
   });
 });
@@ -42,7 +42,7 @@ gulp.task("watch", function() {
 });
 
 gulp.task("watch-with-tests", function() {
-  gulp.watch(["src/**/*.js", "test/unit/**/*.*"], ["test:unit"]);
+  gulp.watch(["src/**/*.js", "test/unit/**/*.*"], ["build", "test:unit"]);
 });
 
 

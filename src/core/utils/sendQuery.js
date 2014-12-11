@@ -2,10 +2,11 @@ var getContext = require("../helpers/getContext"),
     getXHR = require("../helpers/getXhrObject");
 
 module.exports = function(path, params, success, error){
-  var method = "post",
+  var urlBase = this.url("/projects/" + this.projectId() + path),
+      reqType = this.config.requestType,
       successCallback = success,
       errorCallback = error,
-      urlBase;
+      sent = false;
 
   success = error = null;
 
@@ -19,20 +20,27 @@ module.exports = function(path, params, success, error){
     return;
   }
 
-  // Use GET if requested in browser configuration
-  if ( getContext() === "browser" && this.config.requestType === "xhr" && getXHR() ) {
-    method = "get";
+  if ( getContext() === "browser") {
+    // Use GET when requests in browser (and for all extractions, which do not currently support JSONP)
+    if ((reqType !== "xhr" || !getXHR()) && path.indexOf("extraction") < 0) {
+      try {
+        sent = true;
+        this.get(urlBase, params, this.readKey(), successCallback, errorCallback);
+      }
+      catch(e){
+        sent = false;
+      }
+    }
+    if ((reqType === "xhr" || !sent) && getXHR()) {
+      this.post(urlBase, params, this.readKey(), successCallback, errorCallback, true);
+    }
+    else {
+      this.trigger("error", "Query not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
+    }
   }
-
-  // Extractions do not currently support JSONP
-  if (path.indexOf("extraction") > -1) {
-    method = "post";
+  else {
+    this.post(urlBase, params, this.readKey(), successCallback, errorCallback, true);
   }
-
-  urlBase = this.url("/projects/" + this.projectId() + path);
-
-  this[method](urlBase, params, this.readKey(), success, error, async);
-
   successCallback = errorCallback = null;
   return;
 }

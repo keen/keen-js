@@ -25,7 +25,7 @@
 
   var Keen = require("./core"),
       each = require("./core/utils/each"),
-      events = require("./core/events"),
+      // events = require("./core/events"),
       extend = require("./core/utils/extend"),
       parseParams = require("./core/utils/parseParams");
 
@@ -33,10 +33,14 @@
       setGlobalProperties = require("./core/lib/setGlobalProperties"),
       trackExternalLink = require("./core/lib/trackExternalLink"),
       get = require("./core/lib/get"),
-      post = require("./core/lib/post");
+      post = require("./core/lib/post"),
+      runQuery = require("./core/lib/run");
 
   var Spinner = require("spin.js"),
       domready = require("domready");
+
+  Keen.Query = require("./core/query");
+  Keen.Request = require("./core/request");
 
   extend(Keen.prototype, {
     "addEvent"            : addEvent,
@@ -44,7 +48,8 @@
     "trackExternalLink"   : trackExternalLink,
     "get"                 : get,
     "post"                : post,
-    "put"                 : post
+    "put"                 : post,
+    "run"                 : runQuery
   });
 
   Keen.utils = {
@@ -54,11 +59,11 @@
     "domready"    : domready
   };
 
-  Keen.Events = events;
-  Keen.Query = require("./core/query");
-  // Keen.Request = Request;
+  // Keen.Events = require("./core/events");
+  // Keen.Query = require("./core/query");
+  // Keen.Request = require("./core/request");
   // extend(Keen.prototype, {
-  //   "run"         : runQuery
+  //
   // });
 
   Keen.Spinner = Spinner;

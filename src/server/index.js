@@ -8,7 +8,9 @@ var addEvent = require("../core/lib/addEvent"),
     post = require("./lib/post"),
     del = require("./lib/del");
 
+// Keen.Events = require("../core/events");
 Keen.Query = require("../core/query");
+Keen.Request = require("../core/request");
 
 extend(Keen.prototype, {
   "addEvent"            : addEvent,

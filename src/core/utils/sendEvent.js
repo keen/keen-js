@@ -1,17 +1,23 @@
+var JSON2 = require("JSON2");
+
 var Keen = require("../index"),
+    base64 = require("./base64"),
     each = require("./each"),
     getContext = require("../helpers/getContext"),
-    getXHR = require("../helpers/getXhrObject");
+    getXHR = require("../helpers/getXhrObject"),
+    getQueryString = require("../helpers/getQueryString");
 
-function uploadEvent(eventCollection, payload, success, error, async) {
-  var method = "post",
+module.exports = function(collection, payload, success, error, async) {
+  var urlBase = this.url("/projects/" + this.projectId() + "/events/" + collection),
+      reqType = this.config.requestType,
+      queryString = "",
       data = {},
-      urlBase;
+      successCallback = success,
+      errorCallback = error,
+      isAsync = async || true,
+      sent = false;
 
-  // Use GET if requested in browser configuration
-  if ( getContext() === "browser" && this.config.requestType === "xhr" && getXHR() ) {
-    method = "get";
-  }
+  success = error = null;
 
   if (!Keen.enabled) {
     this.trigger("error", "Event not recorded: Keen.enabled = false");
@@ -28,19 +34,40 @@ function uploadEvent(eventCollection, payload, success, error, async) {
     return;
   }
 
-  // Add properties from client.globalProperties
+  // Attach properties from client.globalProperties
   if (this.config.globalProperties) {
-    data = this.config.globalProperties(eventCollection);
+    data = this.config.globalProperties(collection);
   }
-  // Add properties from user-defined event
+  // Attach properties from user-defined event
   each(payload, function(value, key){
     data[key] = value;
   });
 
-  urlBase = this.url("/projects/" + this.projectId() + "/events/" + eventCollection);
-
-  this[method](urlBase, data, this.writeKey(), success, error, async);
+  if ( getContext() === "browser") {
+    if (reqType !== "xhr" || !getXHR()){
+      try {
+        sent = true;
+        queryString = getQueryString({
+          "api_key"  : this.writeKey(),
+          "data"     : base64.encode(JSON2.stringify(data)),
+          "modified" : new Date().getTime()
+        });
+        this.get(urlBase+queryString, null, null, successCallback, errorCallback);
+      }
+      catch(e) {
+        sent = false;
+      }
+    }
+    if ((reqType === "xhr" || !sent) && getXHR()) {
+      this.post(urlBase, data, this.writeKey(), successCallback, errorCallback, isAsync);
+    }
+    else{
+      this.trigger("error", "Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
+    }
+  }
+  else {
+    this.post(urlBase, data, this.writeKey(), successCallback, errorCallback, isAsync);
+  }
+  successCallback = errorCallback = null;
   return;
 };
-
-module.exports = uploadEvent;

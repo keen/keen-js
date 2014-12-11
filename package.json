@@ -26,7 +26,6 @@
   },
   "dependencies": {
     "JSON2": "^0.1.0",
-    "base-64": "^0.1.0",
     "domready": "0.3.0",
     "spin.js": "^2.0.1",
     "superagent": "^0.21.0"

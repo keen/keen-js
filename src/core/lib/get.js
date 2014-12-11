@@ -1,40 +1,33 @@
-var base64 = require("base-64"),
-    JSON2 = require("JSON2"),
+var extend = require("../utils/extend"),
+    getQueryString = require("../helpers/getQueryString"),
     getUrlMaxLength = require("../helpers/getUrlMaxLength"),
-    getXHR = require("../helpers/getXhrObject"),
     sendJsonp = require("../helpers/sendJsonpRequest"),
     sendBeacon = require("../helpers/sendBeaconRequest");
 
-module.exports = function(url, data, api_key, success, error){
+module.exports = function(url, data, api_key, success, error, config){
   var reqType = this.config.requestType,
-      queryString = "",
       successCallback = success,
       errorCallback = error,
-      stringMax;
+      queryString = "",
+      body,
+      queryString;
 
   success = error = null;
 
-  if ( (reqType === "jsonp" || reqType === "beacon") || !getXHR() ) {
-
-    queryString += "?api_key="  + encodeURIComponent( api_key );
-    queryString += "&data="     + encodeURIComponent( base64.encode( JSON2.stringify(data) ) );
-    queryString += "&modified=" + encodeURIComponent( new Date().getTime() );
-
-    if ( String(url + queryString).length < getUrlMaxLength() ) {
-      if (reqType === "jsonp") {
-        sendJsonp.call(this, url + queryString, null, successCallback, errorCallback);
-      }
-      else {
-        sendBeacon.call(this, url + queryString, null, successCallback, errorCallback);
-      }
-      return;
-    }
-
+  if (data && api_key) {
+    body = extend({ api_key: api_key }, data);
+    queryString = getQueryString( body );
   }
-  if ( getXHR() ) {
-    this.post(url, data, api_key, successCallback, errorCallback);
+
+  if ( String(url + queryString).length > getUrlMaxLength()) {
+    throw "URL length exceeds current browser limit";
+  }
+
+  // Send beacon if requested
+  if (reqType === "beacon" && !data && !api_key) {
+    sendBeacon.call(this, url + queryString, null, successCallback, errorCallback);
   }
   else {
-    this.trigger("error", "Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
+    sendJsonp.call(this, url + queryString, null, successCallback, errorCallback);
   }
 };

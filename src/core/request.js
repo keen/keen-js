@@ -15,6 +15,7 @@ extend(Request.prototype, events);
 Request.prototype.configure = function(instance, queries, success, error){
   var successCallback = success,
       errorCallback = error;
+  success = error = null;
   extend(this, {
     "instance": instance,
     "queries" : queries,
@@ -22,13 +23,8 @@ Request.prototype.configure = function(instance, queries, success, error){
     "success" : successCallback,
     "error"   : errorCallback
   });
-  // this.instance = instance;
-  // this.queries = queries;
-  // this.data;
-  // this.success = successCallback;
-  // this.error = errorCallback;
   this.refresh();
-  success = error = null;
+  successCallback = errorCallback = null;
   return this;
 };
 
@@ -97,7 +93,7 @@ Request.prototype.refresh = function(){
         statusText: 'Bad Request',
         responseText: { message: 'Error: Query ' + (+index+1) + ' of ' + self.queries.length + ' for project ' + self.instance.projectId() + ' is not a valid request' }
       };
-      this.trigger("error", res.responseText.message);
+      self.trigger("error", res.responseText.message);
       if (self.error) {
         self.error(res.responseText.message);
       }

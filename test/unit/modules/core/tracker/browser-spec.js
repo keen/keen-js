@@ -51,8 +51,8 @@ describe("Tracker (browser)", function() {
         self.project = new Keen({
           projectId: keenHelper.projectId,
           writeKey: keenHelper.writeKey,
-          host: keenHelper.host,
-          requestType: 'xhr'
+          // host: keenHelper.host,
+          requestType: "xhr"
         });
         self.postUrl = self.project.url("/projects/" + self.project.projectId() + "/events/" + keenHelper.collection);
         self.server = sinon.fakeServer.create();
@@ -64,7 +64,7 @@ describe("Tracker (browser)", function() {
 
       if ('withCredentials' in new XMLHttpRequest()) {
 
-        it("should POST to the API using XHR where CORS is supported", function() {
+        it("should POST to the API using XHR", function() {
           var callbacks = [ sinon.spy(), sinon.spy() ];
           this.project.addEvent(keenHelper.collection, keenHelper.properties, callbacks[0], callbacks[1]);
           this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, keenHelper.responses.success ] );

@@ -7,8 +7,7 @@ function sendJsonp(url, params, success, error){
       callbackName = "keenJSONPCallback",
       loaded = false;
 
-  success = null;
-  error = null;
+  success = error = null;
 
   callbackName += timestamp;
   while (callbackName in window) {
