@@ -12,7 +12,8 @@ var aws = require("gulp-awspublish"),
     rename = require("gulp-rename"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
-    // wrap = require("gulp-wrap");
+
+var wrap = require("./src/wrappers/gulpTask");
 
 /*
   TODO:
@@ -28,9 +29,8 @@ var aws = require("gulp-awspublish"),
 
 gulp.task("build", function(callback) {
   return runSequence(
-      "build:wrappers",
-      "browserify-complete",
-      "browserify-tracker",
+      "build:wrap",
+      "build:browserify",
       "build:clean",
       "compress",
       // "gzip",
@@ -38,21 +38,25 @@ gulp.task("build", function(callback) {
     );
 });
 
-gulp.task("build:wrappers", function(){
+gulp.task("build:browserify", function(callback){
+  return runSequence("browserify:complete", "browserify:tracker", callback);
+});
+
+gulp.task("build:wrap", function(){
   return gulp.src(["./src/keen.js", "./src/keen-tracker.js"])
-    .pipe(wrap("./src/umd-templates/library-wrapper.js"))
+    .pipe(wrap("./library.js"))
     .pipe(rename({ extname: ".tmp" }))
     .pipe(gulp.dest("./src/"));
 });
 
-gulp.task("browserify-complete", function() {
+gulp.task("browserify:complete", function() {
   return browserify("./src/keen.tmp")
     .bundle()
     .pipe(source("keen.js"))
     .pipe(gulp.dest("./dist/"));
 });
 
-gulp.task("browserify-tracker", function() {
+gulp.task("browserify:tracker", function() {
   return browserify("./src/keen-tracker.tmp")
     .bundle()
     .pipe(source("keen-tracker.js"))
@@ -63,12 +67,6 @@ gulp.task("build:clean", function() {
   return gulp.src("./src/*.tmp", { read: false })
   .pipe(clean());
 });
-
-// gulp.task("library-umd", function() {
-//   return gulp.src("src/*.js")
-//   .pipe(umd())
-//   .dest("build");
-// });
 
 gulp.task("compress", function(){
   return gulp.src([
@@ -226,37 +224,3 @@ gulp.task("with-tests", function(callback){
     callback
   );
 });
-
-var es = require("event-stream"),
-    fs = require("fs"),
-    gutil = require("gulp-util"),
-    path = require("path"),
-    tpl = require("lodash.template");
-
-function wrap(template){
-  var template = fs.readFileSync( path.join(__dirname, template) );
-  return es.map(function(file, callback) {
-    build(file, template, callback);
-  });
-}
-
-function build(file, template, callback) {
-  var data = {};
-  data.file = file;
-  if (gutil.isStream(file.contents)) {
-    var through = es.through();
-    var wait = es.wait(function(err, contents) {
-      data.contents = contents;
-      // console.log(tpl(template, data))
-      through.write( tpl(template, data) );
-      through.end();
-    });
-    file.contents.pipe(wait);
-    file.contents = through;
-  }
-  if (gutil.isBuffer(file.contents)) {
-    data.contents = file.contents.toString();
-    file.contents = new Buffer(tpl(template, data));
-  }
-  callback(null, file);
-}

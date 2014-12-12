@@ -50,7 +50,7 @@ extend(Keen.utils, {
 require("./dataviz/adapters/keen-io")();
 require("./dataviz/adapters/google")();
 require("./dataviz/adapters/c3")();
-// require("./dataviz/adapters/chartjs")();
+require("./dataviz/adapters/chartjs")();
 
 if (Keen.loaded) {
   setTimeout(function(){
