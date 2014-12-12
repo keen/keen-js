@@ -12,6 +12,7 @@ var aws = require("gulp-awspublish"),
     rename = require("gulp-rename"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
+    // wrap = require("gulp-wrap");
 
 /*
   TODO:
@@ -27,30 +28,47 @@ var aws = require("gulp-awspublish"),
 
 gulp.task("build", function(callback) {
   return runSequence(
+      "build:wrappers",
       "browserify-complete",
       "browserify-tracker",
+      "build:clean",
       "compress",
       // "gzip",
       callback
     );
 });
 
+gulp.task("build:wrappers", function(){
+  return gulp.src(["./src/keen.js", "./src/keen-tracker.js"])
+    .pipe(wrap("./src/umd-templates/library-wrapper.js"))
+    .pipe(rename({ extname: ".tmp" }))
+    .pipe(gulp.dest("./src/"));
+});
+
 gulp.task("browserify-complete", function() {
-  return browserify("./src/keen.js", {
-      // insertGlobals: true,
-      // debug: true
-    })
+  return browserify("./src/keen.tmp")
     .bundle()
     .pipe(source("keen.js"))
     .pipe(gulp.dest("./dist/"));
 });
 
 gulp.task("browserify-tracker", function() {
-  return browserify("./src/keen-tracker.js")
+  return browserify("./src/keen-tracker.tmp")
     .bundle()
     .pipe(source("keen-tracker.js"))
     .pipe(gulp.dest("./dist/"));
 });
+
+gulp.task("build:clean", function() {
+  return gulp.src("./src/*.tmp", { read: false })
+  .pipe(clean());
+});
+
+// gulp.task("library-umd", function() {
+//   return gulp.src("src/*.js")
+//   .pipe(umd())
+//   .dest("build");
+// });
 
 gulp.task("compress", function(){
   return gulp.src([
@@ -208,3 +226,37 @@ gulp.task("with-tests", function(callback){
     callback
   );
 });
+
+var es = require("event-stream"),
+    fs = require("fs"),
+    gutil = require("gulp-util"),
+    path = require("path"),
+    tpl = require("lodash.template");
+
+function wrap(template){
+  var template = fs.readFileSync( path.join(__dirname, template) );
+  return es.map(function(file, callback) {
+    build(file, template, callback);
+  });
+}
+
+function build(file, template, callback) {
+  var data = {};
+  data.file = file;
+  if (gutil.isStream(file.contents)) {
+    var through = es.through();
+    var wait = es.wait(function(err, contents) {
+      data.contents = contents;
+      // console.log(tpl(template, data))
+      through.write( tpl(template, data) );
+      through.end();
+    });
+    file.contents.pipe(wait);
+    file.contents = through;
+  }
+  if (gutil.isBuffer(file.contents)) {
+    data.contents = file.contents.toString();
+    file.contents = new Buffer(tpl(template, data));
+  }
+  callback(null, file);
+}

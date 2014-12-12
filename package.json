@@ -37,6 +37,7 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-spies": "^0.5.1",
+    "event-stream": "^3.1.7",
     "grunt": "~0.4.1",
     "grunt-browserify": "^3.2.1",
     "grunt-cli": "~0.1.6",
@@ -57,7 +58,9 @@
     "gulp-mocha-phantomjs": "^0.5.1",
     "gulp-obfuscate": "^0.2.9",
     "gulp-rename": "^1.2.0",
+    "gulp-util": "^3.0.1",
     "gulp-yuicompressor": "0.0.3",
+    "lodash.template": "^2.4.1",
     "nock": "^0.51.0",
     "run-sequence": "^1.0.2",
     "vinyl-source-stream": "^1.0.0"
