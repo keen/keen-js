@@ -8,7 +8,7 @@ var Keen = require("../index"),
     getQueryString = require("../helpers/getQueryString");
 
 module.exports = function(collection, payload, callback, async) {
-  var urlBase = this.url("/projects/" + this.projectId() + "/events/" + collection),
+  var urlBase = this.url("/events/" + collection),
       reqType = this.config.requestType,
       queryString = "",
       data = {},

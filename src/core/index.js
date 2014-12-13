@@ -66,7 +66,7 @@ Keen.prototype.writeKey = function(str){
 };
 
 Keen.prototype.url = function(path){
-  return this.config.protocol + "://" + this.config.host + path;
+  return this.config.protocol + "://" + this.config.host + "/projects/" + this.projectId() + path;
 };
 
 Keen.log = function(message) {

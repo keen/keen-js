@@ -51,7 +51,7 @@ describe("Tracker (browser)", function() {
           // host: keenHelper.host,
           requestType: "xhr"
         });
-        self.postUrl = self.project.url("/projects/" + self.project.projectId() + "/events/" + keenHelper.collection);
+        self.postUrl = self.project.url("/events/" + keenHelper.collection);
         self.server = sinon.fakeServer.create();
       });
 
@@ -159,7 +159,7 @@ describe("Tracker (browser)", function() {
 
       beforeEach(function() {
         var self = this;
-        self.postUrl = self.project.url("/projects/" + self.project.projectId() + "/events");
+        self.postUrl = self.project.url("/events");
         self.server = sinon.fakeServer.create();
       });
 

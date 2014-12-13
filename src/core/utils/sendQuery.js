@@ -2,7 +2,7 @@ var getContext = require("../helpers/getContext"),
     getXHR = require("../helpers/getXhrObject");
 
 module.exports = function(path, params, callback){
-  var urlBase = this.url("/projects/" + this.projectId() + path),
+  var urlBase = this.url(path),
       reqType = this.config.requestType,
       cb = callback,
       sent = false;
