@@ -11,6 +11,9 @@ var get = require("./lib/get"),
 
 var runQuery = require("../core/lib/run");
 
+var encryptScopedKey = require("./utils/encryptScopedKey"),
+    decryptScopedKey = require("./utils/decryptScopedKey");
+
 // Keen.Events = require("../core/events");
 Keen.Query = require("../core/query");
 Keen.Request = require("../core/request");
@@ -27,12 +30,12 @@ extend(Keen.prototype, {
 });
 
 Keen.utils = {
-  "each"   : each,
-  "extend" : extend
+  "each"            : each,
+  "extend"          : extend,
+  "encryptScopedKey": encryptScopedKey,
+  "decryptScopedKey": decryptScopedKey
 };
 
 // .addEvents
-// .encryptScopedKey
-// .decryptScopedKey
 
 module.exports = Keen;
