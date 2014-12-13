@@ -4,24 +4,24 @@ var extend = require("../utils/extend"),
     sendJsonp = require("../helpers/sendJsonpRequest"),
     sendBeacon = require("../helpers/sendBeaconRequest");
 
-module.exports = function(url, data, api_key, callback, config){
-  var reqType = this.config.requestType,
-      cb = callback,
+module.exports = function(url, payload, api_key, callback){
+  var data = payload || {},
       queryString = "",
-      body,
+      reqType = this.config.requestType,
+      cb = callback,
       queryString;
 
-  if (data && api_key) {
-    body = extend({ api_key: api_key }, data);
-    queryString = getQueryString( body );
+  if (api_key) {
+    extend(data, { api_key: api_key });
   }
+  queryString = getQueryString( data );
 
   if ( String(url + queryString).length > getUrlMaxLength()) {
     throw "URL length exceeds current browser limit";
   }
 
-  // Send beacon if requested
-  if (reqType === "beacon" && !data && !api_key) {
+  // Send beacon if recording an event
+  if (reqType === "beacon" && data["data"] && data["modified"]) {
     sendBeacon.call(this, url + queryString, null, cb);
   }
   else {

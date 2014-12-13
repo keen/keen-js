@@ -66,6 +66,10 @@ Keen.prototype.writeKey = function(str){
 };
 
 Keen.prototype.url = function(path){
+  if (!this.projectId()) {
+    this.trigger("error", "Client is missing projectId property");
+    return;
+  }
   return this.config.protocol + "://" + this.config.host + "/projects/" + this.projectId() + path;
 };
 

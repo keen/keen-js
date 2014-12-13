@@ -7,7 +7,7 @@ function sendJsonp(url, params, callback){
       callbackName = "keenJSONPCallback",
       loaded = false;
 
-  var error_msg = "Event not recorded: JSONP could not be sent";
+  var error_msg = "JSON-P request failed";
 
   callback = null;
 

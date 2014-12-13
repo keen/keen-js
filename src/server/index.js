@@ -2,8 +2,8 @@ var Keen = require("../core"),
     each = require("../core/utils/each"),
     extend = require("../core/utils/extend");
 
-var addEvent = require("../core/lib/addEvent"),
-    addEvents = require("../core/lib/addEvents"),
+var addEvent = require("./lib/addEvent"),
+    addEvents = require("./lib/addEvents"),
     setGlobalProperties = require("../core/lib/setGlobalProperties");
 
 var get = require("./lib/get"),

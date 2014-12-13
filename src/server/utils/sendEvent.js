@@ -1,21 +1,11 @@
-var JSON2 = require("JSON2");
+var Keen = require("../../core/index"),
+    each = require("../../core/utils/each");
 
-var Keen = require("../index"),
-    base64 = require("./base64"),
-    each = require("./each"),
-    getXHR = require("../helpers/getXhrObject");
-    // getQueryString = require("../helpers/getQueryString");
-
-module.exports = function(collection, payload, callback, async) {
-  var urlBase = this.url("/events/" + collection),
-      reqType = this.config.requestType,
-      queryString = "",
+module.exports = function(collection, payload, callback) {
+  var url = this.url("/events/" + collection),
       data = {},
       cb = callback,
-      isAsync = async || true,
-      sent = false;
-
-  var error_msg;
+      error_msg;
 
   callback = null;
 
@@ -64,24 +54,6 @@ module.exports = function(collection, payload, callback, async) {
     data[key] = value;
   });
 
-  if (reqType !== "xhr" || !getXHR()){
-    try {
-      sent = true;
-      this.get(urlBase, {
-          "data"     : base64.encode(JSON2.stringify(data)),
-          "modified" : new Date().getTime()
-        }, this.writeKey(), cb);
-    }
-    catch(e) {
-      sent = false;
-    }
-  }
-  if ((reqType === "xhr" || !sent) && getXHR()) {
-    this.post(urlBase, data, this.writeKey(), cb, isAsync);
-  }
-  else{
-    this.trigger("error", "Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
-  }
+  this.post(url, data, this.writeKey(), cb);
   cb = null;
-  return;
 };

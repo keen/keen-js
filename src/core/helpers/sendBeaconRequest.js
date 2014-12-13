@@ -4,7 +4,7 @@ function sendBeacon(url, params, callback){
       loaded = false,
       img = document.createElement("img");
 
-  var error_msg = "Event not recorded: Beacon could not be sent";
+  var error_msg = "Beacon request failed";
 
   callback = null;
   img.onload = function() {

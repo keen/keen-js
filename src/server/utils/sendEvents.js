@@ -1,12 +1,10 @@
-var Keen = require("../index"),
-    each = require("./each"),
-    getXHR = require("../helpers/getXhrObject");
+var Keen = require("../../core/index"),
+    each = require("../../core/utils/each");
 
-module.exports = function(payload, callback, async) {
-  var urlBase = this.url("/events"),
+module.exports = function(payload, callback) {
+  var url = this.url("/events"),
       data = {},
       cb = callback,
-      isAsync = async || true,
       self = this,
       error_msg;
 
@@ -79,13 +77,7 @@ module.exports = function(payload, callback, async) {
     data = payload;
   }
 
-  if (getXHR()) {
-    self.post(urlBase, data, self.writeKey(), cb, isAsync);
-  }
-  else {
-    // TODO: queue and fire in small, asynchronous batches
-    self.trigger("error", "Events not recorded: XHR support is required for batch upload");
-  }
-
+  self.post(url, data, self.writeKey(), cb);
+  cb = null;
   return;
 };

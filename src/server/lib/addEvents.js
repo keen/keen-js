@@ -1,5 +1,5 @@
 var sendEvents = require("../utils/sendEvents");
 
-module.exports = function(payload, callback) {
+module.exports = function() {
   sendEvents.apply(this, arguments);
 };
