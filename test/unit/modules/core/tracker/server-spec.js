@@ -31,7 +31,7 @@ describe("Tracking (server)", function() {
     // });
 
     it("should make an HTTP request",function(done){
-      mock.post("/events/" + keenHelper.collection, 201, keenHelper.responses.success)
+      mock.post("/events/" + keenHelper.collection, 201, keenHelper.responses.success);
       this.client.addEvent( keenHelper.collection, keenHelper.properties, function(err, res) {
         expect(err).to.be.null;
         expect(res).to.deep.equal( JSON2.parse(keenHelper.responses.success) );
@@ -57,6 +57,57 @@ describe("Tracking (server)", function() {
         done();
       });
       // this.client.off("error", spy);
+    });
+
+  });
+
+  describe("#addEvents", function() {
+
+    beforeEach(function() {
+      this.batchData = {
+        "pageview": [
+          { page: "this one" },
+          { page: "same!" }
+        ],
+        "click": [
+          { page: "tada!" },
+          { page: "same again" }
+        ]
+      };
+      this.batchResponse = JSON2.stringify({
+        click: [
+          { "success": true }
+        ],
+        pageview: [
+          { "success": true },
+          { "success": true }
+        ]
+      });
+    });
+
+    it("should make an HTTP request",function(){
+      var self = this;
+      mock.post("/events", 201, self.batchResponse);
+      self.client.addEvents( self.batchData, function(err, res) {
+        expect(err).to.be.null;
+        expect(res).to.deep.equal( JSON2.parse(self.batchResponse) );
+      });
+    });
+
+    it("should not send events if Keen.enabled is set to \"false\"", function(){
+      Keen.enabled = false;
+      this.client.addEvents(this.batchData, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.null;
+      });
+      Keen.enabled = true;
+    });
+
+    it("should return an error message if first argument is not an object", function(){
+      this.client.addEvents([], function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.null;
+      });
     });
 
   });

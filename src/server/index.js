@@ -3,6 +3,7 @@ var Keen = require("../core"),
     extend = require("../core/utils/extend");
 
 var addEvent = require("../core/lib/addEvent"),
+    addEvents = require("../core/lib/addEvents"),
     setGlobalProperties = require("../core/lib/setGlobalProperties");
 
 var get = require("./lib/get"),
@@ -21,6 +22,7 @@ Keen.Dataset = require("../dataset")
 
 extend(Keen.prototype, {
   "addEvent"            : addEvent,
+  "addEvents"           : addEvents,
   "setGlobalProperties" : setGlobalProperties,
   "get"                 : get,
   "post"                : post,

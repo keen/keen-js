@@ -1,5 +1,6 @@
 /* globals: sinon */
-var expect = require("chai").expect;
+var expect = require("chai").expect,
+    JSON2 = require("JSON2");
 
 var Keen = require("../../../../../src/keen"),
     keenHelper = require("../../../helpers/test-config");
@@ -110,6 +111,85 @@ describe("Tracker (browser)", function() {
     //     });
     //   });
     // });
+
+  });
+
+  describe("#addEvents", function() {
+
+    beforeEach(function() {
+      this.client = new Keen({ projectId: "123", writeKey: "2312" });
+      this.batchData = {
+        "pageview": [
+          { page: "this one" },
+          { page: "same!" }
+        ],
+        "click": [
+          { page: "tada!" },
+          { page: "same again" }
+        ]
+      };
+      this.batchResponse = JSON2.stringify({
+        click: [
+          { "success": true }
+        ],
+        pageview: [
+          { "success": true },
+          { "success": true }
+        ]
+      });
+    });
+
+    it("should not send events if Keen.enabled is set to \"false\"", function(){
+      Keen.enabled = false;
+      this.client.addEvents(this.batchData, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.null;
+      });
+      Keen.enabled = true;
+    });
+
+    it("should return an error message if first argument is not an object", function(){
+      this.client.addEvents([], function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.null;
+      });
+    });
+
+    describe("via XHR/CORS (if supported)", function(){
+
+      beforeEach(function() {
+        var self = this;
+        self.postUrl = self.project.url("/projects/" + self.project.projectId() + "/events");
+        self.server = sinon.fakeServer.create();
+      });
+
+      afterEach(function(){
+        this.server.restore();
+      });
+
+      if ('withCredentials' in new XMLHttpRequest()) {
+
+        it("should POST to the API using XHR", function() {
+          var callback = sinon.spy();
+          this.client.addEvents(this.batchData, callback);
+          this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, keenHelper.responses["error"] ] );
+          this.server.respond();
+          expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["error"]);
+          expect(callback.calledOnce).to.be.ok;
+        });
+
+        it("should call the error callback on error", function() {
+          var callback = sinon.spy();
+          this.client.addEvents(this.batchData, callback);
+          this.server.respondWith( "POST", this.postUrl, [ 500, { "Content-Type": "application/json"}, keenHelper.responses["error"] ] );
+          this.server.respond();
+          expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["error"]);
+          expect(callback.calledOnce).to.be.ok;
+        });
+
+      }
+
+    });
 
   });
 

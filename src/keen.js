@@ -6,6 +6,7 @@ var Keen = require("./core"),
     parseParams = require("./core/utils/parseParams");
 
 var addEvent = require("./core/lib/addEvent"),
+    addEvents = require("./core/lib/addEvents"),
     setGlobalProperties = require("./core/lib/setGlobalProperties"),
     trackExternalLink = require("./core/lib/trackExternalLink");
 
@@ -23,6 +24,7 @@ Keen.Request = require("./core/request");
 
 extend(Keen.prototype, {
   "addEvent"            : addEvent,
+  "addEvents"           : addEvents,
   "setGlobalProperties" : setGlobalProperties,
   "trackExternalLink"   : trackExternalLink,
   "get"                 : get,
