@@ -321,6 +321,13 @@ describe("Keen.Dataviz", function(){
   });
 
   describe("#el", function(){
+
+    beforeEach(function(){
+      var elDiv = document.createElement("div");
+      elDiv.id = "chart-test";
+      document.body.appendChild(elDiv);
+    });
+
     it("should return undefined by default", function(){
       expect(this.dataviz.el()).to.be.an("undefined");
     });

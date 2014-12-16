@@ -12,12 +12,12 @@ describe("Tracker (browser)", function() {
     describe("Keen.enabled", function(){
 
       beforeEach(function() {
-        this.project = new Keen({ projectId: "123" });
+        this.client = new Keen({ projectId: "123" });
       });
 
       it("should not send events if set to \"false\"", function(){
         Keen.enabled = false;
-        this.project.addEvent("not-going", { test: "data" }, function(err, res){
+        this.client.addEvent("not-going", { test: "data" }, function(err, res){
           expect(err).to.exist;
           expect(res).to.be.null;
         });
@@ -29,11 +29,11 @@ describe("Tracker (browser)", function() {
     describe("enforce correct arguments for #addEvent", function(){
 
       beforeEach(function() {
-        this.project = new Keen({ projectId: "123" });
+        this.client = new Keen({ projectId: "123" });
       });
 
       it("should return an error message if event collection is omitted", function(){
-        this.project.addEvent(null, { test: "data" }, function(err, res){
+        this.client.addEvent(null, { test: "data" }, function(err, res){
           expect(err).to.exist;
           expect(res).to.be.null;
         });
@@ -45,13 +45,13 @@ describe("Tracker (browser)", function() {
 
       beforeEach(function() {
         var self = this;
-        self.project = new Keen({
+        self.client = new Keen({
           projectId: keenHelper.projectId,
           writeKey: keenHelper.writeKey,
           // host: keenHelper.host,
           requestType: "xhr"
         });
-        self.postUrl = self.project.url("/events/" + keenHelper.collection);
+        self.postUrl = self.client.url("/events/" + keenHelper.collection);
         self.server = sinon.fakeServer.create();
       });
 
@@ -63,7 +63,7 @@ describe("Tracker (browser)", function() {
 
         it("should POST to the API using XHR", function() {
           var callback = sinon.spy();
-          this.project.addEvent(keenHelper.collection, keenHelper.properties, callback);
+          this.client.addEvent(keenHelper.collection, keenHelper.properties, callback);
           this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, keenHelper.responses.success ] );
           this.server.respond();
           expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["success"]);
@@ -74,7 +74,7 @@ describe("Tracker (browser)", function() {
 
         it("should call the error callback on error", function() {
           var callback = sinon.spy();
-          this.project.addEvent(keenHelper.collection, keenHelper.properties, function(err, res){
+          this.client.addEvent(keenHelper.collection, keenHelper.properties, function(err, res){
             expect(err).to.exist;
             expect(res).to.be.null;
           });
@@ -92,7 +92,7 @@ describe("Tracker (browser)", function() {
 
     // describe("via JSONP to a fake server", function(){
     //   beforeEach(function() {
-    //     this.project = new Keen({
+    //     this.client = new Keen({
     //       projectId: keenHelper.projectId,
     //       writeKey: keenHelper.writeKey,
     //       host: keenHelper.host,
@@ -103,7 +103,7 @@ describe("Tracker (browser)", function() {
     //
     // describe("via Image Beacon to a fake server", function(){
     //   beforeEach(function() {
-    //     this.project = new Keen({
+    //     this.client = new Keen({
     //       projectId: keenHelper.projectId,
     //       writeKey: keenHelper.writeKey,
     //       host: keenHelper.host,
@@ -158,9 +158,9 @@ describe("Tracker (browser)", function() {
     describe("via XHR/CORS (if supported)", function(){
 
       beforeEach(function() {
-        var self = this;
-        self.postUrl = self.project.url("/events");
-        self.server = sinon.fakeServer.create();
+        // var self = this;
+        this.postUrl = this.client.url("/events");
+        this.server = sinon.fakeServer.create();
       });
 
       afterEach(function(){

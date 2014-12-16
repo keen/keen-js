@@ -20,7 +20,6 @@ env:
   - LOGS_DIR=/tmp/keen-build/logs
 
 install:
-  - npm install -g grunt-cli
   - npm install -g bower
   - npm install
   - bower install

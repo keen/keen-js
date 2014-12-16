@@ -6,22 +6,15 @@ var aws = require("gulp-awspublish"),
     clean = require("gulp-clean"),
     connect = require("gulp-connect"),
     compress = require("gulp-yuicompressor"),
-    gzip = require("gulp-gzip"),
+    karma = require("karma").server,
     mocha = require("gulp-mocha"),
     mochaPhantomJS = require("gulp-mocha-phantomjs"),
+    moment = require("moment"),
     rename = require("gulp-rename"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
 
 var wrap = require("./src/wrappers/gulpTask");
-
-/*
-  TODO:
-  [x] minify src/loader.js
-  [x] S3->CDN release task
-  [ ] Saucelabs or comparable
-*/
-
 
 // -------------------------
 // Build tasks
@@ -33,7 +26,6 @@ gulp.task("build", function(callback) {
       "build:browserify",
       "build:clean",
       "compress",
-      // "gzip",
       callback
     );
 });
@@ -79,15 +71,6 @@ gulp.task("compress", function(){
     .pipe(gulp.dest("./dist/"));
 });
 
-gulp.task("gzip", function(){
-  return gulp.src([
-    "./dist/keen.min.js",
-    "./dist/keen-tracker.min.js"
-    ])
-    .pipe(gzip({ append: true }))
-    .pipe(gulp.dest("./dist/"));
-});
-
 gulp.task("connect", function () {
   return connect.server({
       root: [ __dirname, "test", "test/unit", "test/vendor", "test/browser/examples" ],
@@ -107,7 +90,7 @@ gulp.task("watch-with-tests", function() {
       "src/**/*.js",
       "test/unit/**/*.*",
       "gulpfile.js"
-    ], ["build", "test:unit"]);
+    ], ["build", "test:local"]);
 });
 
 
@@ -115,40 +98,117 @@ gulp.task("watch-with-tests", function() {
 // Test tasks
 // -------------------------
 
-gulp.task("test:unit", function(callback) {
-  runSequence(
-    "test:server",
-    "test:unit:clean",
-    "test:unit:build",
-    "test:unit:run",
-    callback
-  );
+gulp.task("test:server", function () {
+  return gulp.src("./test/unit/server.js", { read: false })
+    .pipe(mocha({ reporter: "nyan" }));
 });
 
-gulp.task("test:unit:clean", function() {
+gulp.task("test:unit:clean", function () {
   return gulp.src("./test/unit/build", { read: false })
-  .pipe(clean());
+    .pipe(clean());
 });
 
 gulp.task("test:unit:build", function () {
   return browserify("./test/unit/index.js", {
-    insertGlobals: true,
-    debug: true
-  })
-  .bundle()
-  .pipe(source("browserified-tests.js"))
-  .pipe(gulp.dest("./test/unit/build"));
+      insertGlobals: true,
+      debug: true
+    })
+    .bundle()
+    .pipe(source("browserified-tests.js"))
+    .pipe(gulp.dest("./test/unit/build"));
 });
 
-gulp.task("test:unit:run", function () {
+gulp.task("test:unit:phantom", function () {
   return gulp.src("./test/unit/index.html")
-  .pipe(mochaPhantomJS());
+    .pipe(mochaPhantomJS());
 });
 
-gulp.task("test:server", function () {
-  return gulp.src("./test/unit/server.js", { read: false })
-  .pipe(mocha({ reporter: "nyan" }));
+gulp.task("test:unit:karma", function (done){
+  karma.start({
+    configFile: __dirname + "/karma.conf.js",
+    singleRun: true
+  }, done);
 });
+
+gulp.task("test:unit:sauce", function(){
+  karma.start({
+    browsers: Object.keys(getCustomLaunchers()),
+    browserDisconnectTimeout: 10 * 1000,
+    browserDisconnectTolerance: 3,
+    browserNoActivityTimeout: 20 * 1000,
+    captureTimeout: 300 * 1000,
+    configFile : __dirname + "/karma.conf.js",
+    customLaunchers: getCustomLaunchers(),
+    logColors: true,
+    reporters: [ "saucelabs" ],
+    sauceLabs: {
+      testName: moment().format("ddd, MMM Do, h:mm:ss a"),
+      recordScreenshots: false,
+      recordVideo: false,
+
+    },
+    singleRun  : true,
+    action     : "run"
+  });
+});
+
+
+// -------------------------
+// Test bundles
+// -------------------------
+
+gulp.task("test:prepare", function (callback) {
+  runSequence(
+    "test:unit:clean",
+    "test:unit:build",
+    callback
+  );
+});
+
+gulp.task("test:phantom", function (callback) {
+  runSequence(
+    "test:prepare",
+    "test:unit:phantom",
+    callback
+  );
+});
+
+gulp.task("test:karma", function (callback){
+  runSequence(
+    "test:prepare",
+    "test:unit:karma",
+    callback
+  );
+});
+
+gulp.task("test:sauce", function(callback){
+  runSequence(
+    "test:prepare",
+    "test:unit:sauce",
+    callback
+  );
+});
+
+gulp.task("test:local", function(callback) {
+  runSequence(
+    // Node.js tests
+    "test:server",
+    // Browser tests
+    "test:phantom",
+    "test:karma",
+    callback
+  );
+});
+
+gulp.task("test:all", function(callback) {
+  runSequence(
+    "test:local",
+    "test:sauce",
+    callback
+  );
+});
+
+
 
 
 // -------------------------
@@ -158,7 +218,7 @@ gulp.task("test:server", function () {
 gulp.task("deploy", function(callback){
   runSequence(
     "build",
-    "test:unit",
+    "test:local",
     "aws",
     callback
   );
@@ -192,7 +252,6 @@ gulp.task("aws", function() {
     ])
     .pipe(rename(function(path) {
       path.dirname += "/" + pkg["version"];
-      // path.basename += "-test";
     }))
     .pipe(aws.gzip())
     .pipe(publisher.publish(headers))
@@ -217,10 +276,54 @@ gulp.task("default", function(callback){
 
 gulp.task("with-tests", function(callback){
   runSequence(
-    "test:unit",
+    "test:local",
     "build",
     "connect",
     "watch-with-tests",
     callback
   );
 });
+
+
+function getCustomLaunchers(){
+  return {
+    sl_ios: {
+      base: "SauceLabs",
+      browserName: "iPhone",
+      platform: "OS X 10.9",
+      version: "8.1"
+    },
+    sl_android: {
+      base: "SauceLabs",
+      browserName: "android",
+      platform: "Linux",
+      version: "4.4"
+    },
+
+    // sl_safari: {
+    //   base: "SauceLabs",
+    //   browserName: "safari",
+    //   platform: "OS X 10.10",
+    //   version: "8"
+    // },
+
+    sl_ie_11: {
+      base: "SauceLabs",
+      browserName: "internet explorer",
+      platform: "Windows 8.1",
+      version: "11"
+    },
+    sl_ie_10: {
+      base: "SauceLabs",
+      browserName: "internet explorer",
+      platform: "Windows 8",
+      version: "10"
+    },
+    sl_ie_9: {
+      base: "SauceLabs",
+      browserName: "internet explorer",
+      platform: "Windows 7",
+      version: "9"
+    }
+  };
+}
