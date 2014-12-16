@@ -20,6 +20,7 @@ env:
   - LOGS_DIR=/tmp/keen-build/logs
 
 install:
+  - npm install -g browserify
   - npm install -g bower
   - npm install
   - bower install
