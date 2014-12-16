@@ -10,4 +10,5 @@ require("./modules/dataset/dataset-spec");
 // Server-specific modules
 // -------------------------
 require("./modules/core/tracker/server-spec");
+require("./modules/core/request/server-spec");
 require("./modules/server/scoped-keys-spec");

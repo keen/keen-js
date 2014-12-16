@@ -7,7 +7,7 @@ chai.use(spies);
 
 var Keen = require("../../../../../src/server"),
     keenHelper = require("../../../helpers/test-config"),
-    mock = require("../../../helpers/mockServerRequests")
+    mock = require("../../../helpers/mockServerRequests");
 
 Keen.debug = true;
 
