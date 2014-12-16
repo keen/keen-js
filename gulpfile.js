@@ -3,7 +3,6 @@ var gulp = require("gulp"),
 
 var aws = require("gulp-awspublish"),
     browserify = require("browserify"),
-    clean = require("gulp-clean"),
     connect = require("gulp-connect"),
     compress = require("gulp-yuicompressor"),
     karma = require("karma").server,
@@ -11,6 +10,7 @@ var aws = require("gulp-awspublish"),
     mochaPhantomJS = require("gulp-mocha-phantomjs"),
     moment = require("moment"),
     rename = require("gulp-rename"),
+    rimraf = require("gulp-rimraf"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
 
@@ -57,7 +57,7 @@ gulp.task("browserify:tracker", function() {
 
 gulp.task("build:clean", function() {
   return gulp.src("./src/*.tmp", { read: false })
-  .pipe(clean());
+  .pipe(rimraf());
 });
 
 gulp.task("compress", function(){
@@ -105,7 +105,7 @@ gulp.task("test:server", function () {
 
 gulp.task("test:unit:clean", function () {
   return gulp.src("./test/unit/build", { read: false })
-    .pipe(clean());
+    .pipe(rimraf());
 });
 
 gulp.task("test:unit:build", function () {
