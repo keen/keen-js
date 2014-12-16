@@ -33,7 +33,7 @@ Request.prototype.refresh = function(){
 
   var handleResponse = function(err, res, index){
     if (err) {
-      self.trigger("error", err, null);
+      self.trigger("error", err);
       if (self.callback) {
         self.callback(err, null);
       }
