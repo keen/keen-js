@@ -206,6 +206,15 @@ gulp.task("test:all", function(callback) {
   );
 });
 
+gulp.task("test:ci", function(callback) {
+  runSequence(
+    "test:server",
+    "test:phantom",
+    "test:sauce",
+    callback
+  );
+});
+
 
 
 

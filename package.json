@@ -9,7 +9,7 @@
   },
   "scripts": {
     "start": "gulp with-tests",
-    "test": "gulp test:all"
+    "test": "gulp test:ci"
   },
   "bugs": "https://github.com/keen/keen-js/issues",
   "author": "Dustin Larimer <dustin@keen.io> (https://keen.io/)",
