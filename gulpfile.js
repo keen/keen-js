@@ -5,12 +5,12 @@ var aws = require("gulp-awspublish"),
     browserify = require("browserify"),
     connect = require("gulp-connect"),
     compress = require("gulp-yuicompressor"),
+    del = require("del"),
     karma = require("karma").server,
     mocha = require("gulp-mocha"),
     mochaPhantomJS = require("gulp-mocha-phantomjs"),
     moment = require("moment"),
     rename = require("gulp-rename"),
-    rimraf = require("gulp-rimraf"),
     runSequence = require("run-sequence"),
     source = require("vinyl-source-stream");
 
@@ -55,9 +55,8 @@ gulp.task("browserify:tracker", function() {
     .pipe(gulp.dest("./dist/"));
 });
 
-gulp.task("build:clean", function() {
-  return gulp.src("./src/*.tmp", { read: false })
-  .pipe(rimraf());
+gulp.task("build:clean", function(callback) {
+  del(["./src/*.tmp"], callback);
 });
 
 gulp.task("compress", function(){
@@ -90,7 +89,7 @@ gulp.task("watch-with-tests", function() {
       "src/**/*.js",
       "test/unit/**/*.*",
       "gulpfile.js"
-    ], ["build", "test:local"]);
+    ], ["build", "test:phantom"]);
 });
 
 
@@ -103,9 +102,8 @@ gulp.task("test:server", function () {
     .pipe(mocha({ reporter: "nyan" }));
 });
 
-gulp.task("test:unit:clean", function () {
-  return gulp.src("./test/unit/build", { read: false })
-    .pipe(rimraf());
+gulp.task("test:unit:clean", function (callback) {
+  del(["./test/unit/build"], callback);
 });
 
 gulp.task("test:unit:build", function () {

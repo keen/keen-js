@@ -37,6 +37,7 @@
   "devDependencies": {
     "chai": "^1.10.0",
     "chai-spies": "^0.5.1",
+    "del": "^1.1.0",
     "event-stream": "^3.1.7",
     "gulp": "^3.8.10",
     "gulp-awspublish": "0.0.23",
@@ -45,7 +46,6 @@
     "gulp-mocha-phantomjs": "^0.5.1",
     "gulp-obfuscate": "^0.2.9",
     "gulp-rename": "^1.2.0",
-    "gulp-rimraf": "^0.1.1",
     "gulp-util": "^3.0.1",
     "gulp-yuicompressor": "0.0.3",
     "karma": "^0.12.28",
