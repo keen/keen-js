@@ -6,8 +6,8 @@ extend(Keen.prototype, {
   "addEvents"           : require("../core/lib/addEvents"),
   "setGlobalProperties" : require("../core/lib/setGlobalProperties"),
   "get"                 : require("./lib/get"),
-  "post"                : require("./lib/post"),
-  "put"                 : require("./lib/post"),
+  "post"                : require("../core/lib/post"),
+  "put"                 : require("../core/lib/post"),
   "del"                 : require("./lib/del"),
   "run"                 : require("../core/lib/run")
 });

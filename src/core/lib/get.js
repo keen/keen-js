@@ -1,24 +1,22 @@
 var request = require('superagent');
-
-var extend = require('../utils/extend'),
-    getQueryString = require('../helpers/get-query-string'),
-    responseHandler = require('../helpers/superagent-handle-response'),
+var getQueryString = require('../helpers/get-query-string'),
+    handleResponse = require('../helpers/superagent-handle-response'),
     requestTypes = require('../helpers/superagent-request-types');
 
-module.exports = function(url, payload, api_key, callback){
-  var data = payload || {},
-      reqType = this.config.requestType,
-      cb = callback;
-
+module.exports = function(url, data, api_key, callback){
+  var reqType = this.config.requestType;
   if (reqType === 'beacon') {
     reqType = 'jsonp';
   }
 
+  // Ensure api_key is present for GET requests
+  data['api_key'] = data['api_key'] || api_key;
+
   request
-    .get(url + getQueryString(payload))
+    .get(url+getQueryString(data))
     .use(requestTypes(reqType))
     .end(function(err, res){
-      responseHandler(err, res, cb);
-      cb = callback = null;
+      handleResponse(err, res, callback);
+      callback = null;
     });
 };

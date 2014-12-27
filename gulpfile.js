@@ -89,7 +89,7 @@ gulp.task("watch-with-tests", function() {
       "src/**/*.js",
       "test/unit/**/*.*",
       "gulpfile.js"
-    ], ["build", "test:phantom"]);
+    ], ["build", "test:server", "test:phantom"]);
 });
 
 
