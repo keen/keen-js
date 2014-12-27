@@ -1,4 +1,5 @@
-var sendEvent = require("../utils/sendEvent");
+// var sendEvent = require("../utils/sendEvent");
+var addEvent = require("./addEvent");
 
 module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
   var evt = jsEvent,
@@ -46,10 +47,9 @@ module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCal
       }
     };
   }
-  sendEvent.call(this, eventCollection, payload, callback);
+  addEvent.call(this, eventCollection, payload, callback);
 
   setTimeout(callback, timer);
-
   if (!evt.metaKey) {
     return false;
   }

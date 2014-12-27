@@ -22,10 +22,7 @@ module.exports = function(type, opts){
 
     // Apply options
     each(opts, function(config, state){
-      // extend(request.requestType['options'][state], config);
-      each(config, function(value, name){
-        request.requestType['options'][state][name] = value;
-      });
+      extend(request.requestType['options'][state], config);
     });
 
     request.constructor.prototype.end = function(fn){
