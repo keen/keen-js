@@ -1,42 +1,28 @@
 "use strict";
 
 var Keen = require("./core"),
-    each = require("./core/utils/each"),
-    extend = require("./core/utils/extend"),
-    parseParams = require("./core/utils/parseParams");
-
-var addEvent = require("./core/lib/addEvent"),
-    addEvents = require("./core/lib/addEvents"),
-    setGlobalProperties = require("./core/lib/setGlobalProperties"),
-    trackExternalLink = require("./core/lib/trackExternalLink");
-
-var get = require("./core/lib/get"),
-    post = require("./core/lib/post");
-
-var domready = require("domready");
+    extend = require("./core/utils/extend");
 
 extend(Keen.prototype, {
-  "addEvent"            : addEvent,
-  "addEvents"           : addEvents,
-  "setGlobalProperties" : setGlobalProperties,
-  "trackExternalLink"   : trackExternalLink,
-  "get"                 : get,
-  "post"                : post,
-  "put"                 : post
+  "addEvent"            : require("./core/lib/addEvent"),
+  "addEvents"           : require("./core/lib/addEvents"),
+  "setGlobalProperties" : require("./core/lib/setGlobalProperties"),
+  "trackExternalLink"   : require("./core/lib/trackExternalLink"),
+  "get"                 : require("./core/lib/get"),
+  "post"                : require("./core/lib/post"),
+  "put"                 : require("./core/lib/post")
 });
 
 Keen.utils = {
-  "each"         : each,
+  "domready"     : require("domready"),
+  "each"         : require("./core/utils/each"),
   "extend"       : extend,
-  "parseParams"  : parseParams,
-  "domready"     : domready
+  "parseParams"  : require("./core/utils/parseParams")
 };
 
 if (Keen.loaded) {
   setTimeout(function(){
-    domready(function(){
-      Keen.trigger("ready");
-    })
+    Keen.utils.domready(function(){ Keen.trigger("ready"); });
   }, 0);
 }
 require("./core/async")();

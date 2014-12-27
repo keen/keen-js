@@ -1,7 +1,7 @@
 var each = require("./utils/each"),
     extend = require("./utils/extend"),
-    getTimezoneOffset = require("./helpers/getTimezoneOffset"),
-    getQueryString = require("./helpers/getQueryString");
+    getTimezoneOffset = require("./helpers/get-timezone-offset"),
+    getQueryString = require("./helpers/get-query-string");
 
 var Emitter = require('./helpers/emitter-shim');
 

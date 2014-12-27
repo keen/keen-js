@@ -9,7 +9,7 @@ module.exports = function(query, callback) {
   } else {
     queries.push(query);
   }
-  request = new Request(this, queries, cb);
+  request = new Request(this, queries, cb).refresh();
   cb = callback = null;
   return request;
 };

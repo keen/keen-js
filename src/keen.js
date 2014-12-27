@@ -1,54 +1,36 @@
 "use strict";
 
 var Keen = require("./core"),
-    each = require("./core/utils/each"),
-    extend = require("./core/utils/extend"),
-    parseParams = require("./core/utils/parseParams");
+    extend = require("./core/utils/extend");
 
-var addEvent = require("./core/lib/addEvent"),
-    addEvents = require("./core/lib/addEvents"),
-    setGlobalProperties = require("./core/lib/setGlobalProperties"),
-    trackExternalLink = require("./core/lib/trackExternalLink");
-
-var get = require("./core/lib/get"),
-    post = require("./core/lib/post");
-
-var runQuery = require("./core/lib/run");
-var drawQuery = require("./dataviz/extensions/draw");
-
-var Spinner = require("spin.js"),
-    domready = require("domready");
+extend(Keen.prototype, {
+  "addEvent"            : require("./core/lib/addEvent"),
+  "addEvents"           : require("./core/lib/addEvents"),
+  "setGlobalProperties" : require("./core/lib/setGlobalProperties"),
+  "trackExternalLink"   : require("./core/lib/trackExternalLink"),
+  "get"                 : require("./core/lib/get"),
+  "post"                : require("./core/lib/post"),
+  "put"                 : require("./core/lib/post"),
+  "run"                 : require("./core/lib/run"),
+  "draw"                : require("./dataviz/extensions/draw")
+});
 
 Keen.Query = require("./core/query");
 Keen.Request = require("./core/request");
-
-extend(Keen.prototype, {
-  "addEvent"            : addEvent,
-  "addEvents"           : addEvents,
-  "setGlobalProperties" : setGlobalProperties,
-  "trackExternalLink"   : trackExternalLink,
-  "get"                 : get,
-  "post"                : post,
-  "put"                 : post,
-  "run"                 : runQuery,
-  "draw"                : drawQuery
-});
-
-Keen.utils = {
-  "each"         : each,
-  "extend"       : extend,
-  "parseParams"  : parseParams,
-  "domready"     : domready
-};
-
-Keen.Spinner = Spinner;
 Keen.Dataset = require("./dataset");
 Keen.Dataviz = require("./dataviz");
-extend(Keen.utils, {
+Keen.Spinner = require("spin.js");
+
+Keen.utils = {
+  "domready"     : require("domready"),
+  "each"         : require("./core/utils/each"),
+  "extend"       : extend,
+  "parseParams"  : require("./core/utils/parseParams"),
+  "prettyNumber" : require("./dataviz/utils/prettyNumber"),
   "loadScript"   : require("./dataviz/utils/loadScript"),
-  "loadStyle"    : require("./dataviz/utils/loadStyle"),
-  "prettyNumber" : require("./dataviz/utils/prettyNumber")
-});
+  "loadStyle"    : require("./dataviz/utils/loadStyle")
+};
+
 require("./dataviz/adapters/keen-io")();
 require("./dataviz/adapters/google")();
 require("./dataviz/adapters/c3")();
@@ -56,9 +38,7 @@ require("./dataviz/adapters/chartjs")();
 
 if (Keen.loaded) {
   setTimeout(function(){
-    domready(function(){
-      Keen.trigger("ready");
-    })
+    Keen.utils.domready(function(){ Keen.trigger("ready"); });
   }, 0);
 }
 require("./core/async")();

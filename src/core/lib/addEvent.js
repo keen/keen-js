@@ -5,9 +5,10 @@ var Keen = require('../index');
 
 var base64 = require('../utils/base64'),
     each = require('../utils/each'),
-    getQueryString = require('../helpers/getQueryString'),
-    getUrlMaxLength = require('../helpers/getUrlMaxLength'),
-    getXHR = require('../helpers/getXhrObject'),
+    getContext = require('../helpers/get-context'),
+    getQueryString = require('../helpers/get-query-string'),
+    getUrlMaxLength = require('../helpers/get-url-max-length'),
+    getXHR = require('../helpers/get-xhr-object'),
     requestTypes = require('../helpers/superagent-request-types'),
     responseHandler = require('../helpers/superagent-handle-response');
 
@@ -56,13 +57,13 @@ module.exports = function(collection, payload, callback) {
   // Pre-flight for GET requests
   getUrl = 'xhr' !== reqType ? prepareGetRequest.call(self, urlBase, data) : false;
 
-  if ( getUrl ) {
+  if ( getUrl && getContext() === 'browser' ) {
     request
       .get(getUrl)
       .use(requestTypes(reqType))
       .end(handleResponse);
   }
-  else if (getXHR()) {
+  else if ( getXHR() || getContext() === 'server' ) {
     request
       .post(urlBase)
       .set('Content-Type', 'application/json')

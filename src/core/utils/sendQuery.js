@@ -1,46 +1,58 @@
-var getContext = require("../helpers/getContext"),
-    getXHR = require("../helpers/getXhrObject");
+var request = require('superagent');
+
+var getContext = require('../helpers/get-context'),
+    getQueryString = require('../helpers/get-query-string'),
+    getUrlMaxLength = require('../helpers/get-url-max-length'),
+    getXHR = require('../helpers/get-xhr-object'),
+    requestTypes = require('../helpers/superagent-request-types'),
+    responseHandler = require('../helpers/superagent-handle-response');
 
 module.exports = function(path, params, callback){
-  var urlBase = this.url(path),
-      reqType = this.config.requestType,
-      cb = callback,
-      sent = false;
+  var self = this,
+      urlBase = this.client.url(path),
+      reqType = this.client.config.requestType,
+      cb = callback;
 
   callback = null;
 
-  if (!this.projectId()) {
-    this.trigger("error", "Query not sent: Missing projectId property");
+  if (!self.client.projectId()) {
+    self.client.trigger('error', 'Query not sent: Missing projectId property');
     return;
   }
 
-  if (!this.readKey()) {
-    this.trigger("error", "Query not sent: Missing readKey property");
+  if (!self.client.readKey()) {
+    self.client.trigger('error', 'Query not sent: Missing readKey property');
     return;
   }
 
-  if ( getContext() === "browser") {
-    // Use GET when requests in browser (and for all extractions, which do not currently support JSONP)
-    if ((reqType !== "xhr" || !getXHR()) && path.indexOf("extraction") < 0) {
-      try {
-        sent = true;
-        this.get(urlBase, params, this.readKey(), cb);
-      }
-      catch(e){
-        sent = false;
-      }
-    }
-    if ((reqType === "xhr" || !sent) && getXHR()) {
-      this.post(urlBase, params, this.readKey(), cb, true);
-      cb = null;
-    }
-    else {
-      this.trigger("error", "Query not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.");
-    }
+  if (getXHR() || getContext() === 'server' ) {
+    request
+      .post(urlBase)
+        .set('Content-Type', 'application/json')
+        .set('Authorization', self.client.readKey())
+        .timeout(self.timeout())
+        .send(params || {})
+        .end(handleResponse);
   }
   else {
-    this.post(urlBase, params, this.readKey(), cb, true);
-    cb = null;
+    extend(params, { api_key: self.client.readKey() });
+    urlBase += getQueryString(params);
+    if (urlBase.length < getUrlMaxLength() ) {
+      request
+        .get(urlBase)
+        .timeout(self.timeout())
+        .use(requestTypes('jsonp'))
+        .end(handleResponse);
+    }
+    else {
+      self.client.trigger('error', 'Query not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.');
+    }
   }
+
+  function handleResponse(err, res){
+    responseHandler(err, res, cb);
+    cb = callback = null;
+  }
+
   return;
 }

@@ -7,21 +7,29 @@ var Emitter = require('./helpers/emitter-shim');
 
 function Request(client, queries, callback){
   var cb = callback;
+  this.config = {
+    timeout: 300 * 1000
+  };
   this.configure(client, queries, cb);
   cb = callback = null;
 };
 Emitter(Request.prototype);
 
-Request.prototype.configure = function(instance, queries, callback){
+Request.prototype.configure = function(client, queries, callback){
   var cb = callback;
   extend(this, {
-    "instance" : instance,
+    "client"   : client,
     "queries"  : queries,
     "data"     : {},
     "callback" : cb
   });
-  this.refresh();
   cb = callback = null;
+  return this;
+};
+
+Request.prototype.timeout = function(ms){
+  if (!arguments.length) return this.config.timeout;
+  this.config.timeout = (!isNaN(parseInt(ms)) ? parseInt(ms) : null);
   return this;
 };
 
@@ -59,16 +67,16 @@ Request.prototype.refresh = function(){
 
     if (query instanceof Keen.Query) {
       path = "/queries/" + query.analysis;
-      sendQuery.call(self.instance, path, query.params, cbSequencer);
+      sendQuery.call(self, path, query.params, cbSequencer);
     }
     else if ( Object.prototype.toString.call(query) === "[object String]" ) {
       path = "/saved_queries/" + encodeURIComponent(query) + "/result";
-      sendQuery.call(self.instance, path, null, cbSequencer);
+      sendQuery.call(self, path, null, cbSequencer);
     }
     else {
       var res = {
         statusText: "Bad Request",
-        responseText: { message: "Error: Query " + (+index+1) + " of " + self.queries.length + " for project " + self.instance.projectId() + " is not a valid request" }
+        responseText: { message: "Error: Query " + (+index+1) + " of " + self.queries.length + " for project " + self.client.projectId() + " is not a valid request" }
       };
       self.trigger("error", res.responseText.message);
       if (self.callback) {

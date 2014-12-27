@@ -1,5 +1,5 @@
 var request = require('superagent'),
-    getQueryString = require('../../core/helpers/getQueryString'),
+    getQueryString = require('../../core/helpers/get-query-string'),
     handleResponse = require('../../core/helpers/superagent-handle-response');
 
 module.exports = function(url, data, api_key, callback){

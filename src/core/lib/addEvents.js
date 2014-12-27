@@ -2,7 +2,8 @@ var Keen = require('../index');
 var request = require('superagent');
 
 var each = require('../utils/each'),
-    getXHR = require('../helpers/getXhrObject'),
+    getContext = require('../helpers/get-context'),
+    getXHR = require('../helpers/get-xhr-object'),
     requestTypes = require('../helpers/superagent-request-types'),
     responseHandler = require('../helpers/superagent-handle-response');
 
@@ -59,7 +60,7 @@ module.exports = function(payload, callback) {
     data = payload;
   }
 
-  if (getXHR()) {
+  if ( getXHR() || getContext() === 'server' ) {
     request
       .post(urlBase)
       .set('Content-Type', 'application/json')

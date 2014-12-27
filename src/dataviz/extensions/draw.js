@@ -29,12 +29,12 @@ module.exports = function(query, el, cfg) {
     .el(el)
     .prepare();
 
+  request.refresh();
   request.on("complete", function(){
     visual
       .parseRequest(this)
       .render();
   });
-
   request.on("error", function(res){
     visual.error(res.message);
   });
