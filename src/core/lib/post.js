@@ -1,8 +1,8 @@
 var request = require('superagent'),
     handleResponse = require('../helpers/superagent-handle-response');
 
-module.exports = function(url, data, api_key, callback, async){
-  var cb = callback; //, isAsync = async || true;
+module.exports = function(url, data, api_key, callback){
+  var cb = callback;
   request
     .post(url)
     .set('Content-Type', 'application/json')

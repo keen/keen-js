@@ -1,57 +1,39 @@
-var Keen = require("../index"),
-    each = require("../utils/each"),
-    getXHR = require("../helpers/getXhrObject");
+var Keen = require('../index');
+var request = require('superagent');
 
-module.exports = function(payload, callback, async) {
-  var urlBase = this.url("/events"),
+var each = require('../utils/each'),
+    getXHR = require('../helpers/getXhrObject'),
+    requestTypes = require('../helpers/superagent-request-types'),
+    responseHandler = require('../helpers/superagent-handle-response');
+
+module.exports = function(payload, callback) {
+  var self = this,
+      urlBase = this.url('/events'),
       data = {},
-      cb = callback,
-      isAsync = async || true,
-      self = this,
-      error_msg;
+      cb = callback;
 
   if (!Keen.enabled) {
-    error_msg = "Event not recorded: Keen.enabled = false";
-    self.trigger("error", error_msg);
-    if (cb) {
-      cb.call(this, error_msg, null);
-    }
+    handleValidationError.call(self, 'Keen.enabled = false');
     return;
   }
 
   if (!self.projectId()) {
-    error_msg = "Event not recorded: Missing projectId property";
-    self.trigger("error", error_msg);
-    if (cb) {
-      cb.call(this, error_msg, null);
-    }
+    handleValidationError.call(self, 'Missing projectId property');
     return;
   }
 
   if (!self.writeKey()) {
-    error_msg = "Event not recorded: Missing writeKey property";
-    self.trigger("error", error_msg);
-    if (cb) {
-      cb.call(this, error_msg, null);
-    }
+    handleValidationError.call(self, 'Missing writeKey property');
     return;
   }
 
   if (arguments.length > 2) {
-    error_msg = "Events not recorded: Incorrect arguments provided to #addEvents method";
-    self.trigger("error", error_msg);
-    if (typeof arguments[2] === "function") {
-      arguments[2].call(this, error_msg, null);
-    }
+    handleValidationError.call(self, 'Incorrect arguments provided to #addEvents method');
     return;
   }
 
-  if (typeof payload !== "object" || payload instanceof Array) {
-    error_msg = "Events not recorded: Request payload must be an object";
-    self.trigger("error", error_msg);
-    if (cb) {
-      cb.call(this, error_msg, null);
-    }
+  if (typeof payload !== 'object' || payload instanceof Array) {
+    handleValidationError.call(self, 'Request payload must be an object');
     return;
   }
 
@@ -78,13 +60,29 @@ module.exports = function(payload, callback, async) {
   }
 
   if (getXHR()) {
-    self.post(urlBase, data, self.writeKey(), cb, isAsync);
+    request
+      .post(urlBase)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', self.writeKey())
+      .send(data)
+      .end(function(err, res){
+        responseHandler(err, res, cb);
+        cb = callback = null;
+      });
   }
   else {
     // TODO: queue and fire in small, asynchronous batches
-    self.trigger("error", "Events not recorded: XHR support is required for batch upload");
+    self.trigger('error', 'Events not recorded: XHR support is required for batch upload');
   }
 
-  callback = cb = null;
+  function handleValidationError(msg){
+    var err = 'Events not recorded: ' + msg;
+    self.trigger('error', err);
+    if (cb) {
+      cb.call(self, err, null);
+      cb = callback = null;
+    }
+  }
+
   return;
 };

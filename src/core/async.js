@@ -75,5 +75,6 @@ module.exports = function(){
 
   window['_' + 'Keen'] = undefined;
   try {
+    delete window['_' + 'Keen']
   } catch(e) {}
 };
