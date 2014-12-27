@@ -72,7 +72,7 @@ gulp.task("compress", function(){
 
 gulp.task("connect", function () {
   return connect.server({
-      root: [ __dirname, "test", "test/unit", "test/vendor", "test/browser/examples" ],
+      root: [ __dirname, "test", "test/unit", "test/vendor", "test/examples" ],
       port: 9999
     });
 });
