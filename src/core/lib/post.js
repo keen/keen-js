@@ -1,12 +1,15 @@
-var sendXhr = require("../helpers/sendXMLHttpRequest");
+var request = require('superagent'),
+    handleResponse = require('../helpers/superagent-handle-response');
 
 module.exports = function(url, data, api_key, callback, async){
-  var cb = callback,
-      isAsync = async || true;
-
-  sendXhr.call(this, "POST", url, {
-    "Authorization": api_key,
-    "Content-Type": "application/json"
-  }, data, cb, isAsync);
-  cb = callback = null;
-}
+  var cb = callback; //, isAsync = async || true;
+  request
+    .post(url)
+    .set('Content-Type', 'application/json')
+    .set('Authorization', api_key)
+    .send(data || {})
+    .end(function(err, res) {
+      handleResponse(err, res, cb);
+      cb = callback = null;
+    });
+};

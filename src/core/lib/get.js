@@ -1,15 +1,16 @@
-var extend = require("../utils/extend"),
-    getQueryString = require("../helpers/getQueryString"),
-    getUrlMaxLength = require("../helpers/getUrlMaxLength"),
-    sendJsonp = require("../helpers/sendJsonpRequest"),
-    sendBeacon = require("../helpers/sendBeaconRequest");
+var request = require('superagent');
+
+var extend = require('../utils/extend'),
+    getQueryString = require('../helpers/getQueryString'),
+    getUrlMaxLength = require('../helpers/getUrlMaxLength'),
+    handleResponse = require('../helpers/superagent-handle-response'),
+    requestTypes = require('../helpers/superagent-request-types');
 
 module.exports = function(url, payload, api_key, callback){
   var data = payload || {},
-      queryString = "",
+      queryString = '',
       reqType = this.config.requestType,
-      cb = callback,
-      queryString;
+      cb = callback;
 
   if (api_key) {
     extend(data, { api_key: api_key });
@@ -17,15 +18,19 @@ module.exports = function(url, payload, api_key, callback){
   queryString = getQueryString( data );
 
   if ( String(url + queryString).length > getUrlMaxLength()) {
-    throw "URL length exceeds current browser limit";
+    throw 'URL length exceeds current browser limit';
   }
 
-  // Send beacon if recording an event
-  if (reqType === "beacon" && data["data"] && data["modified"]) {
-    sendBeacon.call(this, url + queryString, null, cb);
+  // Send beacon only if recording an event
+  if (reqType === 'beacon' && !data['data'] && !data['modified']) {
+    reqType = 'jsonp';
   }
-  else {
-    sendJsonp.call(this, url + queryString, null, cb);
-  }
-  cb = callback = null;
+
+  request
+    .get(url + queryString)
+    .use(requestTypes(reqType))
+    .end(function(err, res){
+      handleResponse(err, res, cb);
+      cb = callback = null;
+    });
 };

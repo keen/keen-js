@@ -1,13 +1,13 @@
-var request = require("superagent"),
-    handleHttpResponse = require("../utils/handleHttpResponse");
+var request = require('superagent'),
+    handleResponse = require('../../core/helpers/superagent-handle-response');
 
 module.exports = function(url, data, api_key, callback){
   request
     .post(url)
-    .set("Authorization", api_key)
-    .set("Content-Type", "application/json")
+    .set('Authorization', api_key)
+    .set('Content-Type', 'application/json')
     .send(data || {})
     .end(function(error, response) {
-      handleHttpResponse(error, response, callback);
+      handleResponse(error, response, callback);
     });
 };

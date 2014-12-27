@@ -1,16 +1,14 @@
-var JSON2 = require("JSON2");
+var each = require('../utils/each'),
+    JSON2 = require('JSON2');
 
 module.exports = function(params){
   var query = [];
-  for (var key in params) {
-    if (params[key]) {
-      var value = params[key];
-      if (Object.prototype.toString.call(value) !== '[object String]') {
-        value = JSON2.stringify(value);
-      }
-      value = encodeURIComponent(value);
-      query.push(key + '=' + value);
+  each(params, function(value, key){
+    // if (Object.prototype.toString.call(value) !== '[object String]') {}
+    if ('string' !== typeof value) {
+      value = JSON2.stringify(value);
     }
-  }
-  return "?" + query.join('&');
+    query.push(key + '=' + encodeURIComponent(value));
+  });
+  return '?' + query.join('&');
 };

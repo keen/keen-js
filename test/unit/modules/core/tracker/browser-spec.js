@@ -63,13 +63,12 @@ describe("Tracker (browser)", function() {
 
         it("should POST to the API using XHR", function() {
           var callback = sinon.spy();
-          this.client.addEvent(keenHelper.collection, keenHelper.properties, callback);
           this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, keenHelper.responses.success ] );
+          this.client.addEvent(keenHelper.collection, keenHelper.properties, callback);
           this.server.respond();
           expect(this.server.responses[0].response[2]).to.equal(keenHelper.responses["success"]);
           expect(callback.calledOnce).to.be.ok;
-          expect(callback.calledWith(null, JSON.parse(keenHelper.responses["success"]))).to.be.ok;
-          // expect(callback.calledOnce).not.to.be.ok;
+          expect(callback.calledWith( null, JSON.parse(keenHelper.responses["success"]) )).to.be.ok;
         });
 
         it("should call the error callback on error", function() {
