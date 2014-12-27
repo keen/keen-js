@@ -1,44 +1,44 @@
 var root = this;
 var previous_Keen = root.Keen;
 
-var events = require("./events"),
-    extend = require("./utils/extend");
+var extend = require('./utils/extend');
+var Emitter = require('./helpers/emitter-shim');
 
 function Keen(config) {
   this.configure(config || {});
-  Keen.trigger("client", this);
+  Keen.trigger('client', this);
 }
 
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = "BUILD_VERSION"; // Overwritten @ build
+Keen.version = 'BUILD_VERSION'; // Overwritten @ build
 
-extend(Keen, events);
-extend(Keen.prototype, events);
+Emitter(Keen);
+Emitter(Keen.prototype);
 
 Keen.prototype.configure = function(cfg){
   var config = cfg || {};
-  if (config["host"]) {
-    config["host"].replace(/.*?:\/\//g, '');
+  if (config['host']) {
+    config['host'].replace(/.*?:\/\//g, '');
   }
-  if (config.protocol && config.protocol === "auto") {
-    config["protocol"] = location.protocol.replace(/:/g, '');
+  if (config.protocol && config.protocol === 'auto') {
+    config['protocol'] = location.protocol.replace(/:/g, '');
   }
   this.config = {
     projectId   : config.projectId,
     writeKey    : config.writeKey,
     readKey     : config.readKey,
     masterKey   : config.masterKey,
-    requestType : config.requestType || "jsonp",
-    host        : config["host"]     || "api.keen.io/3.0",
-    protocol    : config["protocol"] || "https",
+    requestType : config.requestType || 'jsonp',
+    host        : config['host']     || 'api.keen.io/3.0',
+    protocol    : config['protocol'] || 'https',
     globalProperties: null
   };
   if (Keen.debug) {
-    this.on("error", Keen.log);
+    this.on('error', Keen.log);
   }
-  this.trigger("ready");
+  this.trigger('ready');
 };
 
 Keen.prototype.projectId = function(str){
@@ -67,15 +67,15 @@ Keen.prototype.writeKey = function(str){
 
 Keen.prototype.url = function(path){
   if (!this.projectId()) {
-    this.trigger("error", "Client is missing projectId property");
+    this.trigger('error', 'Client is missing projectId property');
     return;
   }
-  return this.config.protocol + "://" + this.config.host + "/projects/" + this.projectId() + path;
+  return this.config.protocol + '://' + this.config.host + '/projects/' + this.projectId() + path;
 };
 
 Keen.log = function(message) {
-  if (Keen.debug && typeof console == "object") {
-    console.log("[Keen IO]", message);
+  if (Keen.debug && typeof console == 'object') {
+    console.log('[Keen IO]', message);
   }
 };
 
@@ -88,7 +88,7 @@ Keen.ready = function(fn){
   if (Keen.loaded) {
     fn();
   } else {
-    Keen.once("ready", fn);
+    Keen.once('ready', fn);
   }
 };
 

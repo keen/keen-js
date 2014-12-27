@@ -1,8 +1,9 @@
 var clone = require("../core/utils/clone"),
     each = require("../core/utils/each"),
-    events = require("../core/events"),
     flatten = require("./utils/flatten"),
     parse = require("./utils/parse");
+
+var Emitter = require('../core/helpers/emitter-shim');
 
 function Dataset(){
   this.data = {
@@ -23,8 +24,8 @@ Dataset.defaults = {
   delimeter: " -> "
 };
 
-extend(Dataset, events);
-extend(Dataset.prototype, events);
+Emitter(Dataset);
+Emitter(Dataset.prototype);
 
 Dataset.prototype.input = function(obj){
   if (!arguments.length) return this["data"]["input"];

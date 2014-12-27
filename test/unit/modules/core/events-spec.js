@@ -11,13 +11,7 @@ describe("Keen.Events system", function(){
   describe("#on", function(){
     it("should attach custom event listeners with #on", function(){
       Keen.on("whatever", chai.spy());
-      expect(Keen).to.have.property("listeners")
-      .that.is.an("object")
-      .that.has.property("whatever")
-      .that.is.an("array")
-      .with.deep.property('[0]')
-      .that.is.an("object")
-      .that.has.property("callback");
+      expect(Keen.listeners()).to.be.an("array");
     });
   });
 

@@ -1,11 +1,11 @@
 var clone = require("../core/utils/clone"),
     each = require("../core/utils/each"),
     extend = require("../core/utils/extend"),
-    events = require("../core/events"),
     loadScript = require("./utils/loadScript"),
     loadStyle = require("./utils/loadStyle");
 
 var Keen = require("../core");
+var Emitter = require('../core/helpers/emitter-shim');
 
 var Dataset = require("../dataset");
 
@@ -58,7 +58,8 @@ extend(Dataviz, {
   visuals: []
 });
 
-extend(Dataviz.prototype, events);
+Emitter(Dataviz);
+Emitter(Dataviz.prototype);
 
 Dataviz.register = function(name, methods, config){
   var self = this;

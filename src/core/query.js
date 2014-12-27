@@ -1,13 +1,14 @@
 var each = require("./utils/each"),
-    events = require("./events"),
     extend = require("./utils/extend"),
     getTimezoneOffset = require("./helpers/getTimezoneOffset"),
     getQueryString = require("./helpers/getQueryString");
 
+var Emitter = require('./helpers/emitter-shim');
+
 function Query(){
   this.configure.apply(this, arguments);
 };
-extend(Query.prototype, events);
+Emitter(Query.prototype);
 
 Query.prototype.configure = function(analysisType, params) {
   this.analysis = analysisType;

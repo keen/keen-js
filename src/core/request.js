@@ -1,16 +1,16 @@
 var each = require("./utils/each"),
-    events = require("./events"),
     extend = require("./utils/extend"),
     sendQuery = require("./utils/sendQuery");
 
 var Keen = require("./");
+var Emitter = require('./helpers/emitter-shim');
 
 function Request(client, queries, callback){
   var cb = callback;
   this.configure(client, queries, cb);
   cb = callback = null;
 };
-extend(Request.prototype, events);
+Emitter(Request.prototype);
 
 Request.prototype.configure = function(instance, queries, callback){
   var cb = callback;
