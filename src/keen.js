@@ -19,6 +19,8 @@ Keen.Query = require("./core/query");
 Keen.Request = require("./core/request");
 Keen.Dataset = require("./dataset");
 Keen.Dataviz = require("./dataviz");
+
+Keen.Base64 = require("./core/utils/base64");
 Keen.Spinner = require("spin.js");
 
 Keen.utils = {
@@ -38,7 +40,9 @@ require("./dataviz/adapters/chartjs")();
 
 if (Keen.loaded) {
   setTimeout(function(){
-    Keen.utils.domready(function(){ Keen.trigger("ready"); });
+    Keen.utils.domready(function(){
+      Keen.emit("ready");
+    });
   }, 0);
 }
 require("./core/async")();

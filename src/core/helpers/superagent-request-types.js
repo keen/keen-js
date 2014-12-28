@@ -49,20 +49,30 @@ module.exports = function(type, opts){
       }
       // send stuff
       self.emit('request', this);
-      if ( 'jsonp' === reqType ) {
+
+      if (!self.async) {
+        sendXhrSync.call(self);
+      }
+      else if ( 'jsonp' === reqType ) {
         sendJsonp.call(self);
       }
       else if ( 'beacon' === reqType ) {
         sendBeacon.call(self);
-      }
-      else if ( !self.async ) {
-        sendXhrSync.call(self);
       }
       return self;
     };
     return request;
   };
 };
+
+function sendXhrSync(){
+  var xhr = getXHR();
+  if (xhr) {
+    xhr.open('GET', this.url, false);
+    xhr.send(null);
+  }
+  return this;
+}
 
 function sendJsonp(){
   var self = this,
@@ -173,24 +183,5 @@ function xhrShim(opts){
     responseText: opts['responseText'],
     status: opts['status']
   };
-  return this;
-}
-
-function sendXhrSync(){
-  var self = this;
-  var xhr = this.xhr = getXHR();
-  var data = this._formData || this._data;
-  xhr.onreadystatechange = function(){ self.emit('end'); };
-  xhr.open(this.method, this.url, false);
-  if ( this._withCredentials ) xhr.withCredentials = true;
-  if ( 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data ) {
-    var serialize = superagent.serialize[this.getHeader('Content-Type')];
-    if (serialize) data = serialize(data);
-  }
-  for ( var field in this.header ) {
-    if ( null == this.header[field] ) continue;
-    xhr.setRequestHeader(field, this.header[field]);
-  }
-  xhr.send(data);
   return this;
 }

@@ -13,6 +13,7 @@ extend(Keen.prototype, {
   "put"                 : require("./core/lib/post")
 });
 
+Keen.Base64 = require("./core/utils/base64");
 Keen.utils = {
   "domready"     : require("domready"),
   "each"         : require("./core/utils/each"),
@@ -22,7 +23,9 @@ Keen.utils = {
 
 if (Keen.loaded) {
   setTimeout(function(){
-    Keen.utils.domready(function(){ Keen.trigger("ready"); });
+    Keen.utils.domready(function(){
+      Keen.emit("ready");
+    });
   }, 0);
 }
 require("./core/async")();

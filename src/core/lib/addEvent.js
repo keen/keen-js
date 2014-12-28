@@ -58,10 +58,17 @@ module.exports = function(collection, payload, callback, async) {
   }
 
   // Pre-flight for GET requests
-  getUrl = 'xhr' !== reqType ? prepareGetRequest.call(self, urlBase, data) : false;
+  if ( 'xhr' !== reqType || !isAsync ) {
+    getUrl = prepareGetRequest.call(self, urlBase, data);
+  }
+
   if ( getUrl && getContext() === 'browser' ) {
     request
       .get(getUrl)
+      .use(function(req){
+        req.async = isAsync;
+        return req;
+      })
       .use(requestTypes(reqType))
       .end(handleResponse);
   }
@@ -71,7 +78,6 @@ module.exports = function(collection, payload, callback, async) {
       .set('Content-Type', 'application/json')
       .set('Authorization', self.writeKey())
       .send(data)
-      .use(contextConfig(isAsync))
       .end(handleResponse);
   }
   else {
@@ -103,14 +109,4 @@ function prepareGetRequest(url, data){
     modified : new Date().getTime()
   });
   return ( url.length < getUrlMaxLength() ) ? url : false;
-}
-
-function contextConfig(isAsync){
-  return function(req){
-    if ( 'browser' === getContext() ) {
-      req.async = isAsync;
-      req.use(requestTypes('xhr'));
-    }
-    return req;
-  }
 }
