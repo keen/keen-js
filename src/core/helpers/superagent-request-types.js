@@ -1,11 +1,11 @@
-var each = require('../utils/each');
 var superagent = require('superagent');
+var each = require('../utils/each'),
+    getXHR = require('./get-xhr-object');
 
 module.exports = function(type, opts){
   return function(request) {
     var __super__ = request.constructor.prototype.end;
     if ( 'undefined' === typeof window ) return;
-
     request.requestType = request.requestType || {};
     request.requestType['type'] = type;
     request.requestType['options'] = request.requestType['options'] || {
@@ -19,46 +19,44 @@ module.exports = function(type, opts){
         status: 404
       }
     };
-
     // Apply options
     each(opts, function(config, state){
       extend(request.requestType['options'][state], config);
     });
 
-    request.constructor.prototype.end = function(fn){
-      var self = this, query, timeout;
-
-      if ( 'GET' !== self['method'] || !request['requestType'] || 'xhr' === request.requestType['type'] ) {
+    request.end = function(fn){
+      var self = this,
+          reqType = (this.requestType) ? this.requestType['type'] : 'xhr',
+          query,
+          timeout;
+      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.async ) {
         __super__.call(self, fn);
         return;
       }
-
       query = self._query.join('&');
       timeout = self._timeout;
-
       // store callback
       self._callback = arguments[0] || noop;
-
       // timeout
       if (timeout && !self._timer) {
         self._timer = setTimeout(function(){
           abortRequest.call(self);
         }, timeout);
       }
-
       if (query) {
         query = superagent.serializeObject(query);
         self.url += ~self.url.indexOf('?') ? '&' + query : '?' + query;
       }
-
       // send stuff
       self.emit('request', this);
-
-      if (request['requestType']['type'] === 'jsonp') {
+      if ( 'jsonp' === reqType ) {
         sendJsonp.call(self);
       }
-      else {
+      else if ( 'beacon' === reqType ) {
         sendBeacon.call(self);
+      }
+      else if ( !self.async ) {
+        sendXhrSync.call(self);
       }
       return self;
     };
@@ -68,12 +66,11 @@ module.exports = function(type, opts){
 
 function sendJsonp(){
   var self = this,
-  timestamp = new Date().getTime(),
-  script = document.createElement('script'),
-  parent = document.getElementsByTagName('head')[0],
-  callbackName = 'keenJSONPCallback',
-  loaded = false;
-
+      timestamp = new Date().getTime(),
+      script = document.createElement('script'),
+      parent = document.getElementsByTagName('head')[0],
+      callbackName = 'keenJSONPCallback',
+      loaded = false;
   callbackName += timestamp;
   while (callbackName in window) {
     callbackName += 'a';
@@ -84,11 +81,8 @@ function sendJsonp(){
     handleSuccess.call(self, response);
     cleanup();
   };
-
-  // attach script tag
   script.src = self.url + '&jsonp=' + callbackName;
   parent.appendChild(script);
-
   // for early IE w/ no onerror event
   script.onreadystatechange = function() {
     if (loaded === false && self.readyState === 'loaded') {
@@ -97,7 +91,6 @@ function sendJsonp(){
       cleanup();
     }
   };
-
   // non-ie, etc
   script.onerror = function() {
     // on IE9 both onerror and onreadystatechange are called
@@ -107,7 +100,6 @@ function sendJsonp(){
       cleanup();
     }
   };
-
   function cleanup(){
     window[callbackName] = undefined;
     try {
@@ -119,9 +111,8 @@ function sendJsonp(){
 
 function sendBeacon(){
   var self = this,
-  img = document.createElement('img'),
-  loaded = false;
-
+      img = document.createElement('img'),
+      loaded = false;
   img.onload = function() {
     loaded = true;
     if ('naturalHeight' in this) {
@@ -172,20 +163,34 @@ function abortRequest(){
   this.aborted = true;
   this.clearTimeout();
   this.emit('abort');
-  // self.timeoutError();
 }
 
 // hackety hack hack :) keep moving
 function xhrShim(opts){
-  // var opts = this.requestType['options'][state];
-  this.xhr = this.xhr || {};
-  this.xhr.getAllResponseHeaders = function(){
-    return '';
+  this.xhr = {
+    getAllResponseHeaders: function(){ return ''; },
+    getResponseHeader: function(){ return 'application/json'; },
+    responseText: opts['responseText'],
+    status: opts['status']
   };
-  this.xhr.getResponseHeader = function(){
-    return 'application/json';
-  };
-  this.xhr.responseText = opts['responseText']; // '{ "created": true }';
-  this.xhr.status = opts['status'];
+  return this;
+}
+
+function sendXhrSync(){
+  var self = this;
+  var xhr = this.xhr = getXHR();
+  var data = this._formData || this._data;
+  xhr.onreadystatechange = function(){ self.emit('end'); };
+  xhr.open(this.method, this.url, false);
+  if ( this._withCredentials ) xhr.withCredentials = true;
+  if ( 'GET' != this.method && 'HEAD' != this.method && 'string' != typeof data ) {
+    var serialize = superagent.serialize[this.getHeader('Content-Type')];
+    if (serialize) data = serialize(data);
+  }
+  for ( var field in this.header ) {
+    if ( null == this.header[field] ) continue;
+    xhr.setRequestHeader(field, this.header[field]);
+  }
+  xhr.send(data);
   return this;
 }

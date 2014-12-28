@@ -12,13 +12,16 @@ var base64 = require('../utils/base64'),
     requestTypes = require('../helpers/superagent-request-types'),
     responseHandler = require('../helpers/superagent-handle-response');
 
-module.exports = function(collection, payload, callback) {
+module.exports = function(collection, payload, callback, async) {
   var self = this,
       urlBase = this.url('/events/' + collection),
       reqType = this.config.requestType,
       data = {},
       cb = callback,
+      isAsync,
       getUrl;
+
+  isAsync = ('boolean' === typeof async) ? async : true;
 
   if (!Keen.enabled) {
     handleValidationError.call(self, 'Keen.enabled = false');
@@ -56,7 +59,6 @@ module.exports = function(collection, payload, callback) {
 
   // Pre-flight for GET requests
   getUrl = 'xhr' !== reqType ? prepareGetRequest.call(self, urlBase, data) : false;
-
   if ( getUrl && getContext() === 'browser' ) {
     request
       .get(getUrl)
@@ -69,6 +71,7 @@ module.exports = function(collection, payload, callback) {
       .set('Content-Type', 'application/json')
       .set('Authorization', self.writeKey())
       .send(data)
+      .use(contextConfig(isAsync))
       .end(handleResponse);
   }
   else {
@@ -100,4 +103,14 @@ function prepareGetRequest(url, data){
     modified : new Date().getTime()
   });
   return ( url.length < getUrlMaxLength() ) ? url : false;
+}
+
+function contextConfig(isAsync){
+  return function(req){
+    if ( 'browser' === getContext() ) {
+      req.async = isAsync;
+      req.use(requestTypes('xhr'));
+    }
+    return req;
+  }
 }
