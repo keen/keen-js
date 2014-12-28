@@ -17,54 +17,47 @@ module.exports = function(){
         loaded.prototype[key] = method;
       });
 
-      loaded.Query = (Keen.Query) ? Keen.Query : function(){};
-      loaded.Visualization = (Keen.Visualization) ? Keen.Visualization : function(){};
+      each(["Query", "Request", "Dataset", "Dataviz"], function(name){
+        loaded[name] = (Keen[name]) ? Keen[name] : function(){};
+      });
 
       // Run config
       if (client._config) {
         client.configure.call(client, client._config);
-        client._config = undefined;
-        try{
-          delete client._config;
-        }catch(e){}
       }
 
       // Add Global Properties
       if (client._setGlobalProperties) {
-        var globals = client._setGlobalProperties;
-        for (var i = 0; i < globals.length; i++) {
-          client.setGlobalProperties.apply(client, globals[i]);
-        }
-        client._setGlobalProperties = undefined;
-        try{
-          delete client._setGlobalProperties;
-        }catch(e){}
+        each(client._setGlobalProperties, function(fn){
+          client.setGlobalProperties.apply(client, fn);
+        });
       }
 
       // Send Queued Events
       if (client._addEvent) {
-        var queue = client._addEvent || [];
-        for (var i = 0; i < queue.length; i++) {
-          client.addEvent.apply(client, queue[i]);
-        }
-        client._addEvent = undefined;
-        try{
-          delete client._addEvent;
-        }catch(e){}
+        each(client._addEvent, function(obj){
+          client.addEvent.apply(client, obj);
+        });
       }
 
       // Set event listeners
       var callback = client._on || [];
       if (client._on) {
-        for (var i = 0; i < callback.length; i++) {
-          client.on.apply(client, callback[i]);
-        }
+        each(client._on, function(obj){
+          client.on.apply(client, obj);
+        });
         client.trigger('ready');
-        client._on = undefined;
-        try{
-          delete client._on;
-        }catch(e){}
       }
+
+      // unset config
+      each(["_config", "_setGlobalProperties", "_addEvent", "_on"], function(name){
+        if (client[name]) {
+          client[name] = undefined;
+          try{
+            delete client[name];
+          } catch(e){}
+        }
+      });
 
     });
 
