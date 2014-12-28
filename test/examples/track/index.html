@@ -2,8 +2,8 @@
 <html>
 <head>
   <title>Keen IO Query JS Test</title>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.0/jquery.min.js"></script>
-  <script src="../../dist/keen-tracker.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.js" type="text/javascript"></script>
+  <script src="../../dist/keen-tracker.js" type="text/javascript"></script>
 
   <script>
 
@@ -12,10 +12,12 @@
 			writeKey: "554a723d023da6cb24e51c56a9a54555e9dcf8403d4b71ffa37e9112295622e78a10eed43a13c83b14ce171b0f1317bb09aa8df43d50f73b77709ab431af611ea47ed65f4d74c0ea5f2bde8407322ab70559afef294673ee6c224308b1744c9e069508799edefc51264b3f75a1ba9e26"
 			//, protocol: "https"
 			//, host: 'analytics.yourdomain.com'
-			, requestType: "beacon"
+			, requestType: "jsonp"
 		});
 
-    client.addEvent('pageview', {page:'this one'});
+    client.addEvent('pageview', { page:'this one' }, function(err, res){
+      console.log("HERE ", err, res);
+    });
 
 		/*
 		client.addEvent('pageview', {page:'this one'});
@@ -26,6 +28,7 @@
 		client.addEvent('purchase', {amount: 1231.12});
 		client.addEvent('purchase', {amount: 544.43});
 		*/
+
     $(function(){
       // Links
       $("#a-ext").on("click", function(e){
