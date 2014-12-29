@@ -10,6 +10,7 @@ module.exports = function(type, opts){
     request.requestType['type'] = type;
     request.requestType['options'] = request.requestType['options'] || {
       // TODO: find acceptable default values
+      async: true,
       success: {
         responseText: '{ "created": true }',
         status: 201
@@ -20,23 +21,33 @@ module.exports = function(type, opts){
       }
     };
     // Apply options
-    each(opts, function(config, state){
-      extend(request.requestType['options'][state], config);
-    });
+    if (opts) {
+      if ( 'boolean' === typeof opts.async ) {
+        request.requestType['options'].async = opts.async;
+      }
+      if ( opts.success ) {
+        extend(request.requestType['options'].success, opts.success);
+      }
+      if ( opts.error ) {
+        extend(request.requestType['options'].error, opts.error);
+      }
+    }
 
     request.end = function(fn){
       var self = this,
           reqType = (this.requestType) ? this.requestType['type'] : 'xhr',
           query,
           timeout;
-      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.async ) {
+
+      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.requestType['options'].async ) {
         __super__.call(self, fn);
         return;
       }
+
       query = self._query.join('&');
       timeout = self._timeout;
       // store callback
-      self._callback = arguments[0] || noop;
+      self._callback = fn || noop;
       // timeout
       if (timeout && !self._timer) {
         self._timer = setTimeout(function(){
@@ -48,9 +59,9 @@ module.exports = function(type, opts){
         self.url += ~self.url.indexOf('?') ? '&' + query : '?' + query;
       }
       // send stuff
-      self.emit('request', this);
+      self.emit('request', self);
 
-      if (!self.async) {
+      if ( !self.requestType['options'].async ) {
         sendXhrSync.call(self);
       }
       else if ( 'jsonp' === reqType ) {
@@ -145,7 +156,7 @@ function sendBeacon(){
 
 function handleSuccess(res){
   var opts = this.requestType['options']['success'],
-  response = '';
+      response = '';
   xhrShim.call(this, opts);
   if (res) {
     try {

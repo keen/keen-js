@@ -3,8 +3,10 @@ var getQueryString = require('../helpers/get-query-string'),
     handleResponse = require('../helpers/superagent-handle-response'),
     requestTypes = require('../helpers/superagent-request-types');
 
-module.exports = function(url, data, api_key, callback){
-  var reqType = this.config.requestType;
+module.exports = function(url, params, api_key, callback){
+  var reqType = this.config.requestType,
+      data = params || {};
+
   if (reqType === 'beacon') {
     reqType = 'jsonp';
   }
