@@ -7,10 +7,7 @@ extend(Keen.prototype, {
   "addEvent"            : require("./core/lib/addEvent"),
   "addEvents"           : require("./core/lib/addEvents"),
   "setGlobalProperties" : require("./core/lib/setGlobalProperties"),
-  "trackExternalLink"   : require("./core/lib/trackExternalLink"),
-  "get"                 : require("./core/lib/get"),
-  "post"                : require("./core/lib/post"),
-  "put"                 : require("./core/lib/post")
+  "trackExternalLink"   : require("./core/lib/trackExternalLink")
 });
 
 Keen.Base64 = require("./core/utils/base64");

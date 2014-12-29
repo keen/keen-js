@@ -28,9 +28,9 @@ Keen.utils = {
   "each"         : require("./core/utils/each"),
   "extend"       : extend,
   "parseParams"  : require("./core/utils/parseParams"),
-  "prettyNumber" : require("./dataviz/utils/prettyNumber"),
-  "loadScript"   : require("./dataviz/utils/loadScript"),
-  "loadStyle"    : require("./dataviz/utils/loadStyle")
+  "prettyNumber" : require("./dataviz/utils/prettyNumber")
+  // "loadScript"   : require("./dataviz/utils/loadScript"),
+  // "loadStyle"    : require("./dataviz/utils/loadStyle")
 };
 
 require("./dataviz/adapters/keen-io")();
