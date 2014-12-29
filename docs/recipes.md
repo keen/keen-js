@@ -27,7 +27,19 @@ var uniqueVisitors = new Keen.Query("count_unique", { // second query
 	timeframe: timeframe
 });
 
-client.run([pageviews, uniqueVisitors], function(response){ // run the queries
+var chart = new Keen.Dataviz()
+	.el(document.getElementById("pageviews"))
+	.chartType("linechart")
+	.chartOptions({
+		hAxis: {
+			format:'MMM d',
+			gridlines:  {count: 12}
+		}
+	})
+	.prepare();
+
+client.run([pageviews, uniqueVisitors], function(err, response){ // run the queries
+	// if (err) handle the error
 
 	var result1 = response[0].result  // data from first query
 	var result2 = response[1].result  // data from second query
@@ -43,17 +55,11 @@ client.run([pageviews, uniqueVisitors], function(response){ // run the queries
 				{ category: "Visitors", result: result2[i]["value"] }
 			]
 		}
-		if (i == result1.length-1) { // chart the data
-			window.chart = new Keen.Visualization({result: data}, document.getElementById('pageviews'), {
-				chartType: "linechart",
-				title: " ",
-				chartOptions: {
-					hAxis: {
-						format:'MMM d',
-						gridlines:  {count: 12}
-					}
-				}
-			});
+		if (i == result1.length-1) {
+			// chart the data
+			chart
+				.parseRawData({ result: data })
+				.render();
 		}
 		i++;
 	}
@@ -91,7 +97,19 @@ Keen.ready(function(){
     timeframe: timeframe
   });
 
-  client.run([posts, uniquePosters], function(response){ // run the queries
+	var chart = new Keen.Dataviz()
+		.el(document.getElementById("chart1"))
+		.chartType("linechart")
+		.chartOptions({
+			lineWidth: 3,
+			hAxis: {
+				format:'MMM d',
+				gridlines:  {count: 12}
+			}
+		})
+		.prepare();
+
+  client.run([posts, uniquePosters], function(err, response){ // run the queries
 
     var result1 = response[0].result  // data from first query
     var result2 = response[1].result  // data from second query
@@ -106,18 +124,11 @@ Keen.ready(function(){
           { category: "Posts per peep", result: result1[i]["value"] / result2[i]["value"]}
         ]
       }
-      if (i == result1.length-1) { // chart the data
-        window.chart = new Keen.Visualization({result: data}, document.getElementById('chart1'), {
-          chartType: "linechart",
-          title: " ",
-          chartOptions: {
-            lineWidth: 3,
-            hAxis: {
-              format:'MMM d',
-              gridlines:  {count: 12}
-            }
-          }
-        });
+      if (i == result1.length-1) {
+				// chart the data
+				chart
+					.parseRawData({ result: data })
+					.render();
       }
       i++;
     }
@@ -142,7 +153,7 @@ Each data point on the line chart tells you what percentage of users who signed 
 <html lang='en'>
 <head>
   <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js'></script>
-  <script src="https://d26b395fwzu5fz.cloudfront.net/latest/keen.min.js"></script>
+  <script src="https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js"></script>
   <script>
 
     var client = new Keen({
@@ -168,6 +179,19 @@ Each data point on the line chart tells you what percentage of users who signed 
       // Number of days ago the user did step1
       var retentionPeriod = 30;
       var div = "chart1";
+
+			var chart = new Keen.Dataviz()
+				.chartType("linechart")
+				.colors(["#6ab975"])
+				.el(document.getElementById(div))
+				.title("New users still using the app " + retentionPeriod + " days later")
+				.width(600)
+				.chartOptions({
+					legend: { position: "none" },
+					vAxis: { format: '#,###.#%' },
+					hAxis: { format:'MMM d'}
+				})
+				.prepare();
 
       calculateRetention(daysInChart, step1CollectionName, step2CollectionName, retentionPeriod, actorProperty, div);
     });
@@ -216,7 +240,7 @@ Each data point on the line chart tells you what percentage of users who signed 
 
           var funnel = new Keen.Query('funnel', {steps: [step1, step2]});
 
-          client.run(funnel, function(response){
+          client.run(funnel, function(err, response){
             var percentage = response.result[1]/response.result[0]
             dataForLineChart.push({
               "value" : percentage,
@@ -228,25 +252,17 @@ Each data point on the line chart tells you what percentage of users who signed 
 
             if (dataForLineChart.length == daysInChart) {
 
-            // Need to sort data for line chart!
-            dataForLineChart.sort(function(x, y){
-              date1 = new Date(x.timeframe["start"]);
-              date2 = new Date(y.timeframe["start"]);
-              return date1 - date2;
-            })
+	            // Need to sort data for line chart!
+	            dataForLineChart.sort(function(x, y){
+	              date1 = new Date(x.timeframe["start"]);
+	              date2 = new Date(y.timeframe["start"]);
+	              return date1 - date2;
+	            })
 
-            // draw it!
-            window.chart = new Keen.Visualization({result: dataForLineChart}, document.getElementById(div), {
-              chartType: 'linechart',
-              title: "New users still using the app " + retentionPeriod + " days later",
-              width: 600,
-              colors: ['#6ab975'],
-              chartOptions: {
-                legend: { position: "none" },
-                vAxis: { format: '#,###.#%' },
-                hAxis: { format:'MMM d'}
-              }
-            });
+	            // draw it!
+							chart
+								.parseRawData({ result: dataForLineChart })
+								.render();
             }
           });
 

@@ -10,23 +10,6 @@ Clients have a #draw method with accepts a query, a DOM selector, and a configur
 client.draw(query, selector, config);
 ```
 
-Charts can also be instantiated with the `Keen.Visualization` class. Just be sure to include the `library` (default is `google`) and `chartType` properties with the chart configuration.
-
-```javascript
-client.run(query, function(response){
-  var newData = response;
-  response.result = response.result / 100;
-  this.data = newData;
-
-  // Pass in raw data, or reference to "this" (request instance)
-  var myChart = new Keen.Visualization(this, document.getElementById("chart-wrapper"), {
-    library: "google",
-    chartType: "columnchart",
-    title: "Custom chart title"
-  });
-});
-```
-
 ## Example usage
 
 ```javascript
@@ -40,51 +23,48 @@ var chart = client.draw(count, document.getElementById("chart-wrapper"), {
   title: "Custom chart title",
   chartType: "columnchart"
 });
+```
 
-// or
+Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about this object [here](./dataviz.md).
 
-var chart;
-var req = client.run(count, function(){
-  if (chart) chart.remove();
-  // Pass in raw data, or reference to "this" (request instance)
-  chart = new Keen.Visualization(this, document.getElementById("chart-wrapper"), {
-    title: "Custom chart title",
-    chartType: "columnchart"
-  });
+```javascript
+var chart = new Keen.Dataviz()
+  .el(document.getElementById("chart-wrapper"))
+  .chartType("columnchart")
+  .title("Custom chart title")
+  .prepare(); // start spinner
+
+client.run(query, function(response){
+  chart.parseRequest(this).render();
 });
 ```
 
 ## DOM Selector
 
-The first argument for the `#draw` method is a reference to the DOM element where your chart will appear. This should be a block level element, like a `<div>` tag, referenced by its ID attribute:
+The second argument for the `#draw` method is a reference to the DOM element where your chart will appear. This should be a block level element, like a `<div>` tag, referenced by its ID attribute:
 
 `document.getElementById("chart-wrapper")`
 
-
 ## Configuration
-
-Configuration options and their defaults:
 
 ```javascript
 {
-  colors: [ "#ff0000", "#222", "lightblue" ], //
-  title: "",		// string or null
-  height: 400,		// integer
-  width: 600,		// integer or "auto"
-  labelMapping: {},	// read below
-  colorMapping: {},	// read below
+  colors: [ "#ff0000", "#222", "lightblue" ],
+  title: "My chart title!",
+  height: 400,
+  width: 600,
+  colorMapping: {},
+  labelMapping: {},
+  labels: [],
   chartOptions: {
-  	// pass directly through to underying vizz library
+    // pass directly through to underying vizz library
   }
 }
 ```
 
-
 ### Customized Labels
 
-`labelMapping`: object or array that replaces incoming labels with desired values.
-
-**Selective replacement:**
+`labelMapping`: object that selectively replaces previous values with desired values:
 
 ```javascript
 labelMapping: {
@@ -93,11 +73,11 @@ labelMapping: {
 }
 ```
 
-**Total replacement:**
+`labels`: array that totally replaces all values (useful for funnels):
 
 ```javascript
 {
-  labelMapping: [
+  labels: [
     "Step 1",
     "Step 2 (75%)",
     "Step 3 (50%)",
@@ -302,7 +282,7 @@ Find additional configuration options for tables [here](https://developers.googl
 
 ### Funnels
 
-[Funnels](https://keen.io/docs/data-analysis/funnels/) are a fancy analysis type that allow you to see what percentage of users (or devices) complete various steps. 
+[Funnels](https://keen.io/docs/data-analysis/funnels/) are a fancy analysis type that allow you to see what percentage of users (or devices) complete various steps.
 
 
 ![Funnel as a bar chart](img/funnel-barchart.png)
@@ -368,17 +348,18 @@ client.draw(watch_activation_funnel, document.getElementById("chart-05"), {
 
 ## Pass in your own data to charts
 
-To display a modified query result or data from another source into a visualization, pass a result object and a div to Keen.Visualization. The [Keen IO API docs](https://keen.io/docs/data-analysis/) describe what the results look like for all the different query types (counts, series, funnels, etc).
+To display a modified query result or data from another source into a visualization, pass a result object and a div to Keen.Dataviz. The [Keen IO API docs](https://keen.io/docs/data-analysis/) describe what the results look like for all the different query types (counts, series, funnels, etc).
 
 Here's an example that takes a hard-coded value "1896" and draws it as a number.
 
 ```javascript
-  window.chart = new Keen.Visualization({result: 1896}, document.getElementById('my-div'), {
-    chartType: 'metric',
-    title: "Wow!",
-    width: 400,
-    colors: ['#6ab975']
- });
+  var chart = new Keen.Dataviz()
+    .el(document.getElementById('my-div'))
+    .chartType("metric")
+    .colors(["#6ab975"])
+    .title("Wow!")
+    .width(400)
+    .render();
 ```
 
 ## Combine results of two queries
@@ -399,16 +380,19 @@ Here's an example that runs two queries, divides them, and then outputs the resu
     timeframe: "last_7_days"
   });
 
+  var chart = Keen.Dataviz()
+    .el(document.getElementById("paid-session-conversion"))
+    .colors(["#6ab975"])
+    .title("Conversion %")
+    .width(400)
+    .prepare(); // start spinner
+
   var mashup = client.run([sessions_count, paid_sessions_count], function(res){  // Send query to Keen IO
     // divide paid sessions by sessions to get conversion rate
     var conversion_rate = (this.data[1].result/this.data[0].result).toFixed(2)*100
-
-    window.chart = new Keen.Visualization({result: conversion_rate}, document.getElementById('paid-session-conversion'), {
-      chartType: 'metric',
-      title: "Conversion %",
-      width: 400,
-      colors: ['#6ab975']
-    });
+    chart
+      .parseRawData({ result: conversion_rate })
+      .render();
   });
 
 ```
@@ -437,6 +421,16 @@ var uniqueVisitors = new Keen.Query("count_unique", { // second query
 	timeframe: timeframe
 });
 
+var chart = Keen.Dataviz()
+  .chartType("linechart")
+  .chartOptions({
+    hAxis: {
+      format:'MMM d',
+      gridlines:  {count: 12}
+    }
+  })
+  .prepare();
+
 client.run([pageviews, uniqueVisitors], function(response){ // run the queries
 
 	var result1 = response[0].result  // data from first query
@@ -454,16 +448,9 @@ client.run([pageviews, uniqueVisitors], function(response){ // run the queries
 			]
 		}
 		if (i == result1.length-1) { // chart the data
-			window.chart = new Keen.Visualization({result: data}, document.getElementById('pageviews'), {
-				chartType: "linechart",
-				title: " ",
-				chartOptions: {
-					hAxis: {
-						format:'MMM d',
-						gridlines:  {count: 12}
-					}
-				}
-			});
+      chart
+        .parseRawData({ result: data })
+        .render();
 		}
 		i++;
 	}

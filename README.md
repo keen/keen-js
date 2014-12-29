@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.1.0)
+# Keen IO JavaScript SDK (v3.2.0)
 
 **Important:** v3 is now the current version. v2 source and docs are located [here](https://github.com/keenlabs/keen-js/tree/v2).
 
@@ -7,7 +7,7 @@
 [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
 -->
 
-_Tracking is manually tested and validated on Internet Explorer 6, 7, and 8._
+_Tracking is manually tested and validated on Internet Explorer 7 and 8._
 
 ## Documentation
 
@@ -26,14 +26,14 @@ Load this library asynchronously from our CDN by copy/pasting this snippet of Ja
 
 ```html
 <script type="text/javascript">
-  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
 Alternatively, you can load the library synchronously from our CDN:
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
@@ -46,12 +46,12 @@ When instantiating a new Keen JS client, there are a number of possible configur
 ```html
 <script type="text/javascript">
   var client = new Keen({
-    projectId: "your_project_id",       // String (required)
-    writeKey: "your_project_write_key", // String (required for sending data)
-    readKey: "your_project_read_key",   // String (required for querying data)
-    protocol: "https",                  // String (optional: https | http | auto)
-    host: "api.keen.io/3.0",            // String (optional)
-    requestType: "jsonp"                // String (optional: jsonp, xhr, beacon)
+    projectId: "your_project_id",   // String (required)
+    writeKey: "your_write_key",     // String (required for sending data)
+    readKey: "your_read_key",       // String (required for querying data)
+    protocol: "https",              // String (optional: https | http | auto)
+    host: "api.keen.io/3.0",        // String (optional)
+    requestType: "jsonp"            // String (optional: jsonp, xhr, beacon)
   });
 </script>
 ```
@@ -112,8 +112,9 @@ var count = new Keen.Query("count", {
 });
 
 // Send query
-client.run(count, function(response){
-  // response.result
+client.run(count, function(err, res){
+  // if (err) handle error
+  console.log(res.result);
 });
 ```
 
