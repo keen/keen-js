@@ -30,15 +30,16 @@
   "main": "./dist/keen.min.js",
   "ignore": [
     "**/.*",
-    "config",
-    "docs",
     "bower_components",
     "node_modules",
+    "docs",
     "src",
     "test",
-    "Gruntfile.js",
-    "*.json",
-    "*.md"
+    "gulpfile.js",
+    "karma.conf.js",
+    ".npmignore",
+    "*.md",
+    "*.yml"
   ],
   "devDependencies": {
     "mocha": "~1.18.2",
