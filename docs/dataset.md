@@ -1,5 +1,25 @@
 # Keen.Dataset
 
+Every instance of `Keen.Dataviz` manages its own internal instance of `Keen.Dataset`. These methods can be called directly for advanced manipulation of data at any point in the visualization process.
+
+```javascript
+var chart = new Keen.Dataset();
+
+// Parses raw data into a new internal Dataset instance
+chart
+  .parseRawData({ result: 2450 });
+
+chart
+  .call(function(){
+    // Modify internal Dataset instance
+    this.dataset.updateColumn(1, function(value, index, column){
+      return value / 100;
+    });
+  })
+  .render();
+
+```
+
 ## Create a new Dataset instance
 
 ```javascript
