@@ -1,0 +1,198 @@
+<!--
+<a name="unreleased"></a>
+# Unreleased
+-->
+
+<a name="3.2.0"></a>
+# 3.2.0 keen-js learns to node.js (2014-12-28)
+
+This library now runs in the browser and the server, and can be installed via npm: `npm install keen-js`
+
+## New to keen-js
+
+* 'client.addEvents' - record multiple events with a single API call (#108)
+* 'client.addEvent("collection", data, null, false)' - fourth argument of `null` invokes a synchronous XHR call, which is useful for sending events before a page unloads (#188)
+* 'client.get' - execute a generic GET request (New approach to #139)
+* 'client.put' - execute a generic PUT request
+* 'client.post' - execute a generic POST request
+* 'client.del' - execute a generic DELETE request (server-only)
+* `Keen.utils.encryptScopedKeys` - create a new scoped key
+* `Keen.utils.decryptScopedKeys` - decrypt an existing scoped key
+* `Keen.noConflict` – avoid version collisions (#159)
+* `Keen.Request` object supports timeouts (explained below), and must be explicitly run with `.refresh()` (#209, wip)
+* "Metric" visualization shows raw value via the HTML element's `title` attribute (#206, wip)
+
+```javascript
+var req = new Keen.Request(client, [query1, query2], callback)
+  .timeout(300*1000)
+  .refresh();
+```
+
+## Breaking change to all callback signatures
+
+All callbacks now use the single function `(err, res)` callback pattern common to node.js. This was done to make implementations portable between the browser and the server.
+
+This:
+
+```javascript
+client.run(query, function(res){
+  // handle response
+}, function(err){
+  // handle error
+});
+```
+
+Now looks like this:
+
+```javascript
+client.run(query, function(err, res){
+  // if (err) handle err
+  // handle response
+});
+```
+
+## Build/test-related
+
+* Switched from [grunt](http://gruntjs.com/) to [gulp](http://gulpjs.com/)
+* [Browserify](http://browserify.org/) builds browser-specific versions of the library
+* [Karma](http://karma-runner.github.io/) runs tests on local browsers (Chrome, FF, Safari)
+* [SauceLabs testing](https://saucelabs.com/u/keenlabs) tests IE + mobile
+
+
+<a name="3.1.0"></a>
+# 3.1.0 Visualization Reboot (2014-11-03)
+
+Complete rewrite of `Keen.Visualization`, resulting in two brand new tools for creating dynamic, highly-customizable data visualizations.
+
+## [Dataviz](https://github.com/keenlabs/keen-js/tree/master/src/dataviz)
+
+* Composable interface for on-the-fly modifications of [pretty much everything](https://github.com/keenlabs/keen-js/tree/master/src/dataviz)
+* Improved memory management, smaller footprint, better performance
+* Charts render a million times faster (not benchmarked, but srsly, it's silly)
+* Two new chart library adapters: [Chart.js](http://www.chartjs.org/) and [C3.js](http://c3js.org/). Either can be configured as the default
+* Expanded color palette with 18 light+dark variants: now at 27 colors!
+* Explicit methods for [handling different types of data](https://github.com/keenlabs/keen-js/tree/clean-viz/src/dataviz#data-handling)
+* Explicit methods for updating charts, with full control of "loading" state spinner
+* Display custom error messages
+* Determine if intervals should be indexed by "timeframe.start" or "timeframe.end"
+* Sort both groups and intervals, ascending or descending
+
+## [Dataset](https://github.com/keenlabs/keen-js/tree/master/src/dataset)
+
+Dataset is an abstraction layer that handles data inside of `Keen.Dataviz`. This tool unpacks arbitrary JSON into a 2-dimensional array (a table), and offers a set of simple but powerful tools for modifying, filtering and sorting that data. `Keen.Dataviz` charting adapters all know how to unpack this data format into their own crazy needs.
+
+I'll build out a series of demos that showcase what this tool can do, but here are a few examples that you can accomplish with a few (like one or two) lines of javascript:
+
+* For a group_by + interval query:
+* Insert a new series that shows the median (sum/min/max/etc) value of all data points at each interval
+* Sort groups bases the those same results (sort by sum of each series)
+* Remove all records/series that fall below a given threshold (only show the top N results)
+* Multiply all results by 100, or any number
+* Join multiple queries into one chart
+
+The big idea here is that it takes something that once took dozens or hundreds of lines of loopy JS magic and turns it into a quick, repeatable, easily-customizable use of a documented feature.
+
+## Test Coverage
+
+We added over **150 new tests** to cover these two classes, and have expanded our test coverage to include iOS (6-7.1), Android (4.1-4.4), and Chrome/Firefox Beta builds.
+
+## Optimizations
+
+Disable sending of events by setting `Keen.enabled = false;`. This is handy for disabling event recording from local or development environments.
+
+Refactored our [loading script](https://gist.github.com/dustinlarimer/19fedf00c44d120ef8b4), makes it easy to stay up to date with the latest version. Now, when users see the JS blob for embedding our library in the page, it'll look like this:
+
+```javascript
+!function(i,o){i("Keen","//d26b395fwzu5fz.cloudfront.net/3.1.0/keen.min.js",o)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+```
+
+## Client configuration
+
+**Internals have changed:** Client instances have an internal hash that contains properties, like `projectId` and `readKey`. This internal hash was previously called `client`, but has been renamed `config`. Reason being, "client" has become a popular name for new instances, resulting in strange references like `client.client.projectId`.
+
+You can now also reference projectId and keys w/ a set of getter-setter methods, like so:
+
+```javascript
+var client = new Keen({
+  projectId: "123",
+  readKey: "123456789"
+});
+client.projectId(); // returns "123"
+client.readKey(); // returns "123456789"
+```
+
+<a name="3.0.9"></a>
+# 3.0.9 Improved request handling (2014-10-01)
+
+This update greatly improves request handling for sending and querying events.
+
+If JSONP is selected and the produced URL exceeds a given threshold, the library attempts to use XHR/POST if supported.
+
+We have also added more robust support for XHR in older versions of IE, and expanded test coverage to include iOS (6-7.1), Android (4.1-4.4), and Chrome/Firefox Beta builds.
+
+<a name="3.0.8"></a>
+# 3.0.8 Improved memory management for Keen.Visualization (2014-08-18)
+
+Call .remove() or .trigger("remove") on a chart for proper disposal.
+
+<a name="3.0.7"></a>
+# 3.0.7 Bug fixes, timezone fixes, query refreshing (2014-08-06)
+
+__No notes, sorry__
+
+<a name="3.0.6"></a>
+# 3.0.6 [YANKED]
+
+<a name="3.0.5"></a>
+# 3.0.5 AMD Support
+
+This release refactors internal dependency placement to allow for easy use with RequireJS. The library is loaded with an explicitly named module ID ("keen"), which presents a light configuration step, but prevents anonymous define() mismatch mayhem.
+
+Example implementation:
+
+```javascript
+requirejs.config({
+  paths: {
+    "keen": "http://d26b395fwzu5fz.cloudfront.net/3.0.5/keen.js"
+  }
+});
+require([ "keen" ], function(Keen) {
+  var client = new Keen({ ... });
+});
+```
+
+<a name="3.0.4"></a>
+# 3.0.4 Important patch for IE11
+
+Fixed a type-check method that caused queries to fail in IE11 (#96).
+
+<a name="3.0.3"></a>
+# 3.0.3 Visual Error Messages
+
+client.draw() now visualizes API response messages when errors occur.
+
+<a name="3.0.2"></a>
+# 3.0.2 Fixed trackExternalLink and data sorting
+
+Fixed an issue with trackExternalLink ignoring `target="_blank"` attributes, and failing to execute when anchor tags have nested DOM elements like `<span>` tags.
+
+Applied column sorting to static group-by queries, for better arrangment in pie and bar charts.
+
+Fixed #73, #90 and #92
+
+<a name="3.0.1"></a>
+# 3.0.1 Visualization bug fixes and enhancements
+
+* Keen.Metric now supports chartOptions.prefix, chartOptions.suffix, and has more stable colors handling.
+* Grouped interval responses are presented with a multi-line chart now.
+* Changed chartType: "datatable" to table. datatable was left behind from an internal project, but breaks the naming pattern we want to establish with underlying libraries.
+* Expanded color palette
+
+![Color wheel](https://s3.amazonaws.com/uploads.hipchat.com/14465/113676/MjoVfScQYOcEbie/upload.png)
+
+Resolves #72, #74, #76, #80, #82, #85, #86, #87
+
+<a name="3.0.0"></a>
+# 3.0.0 Hello, world
+
+Initial re-release of keen-js!
