@@ -28,6 +28,12 @@ var req = new Keen.Request(client, [query1, query2], callback)
   .refresh();
 ```
 
+## Keen.Visualization has been removed
+
+This object doesn't add any value, and only creates more surface-area for new users to reason about.
+
+Check out `Keen.Dataviz` for building customized visualizations. The docs have been updated to reflect this object's departure, and <Client>.run still works as expected.
+
 ## Breaking change to all callback signatures
 
 All callbacks now use the single function `(err, res)` callback pattern common to node.js. This was done to make implementations portable between the browser and the server.
