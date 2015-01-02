@@ -17,11 +17,17 @@ chart
   .sortGroups("desc")
   .prepare();
 
-client.run(query, function(){
+var req = client.run(query, function(){
   chart
     .parseRequest(this)
     .render();
 });
+
+// let's update this chart every 10 seconds
+setInterval(function(){
+  chart.prepare(); // restart the spinner
+  req.refresh();
+}, 10*1000);
 
 ```
 

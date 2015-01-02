@@ -1,4 +1,4 @@
-Keen.Dataviz.prototype.call = function(fn){
+module.exports = function(fn){
   fn.call(this);
   return this;
 };

@@ -1,9 +1,12 @@
-Keen.Dataviz.prototype.parseRawData = function(raw){
-  this.dataset = _parseRawData.call(this, raw);
+var Dataviz = require("../dataviz"),
+    Dataset = require("../../dataset");
+
+module.exports = function(raw){
+  this.dataset = parseRawData.call(this, raw);
   return this;
 };
 
-function _parseRawData(response){
+function parseRawData(response){
   var self = this,
       schema = {},
       indexBy,
@@ -14,8 +17,8 @@ function _parseRawData(response){
       dataType,
       dataset;
 
-  indexBy = self.indexBy() ? self.indexBy() : Keen.Dataviz.defaults.indexBy;
-  delimeter = Keen.Dataset.defaults.delimeter;
+  indexBy = self.indexBy() ? self.indexBy() : Dataviz.defaults.indexBy;
+  delimeter = Dataset.defaults.delimeter;
   indexTarget = indexBy.split(".").join(delimeter);
 
   labelSet = self.labels() || null;
@@ -24,7 +27,7 @@ function _parseRawData(response){
   // Metric
   // -------------------------------
   if (typeof response.result == "number"){
-    //return new Keen.Dataset(response, {
+    //return new Dataset(response, {
     dataType = "singular";
     schema = {
       records: "",
@@ -137,11 +140,11 @@ function _parseRawData(response){
 
   }
 
-  dataset = new Keen.Dataset(response, schema);
+  dataset = new Dataset(response, schema);
 
   // Post-process label mapping/replacement
-  _runLabelMapping.call(self);
-  _runLabelReplacement.call(self);
+  self.labelMapping(self.labelMapping());
+  self.labels(self.labels());
   self.dataType(dataType);
 
   return dataset;

@@ -1,11 +1,11 @@
-Keen.Dataviz.prototype.sortIntervals = function(str){
-  if (!arguments.length) return this.view.attributes.sortIntervals;
-  this.view.attributes.sortIntervals = (str ? String(str) : null);
-  _runSortIntervals.call(this);
+module.exports = function(str){
+  if (!arguments.length) return this.view["attributes"].sortIntervals;
+  this.view["attributes"].sortIntervals = (str ? String(str) : null);
+  runSortIntervals.call(this);
   return this;
 };
 
-function _runSortIntervals(){
+function runSortIntervals(){
   if (!this.sortIntervals()) return;
   // Sort rows by index
   this.dataset.sortRows(this.sortIntervals());

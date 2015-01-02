@@ -1,10 +1,9 @@
-// ----------------------
-// Keen IO Async Loader
-// ----------------------
+var Keen = require("./index"),
+    each = require("./utils/each");
 
-function _loadAsync(){
-  var loaded = window['Keen'],
-      cached = window['_' + 'Keen'] || {},
+module.exports = function(){
+  var loaded = window['Keen'] || null,
+      cached = window['_' + 'Keen'] || null,
       clients,
       ready;
 
@@ -12,75 +11,63 @@ function _loadAsync(){
     clients = cached['clients'] || {},
     ready = cached['ready'] || [];
 
-    for (var instance in clients) {
-      if (clients.hasOwnProperty(instance)) {
-        var client = clients[instance];
+    each(clients, function(client, id){
 
-        // Map methods to existing instances
-        for (var method in Keen.prototype) {
-          if (Keen.prototype.hasOwnProperty(method)) {
-            loaded.prototype[method] = Keen.prototype[method];
-          }
-        }
-
-        // Map additional methods as necessary
-        loaded.Query = (Keen.Query) ? Keen.Query : function(){};
-        loaded.Visualization = (Keen.Visualization) ? Keen.Visualization : function(){};
-
-        // Run Configuration
-        if (client._config) {
-          client.configure.call(client, client._config);
-          client._config = undefined;
-          try{
-            delete client._config;
-          }catch(e){}
-        }
-
-        // Add Global Properties
-        if (client._setGlobalProperties) {
-          var globals = client._setGlobalProperties;
-          for (var i = 0; i < globals.length; i++) {
-            client.setGlobalProperties.apply(client, globals[i]);
-          }
-          client._setGlobalProperties = undefined;
-          try{
-            delete client._setGlobalProperties;
-          }catch(e){}
-        }
-
-        // Send Queued Events
-        if (client._addEvent) {
-          var queue = client._addEvent || [];
-          for (var i = 0; i < queue.length; i++) {
-            client.addEvent.apply(client, queue[i]);
-          }
-          client._addEvent = undefined;
-          try{
-            delete client._addEvent;
-          }catch(e){}
-        }
-
-        // Create "on" Events
-        var callback = client._on || [];
-        if (client._on) {
-          for (var i = 0; i < callback.length; i++) {
-            client.on.apply(client, callback[i]);
-          }
-          client.trigger('ready');
-          client._on = undefined;
-          try{
-            delete client._on;
-          }catch(e){}
-        }
-
-      }
-    }
-
-    for (var i = 0; i < ready.length; i++) {
-      var callback = ready[i];
-      Keen.once('ready', function(){
-        callback();
+      each(Keen.prototype, function(method, key){
+        loaded.prototype[key] = method;
       });
-    };
+
+      each(["Query", "Request", "Dataset", "Dataviz"], function(name){
+        loaded[name] = (Keen[name]) ? Keen[name] : function(){};
+      });
+
+      // Run config
+      if (client._config) {
+        client.configure.call(client, client._config);
+      }
+
+      // Add Global Properties
+      if (client._setGlobalProperties) {
+        each(client._setGlobalProperties, function(fn){
+          client.setGlobalProperties.apply(client, fn);
+        });
+      }
+
+      // Send Queued Events
+      if (client._addEvent) {
+        each(client._addEvent, function(obj){
+          client.addEvent.apply(client, obj);
+        });
+      }
+
+      // Set event listeners
+      var callback = client._on || [];
+      if (client._on) {
+        each(client._on, function(obj){
+          client.on.apply(client, obj);
+        });
+        client.trigger('ready');
+      }
+
+      // unset config
+      each(["_config", "_setGlobalProperties", "_addEvent", "_on"], function(name){
+        if (client[name]) {
+          client[name] = undefined;
+          try{
+            delete client[name];
+          } catch(e){}
+        }
+      });
+
+    });
+
+    each(ready, function(cb, i){
+      Keen.once("ready", cb);
+    });
   }
-}
+
+  window['_' + 'Keen'] = undefined;
+  try {
+    delete window['_' + 'Keen']
+  } catch(e) {}
+};

@@ -1,15 +1,17 @@
-Keen.Dataviz.prototype.labelMapping = function(obj){
-  if (!arguments.length) return this.view.attributes.labelMapping;
-  this.view.attributes.labelMapping = (obj ? obj : null);
-  _runLabelMapping.call(this);
+var each = require("../../core/utils/each");
+
+module.exports = function(obj){
+  if (!arguments.length) return this.view["attributes"].labelMapping;
+  this.view["attributes"].labelMapping = (obj ? obj : null);
+  applyLabelMapping.call(this);
   return this;
 };
 
-function _runLabelMapping(){
+function applyLabelMapping(){
   var self = this,
-      labelMap = this.labelMapping(),
-      schema = this.dataset.schema() || {},
-      dt = this.dataType() || "";
+  labelMap = this.labelMapping(),
+  schema = this.dataset.schema() || {},
+  dt = this.dataType() || "";
 
   if (labelMap) {
     if (dt.indexOf("chronological") > -1 || (schema.unpack && self.dataset.output()[0].length > 2)) {

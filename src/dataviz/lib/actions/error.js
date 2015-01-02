@@ -1,9 +1,12 @@
-Keen.Dataviz.prototype.error = function(){
-  var actions = _getAdapterActions.call(this);
+var getAdapterActions = require("../../helpers/getAdapterActions"),
+    Dataviz = require("../../dataviz");
+
+module.exports = function(){
+  var actions = getAdapterActions.call(this);
   if (actions['error']) {
     actions['error'].apply(this, arguments);
   } else {
-    Keen.Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+    Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
   }
   return this;
 };

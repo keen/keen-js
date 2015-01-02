@@ -1,7 +1,7 @@
-Keen.prototype.setGlobalProperties = function(newGlobalProperties) {
+module.exports = function(newGlobalProperties) {
   if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
     this.config.globalProperties = newGlobalProperties;
   } else {
-    Keen.log('Invalid value for global properties: ' + newGlobalProperties);
+    this.trigger("error", "Invalid value for global properties: " + newGlobalProperties);
   }
 };

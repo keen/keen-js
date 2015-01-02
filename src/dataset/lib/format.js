@@ -1,4 +1,6 @@
-Keen.Dataset.prototype.format = function(options){
+var each = require("../../core/utils/each");
+
+module.exports = function(options){
   var self = this;
 
     if (this.method() === 'select') {

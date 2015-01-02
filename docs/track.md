@@ -1,6 +1,8 @@
-# Track Events
+# Record Events
 
 Hey, let's record some data!
+
+## Record a single event
 
 Here is a basic example for tracking "purchases" in your app:
 
@@ -23,6 +25,28 @@ client.addEvent("purchases", purchase);
 ```
 
 Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
+
+## Record multiple events
+
+```javascript
+// Configure an instance for your project
+var client = new Keen({...});
+
+// Send multiple events to several collections
+client.addEvents({
+  "purchases": [
+    { item: "golden gadget", price: 25.50, transaction_id: "f029342" },
+    { item: "a different gadget", price: 17.75, transaction_id: "f029342" }
+  ],
+  "transactions": [
+    {
+      id: "f029342",
+      items: 2,
+      total: 43.25
+    }
+  ]
+});
+```
 
 ## A few simple guidelines
 

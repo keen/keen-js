@@ -6,9 +6,9 @@ requirejs.config({
 
 require([
     "keen",
-    "../../../dist/adapters/keen-adapter-c3",
-     "../../../dist/adapters/keen-adapter-google",
-     "../../../dist/adapters/keen-adapter-chartjs"
+    // "../../../dist/adapters/keen-adapter-c3",
+    //  "../../../dist/adapters/keen-adapter-google",
+    //  "../../../dist/adapters/keen-adapter-chartjs"
   ], function(KeenAMD) {
 
   console.log(arguments);

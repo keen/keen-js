@@ -8,12 +8,15 @@ $ npm install
 $ bower install
 
 # Build and launch project site
-$ grunt dev
+$ gulp
+
+# Build and launch with tests
+$ gulp with-tests
 
 # View test results at http://localhost:9999
 ```
 
-## Pull Request Template 
+## Pull Request Template
 
 Please use the PR template below.
 
@@ -26,7 +29,7 @@ Please use the PR template below.
 
 #### How should this be manually tested? (if appropriate)
 
-* run `grunt dev`
+* run `gulp with-tests`
 * tests run at `localhost:9999/`
 
 #### Are there any related issues open?

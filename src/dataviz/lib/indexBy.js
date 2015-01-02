@@ -1,14 +1,18 @@
-Keen.Dataviz.prototype.indexBy = function(str){
-  if (!arguments.length) return this.view.attributes.indexBy;
-  this.view.attributes.indexBy = (str ? String(str) : Keen.Dataviz.defaults.indexBy);
-  _runIndexBy.call(this);
+var Dataset = require("../../dataset"),
+    Dataviz = require("../dataviz"),
+    each = require("../../core/utils/each");
+
+module.exports = function(str){
+  if (!arguments.length) return this.view["attributes"].indexBy;
+  this.view["attributes"].indexBy = (str ? String(str) : Dataviz.defaults.indexBy);
+  indexBy.call(this);
   return this;
 };
 
-function _runIndexBy(){
+function indexBy(){
   var self = this,
-      root = this.dataset.meta.schema || this.dataset.meta.unpack,
-      newOrder = this.indexBy().split(".").join(Keen.Dataset.defaults.delimeter);
+  root = this.dataset.meta.schema || this.dataset.meta.unpack,
+  newOrder = this.indexBy().split(".").join(Dataset.defaults.delimeter);
   // Replace in schema and re-run dataset.parse()
   each(root, function(def, i){
     // update 'select' configs

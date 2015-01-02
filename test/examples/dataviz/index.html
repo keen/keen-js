@@ -78,7 +78,7 @@ var req_metric = new Keen.Dataviz()
   .el(m3)
   .prepare();
 
-client.run(metric, function(res){
+client.run(metric, function(err, res){
   req_metric
     .parseRawData(res)
     .render();
@@ -312,12 +312,12 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("1-3"))
         .prepare();
 
-      window.reqs['metric'].on("complete", function(res){
+      window.reqs['metric'].on("complete", function(err, res){
         //this.draw(document.getElementById("1-1"), { height: 138 });
         req_metric.parseRequest(this).render();
         raw_metric.parseRawData({ result: 3123 }).render();
       });
-      window.reqs['metric'].on("error", function(res){
+      window.reqs['metric'].on("error", function(err, res){
         req_metric.error(res.message);
         raw_metric.error(res.message);
       });
@@ -364,7 +364,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("2-3"))
         .prepare();
 
-      window.reqs['groupBy'].on("complete", function(res){
+      window.reqs['groupBy'].on("complete", function(err, res){
         req_pie
           .parseRequest(this)
           .sortGroups("desc")
@@ -374,7 +374,7 @@ var multiline = new Keen.Query("count", {
           .sortGroups("asc")
           .render();
       });
-      window.reqs['groupBy'].on("error", function(res){
+      window.reqs['groupBy'].on("error", function(err, res){
         req_pie.error(res.message);
         raw_pie.error(res.message);
       });
@@ -401,7 +401,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("3-3"))
         .prepare();
 
-      window.reqs['interval'].on("complete", function(res){
+      window.reqs['interval'].on("complete", function(err, res){
         req_area.parseRequest(this).render();
         raw_area.parseRawData(res)
         .render()
@@ -437,7 +437,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("4-3"))
         .prepare();
 
-      window.reqs['interval'].on("complete", function(res){
+      window.reqs['interval'].on("complete", function(err, res){
         req_bar.parseRequest(this).render();
         raw_bar.parseRawData(res).render();
       });
@@ -466,7 +466,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("5-3"))
         .prepare();
 
-      window.reqs['interval'].on("complete", function(res){
+      window.reqs['interval'].on("complete", function(err, res){
         req_col.parseRequest(this).render();
         raw_col.parseRawData(res).render();
       });
@@ -495,7 +495,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("6-3"))
         .prepare();
 
-      window.reqs['interval'].on("complete", function(res){
+      window.reqs['interval'].on("complete", function(err, res){
         req_line.parseRequest(this).render();
         raw_line.parseRawData(res).render();
       });
@@ -526,7 +526,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("7-3"))
         .prepare();
 
-      window.reqs['multiline'].on("complete", function(res){
+      window.reqs['multiline'].on("complete", function(err, res){
         req_mline.parseRequest(this).render();
         raw_mline.parseRawData(res).render();
       });
@@ -570,7 +570,7 @@ var multiline = new Keen.Query("count", {
         .el(document.getElementById("8-3"))
         .prepare();
 
-      window.reqs['multiline'].on("complete", function(res){
+      window.reqs['multiline'].on("complete", function(err, res){
         req_table.parseRequest(this).render();
         raw_table.parseRawData(res).render();
       });
@@ -578,7 +578,7 @@ var multiline = new Keen.Query("count", {
       var drawn_ext = client.draw(extraction, document.getElementById("9-1"), { height: 300 });
       var req_ext = new Keen.Dataviz().height(300).chartType("table").el(document.getElementById("9-2")).prepare();
       var raw_ext = new Keen.Dataviz().height(300).chartType("table").el(document.getElementById("9-3")).prepare();
-      window.reqs['extraction'].on("complete", function(res){
+      window.reqs['extraction'].on("complete", function(err, res){
         req_ext.parseRequest(this).render();
         raw_ext.parseRawData(res).render();
       });

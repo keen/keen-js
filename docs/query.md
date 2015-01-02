@@ -42,7 +42,7 @@ var your_analysis = new Keen.Query(analysisType, params);
     });
 
     // Send query
-    client.run(count, function(response){
+    client.run(count, function(err, response){
       // Print the query result to the console
       console.log(response);
     });
@@ -106,7 +106,7 @@ var max_revenue = new Keen.Query("maximum", {
   groupBy: "geo.country"
 });
 
-var mashup = client.run([avg_revenue, max_revenue], function(res){
+var mashup = client.run([avg_revenue, max_revenue], function(err, res){
   // res[0].result or this.data[0] (avg_revenue)
   // res[1].result or this.data[1] (max_revenue)
 });  

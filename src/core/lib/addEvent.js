@@ -1,12 +1,112 @@
-// ../utils/uploadEvent.js
+var JSON2 = require('JSON2');
+var request = require('superagent');
 
-Keen.prototype.addEvent = function(eventCollection, payload, success, error) {
-  var response;
-  if (!eventCollection || typeof eventCollection !== "string") {
-    response = "Event not recorded: Collection name must be a string";
-    Keen.log(response);
-    if (error) error.call(this, response);
+var Keen = require('../index');
+
+var base64 = require('../utils/base64'),
+    each = require('../utils/each'),
+    getContext = require('../helpers/get-context'),
+    getQueryString = require('../helpers/get-query-string'),
+    getUrlMaxLength = require('../helpers/get-url-max-length'),
+    getXHR = require('../helpers/get-xhr-object'),
+    requestTypes = require('../helpers/superagent-request-types'),
+    responseHandler = require('../helpers/superagent-handle-response');
+
+module.exports = function(collection, payload, callback, async) {
+  var self = this,
+      urlBase = this.url('/events/' + collection),
+      reqType = this.config.requestType,
+      data = {},
+      cb = callback,
+      isAsync,
+      getUrl;
+
+  isAsync = ('boolean' === typeof async) ? async : true;
+
+  if (!Keen.enabled) {
+    handleValidationError.call(self, 'Keen.enabled = false');
     return;
   }
-  _uploadEvent.apply(this, arguments);
+
+  if (!self.projectId()) {
+    handleValidationError.call(self, 'Missing projectId property');
+    return;
+  }
+
+  if (!self.writeKey()) {
+    handleValidationError.call(self, 'Missing writeKey property');
+    return;
+  }
+
+  if (!collection || typeof collection !== 'string') {
+    handleValidationError.call(self, 'Collection name must be a string');
+    return;
+  }
+
+  // Attach properties from client.globalProperties
+  if (self.config.globalProperties) {
+    data = self.config.globalProperties(collection);
+  }
+  // Attach properties from user-defined event
+  each(payload, function(value, key){
+    data[key] = value;
+  });
+
+  // Override reqType if XHR not supported
+  if ( !getXHR() && 'xhr' === reqType ) {
+    reqType = 'jsonp';
+  }
+
+  // Pre-flight for GET requests
+  if ( 'xhr' !== reqType || !isAsync ) {
+    getUrl = prepareGetRequest.call(self, urlBase, data);
+  }
+
+  if ( getUrl && getContext() === 'browser' ) {
+    request
+      .get(getUrl)
+      .use(function(req){
+        req.async = isAsync;
+        return req;
+      })
+      .use(requestTypes(reqType))
+      .end(handleResponse);
+  }
+  else if ( getXHR() || getContext() === 'server' ) {
+    request
+      .post(urlBase)
+      .set('Content-Type', 'application/json')
+      .set('Authorization', self.writeKey())
+      .send(data)
+      .end(handleResponse);
+  }
+  else {
+    self.trigger('error', 'Request not sent: URL length exceeds current browser limit, and XHR (POST) is not supported.');
+  }
+
+  function handleResponse(err, res){
+    responseHandler(err, res, cb);
+    cb = callback = null;
+  }
+
+  function handleValidationError(msg){
+    var err = 'Event not recorded: ' + msg;
+    self.trigger('error', err);
+    if (cb) {
+      cb.call(self, err, null);
+      cb = callback = null;
+    }
+  }
+
+  return;
 };
+
+function prepareGetRequest(url, data){
+  // Set API key
+  url += getQueryString({
+    api_key  : this.writeKey(),
+    data     : base64.encode( JSON2.stringify(data) ),
+    modified : new Date().getTime()
+  });
+  return ( url.length < getUrlMaxLength() ) ? url : false;
+}

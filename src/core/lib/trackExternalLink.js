@@ -1,7 +1,7 @@
-// ../utils/uploadEvent.js
+// var sendEvent = require("../utils/sendEvent");
+var addEvent = require("./addEvent");
 
-Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
-
+module.exports = function(jsEvent, eventCollection, payload, timeout, timeoutCallback){
   var evt = jsEvent,
       target = (evt.currentTarget) ? evt.currentTarget : (evt.srcElement || evt.target),
       timer = timeout || 500,
@@ -36,7 +36,7 @@ Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, t
       }
     };
   } else {
-    Keen.log("#trackExternalLink method not attached to an <a> or <form> DOM element");
+    this.trigger("error", "#trackExternalLink method not attached to an <a> or <form> DOM element");
   }
 
   if (timeoutCallback) {
@@ -47,10 +47,9 @@ Keen.prototype.trackExternalLink = function(jsEvent, eventCollection, payload, t
       }
     };
   }
-  _uploadEvent.call(this, eventCollection, payload, callback, callback);
+  addEvent.call(this, eventCollection, payload, callback);
 
   setTimeout(callback, timer);
-
   if (!evt.metaKey) {
     return false;
   }

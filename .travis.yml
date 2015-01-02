@@ -1,12 +1,9 @@
 language: node_js
-
 node_js:
   - "0.10"
-
 branches:
   only:
     - master
-
 env:
   global:
   - secure: |-
@@ -17,19 +14,10 @@ env:
       AjvRPOjPEuDl8qwEUOk2V1HH6C5AoE8V0/1+twsnaEcgfHWGDk3g7oPfMOW3
       ArybZFvN+wpvWfwoJAhRV7yQv9yoGT1fEtMtn3GB9mQiCFO70L/MrqXePJAr
       ajs3LH0wqhj1zW8UUmhTxBSLvzRyW++W5yx2hYr92EkrlpFZZUg=
-  - LOGS_DIR=/tmp/keen-build/logs
-
 install:
-  - npm install -g grunt-cli
+  - npm install -g browserify
   - npm install -g bower
   - npm install
   - bower install
-
-before_script:
-  - mkdir -p $LOGS_DIR
-  - chmod +x ./config/sauce_connect_setup.sh
-  - ./config/sauce_connect_setup.sh
-
 notifications:
-  email:
-    on_success: never
+  email: never
