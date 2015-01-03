@@ -1,6 +1,7 @@
-# Keen IO JavaScript SDK (v3.2.0) [![Build Status](https://api.travis-ci.org/keen/keen-js.png?branch=master)](https://travis-ci.org/keen/keen-js) [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
+# Keen IO JavaScript SDK (v3.2.0) [![Build Status](https://api.travis-ci.org/keen/keen-js.png?branch=master)](https://travis-ci.org/keen/keen-js)
+[![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
 
-**Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./Changelog.md#3.2.0) before upgrading.
+**Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
 
 ## Documentation
