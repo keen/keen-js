@@ -23,13 +23,7 @@ var wrap = require('./src/wrappers/gulpTask');
 // Build tasks
 // -------------------------
 
-gulp.task('build', function(callback) {
-  return runSequence(
-      'build:browserify',
-      'build:minify',
-      callback
-    );
-});
+gulp.task('build', ['build:browserify', 'build:minify']);
 
 gulp.task('build:browserify', function() {
   return gulp.src([
@@ -44,25 +38,26 @@ gulp.task('build:browserify', function() {
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('build:minify', function(){
+gulp.task('build:minify', ['build:browserify'], function(){
   return gulp.src([
-      './dist/keen.js',
-      './dist/keen-tracker.js',
-      './src/loader.js'
-    ], { read: false })
+        './dist/keen.js',
+        './dist/keen-tracker.js',
+        './src/loader.js'
+      ], { read: false }
+    )
     .pipe(compress({ type: 'js' }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('connect', function () {
+gulp.task('connect', ['build'], function () {
   return connect.server({
       root: [ __dirname, 'test', 'test/unit', 'test/vendor', 'test/examples' ],
       port: 9999
     });
 });
 
-gulp.task('watch', function() {
+gulp.task('watch', ['connect'], function() {
   return gulp.watch([
       'src/**/*.js',
       'gulpfile.js'
@@ -74,7 +69,7 @@ gulp.task('watch-with-tests', function() {
       'src/**/*.js',
       'test/unit/**/*.*',
       'gulpfile.js'
-    ], ['build', 'test:server', 'test:phantom']);
+    ], ['build', 'test:mocha', 'test:phantom']);
 });
 
 
@@ -82,35 +77,35 @@ gulp.task('watch-with-tests', function() {
 // Test tasks
 // -------------------------
 
-gulp.task('test:server', function () {
-  return gulp.src('./test/unit/server.js', { read: false })
-    .pipe(mocha({ reporter: 'nyan' }));
-});
-
-gulp.task('test:unit:clean', function (callback) {
+gulp.task('test:clean', function (callback) {
   del(['./test/unit/build'], callback);
 });
 
-gulp.task('test:unit:build', function () {
+gulp.task('test:build', ['test:clean'], function () {
   return gulp.src(['./test/unit/index.js'])
     .pipe(browserify())
     .pipe(rename('browserified-tests.js'))
     .pipe(gulp.dest('./test/unit/build'));
 });
 
-gulp.task('test:unit:phantom', function () {
+gulp.task('test-with-mocha', ['test:prepare'], function () {
+  return gulp.src('./test/unit/server.js', { read: false })
+  .pipe(mocha({ reporter: 'nyan' }));
+});
+
+gulp.task('test-with-phantom', ['build', 'test:prepare'], function () {
   return gulp.src('./test/unit/index.html')
     .pipe(mochaPhantomJS());
 });
 
-gulp.task('test:unit:karma', function (done){
+gulp.task('test-with-karma', ['build', 'test:prepare'], function (done){
   karma.start({
     configFile: __dirname + '/karma.conf.js',
     singleRun: true
   }, done);
 });
 
-gulp.task('test:unit:sauce', function(){
+gulp.task('test-with-sauce', ['build', 'test:prepare'], function(){
   karma.start({
     browsers: Object.keys(getCustomLaunchers()),
     browserDisconnectTimeout: 10 * 1000,
@@ -124,8 +119,7 @@ gulp.task('test:unit:sauce', function(){
     sauceLabs: {
       testName: moment().format('ddd, MMM Do, h:mm:ss a'),
       recordScreenshots: false,
-      recordVideo: false,
-
+      recordVideo: false
     },
     singleRun  : true,
     action     : 'run'
@@ -137,83 +131,25 @@ gulp.task('test:unit:sauce', function(){
 // Test bundles
 // -------------------------
 
-gulp.task('test:prepare', function (callback) {
-  runSequence(
-    'test:unit:clean',
-    'test:unit:build',
-    callback
-  );
-});
+gulp.task('test:prepare', ['test:clean', 'test:build']);
 
-gulp.task('test:phantom', function (callback) {
-  runSequence(
-    'test:prepare',
-    'test:unit:phantom',
-    callback
-  );
-});
+gulp.task('test:mocha', ['test:prepare', 'test-with-mocha']);
+gulp.task('test:phantom', ['build', 'test:prepare', 'test-with-phantom']);
+gulp.task('test:karma', ['build', 'test:prepare', 'test-with-karma']);
+gulp.task('test:local', ['test:prepare', 'test-with-mocha', 'test-with-phantom', 'test-with-karma']);
 
-gulp.task('test:karma', function (callback){
-  runSequence(
-    'test:prepare',
-    'test:unit:karma',
-    callback
-  );
-});
-
-gulp.task('test:sauce', function(callback){
-  runSequence(
-    'test:prepare',
-    'test:unit:sauce',
-    callback
-  );
-});
-
-gulp.task('test:local', function(callback) {
-  runSequence(
-    // Node.js tests
-    'test:server',
-    // Browser tests
-    'test:phantom',
-    'test:karma',
-    callback
-  );
-});
-
-gulp.task('test:all', function(callback) {
-  runSequence(
-    'test:local',
-    'test:sauce',
-    callback
-  );
-});
-
-gulp.task('test:ci', function(callback) {
-  runSequence(
-    'test:server',
-    'test:phantom',
-    'test:sauce',
-    callback
-  );
-});
-
-
+gulp.task('test:sauce', ['build', 'test:prepare', 'test-with-sauce']);
+gulp.task('test:cli', ['test:prepare', 'test-with-mocha', 'test-with-phantom', 'test-with-sauce']);
+gulp.task('test:all', ['test:prepare', 'test-with-mocha', 'test-with-phantom', 'test-with-karma', 'test-with-sauce']);
 
 
 // -------------------------
 // Deployment task
 // -------------------------
 
-gulp.task('deploy', function(callback){
-  runSequence(
-    'build',
-    'test:local',
-    'aws',
-    callback
-  );
-});
+gulp.task('deploy', ['build', 'test:local', 'aws']);
 
-gulp.task('aws', function() {
+gulp.task('aws', ['build', 'test:local'], function() {
 
   if (!process.env.AWS_KEY || !process.env.AWS_SECRET) {
     throw 'AWS credentials are required!';
@@ -254,24 +190,9 @@ gulp.task('aws', function() {
 // Bundled tasks
 // -------------------------
 
-gulp.task('default', function(callback){
-  runSequence(
-    'build',
-    'connect',
-    'watch',
-    callback
-  );
-});
+gulp.task('default', ['build', 'connect', 'watch']);
 
-gulp.task('with-tests', function(callback){
-  runSequence(
-    'test:local',
-    'build',
-    'connect',
-    'watch-with-tests',
-    callback
-  );
-});
+gulp.task('with-tests', ['test-with-mocha', 'build', 'connect', 'watch-with-tests']);
 
 
 function getCustomLaunchers(){
@@ -288,13 +209,6 @@ function getCustomLaunchers(){
       platform: 'Linux',
       version: '4.4'
     },
-
-    // sl_safari: {
-    //   base: 'SauceLabs',
-    //   browserName: 'safari',
-    //   platform: 'OS X 10.10',
-    //   version: '8'
-    // },
 
     sl_ie_11: {
       base: 'SauceLabs',
