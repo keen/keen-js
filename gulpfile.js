@@ -92,12 +92,9 @@ gulp.task('test:unit:clean', function (callback) {
 });
 
 gulp.task('test:unit:build', function () {
-  return browserify('./test/unit/index.js', {
-      insertGlobals: true,
-      debug: true
-    })
-    .bundle()
-    .pipe(source('browserified-tests.js'))
+  return gulp.src(['./test/unit/index.js'])
+    .pipe(browserify())
+    .pipe(rename('browserified-tests.js'))
     .pipe(gulp.dest('./test/unit/build'));
 });
 
