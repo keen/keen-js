@@ -2,8 +2,7 @@ var gulp = require('gulp'),
     pkg = require('./package.json');
 
 var aws = require('gulp-awspublish'),
-    // beautify = require('gulp-beautify'),
-    browserify = require('gulp-browserify'),
+    browserify = require('browserify'),
     connect = require('gulp-connect'),
     compress = require('gulp-yuicompressor'),
     del = require('del'),
@@ -15,7 +14,8 @@ var aws = require('gulp-awspublish'),
     runSequence = require('run-sequence'),
     source = require('vinyl-source-stream'),
     squash = require('gulp-remove-empty-lines'),
-    strip = require('gulp-strip-comments');
+    strip = require('gulp-strip-comments'),
+    transform = require('vinyl-transform');
 
 var wrap = require('./src/wrappers/gulpTask');
 
@@ -32,7 +32,10 @@ gulp.task('build:browserify', function() {
       ], { read: true } // required for UMD wrapper task
     )
     .pipe(wrap('./library.js'))
-    .pipe(browserify())
+    .pipe(transform(function(filename) {
+      var b = browserify(filename);
+      return b.bundle();
+    }))
     .pipe(strip({ line: true }))
     .pipe(squash())
     .pipe(gulp.dest('./dist/'));
@@ -83,7 +86,10 @@ gulp.task('test:clean', function (callback) {
 
 gulp.task('test:build', ['test:clean'], function () {
   return gulp.src(['./test/unit/index.js'])
-    .pipe(browserify())
+    .pipe(transform(function(filename) {
+      var b = browserify(filename);
+      return b.bundle();
+    }))
     .pipe(rename('browserified-tests.js'))
     .pipe(gulp.dest('./test/unit/build'));
 });
