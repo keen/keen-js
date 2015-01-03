@@ -11,12 +11,9 @@ var aws = require('gulp-awspublish'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
     moment = require('moment'),
     rename = require('gulp-rename'),
-    source = require('vinyl-source-stream'),
     squash = require('gulp-remove-empty-lines'),
     strip = require('gulp-strip-comments'),
     transform = require('vinyl-transform');
-
-var wrap = require('./src/wrappers/gulpTask');
 
 // -------------------------
 // Build tasks
@@ -28,9 +25,8 @@ gulp.task('build:browserify', function() {
   return gulp.src([
       './src/keen.js',
       './src/keen-tracker.js'
-      ], { read: true } // required for UMD wrapper task
+      ], { read: false }
     )
-    .pipe(wrap('./library.js'))
     .pipe(transform(function(filename) {
       var b = browserify(filename);
       return b.bundle();
@@ -84,7 +80,7 @@ gulp.task('test:clean', function (callback) {
 });
 
 gulp.task('test:build', ['test:clean'], function () {
-  return gulp.src(['./test/unit/index.js'])
+  return gulp.src('./test/unit/index.js')
     .pipe(transform(function(filename) {
       var b = browserify(filename);
       return b.bundle();
@@ -195,7 +191,7 @@ gulp.task('aws', ['build', 'test:local'], function() {
 // Bundled tasks
 // -------------------------
 
-gulp.task('default', ['build', 'connect', 'watch']);
+gulp.task('default', ['test:prepare', 'build', 'connect', 'watch']);
 
 gulp.task('with-tests', ['test-with-mocha', 'build', 'connect', 'watch-with-tests']);
 
