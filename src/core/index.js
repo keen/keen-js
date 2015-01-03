@@ -12,8 +12,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-// TODO: Overwrite at build
-Keen.version = '3.2.0';
+Keen.version = '__VERSION__';
 
 Emitter(Keen);
 Emitter(Keen.prototype);

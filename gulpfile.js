@@ -2,7 +2,7 @@ var gulp = require('gulp'),
     pkg = require('./package.json');
 
 var aws = require('gulp-awspublish'),
-    browserify = require('browserify'),
+    browserify = require('gulp-browserify'),
     connect = require('gulp-connect'),
     compress = require('gulp-yuicompressor'),
     del = require('del'),
@@ -22,44 +22,25 @@ var wrap = require('./src/wrappers/gulpTask');
 
 gulp.task('build', function(callback) {
   return runSequence(
-      'build:wrap',
       'build:browserify',
-      'build:clean',
-      'compress',
+      'build:minify',
       callback
     );
 });
 
-gulp.task('build:browserify', function(callback){
-  return runSequence('browserify:complete', 'browserify:tracker', callback);
-});
-
-gulp.task('build:wrap', function(){
-  return gulp.src(['./src/keen.js', './src/keen-tracker.js'])
+gulp.task('build:browserify', function() {
+  return gulp.src([
+      './src/keen.js',
+      './src/keen-tracker.js'
+    ], { read: true }) // required for UMD wrapper task
     .pipe(wrap('./library.js'))
-    .pipe(rename({ extname: '.tmp' }))
-    .pipe(gulp.dest('./src/'));
-});
-
-gulp.task('browserify:complete', function() {
-  return browserify('./src/keen.tmp')
-    .bundle()
-    .pipe(source('keen.js'))
+    .pipe(browserify({
+      transform: ['browserify-versionify']
+    }))
     .pipe(gulp.dest('./dist/'));
 });
 
-gulp.task('browserify:tracker', function() {
-  return browserify('./src/keen-tracker.tmp')
-    .bundle()
-    .pipe(source('keen-tracker.js'))
-    .pipe(gulp.dest('./dist/'));
-});
-
-gulp.task('build:clean', function(callback) {
-  del(['./src/*.tmp'], callback);
-});
-
-gulp.task('compress', function(){
+gulp.task('build:minify', function(){
   return gulp.src([
       './dist/keen.js',
       './dist/keen-tracker.js',

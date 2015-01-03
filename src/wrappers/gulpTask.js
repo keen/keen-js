@@ -22,7 +22,6 @@ function build(file, template, callback) {
     var through = es.through();
     var wait = es.wait(function(err, contents) {
       data.contents = contents;
-      // console.log(tpl(template, data))
       through.write( tpl(template, data) );
       through.end();
     });
