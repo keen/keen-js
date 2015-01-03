@@ -11,6 +11,7 @@ bower.json
 gulpfile.js
 karma.conf.js
 
+bower_components
 docs
 dist
 test
