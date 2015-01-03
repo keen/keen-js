@@ -2,6 +2,7 @@ var gulp = require('gulp'),
     pkg = require('./package.json');
 
 var aws = require('gulp-awspublish'),
+    // beautify = require('gulp-beautify'),
     browserify = require('gulp-browserify'),
     connect = require('gulp-connect'),
     compress = require('gulp-yuicompressor'),
@@ -12,7 +13,9 @@ var aws = require('gulp-awspublish'),
     moment = require('moment'),
     rename = require('gulp-rename'),
     runSequence = require('run-sequence'),
-    source = require('vinyl-source-stream');
+    source = require('vinyl-source-stream'),
+    squash = require('gulp-remove-empty-lines'),
+    strip = require('gulp-strip-comments');
 
 var wrap = require('./src/wrappers/gulpTask');
 
@@ -32,11 +35,12 @@ gulp.task('build:browserify', function() {
   return gulp.src([
       './src/keen.js',
       './src/keen-tracker.js'
-    ], { read: true }) // required for UMD wrapper task
+      ], { read: true } // required for UMD wrapper task
+    )
     .pipe(wrap('./library.js'))
-    .pipe(browserify({
-      transform: ['browserify-versionify']
-    }))
+    .pipe(browserify())
+    .pipe(strip({ line: true }))
+    .pipe(squash())
     .pipe(gulp.dest('./dist/'));
 });
 
@@ -45,7 +49,7 @@ gulp.task('build:minify', function(){
       './dist/keen.js',
       './dist/keen-tracker.js',
       './src/loader.js'
-    ])
+    ], { read: false })
     .pipe(compress({ type: 'js' }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('./dist/'));
