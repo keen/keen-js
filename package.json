@@ -69,7 +69,6 @@
     "lodash.template": "^2.4.1",
     "moment": "^2.8.4",
     "nock": "^0.51.0",
-    "run-sequence": "^1.0.2",
     "vinyl-source-stream": "^1.0.0",
     "vinyl-transform": "^1.0.0"
   }
