@@ -329,4 +329,3 @@ function extend(o, e){
 }
 
 module.exports = Dataset;
-return;
