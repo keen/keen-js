@@ -25,8 +25,7 @@ gulp.task('build:browserify', function() {
   return gulp.src([
       './src/keen.js',
       './src/keen-tracker.js'
-      ], { read: false }
-    )
+    ])
     .pipe(transform(function(filename) {
       var b = browserify(filename);
       return b.bundle();
@@ -38,11 +37,10 @@ gulp.task('build:browserify', function() {
 
 gulp.task('build:minify', ['build:browserify'], function(){
   return gulp.src([
-        './dist/keen.js',
-        './dist/keen-tracker.js',
-        './src/loader.js'
-      ], { read: false }
-    )
+      './dist/keen.js',
+      './dist/keen-tracker.js',
+      './src/loader.js'
+    ])
     .pipe(compress({ type: 'js' }))
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('./dist/'));
@@ -66,6 +64,7 @@ gulp.task('watch-with-tests', function() {
   return gulp.watch([
       'src/**/*.js',
       'test/unit/**/*.*',
+      '!test/unit/build/**/*.*',
       'gulpfile.js'
     ], ['build', 'test:mocha', 'test:phantom']);
 });
@@ -193,7 +192,7 @@ gulp.task('aws', ['build', 'test:local'], function() {
 
 gulp.task('default', ['test:prepare', 'build', 'connect', 'watch']);
 
-gulp.task('with-tests', ['test-with-mocha', 'build', 'connect', 'watch-with-tests']);
+gulp.task('with-tests', ['test:local', 'build', 'connect', 'watch-with-tests']);
 
 
 function getCustomLaunchers(){
