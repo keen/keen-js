@@ -18,6 +18,7 @@ function Dataviz(){
     _artifacts: { /* state bin */ },
     adapter: {
       library: undefined,
+      chartOptions: {},
       chartType: undefined,
       defaultChartType: undefined,
       dataType: undefined

@@ -194,16 +194,16 @@ var multiline = new Keen.Query("count", {
       </div>
     </div>
 
-    <h4>Table</h4>
+    <h4 id="table">Table</h4>
     <div class="row">
       <div class="col-sm-4">
-        <div id="8-1">A</div>
+        <div id="chart-8-1">A</div>
       </div>
       <div class="col-sm-4">
-        <div id="8-2">B</div>
+        <div id="chart-8-2">B</div>
       </div>
       <div class="col-sm-4">
-        <div id="8-3">C</div>
+        <div id="chart-8-3">C</div>
       </div>
     </div>
 
@@ -538,13 +538,18 @@ var multiline = new Keen.Query("count", {
        *  ------------------------------
        */
 
-      var drawn_table = client.draw(multiline, document.getElementById("8-1"), {
+      var drawn_table = client.draw(multiline, document.getElementById("chart-8-1"), {
         chartType: "table",
         height: 300,
         labelMapping: {
           "null": "Direct",
           "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+        },
+        // sortIntervals: "asc",
+        chartOptions: {
+          sortColumn: 1,
+          sortAscending: false
         }
       });
 
@@ -556,7 +561,7 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .chartType("table")
-        .el(document.getElementById("8-2"))
+        .el(document.getElementById("chart-8-2"))
         .prepare();
 
       var raw_table = new Keen.Dataviz()
@@ -567,7 +572,7 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .chartType("table")
-        .el(document.getElementById("8-3"))
+        .el(document.getElementById("chart-8-3"))
         .prepare();
 
       window.reqs['multiline'].on("complete", function(err, res){
