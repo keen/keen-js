@@ -153,7 +153,7 @@ Each data point on the line chart tells you what percentage of users who signed 
 <html lang='en'>
 <head>
   <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.js'></script>
-  <script src="https://d26b395fwzu5fz.cloudfront.net/3.2.0/keen.min.js"></script>
+  <script src="https://d26b395fwzu5fz.cloudfront.net/3.2.1/keen.min.js"></script>
   <script>
 
     var client = new Keen({
