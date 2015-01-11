@@ -1,7 +1,6 @@
 var root = this;
 var previous_Keen = root.Keen;
 
-var extend = require('./utils/extend');
 var Emitter = require('./helpers/emitter-shim');
 
 function Keen(config) {
