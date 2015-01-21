@@ -422,6 +422,7 @@ var uniqueVisitors = new Keen.Query("count_unique", { // second query
 });
 
 var chart = new Keen.Dataviz()
+  .el(document.getElementById("visitors-uniques"))
   .chartType("linechart")
   .chartOptions({
     hAxis: {
