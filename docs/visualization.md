@@ -421,7 +421,7 @@ var uniqueVisitors = new Keen.Query("count_unique", { // second query
 	timeframe: timeframe
 });
 
-var chart = Keen.Dataviz()
+var chart = new Keen.Dataviz()
   .chartType("linechart")
   .chartOptions({
     hAxis: {
@@ -431,7 +431,7 @@ var chart = Keen.Dataviz()
   })
   .prepare();
 
-client.run([pageviews, uniqueVisitors], function(response){ // run the queries
+client.run([pageviews, uniqueVisitors], function(err, response){ // run the queries
 
 	var result1 = response[0].result  // data from first query
 	var result2 = response[1].result  // data from second query
