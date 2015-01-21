@@ -355,6 +355,7 @@ Here's an example that takes a hard-coded value "1896" and draws it as a number.
 ```javascript
   var chart = new Keen.Dataviz()
     .el(document.getElementById('my-div'))
+    .parseRawData({ result: 1896 })
     .chartType("metric")
     .colors(["#6ab975"])
     .title("Wow!")
