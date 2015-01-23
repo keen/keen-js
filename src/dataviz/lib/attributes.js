@@ -9,7 +9,7 @@ module.exports = function(obj){
       chartOptions.call(self, prop);
       // self.chartOptions(prop);
     } else {
-      self.view["attributes"][key] = (prop ? prop : null);
+      self.view["attributes"][key] = prop;
     }
   });
   return this;
