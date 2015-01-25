@@ -42,7 +42,7 @@ var your_analysis = new Keen.Query(analysisType, params);
     });
 
     // Send query
-    client.run(count, function(err, response){
+    client.run(count, function(response, err){
       // Print the query result to the console
       console.log(response);
     });
