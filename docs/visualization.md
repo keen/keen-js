@@ -13,13 +13,13 @@ client.draw(query, selector, config);
 ## Example usage
 
 ```javascript
-var count = new Keen.Query("count", {
+var query = new Keen.Query("count", {
   eventCollection: "pageviews",
   groupBy: "visitor.geo.country"
   interval: "daily",
   timeframe: "this_21_days"
 });
-var chart = client.draw(count, document.getElementById("chart-wrapper"), {
+var chart = client.draw(query, document.getElementById("chart-wrapper"), {
   title: "Custom chart title",
   chartType: "columnchart"
 });
@@ -31,12 +31,17 @@ Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about
 var chart = new Keen.Dataviz()
   .el(document.getElementById("chart-wrapper"))
   .chartType("columnchart")
-  .title("Custom chart title")
   .prepare(); // start spinner
 
-client.run(query, function(response){
-  chart.parseRequest(this).render();
+var req = client.run(query, function(response){
+  chart
+    .parseRequest(this)
+    .title("Custom chart title")
+    .render();
 });
+
+// Re-run and refresh every 15 minutes...
+setInterval(req.refresh, 1000 * 60 * 15);
 ```
 
 ## DOM Selector
@@ -457,13 +462,4 @@ client.run([pageviews, uniqueVisitors], function(err, response){ // run the quer
 		i++;
 	}
 });
-```
-
-## Automatic updates
-
-Visualizations are bound to their underlying queries. Modify and re-run a query request, and the visualization will automagically update when the new data arrives.
-
-```javascript
-count.set({ interval: "weekly", timeframe: "this_48_weeks" });
-request.refresh();
 ```
