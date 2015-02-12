@@ -106,8 +106,8 @@ describe("Keen.Dataviz", function(){
   });
 
   describe("#labels", function(){
-    it("should return undefined by default", function(){
-      expect(this.dataviz.labels()).to.be.an("undefined");
+    it("should return an empty array by default", function(){
+      expect(this.dataviz.labels()).to.be.an("array").and.to.have.length(0);
     });
     it("should set and get a new array of labels", function(){
       var array = ["A","B","C"];
@@ -120,7 +120,7 @@ describe("Keen.Dataviz", function(){
       var array = ["A","B","C"];
       this.dataviz.labels(array);
       this.dataviz.labels(null);
-      expect(this.dataviz.labels()).to.not.exist;
+      expect(this.dataviz.labels()).to.be.an("array").and.to.have.length(0);
     });
   });
 
@@ -389,6 +389,21 @@ describe("Keen.Dataviz", function(){
     it("should unset property by passing null", function(){
       this.dataviz.sortIntervals(null);
       expect(this.dataviz.sortIntervals()).to.not.exist;
+    });
+  });
+
+  describe("#stacked", function(){
+    it("should return false by default", function(){
+      expect(this.dataviz.stacked()).to.be.a("boolean").and.to.eql(false);
+    });
+    it("should set `stacked` to true by passing true", function(){
+      this.dataviz.stacked(true);
+      expect(this.dataviz.stacked()).to.be.a("boolean").and.to.eql(true);
+    });
+    it("should set `stacked` to false by passing null", function(){
+      this.dataviz.stacked(true);
+      this.dataviz.stacked(null);
+      expect(this.dataviz.stacked()).to.be.a("boolean").and.to.eql(false);
     });
   });
 

@@ -2,142 +2,152 @@
 <html>
 <head>
   <title>Keen IO Comprehensive Test</title>
-  <link rel="stylesheet" href="../keen-bootstrap.min.css">
-  <link rel="stylesheet" href="../keen-dashboards.css">
+  <link rel='stylesheet' href='../keen-bootstrap.min.css'>
+  <link rel='stylesheet' href='../keen-dashboards.css'>
 
 
-  <link href="c3.css" rel="stylesheet">
-  <script src="d3.js"></script>
-  <script src="c3.js"></script>
+  <link href='c3.css' rel='stylesheet'>
+  <script src='d3.js'></script>
+  <script src='c3.js'></script>
 </head>
 <body>
-  <div class="container">
+  <div class='container'>
 
-    <div class="page-header">
+    <div class='page-header'>
       <h1>C3.js Visual Tests</h1>
     </div>
 
-    <div class="row">
-      <div class="col-sm-4">
+    <div class='row'>
+      <div class='col-sm-4'>
         <h2>Gauge</h2>
-        <div id="c3-gauge"></div>
+        <div id='c3-gauge'></div>
       </div>
-      <div class="col-sm-4">
+      <div class='col-sm-4'>
         <h2>Donut</h2>
-        <div id="c3-donut"></div>
+        <div id='c3-donut'></div>
       </div>
-      <div class="col-sm-4">
+      <div class='col-sm-4'>
         <h2>Pie</h2>
-        <div id="c3-pie"></div>
+        <div id='c3-pie'></div>
       </div>
     </div>
 
     <hr>
 
     <h2>Area</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-area"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-area'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-area-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-area-multi'></div>
       </div>
     </div>
     <hr>
 
     <h2>Line</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-line"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-line'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-line-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-line-multi'></div>
       </div>
     </div>
     <hr>
 
     <h2>Bar</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-bar"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-bar'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-bar-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-bar-multi'></div>
       </div>
     </div>
     <hr>
 
     <h2>Area-Spline</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-area-spline"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-area-spline'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-area-spline-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-area-spline-multi'></div>
       </div>
     </div>
     <hr>
 
     <h2>Spline</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-spline"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-spline'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-spline-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-spline-multi'></div>
       </div>
     </div>
     <hr>
 
     <h2>Area-Step</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-area-step"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-area-step'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-area-step-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-area-step-multi'></div>
       </div>
     </div>
     <hr>
 
     <h2>Step</h2>
-    <div class="row">
-      <div class="col-sm-6">
-        <div id="c3-step"></div>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='c3-step'></div>
       </div>
-      <div class="col-sm-6">
-        <div id="c3-step-multi"></div>
+      <div class='col-sm-6'>
+        <div id='c3-step-multi'></div>
       </div>
     </div>
     <hr>
 
+    <h2>Funnel</h2>
+    <div class='row'>
+      <div class='col-sm-12'>
+        <div id='c3-funnel'></div>
+      </div>
+    </div>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+
   </div>
 
-  <script src="../../../dist/keen.js"></script>
+  <script src='../../../dist/keen.js'></script>
   <script>
   var client = new Keen({
-    projectId: "52f2ae5905cd661a7800000a",
-    readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
-    requestType: "jsonp"
+    projectId: '52f2ae5905cd661a7800000a',
+    readKey: '4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b'
   });
 
-  var interval = new Keen.Query("count", {
-    eventCollection: "pageview",
-    timeframe: "this_12_months",
-    interval: "monthly"
+  var interval = new Keen.Query('count', {
+    eventCollection: 'pageviews',
+    timeframe: 'this_2_months',
+    interval: 'weekly'
   });
 
-  var multiline = new Keen.Query("count", {
-    event_collection: "pageview",
-    group_by: "page",
-    timeframe: "this_12_months",
-    interval: "monthly"
+  var multiline = new Keen.Query('count', {
+    event_collection: 'pageviews',
+    group_by: 'user.device_info.browser.family',
+    timeframe: 'this_2_months',
+    interval: 'weekly'
   });
 
   var labelMap = {
-    "null": "Direct",
-    "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
-    "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
+    'Firefox': 'FF',
+    'Mobile Safari': 'iPhone'
   };
 
   var reqInterval = client.run(interval);
@@ -147,44 +157,44 @@
   // Keen.ready(function(){});
 
   // Set as default library
-  Keen.Dataviz.dataTypeMap["singular"] = { library: "c3", chartType: "gauge" };
-  Keen.Dataviz.dataTypeMap["categorical"] = { library: "c3", chartType: "donut" };
-  Keen.Dataviz.dataTypeMap["chronological"] = { library: "c3", chartType: "area" };
-  Keen.Dataviz.dataTypeMap["cat-chronological"] = { library: "c3", chartType: "line" };
+  Keen.Dataviz.dataTypeMap['singular'] = { library: 'c3', chartType: 'gauge' };
+  Keen.Dataviz.dataTypeMap['categorical'] = { library: 'c3', chartType: 'donut' };
+  Keen.Dataviz.dataTypeMap['chronological'] = { library: 'c3', chartType: 'area' };
+  Keen.Dataviz.dataTypeMap['cat-chronological'] = { library: 'c3', chartType: 'line' };
 
   // Better ?
-  // Keen.Dataviz.setLibrary("c3"); // use all
-  // Keen.Dataviz.setLibrary("c3", ["gauge", "donut"]); // use these
+  // Keen.Dataviz.setLibrary('c3'); // use all
+  // Keen.Dataviz.setLibrary('c3', ['gauge', 'donut']); // use these
 
   var c3gauge = new Keen.Dataviz()
-    //.library("c3")
-    //.chartType("gauge")
-    .el(document.getElementById("c3-gauge"))
+    //.library('c3')
+    //.chartType('gauge')
+    .el(document.getElementById('c3-gauge'))
     .parseRawData({ result: 79.1 })
-    .title("Percentage of awesome")
+    .title('Percentage of awesome')
     .render();
 
   var c3donut = new Keen.Dataviz()
-    //.library("c3")
-    //.chartType("donut")
-    .el(document.getElementById("c3-donut"))
+    //.library('c3')
+    //.chartType('donut')
+    .el(document.getElementById('c3-donut'))
     .parseRawData({ result: [
-        { label: "A", result: 9 },
-        { label: "B", result: 7 },
-        { label: "C", result: 4 }
+        { label: 'A', result: 9 },
+        { label: 'B', result: 7 },
+        { label: 'C', result: 4 }
       ]
     })
-    //.title("Best Donut!")
+    //.title('Best Donut!')
     .render();
 
   var c3pie = new Keen.Dataviz()
-    .library("c3")
-    .chartType("pie")
-    .el(document.getElementById("c3-pie"))
+    .library('c3')
+    .chartType('pie')
+    .el(document.getElementById('c3-pie'))
     .parseRawData({ result: [
-        { label: "A", result: 9 },
-        { label: "B", result: 7 },
-        { label: "C", result: 4 }
+        { label: 'A', result: 9 },
+        { label: 'B', result: 7 },
+        { label: 'C', result: 4 }
       ]
     })
     .render();
@@ -192,62 +202,62 @@
   // Single Interval
 
   var c3area = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("area")
+    // .library('c3')
+    .chartType('area')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-area"))
+    .el(document.getElementById('c3-area'))
     .prepare();
 
   var c3line = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("line")
+    // .library('c3')
+    .chartType('line')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-line"))
+    .el(document.getElementById('c3-line'))
     .prepare();
 
   var c3bar = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("bar")
+    // .library('c3')
+    .chartType('bar')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-bar"))
+    .el(document.getElementById('c3-bar'))
     .prepare();
 
   var c3areaspline = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("area-spline")
+    // .library('c3')
+    .chartType('area-spline')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-area-spline"))
+    .el(document.getElementById('c3-area-spline'))
     .prepare();
 
   var c3spline = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("spline")
+    // .library('c3')
+    .chartType('spline')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-spline"))
+    .el(document.getElementById('c3-spline'))
     .prepare();
 
   var c3areastep = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("area-spline")
+    // .library('c3')
+    .chartType('area-spline')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-area-step"))
+    .el(document.getElementById('c3-area-step'))
     .prepare();
 
   var c3step = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("step")
+    // .library('c3')
+    .chartType('step')
     .height(300)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-step"))
+    .el(document.getElementById('c3-step'))
     .prepare();
 
-  reqInterval.on("complete", function(){
+  reqInterval.on('complete', function(){
     c3area.parseRequest(this).render();
     c3line.parseRequest(this).render();
     c3bar.parseRequest(this).render();
@@ -261,62 +271,69 @@
 
 
   var c3area_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("area")
+    // .library('c3')
+    .chartType('area')
     .height(300)
+    .stacked(true)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-area-multi"))
+    .el(document.getElementById('c3-area-multi'))
     .prepare();
 
   var c3line_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("line")
+    // .library('c3')
+    .chartType('line')
     .height(300)
+    .stacked(true)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-line-multi"))
+    .el(document.getElementById('c3-line-multi'))
     .prepare();
 
   var c3bar_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("bar")
+    // .library('c3')
+    .chartType('bar')
     .height(300)
+    .stacked(true)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-bar-multi"))
+    .el(document.getElementById('c3-bar-multi'))
     .prepare();
 
   var c3areaspline_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("area-spline")
+    // .library('c3')
+    .chartType('area-spline')
     .height(300)
+    .stacked(true)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-area-spline-multi"))
+    .el(document.getElementById('c3-area-spline-multi'))
     .prepare();
 
   var c3spline_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("spline")
+    // .library('c3')
+    .chartType('spline')
     .height(300)
+    .stacked(true)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-spline-multi"))
+    .el(document.getElementById('c3-spline-multi'))
     .prepare();
 
   var c3step_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("step")
+    // .library('c3')
+    .chartType('step')
     .height(300)
+    .stacked(true)
     .labelMapping(labelMap)
-    .el(document.getElementById("c3-step-multi"))
+    .el(document.getElementById('c3-step-multi'))
     .prepare();
 
   var c3areastep_m = new Keen.Dataviz()
-    // .library("c3")
-    .chartType("area-step")
+    // .library('c3')
+    .chartType('area-step')
     .height(300)
-    .labelMapping(labelMap)
-    .el(document.getElementById("c3-area-step-multi"))
+    .stacked(true)
+    // .labelMapping(labelMap)
+    .el(document.getElementById('c3-area-step-multi'))
     .prepare();
 
-  reqMultiline.on("complete", function(){
+  reqMultiline.on('complete', function(){
     c3area_m.parseRequest(this).render();
     c3line_m.parseRequest(this).render();
     c3bar_m.parseRequest(this).render();
@@ -325,6 +342,47 @@
     c3step_m.parseRequest(this).render();
     c3areastep_m.parseRequest(this).render();
   });
+
+  var c3FunnelCats = [
+    'Created Account',
+    'Completed Profile',
+    'Created Project',
+    'Invited Teammate'
+  ];
+
+  var c3funnel = new Keen.Dataviz()
+    .el(document.getElementById('c3-funnel'))
+    .library('c3')
+    .chartType('bar')
+    .colors([ Keen.Dataviz.defaults.colors[5] ])
+    .height(300)
+    .chartOptions({
+      // Overriding `axis` below wipes out auto-categorization
+      // axis: {
+      //     x: {
+      //         type: 'category',
+      //         categories: c3FunnelCats
+      //     },
+      //     y: {
+      //         label: 'Unique users'
+      //     }
+      // },
+      legend: {
+        show: false
+      }
+    })
+    .parseRawData({
+      // Sample response for the funnel resource
+      result: [ 9873, 6768, 2215, 909 ],
+      steps: [
+          { event_collection: 'create_account' },
+          { event_collection: 'complete_profile' },
+          { event_collection: 'create_project' },
+          { event_collection: 'invite_teammate' }
+      ]
+    })
+    .labels(c3FunnelCats)
+    .render();
 
 
   </script>
