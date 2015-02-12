@@ -39,7 +39,8 @@ extend(Dataviz, {
     "cat-ordinal":       { library: "google",  chartType: "barchart"    },
     "chronological":     { library: "google",  chartType: "areachart"   },
     "cat-chronological": { library: "google",  chartType: "linechart"   },
-    "extraction":        { library: "google",  chartType: "table"       }
+    "extraction":        { library: "google",  chartType: "table"       },
+    "nominal":           { library: "google",  chartType: "table"       }
   },
   defaults: {
     colors: [
