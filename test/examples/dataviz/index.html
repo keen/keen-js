@@ -255,35 +255,36 @@ var multiline = new Keen.Query("count", {
       // Keen.Visualization.defaults.orderBy = "timeframe.end";
 
       var metric = new Keen.Query("count", {
-        eventCollection: "pageview"
+        eventCollection: "pageviews"
       });
 
       var groupBy = new Keen.Query("count", {
-        eventCollection: "pageview",
-        groupBy: "page"
+        event_collection: 'pageviews',
+        group_by: 'user.device_info.browser.family'
       });
 
       var interval = new Keen.Query("count", {
-        eventCollection: "pageview",
-        timeframe: "this_12_months",
-        interval: "monthly"
+        event_collection: 'pageviews',
+        group_by: 'user.device_info.browser.family',
+        timeframe: 'this_2_months',
+        interval: 'weekly'
       });
 
       var multiline = new Keen.Query("count", {
-        event_collection: "pageview",
-        group_by: "page",
-        timeframe: "this_12_months",
-        interval: "monthly"
+        event_collection: 'pageviews',
+        group_by: 'user.device_info.browser.family',
+        timeframe: 'this_2_months',
+        interval: 'weekly'
       });
 
       var extraction = new Keen.Query("extraction", {
-        event_collection: "pageview",
+        event_collection: "pageviews",
         latest: 100
         // propertyNames: [""]
       });
 
       var uniques = new Keen.Query("select_unique", {
-        event_collection: "pageview",
+        event_collection: "pageviews",
         targetProperty: "keen.id"
       });
 
@@ -411,18 +412,24 @@ var multiline = new Keen.Query("count", {
        */
 
       var drawn_area = client.draw(interval, document.getElementById("3-1"), {
-        height: 300
+        chartType: 'areachart',
+        height: 300,
+        stacked: true
       });
 
       var req_area = new Keen.Dataviz()
         .height(300)
+        .chartType('areachart')
         //.orderBy("timeframe.end")
         .el(document.getElementById("3-2"))
+        .stacked(true)
         .prepare();
 
       var raw_area = new Keen.Dataviz()
         .height(300)
+        .chartType('areachart')
         .el(document.getElementById("3-3"))
+        .chartOptions({ isStacked: false }) // default
         .prepare();
 
       window.reqs['interval'].on("complete", function(err, res){

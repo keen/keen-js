@@ -137,6 +137,7 @@ module.exports = function(){
             width: "85%"
           };
         }
+        output.isStacked = this.stacked();
         break;
 
       case "barchart":
@@ -152,6 +153,7 @@ module.exports = function(){
             position: "none"
           };
         }
+        output.isStacked = this.stacked();
         break;
 
       case "columnchart":
@@ -170,6 +172,7 @@ module.exports = function(){
             width: "85%"
           };
         }
+        output.isStacked = this.stacked();
         break;
 
       case "linechart":
@@ -189,6 +192,7 @@ module.exports = function(){
             width: "85%"
           };
         }
+        output.isStacked = this.stacked();
         break;
 
       case "piechart":
