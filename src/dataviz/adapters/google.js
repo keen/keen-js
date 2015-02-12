@@ -68,6 +68,10 @@ module.exports = function(){
       update: function(){
         var options = _getDefaultAttributes.call(this, type);
         extend(options, this.chartOptions(), this.attributes());
+
+        // Apply stacking if set by top-level option
+        options['isStacked'] = (this.stacked() || options['isStacked']);
+
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
         // if (this.view._artifacts['datatable']) {}
         if (this.view._artifacts['googlechart']) {
@@ -137,7 +141,6 @@ module.exports = function(){
             width: "85%"
           };
         }
-        output.isStacked = this.stacked();
         break;
 
       case "barchart":
@@ -153,7 +156,6 @@ module.exports = function(){
             position: "none"
           };
         }
-        output.isStacked = this.stacked();
         break;
 
       case "columnchart":
@@ -172,7 +174,6 @@ module.exports = function(){
             width: "85%"
           };
         }
-        output.isStacked = this.stacked();
         break;
 
       case "linechart":
@@ -192,7 +193,6 @@ module.exports = function(){
             width: "85%"
           };
         }
-        output.isStacked = this.stacked();
         break;
 
       case "piechart":
