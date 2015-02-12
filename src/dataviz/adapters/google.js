@@ -23,8 +23,8 @@ module.exports = function(){
 
   Keen.loaded = false;
 
-  var errors = {
-    "google-visualization-errors-0": "No results to visualize"
+  var errorMapping = {
+    "Data column(s) for axis #0 cannot be of type string": "No results to visualize"
   };
 
   var chartTypes = ['AreaChart', 'BarChart', 'ColumnChart', 'LineChart', 'PieChart', 'Table'];
@@ -112,7 +112,7 @@ module.exports = function(){
   });
 
   function _handleErrors(stack){
-    var message = errors[stack['id']] || stack['message'] || "An error occurred";
+    var message = errorMapping[stack['message']] || stack['message'] || 'An error occurred';
     this.error(message);
   }
 

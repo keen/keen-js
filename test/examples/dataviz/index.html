@@ -161,13 +161,13 @@ var interval = new Keen.Query("count", {
     <h4>Line chart (single)</h4>
     <div class="row">
       <div class="col-sm-4">
-        <div id="6-1">A</div>
+        <div id="line-6-1">A</div>
       </div>
       <div class="col-sm-4">
-        <div id="6-2">B</div>
+        <div id="line-6-2">B</div>
       </div>
       <div class="col-sm-4">
-        <div id="6-3">C</div>
+        <div id="line-6-3">C</div>
       </div>
     </div>
 
@@ -184,13 +184,13 @@ var multiline = new Keen.Query("count", {
     <h4>Line chart (multi)</h4>
     <div class="row">
       <div class="col-sm-4">
-        <div id="7-1">A</div>
+        <div id="multi-7-1">A</div>
       </div>
       <div class="col-sm-4">
-        <div id="7-2">B</div>
+        <div id="multi-7-2">B</div>
       </div>
       <div class="col-sm-4">
-        <div id="7-3">C</div>
+        <div id="multi-7-3">C</div>
       </div>
     </div>
 
@@ -478,7 +478,7 @@ var multiline = new Keen.Query("count", {
        *  ------------------------------
        */
 
-      var drawn_line = client.draw(interval, document.getElementById("6-1"), {
+      var drawn_line = client.draw(interval, document.getElementById("line-6-1"), {
         chartType: "linechart",
         height: 300
       });
@@ -486,13 +486,13 @@ var multiline = new Keen.Query("count", {
       var req_line = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
-        .el(document.getElementById("6-2"))
+        .el(document.getElementById("line-6-2"))
         .prepare();
 
       var raw_line = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
-        .el(document.getElementById("6-3"))
+        .el(document.getElementById("line-6-3"))
         .prepare();
 
       window.reqs['interval'].on("complete", function(err, res){
@@ -507,7 +507,7 @@ var multiline = new Keen.Query("count", {
        *  ------------------------------
        */
 
-      var drawn_mline = client.draw(multiline, document.getElementById("7-1"), {
+      var drawn_mline = client.draw(multiline, document.getElementById("multi-7-1"), {
         chartType: "linechart",
         height: 300
       });
@@ -516,17 +516,18 @@ var multiline = new Keen.Query("count", {
         .height(300)
         .chartType("linechart")
         .labelMapping({ "null": "pink" })
-        .el(document.getElementById("7-2"))
+        .el(document.getElementById("multi-7-2"))
         .prepare();
 
       var raw_mline = new Keen.Dataviz()
         .height(300)
         .chartType("linechart")
         .colorMapping({ "null": "pink" })
-        .el(document.getElementById("7-3"))
+        .el(document.getElementById("multi-7-3"))
         .prepare();
 
       window.reqs['multiline'].on("complete", function(err, res){
+        console.log(res.result);
         req_mline.parseRequest(this).render();
         raw_mline.parseRawData(res).render();
       });
