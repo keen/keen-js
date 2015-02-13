@@ -136,6 +136,16 @@ chart.sortIntervals("desc");
 chart.sortIntervals(); // returns current setting
 ```
 
+### .stacked(boolean)
+
+Determine whether or not the intervals of time/sequence-based charts are stacked. This setting interfaces with the various stacking methods of supported charting libraries, so there may be alternative ways to do this with `.chartOptions()`.
+
+```javascript
+chart.stacked(true);
+chart.stacked(); // returns the stacked state
+// Default: false
+```
+
 ### .title(string)
 
 ```javascript

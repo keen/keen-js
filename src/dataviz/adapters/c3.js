@@ -4,9 +4,9 @@
  * ----------------------
  */
 
-var Dataviz = require("../dataviz"),
-    each = require("../../core/utils/each"),
-    extend = require("../../core/utils/extend");
+var Dataviz = require('../dataviz'),
+    each = require('../../core/utils/each'),
+    extend = require('../../core/utils/extend');
 
 module.exports = function(){
 
@@ -26,49 +26,53 @@ module.exports = function(){
 
   var dataTypes = {
     // dataType            : // chartTypes
-    "singular"             : ["gauge"],
-    "categorical"          : ["donut", "pie"],
-    "cat-interval"         : ["area-step", "step", "bar", "area", "area-spline", "spline", "line"],
-    "cat-ordinal"          : ["bar", "area", "area-spline", "spline", "line", "step", "area-step"],
-    "chronological"        : ["area", "area-spline", "spline", "line", "bar", "step", "area-step"],
-    "cat-chronological"    : ["line", "spline", "area", "area-spline", "bar", "step", "area-step"]
-    // "nominal"           : [],
-    // "extraction"        : []
+    'singular'             : ['gauge'],
+    'categorical'          : ['donut', 'pie'],
+    'cat-interval'         : ['area-step', 'step', 'bar', 'area', 'area-spline', 'spline', 'line'],
+    'cat-ordinal'          : ['bar', 'area', 'area-spline', 'spline', 'line', 'step', 'area-step'],
+    'chronological'        : ['area', 'area-spline', 'spline', 'line', 'bar', 'step', 'area-step'],
+    'cat-chronological'    : ['line', 'spline', 'area', 'area-spline', 'bar', 'step', 'area-step']
+    // 'nominal'           : [],
+    // 'extraction'        : []
   };
 
   var charts = {};
-  each(["gauge", "donut", "pie", "bar", "area", "area-spline", "spline", "line", "step", "area-step"], function(type, index){
+  each(['gauge', 'donut', 'pie', 'bar', 'area', 'area-spline', 'spline', 'line', 'step', 'area-step'], function(type, index){
     charts[type] = {
       render: function(){
         var setup = getSetupTemplate.call(this, type);
-        this.view._artifacts["c3"] = c3.generate(setup);
+        this.view._artifacts['c3'] = c3.generate(setup);
         this.update();
       },
       update: function(){
         var self = this, cols = [];
-        if (type === "gauge") {
-          self.view._artifacts["c3"].load({
+        if (type === 'gauge') {
+          self.view._artifacts['c3'].load({
             columns: [ [self.title(), self.data()[1][1]] ]
           })
         }
-        else if (type === "pie" || type === "donut") {
-          self.view._artifacts["c3"].load({
+        else if (type === 'pie' || type === 'donut') {
+          self.view._artifacts['c3'].load({
             columns: self.dataset.data.output.slice(1)
           });
         }
         else {
-          if (this.dataType().indexOf("chron") > -1) {
+          if (this.dataType().indexOf('chron') > -1) {
             cols.push(self.dataset.selectColumn(0));
             cols[0][0] = 'x';
           }
+
           each(self.data()[0], function(c, i){
             if (i > 0) {
               cols.push(self.dataset.selectColumn(i));
             }
           });
-          // if self.chartOptions().isStacked ?
-          self.view._artifacts["c3"].groups([self.data()[0].slice(1)]);
-          self.view._artifacts["c3"].load({
+
+          if (self.stacked()) {
+            self.view._artifacts['c3'].groups([self.labels()]);
+          }
+
+          self.view._artifacts['c3'].load({
             columns: cols
           });
         }
@@ -81,6 +85,7 @@ module.exports = function(){
 
   function getSetupTemplate(type){
     var setup = {
+      axis: {},
       bindto: this.el(),
       data: {
         columns: []
@@ -95,32 +100,41 @@ module.exports = function(){
     };
 
     // Enforce type, sorry no overrides here
-    setup["data"]["type"] = type;
+    setup['data']['type'] = type;
 
-    if (type === "gauge") {}
-    else if (type === "pie" || type === "donut") {
+    if (type === 'gauge') {}
+    else if (type === 'pie' || type === 'donut') {
       setup[type] = { title: this.title() };
     }
     else {
-      if (this.dataType().indexOf("chron") > -1) {
-        setup["data"]["x"] = "x";
-        setup["axis"] = {
-          x: {
-            type: 'timeseries',
-            tick: {
-              format: '%Y-%m-%d'
-            }
+      if (this.dataType().indexOf('chron') > -1) {
+        setup['data']['x'] = 'x';
+        setup['axis']['x'] = {
+          type: 'timeseries',
+          tick: {
+            format: '%Y-%m-%d'
           }
         };
+      }
+      else {
+        if (this.dataType() === 'cat-ordinal') {
+          setup['axis']['x'] = {
+            type: 'category',
+            categories: this.labels()
+          };
+        }
+      }
+      if (this.title()) {
+        setup['axis']['y'] = { label: this.title() }
       }
     }
     return extend(setup, this.chartOptions());
   }
 
   function _selfDestruct(){
-    if (this.view._artifacts["c3"]) {
-      this.view._artifacts["c3"].destroy();
-      this.view._artifacts["c3"] = null;
+    if (this.view._artifacts['c3']) {
+      this.view._artifacts['c3'].destroy();
+      this.view._artifacts['c3'] = null;
     }
   }
 
