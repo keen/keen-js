@@ -1,17 +1,18 @@
 # Record Events
 
-Hey, let's record some data!
+Hey, let's record some events!
+
 
 ## Record a single event
 
-Here is a basic example for tracking "purchases" in your app:
+Here is an example of how to track "purchases" in your app:
 
 ```javascript
 // Configure an instance for your project
 var client = new Keen({...});
 
 // Create a data object with the properties you want to send
-var purchase = {
+var purchaseEvent = {
   item: "golden gadget",  
   price: 25.50,
   referrer: document.referrer,
@@ -21,10 +22,26 @@ var purchase = {
 };
 
 // Send it to the "purchases" collection
-client.addEvent("purchases", purchase);
+client.addEvent("purchases", purchaseEvent, function(err, res){
+  if (err) {
+    // there was an error!
+  }
+  else {
+    // see sample response below
+  }
+});
+```
+
+### API response for saving a single event
+
+```json
+{
+  "created": true
+}
 ```
 
 Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
+
 
 ## Record multiple events
 
@@ -32,8 +49,7 @@ Send as many events as you like. Each event will be fired off to the Keen IO ser
 // Configure an instance for your project
 var client = new Keen({...});
 
-// Send multiple events to several collections
-client.addEvents({
+var multipleEvents = {
   "purchases": [
     { item: "golden gadget", price: 25.50, transaction_id: "f029342" },
     { item: "a different gadget", price: 17.75, transaction_id: "f029342" }
@@ -45,8 +61,39 @@ client.addEvents({
       total: 43.25
     }
   ]
+};
+
+// Send multiple events to several collections
+client.addEvents(multipleEvents, function(err, res){
+  if (err) {
+    // there was an error!
+  }
+  else {
+    // see sample response below
+  }
 });
 ```
+
+### API response for saving a single event
+
+```json
+{
+  "purchases": [
+    {
+      "success": true
+    },
+    {
+      "success": true
+    }
+  ],
+  "transactions": [
+    {
+      "success": true
+    }
+  ]
+}
+```
+
 
 ## A few simple guidelines
 

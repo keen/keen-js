@@ -11,16 +11,21 @@ var chart = new Keen.Dataviz();
 ```javascript
 chart
   .el(document.getElementById("myChart"))
-  .title("New Customers per Week")
   .height(500)
   .colors(["red", "orange", "green"])
   .sortGroups("desc")
   .prepare();
 
-var req = client.run(query, function(){
-  chart
-    .parseRequest(this)
-    .render();
+var req = client.run(query, function(err, res){
+  if (err) {
+    chart.error(err.message);
+  }
+  else {
+    chart
+      .parseRequest(this)
+      .title("New Customers per Week")
+      .render();
+  }
 });
 
 // let's update this chart every 10 seconds

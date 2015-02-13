@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.2.2)
+# Keen IO JavaScript SDK (v3.2.3)
 
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
@@ -32,14 +32,14 @@ For quick browser use, copy/paste this snippet of JavaScript above the `</head>`
 
 ```html
 <script type="text/javascript">
-  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.2/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.3/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
 Or load the library synchronously from our CDN:
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.2/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.3/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
@@ -52,7 +52,7 @@ When instantiating a new Keen JS client, there are a number of possible configur
 ```html
 <script type="text/javascript">
   var client = new Keen({
-    projectId: "YOUR_PROJECT_ID",   // String (required)
+    projectId: "YOUR_PROJECT_ID",   // String (required always)
     writeKey: "YOUR_WRITE_KEY",     // String (required for sending data)
     readKey: "YOUR_READ_KEY",       // String (required for querying data)
     protocol: "https",              // String (optional: https | http | auto)
@@ -76,7 +76,7 @@ var client = new Keen({
 });
 
 // Create a data object with the properties you want to send
-var purchase = {
+var purchaseEvent = {
   item: "golden gadget",  
   price: 25.50,
   referrer: document.referrer,
@@ -86,7 +86,22 @@ var purchase = {
 };
 
 // Send it to the "purchases" collection
-client.addEvent("purchases", purchase);
+client.addEvent("purchases", purchaseEvent, function(err, res){
+  if (err) {
+    // there was an error!
+  }
+  else {
+    // see sample response below
+  }
+});
+```
+
+### API response for saving a single event
+
+```json
+{
+  "created": true
+}
 ```
 
 Send as many events as you like. Each event will be fired off to the Keen IO servers asynchronously.
@@ -97,8 +112,7 @@ Send as many events as you like. Each event will be fired off to the Keen IO ser
 // Configure an instance for your project
 var client = new Keen({...});
 
-// Send multiple events to several collections
-client.addEvents({
+var multipleEvents = {
   "purchases": [
     { item: "golden gadget", price: 25.50, transaction_id: "f029342" },
     { item: "a different gadget", price: 17.75, transaction_id: "f029342" }
@@ -110,7 +124,37 @@ client.addEvents({
       total: 43.25
     }
   ]
+};
+
+// Send multiple events to several collections
+client.addEvents(multipleEvents, function(err, res){
+  if (err) {
+    // there was an error!
+  }
+  else {
+    // see sample response below
+  }
 });
+```
+
+### API response for saving a single event
+
+```json
+{
+  "purchases": [
+    {
+      "success": true
+    },
+    {
+      "success": true
+    }
+  ],
+  "transactions": [
+    {
+      "success": true
+    }
+  ]
+}
 ```
 
 Read more about all the ways you can track events in our [tracking guide](./docs/track.md).
@@ -119,8 +163,6 @@ Wondering what else you should track? Browse our [data modeling guide](https://g
 
 
 ## Querying events
-
-Queries are first-class citizens, complete with parameter getters and setters.
 
 The `<Client>.run` method is available on each configured client instance to run one or many analyses on a given project. Read more about running multiple analyses below.
 
@@ -144,8 +186,12 @@ var count = new Keen.Query("count", {
 
 // Send query
 client.run(count, function(err, res){
-  // if (err) handle error
-  console.log(res.result);
+  if (err) {
+    // there was an error!
+  }
+  else {
+    // do something with res.result
+  }
 });
 ```
 
@@ -166,16 +212,46 @@ A future release will add the ability to plot multiple query responses on a sing
 ### Example usage
 
 ```javascript
+// Create a client and a query
+var client = new Keen({ /* your config */ });
 var count = new Keen.Query("count", {
   eventCollection: "pageviews",
   groupBy: "visitor.geo.country",
   interval: "daily",
   timeframe: "this_21_days"
 });
+
+// Basic charting w/ `client.draw`:
+
 client.draw(count, document.getElementById("chart-wrapper"), {
   chartType: "columnchart",
   title: "Custom chart title"
 });
+
+
+// Advanced charting with `Keen.Dataviz`:
+
+var chart = new Keen.Dataviz()
+  .el(document.getElementById("chart-wrapper"))
+  .chartType("columnchart")
+  .prepare(); // starts spinner
+
+var req = client.run(query, function(err, res){
+  if (err) {
+    // Display the API error
+    chart.error(err.message);
+  }
+  else {
+    // Handle the response
+    chart
+      .parseRequest(this)
+      .title("Custom chart title")
+      .render();
+  }
+});
+
+// How about a chart that updates itself every 15 minutes?
+setInterval(req.refresh, 1000 * 60 * 15);
 ```
 
 Read more about building charts from query responses in our [visualization guide](./docs/visualization.md).

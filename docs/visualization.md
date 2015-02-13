@@ -33,11 +33,18 @@ var chart = new Keen.Dataviz()
   .chartType("columnchart")
   .prepare(); // start spinner
 
-var req = client.run(query, function(response){
-  chart
-    .parseRequest(this)
-    .title("Custom chart title")
-    .render();
+var req = client.run(query, function(err, res){
+  if (err) {
+    // Display the API error
+    chart.error(err.message);
+  }
+  else {
+    // Handle the response
+    chart
+      .parseRequest(this)
+      .title("Custom chart title")
+      .render();
+  }
 });
 
 // Re-run and refresh every 15 minutes...
@@ -393,12 +400,20 @@ Here's an example that runs two queries, divides them, and then outputs the resu
     .width(400)
     .prepare(); // start spinner
 
-  var mashup = client.run([sessions_count, paid_sessions_count], function(res){  // Send query to Keen IO
-    // divide paid sessions by sessions to get conversion rate
-    var conversion_rate = (this.data[1].result/this.data[0].result).toFixed(2)*100
-    chart
-      .parseRawData({ result: conversion_rate })
-      .render();
+  // Send query to Keen IO
+  var mashup = client.run([sessions_count, paid_sessions_count], function(err, res){
+    if (err) {
+      // Display the API error
+      chart.error(err.message);
+    }
+    else {
+      // divide paid sessions by sessions to get conversion rate
+      chart
+        .parseRawData({
+          result: (res[1].result/res[0].result).toFixed(2) * 100
+        })
+        .render();
+    }
   });
 
 ```
@@ -438,10 +453,10 @@ var chart = new Keen.Dataviz()
   })
   .prepare();
 
-client.run([pageviews, uniqueVisitors], function(err, response){ // run the queries
+client.run([pageviews, uniqueVisitors], function(err, res){ // run the queries
 
-	var result1 = response[0].result  // data from first query
-	var result2 = response[1].result  // data from second query
+	var result1 = res[0].result  // data from first query
+	var result2 = res[1].result  // data from second query
 	var data = []  // place for combined results
 	var i=0
 
