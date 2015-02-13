@@ -96,7 +96,7 @@ client.addEvent("purchases", purchaseEvent, function(err, res){
 });
 ```
 
-### API response for saving a single event
+### API response for recording a single event
 
 ```json
 {
@@ -137,7 +137,7 @@ client.addEvents(multipleEvents, function(err, res){
 });
 ```
 
-### API response for saving a single event
+### API response for recording multiple events
 
 ```json
 {
