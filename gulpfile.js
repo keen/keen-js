@@ -179,7 +179,7 @@ gulp.task('aws', ['build', 'test:local'], function() {
       path.dirname += '/' + pkg['version'];
     }))
     .pipe(aws.gzip())
-    .pipe(publisher.publish(headers))
+    .pipe(publisher.publish(headers, { force: true }))
     .pipe(publisher.cache())
     .pipe(aws.reporter());
 
