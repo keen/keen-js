@@ -6,22 +6,23 @@
 <a name="3.2.3"></a>
 # 3.2.3 Dataviz improvements and bug fixes
 
-* Fixes #231 and #233: add a `.stacked(boolean)` method for `Keen.Dataviz` (default is false), and configure for C3.js and Google Charts adapters.
-* Fixes #234: less cryptic message for empty results, which is caused when receiving an interval+group_by query resopnse where every result value array is empty. So long, "Data column(s) for axis #0 cannot be of type string".
-* Fixes #236: add support for select_unique responses (table)
-* General doc updates and improvements.
+* New `.stacked(boolean)` method for `Keen.Dataviz` (default is false), configured for C3.js and Google Charts adapters (#231, #233)
+* Cryptic "Data column(s) for axis #0 cannot be of type string" (Google Charts adapter) has been replaced with something less severe. This was caused when receiving an interval+group_by query response where every result value array is empty (#234)
+* Add support for select_unique responses (table, #236)
+* General doc updates and improvements
+
 
 <a name="3.2.2"></a>
 # 3.2.2 Fix packaging for browserify
 
-* Merged #223
+* Move `browserify-version` package from dev dependencies to regular dependencies, so the npm module can be browserified without issue. (#233)
 
 
 <a name="3.2.1"></a>
 # 3.2.1 Minor bug fixes
 
-* Merged #214
-* Fixed #215
+* Removed unnecessary `return` statement (#214 - thanks @Tom-Alexander)
+* `chartOptions` that carry a value of `false` are no longer magically changed to `null` (#215)
 
 
 <a name="3.2.0"></a>
