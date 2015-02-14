@@ -38,8 +38,8 @@ gulp.task('build:browserify', function() {
 gulp.task('build:minify', ['build:browserify'], function(){
   return gulp.src([
       './dist/keen.js',
-      './dist/keen-tracker.js',
-      './src/loader.js'
+      './dist/keen-tracker.js'
+      // './src/loader.js'
     ])
     .pipe(compress({ type: 'js' }))
     .pipe(rename({ suffix: '.min' }))
