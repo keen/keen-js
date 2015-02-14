@@ -3,6 +3,27 @@
 # Unreleased
 -->
 
+<a name="3.2.3"></a>
+# 3.2.3 Dataviz improvements and bug fixes
+
+* Fixes #231 and #233: add a `.stacked(boolean)` method for `Keen.Dataviz` (default is false), and configure for C3.js and Google Charts adapters.
+* Fixes #234: less cryptic message for empty results, which is caused when receiving an interval+group_by query resopnse where every result value array is empty. So long, "Data column(s) for axis #0 cannot be of type string".
+* Fixes #236: add support for select_unique responses (table)
+* General doc updates and improvements.
+
+<a name="3.2.2"></a>
+# 3.2.2 Fix packaging for browserify
+
+* Merged #223
+
+
+<a name="3.2.1"></a>
+# 3.2.1 Minor bug fixes
+
+* Merged #214
+* Fixed #215
+
+
 <a name="3.2.0"></a>
 # 3.2.0 keen-js learns to node.js (2014-12-28)
 
