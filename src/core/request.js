@@ -39,6 +39,10 @@ Request.prototype.refresh = function(){
       response = [],
       errored = false;
 
+  var buildQueryPath = function(analysisType) {
+    return (/^events\b/i.test(analysisType) ? '/' : '/queries/') + analysisType;
+  };
+
   var handleResponse = function(err, res, index){
     if (err) {
       self.trigger("error", err);
@@ -66,7 +70,7 @@ Request.prototype.refresh = function(){
     };
 
     if (query instanceof Keen.Query) {
-      path = "/queries/" + query.analysis;
+      path = buildQueryPath(query.analysis);
       sendQuery.call(self, path, query.params, cbSequencer);
     }
     else if ( Object.prototype.toString.call(query) === "[object String]" ) {
