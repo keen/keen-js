@@ -250,6 +250,7 @@ client.draw(count, document.getElementById("count-pageviews-metric"), {
 
 * `chartOptions.prefix`: string to prepend to the beginning of the result value
 * `chartOptions.suffix`: string to append to the end of the result value
+* `chartOptions.prettyNumber`: use short syntax to render numbers (eg: 300k), enabled by default
 
 
 ### Pie Chart
