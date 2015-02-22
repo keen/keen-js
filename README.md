@@ -41,6 +41,11 @@ Or load the library synchronously from our CDN:
 ```html
 <script src="https://d26b395fwzu5fz.cloudfront.net/3.2.3/keen.min.js" type="text/javascript"></script>
 ```
+or
+
+```html
+<script src="//cdn.jsdelivr.net/keen.js/3.2.3/keen.min.js" type="text/javascript"></script>
+```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
 
