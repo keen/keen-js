@@ -350,7 +350,7 @@ client.draw(watch_activation_funnel, document.getElementById("chart-05"), {
   height: 340,
   title: null,
   colors: ["#79CDCD"],
-  labelMapping: [ "Purchased Device", "Activated Device", "First Session", "Second Session", "Invited Friend" ],
+  labels: [ "Purchased Device", "Activated Device", "First Session", "Second Session", "Invited Friend" ],
   chartOptions: {
     chartArea: { height: "85%", left: "20%", top: "5%" },
     legend: { position: "none" }
