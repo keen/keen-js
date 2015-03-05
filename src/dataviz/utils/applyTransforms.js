@@ -1,7 +1,19 @@
 module.exports = function(){
-  this
-    .labelMapping(this.labelMapping())
-    .labels(this.labels())
-    .sortGroups(this.sortGroups())
-    .sortIntervals(this.sortIntervals());
+
+  if (this.labelMapping()) {
+    this.labelMapping(this.labelMapping());
+  }
+
+  if (this.colorMapping()) {
+    this.colorMapping(this.colorMapping());
+  }
+
+  if (this.sortGroups()) {
+    this.sortGroups(this.sortGroups());
+  }
+
+  if (this.sortIntervals()) {
+    this.sortIntervals(this.sortIntervals());
+  }
+
 };

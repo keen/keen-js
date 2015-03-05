@@ -9,11 +9,11 @@ module.exports = function(obj){
 
 function colorMapping(){
   var self = this,
-  schema = this.dataset.schema,
-  data = this.dataset.output(),
-  colorSet = this.view.defaults.colors.slice(),
-  colorMap = this.colorMapping(),
-  dt = this.dataType() || "";
+      schema = this.dataset.schema,
+      data = this.dataset.output(),
+      colorSet = this.view.defaults.colors.slice(),
+      colorMap = this.colorMapping(),
+      dt = this.dataType() || "";
 
   if (colorMap) {
     if (dt.indexOf("chronological") > -1 || (schema.unpack && data[0].length > 2)) {

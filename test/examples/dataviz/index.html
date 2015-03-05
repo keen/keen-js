@@ -280,7 +280,7 @@ var multiline = new Keen.Query("count", {
       var extraction = new Keen.Query("extraction", {
         event_collection: "pageviews",
         latest: 100
-        // propertyNames: [""]
+        // propertyNames: ["keen.timestamp", "keen.id"]
       });
 
       var uniques = new Keen.Query("select_unique", {
@@ -296,6 +296,22 @@ var multiline = new Keen.Query("count", {
         extraction: client.run(extraction),
         uniques: client.run(uniques)
       };
+
+      var alt = false;
+      setInterval(function(){
+        var str = alt ? 'user.device_info.browser.family' : 'user.geo_info.province';
+
+        groupBy.set({ groupBy: str });
+        window.reqs.groupBy.refresh();
+
+        // interval.set({ groupBy: str });
+        // window.reqs.interval.refresh();
+
+        multiline.set({ groupBy: str });
+        window.reqs.multiline.refresh();
+
+        alt = !alt;
+      }, 10 * 1000);
 
       // var generateRandomData = function(res) {
       //   var newData = res;
@@ -375,16 +391,13 @@ var multiline = new Keen.Query("count", {
           "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
         })
         .colorMapping({ "Direct": "#808080" })
+        .sortGroups("desc")
         .el(document.getElementById("2-2"))
         .prepare();
 
       var raw_pie = new Keen.Dataviz()
         .height(300)
-        .labelMapping({
-          "null": "Direct",
-          "file://localhost/Users/Larimer/dev/keen/sandbox/video.js%20plugin/index.html": "Home",
-          "file://localhost/Users/Larimer/Downloads/gist3a84fb3288737047e173-05ee2560c1be278096416081960b98ff0104ea4d/index.html": "Gallery"
-        })
+        .labelMapping({ "null": "Direct" })
         .colorMapping({ "Direct": "#808080" })
         .el(document.getElementById("2-3"))
         .prepare();
@@ -396,7 +409,9 @@ var multiline = new Keen.Query("count", {
           .render();
         raw_pie
           .parseRawData(res)
-          .sortGroups("asc")
+          .labelMapping({ "null": "DIR (raw)" })
+          .colorMapping({ "DIR (raw)": "#000" })
+          .sortGroups("desc")
           .render();
       });
       window.reqs['groupBy'].on("error", function(err, res){
@@ -558,8 +573,12 @@ var multiline = new Keen.Query("count", {
         .prepare();
 
       window.reqs['multiline'].on("complete", function(err, res){
+        console.log('multiline query complete!', this);
+        console.log(res.result[0].value[0]);
         req_mline.parseRequest(this).render();
         raw_mline.parseRawData(res).render();
+        console.log(raw_mline.dataset.selectRow(0));
+        console.log(raw_mline.dataset.selectRow(1));
       });
 
 
