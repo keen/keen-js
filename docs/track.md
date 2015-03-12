@@ -74,7 +74,7 @@ client.addEvents(multipleEvents, function(err, res){
 });
 ```
 
-### API response for saving a single event
+### API response for saving multiple events
 
 ```json
 {
