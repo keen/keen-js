@@ -7,7 +7,7 @@ module.exports = {
 
 function deleteColumn(q){
   var self = this,
-  index = (!isNaN(parseInt(q))) ? q : this.output()[0].indexOf(q);
+      index = (typeof q === 'number') ? q : this.data.output[0].indexOf(q);
 
   if (index > -1) {
     each(self.data.output, function(row, i){
@@ -18,7 +18,8 @@ function deleteColumn(q){
 }
 
 function deleteRow(q){
-  var index = (!isNaN(parseInt(q))) ? q : this.selectColumn(0).indexOf(q);
+  var index = (typeof q === 'number') ? q : this.selectColumn(0).indexOf(q);
+
   if (index > -1) {
     this.data.output.splice(index, 1);
   }

@@ -6,9 +6,8 @@ module.exports = {
 };
 
 function updateColumn(q, input){
-  var self = this, index;
-
-  index = (!isNaN(parseInt(q))) ? q : this.output()[0].indexOf(q);
+  var self = this,
+      index = (typeof q === 'number') ? q : this.data.output[0].indexOf(q);
 
   if (index > -1) {
 
@@ -41,9 +40,8 @@ function updateColumn(q, input){
 }
 
 function updateRow(q, input){
-  var self = this, index;
-
-  index = (!isNaN(parseInt(q))) ? q : this.selectColumn(0).indexOf(q);
+  var self = this,
+      index = (typeof q === 'number') ? q : this.selectColumn(0).indexOf(q);
 
   if (index > -1) {
 
