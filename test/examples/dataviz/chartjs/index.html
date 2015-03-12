@@ -17,8 +17,8 @@
     <div class="row">
       <div class="col-sm-6">
         <h2>Radar</h2>
-        <!-- <canvas id="chart-radar"></canvas> -->
-        <div id="chart-radar"></div>
+        <canvas id="chart-radar" height="200"></canvas>
+        <!-- <div id="chart-radar"></div> -->
       </div>
       <div class="col-sm-6">
         <h2>Polar-Area</h2>
@@ -42,7 +42,8 @@
     <h2>Line</h2>
     <div class="row">
       <div class="col-sm-6">
-        <div id="chart-line"></div>
+        <canvas id="chart-line" height="200"></canvas>
+        <!-- <div id="chart-line"></div> -->
       </div>
       <div class="col-sm-6">
         <div id="chart-line-multi"></div>
@@ -53,7 +54,8 @@
     <h2>Bar</h2>
     <div class="row">
       <div class="col-sm-6">
-        <div id="chart-bar"></div>
+        <canvas id="chart-bar" height="200"></canvas>
+        <!-- <div id="chart-bar"></div> -->
       </div>
       <div class="col-sm-6">
         <div id="chart-bar-multi"></div>
@@ -67,20 +69,19 @@
   <script src="../../../dist/keen.js"></script>
   <script>
   var client = new Keen({
-    projectId: "52f2ae5905cd661a7800000a",
-    readKey: "4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b",
-    requestType: "jsonp"
+    projectId: '52f2ae5905cd661a7800000a',
+    readKey: '4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b'
   });
 
   var interval = new Keen.Query("count", {
-    eventCollection: "pageview",
+    eventCollection: "pageviews",
     timeframe: "this_12_months",
     interval: "monthly"
   });
 
   var multiline = new Keen.Query("count", {
-    event_collection: "pageview",
-    group_by: "page",
+    event_collection: "pageviews",
+    group_by: 'user.device_info.browser.family',
     timeframe: "this_12_months",
     interval: "monthly"
   });
@@ -106,8 +107,8 @@
   var chartjs_radar = new Keen.Dataviz()
     // .library("chartjs")
     .chartType("radar")
-    .height(400)
-    .width(600)
+    // .height(200)
+    // .width(600)
     .el(document.getElementById("chart-radar"))
     .parseRawData({ result: [
         { label: "A", result: 9 },
@@ -121,7 +122,7 @@
   var chartjs_polar = new Keen.Dataviz()
     // .library("chartjs")
     .chartType("polar-area")
-    .height(400)
+    .height(200)
     //.width(600)
     .el(document.getElementById("chart-polar-area"))
     .parseRawData({ result: [
@@ -135,7 +136,7 @@
   var chartjs_pie = new Keen.Dataviz()
     // .library("chartjs")
     .chartType("pie")
-    .height(400)
+    .height(300)
     //.width(600)
     .el(document.getElementById("chart-pie"))
     .parseRawData({ result: [
@@ -149,7 +150,7 @@
   var chartjs_doughnut = new Keen.Dataviz()
     // .library("chartjs")
     // .chartType("doughnut")
-    .height(400)
+    .height(300)
     //.width(600)
     .el(document.getElementById("chart-doughnut"))
     .parseRawData({ result: [
@@ -166,7 +167,7 @@
   var chartjs_line = new Keen.Dataviz()
     // .library("chartjs")
     // .chartType("line")
-    .height(300)
+    // .height(200)
     .labelMapping(labelMap)
     .el(document.getElementById("chart-line"))
     .prepare();
@@ -174,7 +175,7 @@
   var chartjs_bar = new Keen.Dataviz()
     // .library("chartjs")
     .chartType("bar")
-    .height(300)
+    // .height(200)
     .labelMapping(labelMap)
     .el(document.getElementById("chart-bar"))
     .prepare();
@@ -186,11 +187,10 @@
   });
 
 
-
   var chartjs_line_m = new Keen.Dataviz()
     .library("chartjs")
     .chartType("line")
-    .height(300)
+    .height(200)
     .labelMapping(labelMap)
     .el(document.getElementById("chart-line-multi"))
     .prepare();
@@ -198,7 +198,7 @@
   var chartjs_bar_m = new Keen.Dataviz()
     .library("chartjs")
     .chartType("bar")
-    .height(300)
+    .height(200)
     .labelMapping(labelMap)
     .el(document.getElementById("chart-bar-multi"))
     .prepare();
