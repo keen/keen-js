@@ -2,17 +2,19 @@ var each = require('../../core/utils/each');
 
 module.exports = function(arr){
   if (!arguments.length) {
-    // If labels config is empty, set and return what's in the dataset
+    // If labels config is empty, return what's in the dataset
     if (!this.view['attributes'].labels || !this.view['attributes'].labels.length) {
-      this.view['attributes'].labels = getLabels.call(this);
+      return getLabels.call(this);
     }
-    return this.view['attributes'].labels;
+    else {
+      return this.view['attributes'].labels;
+    }
   }
   else {
     this.view['attributes'].labels = (arr instanceof Array ? arr : null);
     setLabels.call(this);
+    return this;
   }
-  return this;
 };
 
 function setLabels(){

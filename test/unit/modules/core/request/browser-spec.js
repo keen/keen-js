@@ -11,6 +11,7 @@ describe("Keen.Request", function() {
     this.client = new Keen({
       projectId: keenHelper.projectId,
       readKey: keenHelper.readKey,
+      protocol: keenHelper.protocol,
       requestType: "xhr"
     });
     this.query = new Keen.Query("count", {

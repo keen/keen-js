@@ -157,10 +157,10 @@ function parseRawData(response){
 
   dataset = dataset instanceof Dataset ? dataset : new Dataset(response, schema);
 
-  // Post-process label mapping/replacement
-  self.labelMapping(self.labelMapping());
-  self.labels(self.labels());
-  self.dataType(dataType);
+  // Set dataType
+  if (dataType) {
+    self.dataType(dataType);
+  }
 
   return dataset;
 }

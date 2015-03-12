@@ -102,9 +102,21 @@ module.exports = function(){
           this.el().innerHTML = "";
           this.el().appendChild(canvas);
           this.view._artifacts["ctx"] = canvas.getContext("2d");
-        } else {
+        }
+        else {
           this.view._artifacts["ctx"] = this.el().getContext("2d");
         }
+
+        if (this.height()) {
+          this.view._artifacts["ctx"].canvas.height = this.height();
+          this.view._artifacts["ctx"].canvas.style.height = String(this.height() + "px");
+        }
+
+        if (this.width()) {
+          this.view._artifacts["ctx"].canvas.width = this.width();
+          this.view._artifacts["ctx"].canvas.style.width = String(this.width() + "px");
+        }
+
         return this;
       },
       render: function(){

@@ -161,12 +161,14 @@ gulp.task('aws', ['build', 'test:local'], function() {
     bucket: pkg.name
   });
 
+  var cacheLife = (1000 * 60 * 60 * 24 * 365); // 1 year
+
   var headers = {
     // Cache policy (1000 * 60 * 60 * 1) // 1 hour
     // 'Cache-Control': 'max-age=3600000, public',
     // 'Expires': new Date(Date.now() + 3600000).toUTCString()
-    'Cache-Control': 'max-age=1000, public',
-    'Expires': new Date(Date.now() + 1000).toUTCString()
+    'Cache-Control': 'max-age=' + cacheLife + ', public',
+    'Expires': new Date(Date.now() + cacheLife).toUTCString()
   };
 
   return gulp.src([
@@ -221,12 +223,12 @@ function getCustomLaunchers(){
       browserName: 'internet explorer',
       platform: 'Windows 8',
       version: '10'
-    },
-    sl_ie_9: {
-      base: 'SauceLabs',
-      browserName: 'internet explorer',
-      platform: 'Windows 7',
-      version: '9'
     }
+    // sl_ie_9: {
+    //   base: 'SauceLabs',
+    //   browserName: 'internet explorer',
+    //   platform: 'Windows 7',
+    //   version: '9'
+    // }
   };
 }

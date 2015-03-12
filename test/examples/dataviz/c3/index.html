@@ -350,11 +350,12 @@
     'Invited Teammate'
   ];
 
-  var c3funnel = new Keen.Dataviz()
+  window.c3funnel = new Keen.Dataviz()
     .el(document.getElementById('c3-funnel'))
     .library('c3')
     .chartType('bar')
     .colors([ Keen.Dataviz.defaults.colors[5] ])
+    .labels(c3FunnelCats)
     .height(300)
     .chartOptions({
       // Overriding `axis` below wipes out auto-categorization
@@ -381,7 +382,6 @@
           { event_collection: 'invite_teammate' }
       ]
     })
-    .labels(c3FunnelCats)
     .render();
 
 
