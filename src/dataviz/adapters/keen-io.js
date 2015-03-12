@@ -31,6 +31,7 @@ module.exports = function(){
   };
 
   Keen.Spinner.defaults = {
+    height: 138,                  // Used if no height is provided
     lines: 10,                    // The number of lines to draw
     length: 8,                    // The length of each line
     width: 3,                     // The line thickness
@@ -138,8 +139,9 @@ module.exports = function(){
     initialize: function(){},
     render: function(){
       var spinner = document.createElement("div");
+      var height = this.height() || Keen.Spinner.defaults.height;
       spinner.className = "keen-loading";
-      spinner.style.height = String(this.height() + "px");
+      spinner.style.height = String(height + "px");
       spinner.style.position = "relative";
       spinner.style.width = String(this.width() + "px");
 

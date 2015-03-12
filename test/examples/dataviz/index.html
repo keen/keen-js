@@ -347,7 +347,7 @@ var multiline = new Keen.Query("count", {
         .prepare();
 
       var raw_metric = new Keen.Dataviz()
-        .height(138)
+        // .height(138)
         .colors([Keen.Dataviz.defaults.colors[3]])
         .chartOptions({ prettyNumber: false, prefix: "$" })
         .el(document.getElementById("1-3"))
