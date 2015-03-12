@@ -3,6 +3,16 @@
 # Unreleased
 -->
 
+<a name="3.2.4"></a>
+# 3.2.4 Data transform bug fixes and minor Visualization improvements
+
+* Fixed a bug in Dataset access methods for rows and columns (`select`, 'insert', 'update', 'delete') that caused string selections beginning with a number to fail (#255)
+* Fixed a bug introduced in v3.2.3 that prevented labels from updating properly when new query responses were parsed by a Dataviz instance
+* Spinner now uses a default height when no height is provided for a Dataviz instance. This can be configured by overriding `Keen.Spinner.defaults.height`
+* Updated ChartJS to latest version (v1.0.2) and now apply height/width to constructed `<canvas></canvas>` elements
+* AWC cache life extended to 1 full year
+
+
 <a name="3.2.3"></a>
 # 3.2.3 Dataviz improvements and bug fixes
 
