@@ -395,10 +395,10 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(table[1]);
       });
-      it("should accept a string query argument (indexOf match)", function(){
-        var table = [["Index", "A", "B"],["a", 342, 664],["b", 353, 322]];
+      it("should accept a string query argument, even if string starts with a number (indexOf match)", function(){
+        var table = [["Index", "A", "B"],["1 a", 342, 664],["1 b", 353, 322]];
         this.ds.output(table);
-        expect(this.ds.selectRow("a")).to.be.an("array")
+        expect(this.ds.selectRow("1 a")).to.be.an("array")
           .and.to.deep.equal(table[1]);
       });
     });
@@ -628,10 +628,10 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 342, 353]);
       });
-      it("should accept a string query argument (indexOf match)", function(){
-        this.ds.output([["Index", "A", "B"],[0, 342, 664],[1, 353, 322]]);
-        expect(this.ds.selectColumn("A")).to.be.an("array")
-          .and.to.deep.equal(["A", 342, 353]);
+      it("should accept a string query argument, even if string starts with a number (indexOf match)", function(){
+        this.ds.output([["Index", "1A", "2B"],[0, 342, 664],[1, 353, 322]]);
+        expect(this.ds.selectColumn("1A")).to.be.an("array")
+          .and.to.deep.equal(["1A", 342, 353]);
       });
     });
 
@@ -976,7 +976,7 @@ describe("Keen.Dataset", function(){
         expect(this.ds.getRowIndex(["Index", 0, 1, 2, 3])).to.eql("Index");
       });
     });
-    
+
     describe("#getColumnLabel", function(){
       it("should return the first value of a given column (array)", function(){
         expect(this.ds.getColumnLabel(["Series A", 1, 2, 3, 4,])).to.eql("Series A");
