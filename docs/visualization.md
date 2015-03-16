@@ -237,7 +237,7 @@ var count = new Keen.Query("count", {
 });
 client.draw(count, document.getElementById("count-pageviews-metric"), {
   chartType: "metric",
-  title: "Page Views",
+  title: "Total Pageviews",
   colors: ["#49c5b1"]
 });
 ```
