@@ -69,7 +69,7 @@ The second argument for the `#draw` method is a reference to the DOM element whe
   labelMapping: {},
   labels: [],
   chartOptions: {
-    // pass directly through to underying vizz library
+    // pass directly through to underlying vizz library
   }
 }
 ```
