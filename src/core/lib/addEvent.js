@@ -14,7 +14,7 @@ var base64 = require('../utils/base64'),
 
 module.exports = function(collection, payload, callback, async) {
   var self = this,
-      urlBase = this.url('/events/' + collection),
+      urlBase = this.url('/events/' + encodeURIComponent(collection)),
       reqType = this.config.requestType,
       data = {},
       cb = callback,
