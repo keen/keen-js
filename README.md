@@ -183,20 +183,24 @@ var client = new Keen({
   readKey: "YOUR_READ_KEY"
 });
 
-var count = new Keen.Query("count", {
-  eventCollection: "pageviews",
-  groupBy: "property",
-  timeframe: "this_7_days"
-});
+Keen.ready(function(){
 
-// Send query
-client.run(count, function(err, res){
-  if (err) {
-    // there was an error!
-  }
-  else {
-    // do something with res.result
-  }
+  var count = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "property",
+    timeframe: "this_7_days"
+  });
+
+  // Send query
+  client.run(count, function(err, res){
+    if (err) {
+      // there was an error!
+    }
+    else {
+      // do something with res.result
+    }
+  });
+
 });
 ```
 
@@ -219,44 +223,46 @@ A future release will add the ability to plot multiple query responses on a sing
 ```javascript
 // Create a client and a query
 var client = new Keen({ /* your config */ });
-var count = new Keen.Query("count", {
-  eventCollection: "pageviews",
-  groupBy: "visitor.geo.country",
-  interval: "daily",
-  timeframe: "this_21_days"
+
+Keen.ready(function(){
+
+  var count = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "visitor.geo.country",
+    interval: "daily",
+    timeframe: "this_21_days"
+  });
+
+  // Basic charting w/ `client.draw`:
+  client.draw(count, document.getElementById("chart-wrapper"), {
+    chartType: "columnchart",
+    title: "Custom chart title"
+  });
+
+  // Advanced charting with `Keen.Dataviz`:
+  var chart = new Keen.Dataviz()
+    .el(document.getElementById("chart-wrapper"))
+    .chartType("columnchart")
+    .prepare(); // starts spinner
+
+  var req = client.run(query, function(err, res){
+    if (err) {
+      // Display the API error
+      chart.error(err.message);
+    }
+    else {
+      // Handle the response
+      chart
+        .parseRequest(this)
+        .title("Custom chart title")
+        .render();
+    }
+  });
+
+  // How about a chart that updates itself every 15 minutes?
+  setInterval(req.refresh, 1000 * 60 * 15);
+
 });
-
-// Basic charting w/ `client.draw`:
-
-client.draw(count, document.getElementById("chart-wrapper"), {
-  chartType: "columnchart",
-  title: "Custom chart title"
-});
-
-
-// Advanced charting with `Keen.Dataviz`:
-
-var chart = new Keen.Dataviz()
-  .el(document.getElementById("chart-wrapper"))
-  .chartType("columnchart")
-  .prepare(); // starts spinner
-
-var req = client.run(query, function(err, res){
-  if (err) {
-    // Display the API error
-    chart.error(err.message);
-  }
-  else {
-    // Handle the response
-    chart
-      .parseRequest(this)
-      .title("Custom chart title")
-      .render();
-  }
-});
-
-// How about a chart that updates itself every 15 minutes?
-setInterval(req.refresh, 1000 * 60 * 15);
 ```
 
 Read more about building charts from query responses in our [visualization guide](./docs/visualization.md).
