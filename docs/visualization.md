@@ -4,10 +4,10 @@
 
 Building charts from queries is easier than ever.
 
-Clients have a #draw method which accepts a query, a DOM selector and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
+Clients have a #draw method which accepts a query, a DOM node and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
 
 ```javascript
-client.draw(query, selector, config);
+client.draw(query, node, config);
 ```
 
 ## Example usage
