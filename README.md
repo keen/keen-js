@@ -210,7 +210,7 @@ Building charts from queries is easier than ever.
 Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
 
 ```javascript
-client.draw(query, selector, config);
+client.draw(query, node, config);
 ```
 
 A future release will add the ability to plot multiple query responses on a single chart, but for the time being only the first query response will be visualized.
