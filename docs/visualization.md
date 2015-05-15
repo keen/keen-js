@@ -13,42 +13,48 @@ client.draw(query, node, config);
 ## Example usage
 
 ```javascript
-var query = new Keen.Query("count", {
-  eventCollection: "pageviews",
-  groupBy: "visitor.geo.country"
-  interval: "daily",
-  timeframe: "this_21_days"
-});
-var chart = client.draw(query, document.getElementById("chart-wrapper"), {
-  title: "Custom chart title",
-  chartType: "columnchart"
+Keen.ready(function(){
+  var query = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "visitor.geo.country"
+    interval: "daily",
+    timeframe: "this_21_days"
+  });
+  var chart = client.draw(query, document.getElementById("chart-wrapper"), {
+    title: "Custom chart title",
+    chartType: "columnchart"
+  });
 });
 ```
 
 Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about this object [here](./dataviz.md).
 
 ```javascript
-var chart = new Keen.Dataviz()
-  .el(document.getElementById("chart-wrapper"))
-  .chartType("columnchart")
-  .prepare(); // start spinner
+Keen.ready(function(){
 
-var req = client.run(query, function(err, res){
-  if (err) {
-    // Display the API error
-    chart.error(err.message);
-  }
-  else {
-    // Handle the response
-    chart
-      .parseRequest(this)
-      .title("Custom chart title")
-      .render();
-  }
+  var chart = new Keen.Dataviz()
+    .el(document.getElementById("chart-wrapper"))
+    .chartType("columnchart")
+    .prepare(); // start spinner
+
+  var req = client.run(query, function(err, res){
+    if (err) {
+      // Display the API error
+      chart.error(err.message);
+    }
+    else {
+      // Handle the response
+      chart
+        .parseRequest(this)
+        .title("Custom chart title")
+        .render();
+    }
+  });
+
+  // Re-run and refresh every 15 minutes...
+  setInterval(req.refresh, 1000 * 60 * 15);
+
 });
-
-// Re-run and refresh every 15 minutes...
-setInterval(req.refresh, 1000 * 60 * 15);
 ```
 
 ## DOM Selector
