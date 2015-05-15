@@ -29,7 +29,7 @@ $ npm install keen-js
 $ bower install keen-js
 ```
 
-For quick browser use, copy/paste this snippet of JavaScript above the `</head>` tag of your page:
+To start recording events from your website or blog, copy/paste this snippet of JavaScript above the `</head>` tag of your page:
 
 ```html
 <script type="text/javascript">
