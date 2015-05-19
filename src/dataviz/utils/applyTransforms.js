@@ -4,6 +4,10 @@ module.exports = function(){
     this.labelMapping(this.labelMapping());
   }
 
+  if (this.labels()) {
+    this.labels(this.labels());
+  }
+
   if (this.colorMapping()) {
     this.colorMapping(this.colorMapping());
   }
