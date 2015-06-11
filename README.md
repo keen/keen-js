@@ -209,6 +209,24 @@ Keen.ready(function(){
 
 Read more about advanced queries in our [query guide](./docs/query.md).
 
+
+## Query Caching
+
+Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses. 
+
+```javascript
+var count = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "property",
+    timeframe: "this_7_days",
+    maxAge: 300 // include maxAge as a query parameter to activate Query Caching
+});
+```
+`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
+
+**Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
+
+
 ## Visualization
 
 Building charts from queries is easier than ever.
