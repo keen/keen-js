@@ -136,6 +136,6 @@ var count = new Keen.Query("count", {
     maxAge: 300 // include maxAge as a query parameter to activate Query Caching
 });
 ```
-`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours.
+`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
 
 **Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
