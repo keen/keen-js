@@ -27,6 +27,7 @@ var your_analysis = new Keen.Query(analysisType, params);
       eventCollection: "pageviews",
       interval: "daily",
       timeframe: "this_7_days",
+      maxAge: 300, // activate query caching by assigning maxAge (an integer representing seconds)
       filters: [
         {
           "property_name" : "domain",
@@ -53,7 +54,7 @@ var your_analysis = new Keen.Query(analysisType, params);
 
 ### Metrics
 
-The various types of queries and their required parameters can be found in the [Data Analysis API docs](https://keen.io/docs/data-analysis/metrics/)Keen IO Data Analysis API docs.
+The various types of queries and their required parameters can be found in the Keen IO [Data Analysis API docs](https://keen.io/docs/data-analysis/metrics/).
 
 ### Extractions
 
@@ -111,7 +112,6 @@ var mashup = client.run([avg_revenue, max_revenue], function(err, res){
   // res[1].result or this.data[1] (max_revenue)
 });  
 ```
-
 ## Get/Set Parameters and Refresh Queries
 
 ```javascript
@@ -124,3 +124,18 @@ max_revenue.set({ timeframe: "this_21_days" });
 // Re-run the query
 mashup.refresh();
 ```
+## Query Caching
+
+Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses. 
+
+```javascript
+var count = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "property",
+    timeframe: "this_7_days",
+    maxAge: 300 // include maxAge as a query parameter to activate Query Caching
+});
+```
+`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
+
+**Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
