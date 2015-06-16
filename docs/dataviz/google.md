@@ -1,3 +1,3 @@
-# Google Charts
+# Google Charts Dataviz Adapter
 
 *Coming soon*
