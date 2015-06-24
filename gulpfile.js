@@ -24,7 +24,8 @@ gulp.task('build', ['build:browserify', 'build:minify']);
 gulp.task('build:browserify', function() {
   return gulp.src([
       './src/keen.js',
-      './src/keen-tracker.js'
+      './src/keen-tracker.js',
+      './src/keen-query.js'
     ])
     .pipe(transform(function(filename) {
       var b = browserify(filename);
@@ -38,7 +39,8 @@ gulp.task('build:browserify', function() {
 gulp.task('build:minify', ['build:browserify'], function(){
   return gulp.src([
       './dist/keen.js',
-      './dist/keen-tracker.js'
+      './dist/keen-tracker.js',
+      './dist/keen-query.js'
       // './src/loader.js'
     ])
     .pipe(compress({ type: 'js' }))
@@ -175,7 +177,9 @@ gulp.task('aws', ['build', 'test:local'], function() {
       './dist/keen.js',
       './dist/keen.min.js',
       './dist/keen-tracker.js',
-      './dist/keen-tracker.min.js'
+      './dist/keen-tracker.min.js',
+      './dist/keen-query.js',
+      './dist/keen-query.min.js'
     ])
     .pipe(rename(function(path) {
       path.dirname += '/' + pkg['version'];
