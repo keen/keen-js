@@ -30,7 +30,7 @@ Keen.ready(function(){
 });
 ```
 
-Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about this object [here](./dataviz.md).
+Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about this object [here](./dataviz/README.md).
 
 ```javascript
 Keen.ready(function(){
