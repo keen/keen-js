@@ -84,7 +84,7 @@ var client = new Keen({
 
 // Create a data object with the properties you want to send
 var purchaseEvent = {
-  item: "golden gadget",  
+  item: "golden gadget",
   price: 2550, // track dollars as cents
   referrer: document.referrer,
   keen: {
@@ -251,7 +251,7 @@ var client = new Keen({ /* your config */ });
 Keen.ready(function(){
 
   // Create a query instance
-  var count = new Keen.Query("count", {
+  var query = new Keen.Query("count", {
     eventCollection: "pageviews",
     groupBy: "visitor.geo.country",
     interval: "daily",
@@ -259,7 +259,7 @@ Keen.ready(function(){
   });
 
   // Basic charting w/ `client.draw`:
-  client.draw(count, document.getElementById("chart-wrapper"), {
+  client.draw(query, document.getElementById("chart-wrapper"), {
     chartType: "columnchart",
     title: "Custom chart title"
   });
