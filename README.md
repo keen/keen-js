@@ -73,7 +73,7 @@ You can configure new instances for as many projects as necessary.
 
 ## Record a single event
 
-Here is a basic example for tracking "purchases" in your app:
+Here is an example for recording a "purchases" event. Note that dollar amounts are tracked in cents:
 
 ```javascript
 // Configure an instance for your project
@@ -85,7 +85,7 @@ var client = new Keen({
 // Create a data object with the properties you want to send
 var purchaseEvent = {
   item: "golden gadget",  
-  price: 25.50,
+  price: 2550, // track dollars as cents
   referrer: document.referrer,
   keen: {
     timestamp: new Date().toISOString()
@@ -115,20 +115,22 @@ Send as many events as you like. Each event will be fired off to the Keen IO ser
 
 ## Record multiple events
 
+Here is an example for how to record multiple events with a single API call. Note that dollar amounts are tracked in cents:
+
 ```javascript
 // Configure an instance for your project
 var client = new Keen({...});
 
 var multipleEvents = {
   "purchases": [
-    { item: "golden gadget", price: 25.50, transaction_id: "f029342" },
-    { item: "a different gadget", price: 17.75, transaction_id: "f029342" }
+    { item: "golden gadget", price: 2550, transaction_id: "f029342" },
+    { item: "a different gadget", price: 1775, transaction_id: "f029342" }
   ],
   "transactions": [
     {
       id: "f029342",
       items: 2,
-      total: 43.25
+      total: 4325
     }
   ]
 };
@@ -164,9 +166,9 @@ client.addEvents(multipleEvents, function(err, res){
 }
 ```
 
-Read more about all the ways you can track events in our [tracking guide](./docs/track.md).
+Read more about all the ways you can record events in our [tracking guide](./docs/track.md).
 
-Wondering what else you should track? Browse our [data modeling guide](https://github.com/keen/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
+Wondering what else you should record? Browse our [data modeling guide](https://github.com/keen/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
 
 
 ## Querying events
