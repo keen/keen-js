@@ -20,6 +20,7 @@ module.exports = function(type, opts){
         status: 404
       }
     };
+
     // Apply options
     if (opts) {
       if ( 'boolean' === typeof opts.async ) {
