@@ -3,6 +3,15 @@
 # Unreleased
 -->
 
+<a name="3.2.5"></a>
+# 3.2.5 Improvements and fixes
+
+* New keen-query.js distribution is available for query-only functionality (#272 by [andrehjr](https://github.com/andrehjr))
+* Fixed bug preventing synchronous XHR execution (#290)
+* URL-encode event collection string for happy API URLs (#266 by [nmalzieu](https://github.com/nmalzieu))
+* Miscellaneous documentation updates and improvements
+
+
 <a name="3.2.4"></a>
 # 3.2.4 Data transform bug fixes and minor Visualization improvements
 

@@ -14,20 +14,23 @@ client.draw(query, node, config);
 
 ```javascript
 Keen.ready(function(){
+
   var query = new Keen.Query("count", {
     eventCollection: "pageviews",
     groupBy: "visitor.geo.country"
     interval: "daily",
     timeframe: "this_21_days"
   });
+
   var chart = client.draw(query, document.getElementById("chart-wrapper"), {
     title: "Custom chart title",
     chartType: "columnchart"
   });
+
 });
 ```
 
-Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about this object [here](./dataviz.md).
+Charts can also be instantiated with the `Keen.Dataviz` object. Learn more about this object [here](./dataviz/README.md).
 
 ```javascript
 Keen.ready(function(){
@@ -56,6 +59,9 @@ Keen.ready(function(){
 
 });
 ```
+
+A note about `Keen.ready(fn)`: This wrapper function is called when the full library is loaded (when using the asynchronous loading snippet), the DOM is ready, and the Google Charts library is loaded.
+
 
 ## DOM Selector
 
@@ -307,60 +313,62 @@ Find additional configuration options for tables [here](https://developers.googl
 ![Funnel as a bar chart](img/funnel-barchart.png)
 
 ```javascript
-var watch_activation_funnel = new Keen.Query("funnel", {
-  steps: [
-    {
-       event_collection: "purchases",
-       actor_property: "user.id",
-       filters: [
-          {
-            "property_name" : "product",
-            "operator" : "eq",
-            "property_value" : "telekinetic watch"
-          }
-       ],
-       timeframe: "last_7_days"
-    },
-    {
-      event_collection: "activations", // how many activated the device?
-      actor_property: "user.id",
-      optional: true
-    },
-    {
-      event_collection: "sessions", // how many had a session?
-      actor_property: "user.id",
-      optional: true
-    },
-    {
-      event_collection: "sessions",
-      actor_property: "user.id",
-      filters: [
-          {
-            "property_name" : "lifetime_session_count",
-            "operator" : "gt",
-            "property_value" : 1 // how many had more than 1 session
-          }
-       ],
-       optional: true
-    },
-    {
-      event_collection: "send_invitations",
-      actor_property: "user.id"
-    }
-  ]
-});
+Keen.ready(function(){
+  var watch_activation_funnel = new Keen.Query("funnel", {
+    steps: [
+      {
+         event_collection: "purchases",
+         actor_property: "user.id",
+         filters: [
+            {
+              "property_name" : "product",
+              "operator" : "eq",
+              "property_value" : "telekinetic watch"
+            }
+         ],
+         timeframe: "last_7_days"
+      },
+      {
+        event_collection: "activations", // how many activated the device?
+        actor_property: "user.id",
+        optional: true
+      },
+      {
+        event_collection: "sessions", // how many had a session?
+        actor_property: "user.id",
+        optional: true
+      },
+      {
+        event_collection: "sessions",
+        actor_property: "user.id",
+        filters: [
+            {
+              "property_name" : "lifetime_session_count",
+              "operator" : "gt",
+              "property_value" : 1 // how many had more than 1 session
+            }
+         ],
+         optional: true
+      },
+      {
+        event_collection: "send_invitations",
+        actor_property: "user.id"
+      }
+    ]
+  });
 
-client.draw(watch_activation_funnel, document.getElementById("chart-05"), {
-  library: "google",
-  chartType: "barchart", // or "columnchart"
-  height: 340,
-  title: null,
-  colors: ["#79CDCD"],
-  labels: [ "Purchased Device", "Activated Device", "First Session", "Second Session", "Invited Friend" ],
-  chartOptions: {
-    chartArea: { height: "85%", left: "20%", top: "5%" },
-    legend: { position: "none" }
-  }
+  client.draw(watch_activation_funnel, document.getElementById("chart-05"), {
+    library: "google",
+    chartType: "barchart", // or "columnchart"
+    height: 340,
+    title: null,
+    colors: ["#79CDCD"],
+    labels: [ "Purchased Device", "Activated Device", "First Session", "Second Session", "Invited Friend" ],
+    chartOptions: {
+      chartArea: { height: "85%", left: "20%", top: "5%" },
+      legend: { position: "none" }
+    }
+  });
 });
 ```
 
@@ -372,14 +380,14 @@ To display a modified query result or data from another source into a visualizat
 Here's an example that takes a hard-coded value "1896" and draws it as a number.
 
 ```javascript
-  var chart = new Keen.Dataviz()
-    .el(document.getElementById('my-div'))
-    .parseRawData({ result: 1896 })
-    .chartType("metric")
-    .colors(["#6ab975"])
-    .title("Wow!")
-    .width(400)
-    .render();
+var chart = new Keen.Dataviz()
+  .el(document.getElementById('my-div'))
+  .parseRawData({ result: 1896 })
+  .chartType("metric")
+  .colors(["#6ab975"])
+  .title("Wow!")
+  .width(400)
+  .render();
 ```
 
 ## Combine results of two queries
@@ -387,6 +395,7 @@ Here's an example that takes a hard-coded value "1896" and draws it as a number.
 Here's an example that runs two queries, divides them, and then outputs the results:
 
 ```javascript
+Keen.ready(function(){
 
   var sessions_count = new Keen.Query("count_unique", {
     eventCollection: "screen_view", // Use this collection because there is at least 1 screenview per session
@@ -423,6 +432,7 @@ Here's an example that runs two queries, divides them, and then outputs the resu
     }
   });
 
+});
 ```
 
 ## Combine two line charts
@@ -432,56 +442,58 @@ Here's an example that takes the data from two different line charts and plots t
 ![combined line chart](http://d26b395fwzu5fz.cloudfront.net/images/Keen-demo-combine-queries.png)
 
 ```javascript
-// use a variable to ensure timeframe & interval for both queries match
-var interval = "daily"
-var timeframe = "last_30_days"
+Keen.ready(function(){
+  // use a variable to ensure timeframe & interval for both queries match
+  var interval = "daily"
+  var timeframe = "last_30_days"
 
-var pageviews = new Keen.Query("count", { // first query
-	eventCollection: "pageviews",
-	interval: interval,
-	timeframe: timeframe
-});
+  var pageviews = new Keen.Query("count", { // first query
+  	eventCollection: "pageviews",
+  	interval: interval,
+  	timeframe: timeframe
+  });
 
-var uniqueVisitors = new Keen.Query("count_unique", { // second query
-	eventCollection: "pageviews",
-	targetProperty: "uuid",
-	interval: interval,
-	timeframe: timeframe
-});
+  var uniqueVisitors = new Keen.Query("count_unique", { // second query
+  	eventCollection: "pageviews",
+  	targetProperty: "uuid",
+  	interval: interval,
+  	timeframe: timeframe
+  });
 
-var chart = new Keen.Dataviz()
-  .el(document.getElementById("visitors-uniques"))
-  .chartType("linechart")
-  .chartOptions({
-    hAxis: {
-      format:'MMM d',
-      gridlines:  {count: 12}
-    }
-  })
-  .prepare();
+  var chart = new Keen.Dataviz()
+    .el(document.getElementById("visitors-uniques"))
+    .chartType("linechart")
+    .chartOptions({
+      hAxis: {
+        format:'MMM d',
+        gridlines:  {count: 12}
+      }
+    })
+    .prepare();
 
-client.run([pageviews, uniqueVisitors], function(err, res){ // run the queries
+  client.run([pageviews, uniqueVisitors], function(err, res){ // run the queries
 
-	var result1 = res[0].result  // data from first query
-	var result2 = res[1].result  // data from second query
-	var data = []  // place for combined results
-	var i=0
+  	var result1 = res[0].result  // data from first query
+  	var result2 = res[1].result  // data from second query
+  	var data = []  // place for combined results
+  	var i=0
 
-	while (i < result1.length) {
+  	while (i < result1.length) {
 
-		data[i]={ // format the data so it can be charted
-			timeframe: result1[i]["timeframe"],
-			value: [
-				{ category: "Pageviews", result: result1[i]["value"] },
-				{ category: "Visitors", result: result2[i]["value"] }
-			]
-		}
-		if (i == result1.length-1) { // chart the data
-      chart
-        .parseRawData({ result: data })
-        .render();
-		}
-		i++;
-	}
+  		data[i]={ // format the data so it can be charted
+  			timeframe: result1[i]["timeframe"],
+  			value: [
+  				{ category: "Pageviews", result: result1[i]["value"] },
+  				{ category: "Visitors", result: result2[i]["value"] }
+  			]
+  		}
+  		if (i == result1.length-1) { // chart the data
+        chart
+          .parseRawData({ result: data })
+          .render();
+  		}
+  		i++;
+  	}
+  });
 });
 ```

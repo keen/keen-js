@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.2.4)
+# Keen IO JavaScript SDK (v3.2.5)
 
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
@@ -33,19 +33,19 @@ To start recording events from your website or blog, copy/paste this snippet of 
 
 ```html
 <script type="text/javascript">
-  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.5/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
 Or load the library synchronously from our CDN:
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.5/keen.min.js" type="text/javascript"></script>
 ```
 or
 
 ```html
-<script src="//cdn.jsdelivr.net/keen.js/3.2.3/keen.min.js" type="text/javascript"></script>
+<script src="//cdn.jsdelivr.net/keen.js/3.2.5/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
@@ -58,12 +58,13 @@ When instantiating a new Keen JS client, there are a number of possible configur
 ```html
 <script type="text/javascript">
   var client = new Keen({
-    projectId: "YOUR_PROJECT_ID",   // String (required always)
-    writeKey: "YOUR_WRITE_KEY",     // String (required for sending data)
-    readKey: "YOUR_READ_KEY",       // String (required for querying data)
-    protocol: "https",              // String (optional: https | http | auto)
-    host: "api.keen.io/3.0",        // String (optional)
-    requestType: "jsonp"            // String (optional: jsonp, xhr, beacon)
+    projectId: "YOUR_PROJECT_ID", // String (required always)
+    writeKey: "YOUR_WRITE_KEY",   // String (required for sending data)
+    readKey: "YOUR_READ_KEY"      // String (required for querying data)
+
+    // protocol: "https",         // String (optional: https | http | auto)
+    // host: "api.keen.io/3.0",   // String (optional)
+    // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
   });
 </script>
 ```
@@ -72,7 +73,7 @@ You can configure new instances for as many projects as necessary.
 
 ## Record a single event
 
-Here is a basic example for tracking "purchases" in your app:
+Here is an example for recording a "purchases" event. Note that dollar amounts are tracked in cents:
 
 ```javascript
 // Configure an instance for your project
@@ -84,7 +85,7 @@ var client = new Keen({
 // Create a data object with the properties you want to send
 var purchaseEvent = {
   item: "golden gadget",  
-  price: 25.50,
+  price: 2550, // track dollars as cents
   referrer: document.referrer,
   keen: {
     timestamp: new Date().toISOString()
@@ -114,20 +115,22 @@ Send as many events as you like. Each event will be fired off to the Keen IO ser
 
 ## Record multiple events
 
+Here is an example for how to record multiple events with a single API call. Note that dollar amounts are tracked in cents:
+
 ```javascript
 // Configure an instance for your project
 var client = new Keen({...});
 
 var multipleEvents = {
   "purchases": [
-    { item: "golden gadget", price: 25.50, transaction_id: "f029342" },
-    { item: "a different gadget", price: 17.75, transaction_id: "f029342" }
+    { item: "golden gadget", price: 2550, transaction_id: "f029342" },
+    { item: "a different gadget", price: 1775, transaction_id: "f029342" }
   ],
   "transactions": [
     {
       id: "f029342",
       items: 2,
-      total: 43.25
+      total: 4325
     }
   ]
 };
@@ -163,9 +166,9 @@ client.addEvents(multipleEvents, function(err, res){
 }
 ```
 
-Read more about all the ways you can track events in our [tracking guide](./docs/track.md).
+Read more about all the ways you can record events in our [tracking guide](./docs/track.md).
 
-Wondering what else you should track? Browse our [data modeling guide](https://github.com/keen/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
+Wondering what else you should record? Browse our [data modeling guide](https://github.com/keen/data-modeling-guide), and send us recommendations or pull requests if you don't find what you're looking for.
 
 
 ## Querying events
@@ -193,7 +196,7 @@ Keen.ready(function(){
     groupBy: "property",
     timeframe: "this_7_days"
   });
-  
+
   // Send query
   client.run(count, function(err, res){
     if (err) {
@@ -212,7 +215,7 @@ Read more about advanced queries in our [query guide](./docs/query.md).
 
 ## Query Caching
 
-Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses. 
+Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses.
 
 ```javascript
 var count = new Keen.Query("count", {
@@ -256,15 +259,12 @@ Keen.ready(function(){
   });
 
   // Basic charting w/ `client.draw`:
-
   client.draw(count, document.getElementById("chart-wrapper"), {
     chartType: "columnchart",
     title: "Custom chart title"
   });
 
-
   // Advanced charting with `Keen.Dataviz`:
-
   var chart = new Keen.Dataviz()
     .el(document.getElementById("chart-wrapper"))
     .chartType("columnchart")
@@ -286,7 +286,6 @@ Keen.ready(function(){
 
   // How about a chart that updates itself every 15 minutes?
   setInterval(req.refresh, 1000 * 60 * 15);
-
 });
 ```
 

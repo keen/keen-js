@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.2.4",
+  "version": "3.2.5",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {
@@ -15,6 +15,7 @@
   "author": "Dustin Larimer <dustin@keen.io> (https://keen.io/)",
   "contributors": [
     "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
+    "André Luis Leal Cardoso Junior <andrehjr@gmail.com>",
     "Sean Dokko <dokko1230@gmail.com> (http://seandokko.com/)",
     "Jordan Klassen <forivall@gmail.com> (http://forivall.github.io)",
     "Josh Dzielak <josh@keen.io> (http://dzello.com)",

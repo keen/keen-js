@@ -65,11 +65,7 @@ module.exports = function(collection, payload, callback, async) {
   if ( getUrl && getContext() === 'browser' ) {
     request
       .get(getUrl)
-      .use(function(req){
-        req.async = isAsync;
-        return req;
-      })
-      .use(requestTypes(reqType))
+      .use(requestTypes(reqType, { async: isAsync }))
       .end(handleResponse);
   }
   else if ( getXHR() || getContext() === 'server' ) {
