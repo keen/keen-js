@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.2.4)
+# Keen IO JavaScript SDK (v3.2.5)
 
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
@@ -29,23 +29,23 @@ $ npm install keen-js
 $ bower install keen-js
 ```
 
-For quick browser use, copy/paste this snippet of JavaScript above the `</head>` tag of your page:
+To start recording events from your website or blog, copy/paste this snippet of JavaScript above the `</head>` tag of your page:
 
 ```html
 <script type="text/javascript">
-  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.5/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
 Or load the library synchronously from our CDN:
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.4/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.5/keen.min.js" type="text/javascript"></script>
 ```
 or
 
 ```html
-<script src="//cdn.jsdelivr.net/keen.js/3.2.3/keen.min.js" type="text/javascript"></script>
+<script src="//cdn.jsdelivr.net/keen.js/3.2.5/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
@@ -58,12 +58,13 @@ When instantiating a new Keen JS client, there are a number of possible configur
 ```html
 <script type="text/javascript">
   var client = new Keen({
-    projectId: "YOUR_PROJECT_ID",   // String (required always)
-    writeKey: "YOUR_WRITE_KEY",     // String (required for sending data)
-    readKey: "YOUR_READ_KEY",       // String (required for querying data)
-    protocol: "https",              // String (optional: https | http | auto)
-    host: "api.keen.io/3.0",        // String (optional)
-    requestType: "jsonp"            // String (optional: jsonp, xhr, beacon)
+    projectId: "YOUR_PROJECT_ID", // String (required always)
+    writeKey: "YOUR_WRITE_KEY",   // String (required for sending data)
+    readKey: "YOUR_READ_KEY"      // String (required for querying data)
+
+    // protocol: "https",         // String (optional: https | http | auto)
+    // host: "api.keen.io/3.0",   // String (optional)
+    // requestType: "jsonp"       // String (optional: jsonp, xhr, beacon)
   });
 </script>
 ```
@@ -179,6 +180,7 @@ var your_analysis = new Keen.Query(analysisType, params);
 ### Example Usage
 
 ```javascript
+// Create a client instance
 var client = new Keen({
   projectId: "YOUR_PROJECT_ID",
   readKey: "YOUR_READ_KEY"
@@ -186,6 +188,7 @@ var client = new Keen({
 
 Keen.ready(function(){
 
+  // Create a query instance
   var count = new Keen.Query("count", {
     eventCollection: "pageviews",
     groupBy: "property",
@@ -207,6 +210,24 @@ Keen.ready(function(){
 
 Read more about advanced queries in our [query guide](./docs/query.md).
 
+
+## Query Caching
+
+Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses.
+
+```javascript
+var count = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    groupBy: "property",
+    timeframe: "this_7_days",
+    maxAge: 300 // include maxAge as a query parameter to activate Query Caching
+});
+```
+`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
+
+**Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
+
+
 ## Visualization
 
 Building charts from queries is easier than ever.
@@ -214,7 +235,7 @@ Building charts from queries is easier than ever.
 Clients have a #draw method with accepts a query, a DOM selector, and a configuration object as arguments. You can call this directly on the client, which will execute a request and visualize its response, like so:
 
 ```javascript
-client.draw(query, selector, config);
+client.draw(query, node, config);
 ```
 
 A future release will add the ability to plot multiple query responses on a single chart, but for the time being only the first query response will be visualized.
@@ -222,11 +243,12 @@ A future release will add the ability to plot multiple query responses on a sing
 ### Example usage
 
 ```javascript
-// Create a client and a query
+// Create a client instance
 var client = new Keen({ /* your config */ });
 
 Keen.ready(function(){
 
+  // Create a query instance
   var count = new Keen.Query("count", {
     eventCollection: "pageviews",
     groupBy: "visitor.geo.country",
@@ -262,7 +284,6 @@ Keen.ready(function(){
 
   // How about a chart that updates itself every 15 minutes?
   setInterval(req.refresh, 1000 * 60 * 15);
-
 });
 ```
 
