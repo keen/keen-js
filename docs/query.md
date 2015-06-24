@@ -126,7 +126,7 @@ mashup.refresh();
 ```
 ## Query Caching
 
-Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses. 
+Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses.
 
 ```javascript
 var count = new Keen.Query("count", {
@@ -139,3 +139,11 @@ var count = new Keen.Query("count", {
 `maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
 
 **Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
+
+## Timezones
+
+The timezone parameter is available when running an analysis with a relative timeframes. We support a growing list of named timezones available as a convenience, such as "US/Mountain" and "Europe/London". It’s best to use these when you can because you no longer have to worry about Daylight Savings Time (DST).
+
+It's also necessary to specify a string-value timezone ("US/Mountain") for queries with timeframes overlapping DST in any way. Using a string-value timezone shifts start/end times for each interval automagically, so intervals that exist inside or outside of DST will be set correctly. An integer-value timezone offset (-28800) applied to a timeframe overlapping with DST will be incorrect either during DST or during standard time.
+
+Learn more about named timezones in the [API reference](https://keen.io/docs/api/#timezone).
