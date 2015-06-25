@@ -551,6 +551,19 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal([1, 695, 986]);
       });
+      it("should extend other rows when passed array is longer than existing rows", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.updateRow(1, [10, 10, null, null]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([0, 10,10,null,null]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["3", null, null]);
+      });
     });
 
     describe("#deleteRow", function() {
