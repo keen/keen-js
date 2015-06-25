@@ -494,6 +494,21 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["Total", null, null]);
       });
+      it("should extend other rows when the passed array is longer than other rows", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.insertRow(1, "Total", [123, 321, 323, null]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 123, 321, 323, null]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["3", 323, null, null]);
+        expect(this.ds.selectColumn(4)).to.be.an("array")
+          .and.to.deep.equal(["4", null, null, null]);
+      });
     });
 
     describe("#updateRow", function() {
@@ -741,6 +756,23 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["Total", null, null]);
       });
+
+      it("should extend other columns when passed array is longer than existing columns", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.insertColumn(1, "Total", [10, 10, 10, null]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 10, 10, 10, null]);
+        expect(this.ds.selectRow(3)).to.be.an('array')
+          .and.to.deep.equal(["3", 10, null, null]);
+        expect(this.ds.selectRow(4)).to.be.an('array')
+          .and.to.deep.equal(["4", null, null, null]);
+      });
+
     });
 
     describe("#updateColumn", function() {

@@ -1,4 +1,9 @@
 var each = require("../../core/utils/each");
+var createNullList = require('../utils/create-null-list');
+var append = require('./append');
+
+var appendRow = append.appendRow,
+    appendColumn = append.appendColumn;
 
 module.exports = {
   "insertColumn": insertColumn,
@@ -27,14 +32,24 @@ function insertColumn(index, str, input){
   }
 
   else if (!input || input instanceof Array) {
-
     self.data.output[0].splice(index, 0, label);
-    each(self.output(), function(row, i){
-      var cell;
-      if (i > 0) {
-        cell = (input && input[i-1] !== "undefined") ? input[i-1] : null;
-        self.data.output[i].splice(index, 0, cell);
-      }
+    input = input || [];
+
+    if (input.length <= self.output().length - 1) {
+      input = input.concat( createNullList(self.output().length - 1 - input.length) );
+    }
+    else {
+      // If this new column is longer than existing columns,
+      // we need to update the rest to match ...
+      each(input, function(value, i){
+        if (self.data.output.length -1 < input.length) {
+          appendRow.call(self, String( self.data.output.length ));
+        }
+      });
+    }
+
+    each(input, function(value, i){
+      self.data.output[i+1].splice(index, 1, value);
     });
 
   }
@@ -63,15 +78,30 @@ function insertRow(index, str, input){
   }
 
   else if (!input || input instanceof Array) {
-    each(self.output()[0], function(label, i){
-      var cell;
-      if (i > 0) {
-        cell = (input && input[i-1] !== undefined) ? input[i-1] : null;
-        newRow.push(cell);
-      }
-    });
-    this.data.output.splice(index, 0, newRow);
+    input = input || [];
+
+    if (input.length <= self.data.output[0].length - 1) {
+      input = input.concat( createNullList( self.data.output[0].length - 1 - input.length ) );
+    }
+    else {
+      each(input, function(value, i){
+        if (self.data.output[0].length -1 < input.length) {
+          appendColumn.call(self, String( self.data.output[0].length ));
+        }
+      });
+    }
+
+    self.data.output.splice(index, 0, newRow.concat(input) );
+
+    // each(self.output()[0], function(label, i){
+    //   var cell;
+    //   if (i > 0) {
+    //     cell = (input && input[i-1] !== undefined) ? input[i-1] : null;
+    //     newRow.push(cell);
+    //   }
+    // });
+    // this.data.output.splice(index, 0, newRow);
   }
 
-  return this;
+  return self;
 }
