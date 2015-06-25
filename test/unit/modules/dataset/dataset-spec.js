@@ -388,6 +388,54 @@ describe("Keen.Dataset", function(){
 
   describe("Access Rows", function(){
 
+    describe("#set", function(){
+
+      it("should create a column and row when they don't already exist (integer)", function(){
+        this.ds.output([['index']]);
+        this.ds.set([1,1], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 10]);
+      });
+
+      it("should create a column and row when they don't already exist (string)", function(){
+        this.ds.output([['index']]);
+        this.ds.set(['A','Row'], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Row", 10]);
+      });
+
+      it("should create multiple columns and rows in the proper order (integers)", function(){
+        this.ds.output([['index']]);
+        this.ds.set([1,1], 10);
+        this.ds.set([2,2], 10);
+        this.ds.set([1,3], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 10, null]);
+        expect(this.ds.selectRow(2)).to.be.an("array")
+          .and.to.deep.equal([2, null, 10]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([3, 10, null]);
+        expect(this.ds.selectColumn(2)).to.be.an("array")
+          .and.to.deep.equal([2, null, 10, null]);
+      });
+
+      it("should create multiple columns and rows in the proper order (strings)", function(){
+        this.ds.output([['index']]);
+        this.ds.set(['A','Row 1'], 10);
+        this.ds.set(['B','Row 2'], 10);
+        this.ds.set(['A','Row 3'], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Row 1", 10, null]);
+        expect(this.ds.selectRow(2)).to.be.an("array")
+          .and.to.deep.equal(["Row 2", null, 10]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal(["Row 3", 10, null]);
+        expect(this.ds.selectColumn(2)).to.be.an("array")
+          .and.to.deep.equal(["B", null, 10, null]);
+      });
+
+    });
+
     describe("#selectRow", function() {
       it("should return a given row", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
