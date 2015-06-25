@@ -813,6 +813,21 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 1006, 675]);
       });
+      it("should extend other columns when passed array is longer than existing columns", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.updateColumn(1, [10, 10, null, null]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 10, 10, null, null]);
+        expect(this.ds.selectColumn(2)).to.be.an("array")
+          .and.to.deep.equal(["B", 664, 322, null, null]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal(["3", null, null]);
+      });
     });
 
     describe("#deleteColumn", function() {

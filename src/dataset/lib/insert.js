@@ -92,15 +92,6 @@ function insertRow(index, str, input){
     }
 
     self.data.output.splice(index, 0, newRow.concat(input) );
-
-    // each(self.output()[0], function(label, i){
-    //   var cell;
-    //   if (i > 0) {
-    //     cell = (input && input[i-1] !== undefined) ? input[i-1] : null;
-    //     newRow.push(cell);
-    //   }
-    // });
-    // this.data.output.splice(index, 0, newRow);
   }
 
   return self;
