@@ -441,6 +441,19 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(3)).to.be.an("array")
           .and.to.deep.equal([2, null, null]);
       });
+      it("should extend other rows when passed array is longer than existing rows", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.appendRow("new", [ 333, 222, 111 ]);
+        expect(this.ds.selectRow("new")).to.be.an("array")
+          .and.to.deep.equal(["new", 333, 222, 111]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["3", null, null, 111]);
+      });
     });
 
     describe("#insertRow", function() {
@@ -672,6 +685,21 @@ describe("Keen.Dataset", function(){
         this.ds.appendColumn("C", function(){});
         expect(this.ds.selectColumn(3)).to.be.an("array")
           .and.to.deep.equal(["C", null, null]);
+      });
+      it("should extend other columns when passed array is longer than existing columns", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.appendColumn("C", [123, 456, 789, 321]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", 123, 456, 789, 321]);
+        expect(this.ds.selectRow(3)).to.be.an('array')
+          .and.to.deep.equal(["3", null, null, 789]);
+        expect(this.ds.selectRow(4)).to.be.an('array')
+          .and.to.deep.equal(["4", null, null, 321]);
       });
     });
 
