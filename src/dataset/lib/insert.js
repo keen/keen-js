@@ -49,7 +49,7 @@ function insertColumn(index, str, input){
     }
 
     each(input, function(value, i){
-      self.data.output[i+1].splice(index, 1, value);
+      self.data.output[i+1].splice(index, 0, value);
     });
 
   }
