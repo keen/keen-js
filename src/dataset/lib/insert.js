@@ -32,7 +32,6 @@ function insertColumn(index, str, input){
   }
 
   else if (!input || input instanceof Array) {
-    self.data.output[0].splice(index, 0, label);
     input = input || [];
 
     if (input.length <= self.output().length - 1) {
@@ -48,8 +47,9 @@ function insertColumn(index, str, input){
       });
     }
 
+    self.data.output[0].splice(index, 0, label);
     each(input, function(value, i){
-      self.data.output[i+1].splice(index, 1, value);
+      self.data.output[i+1].splice(index, 0, value);
     });
 
   }
