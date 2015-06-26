@@ -26,7 +26,6 @@ function appendColumn(str, input){
   }
 
   else if (!input || input instanceof Array) {
-    self.data.output[0].push(label);
     input = input || [];
 
     if (input.length <= self.output().length - 1) {
@@ -42,6 +41,7 @@ function appendColumn(str, input){
       });
     }
 
+    self.data.output[0].push(label);
     each(input, function(value, i){
       self.data.output[i+1][self.data.output[0].length-1] = value;
     });

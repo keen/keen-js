@@ -833,6 +833,8 @@ describe("Keen.Dataset", function(){
         this.ds.insertColumn(1, "Total", [10, 10, 10, null]);
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["Total", 10, 10, 10, null]);
+        expect(this.ds.selectRow(2)).to.be.an('array')
+          .and.to.deep.equal([1, 10, 353, 322]);
         expect(this.ds.selectRow(3)).to.be.an('array')
           .and.to.deep.equal(["3", 10, null, null]);
         expect(this.ds.selectRow(4)).to.be.an('array')
