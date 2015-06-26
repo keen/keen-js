@@ -8,7 +8,7 @@ var Emitter = require('../core/helpers/emitter-shim');
 function Dataset(){
   this.data = {
     input: {},
-    output: [[]]
+    output: [['index']]
   };
   this.meta = {
     schema: {},

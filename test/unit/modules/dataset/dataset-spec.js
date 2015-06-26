@@ -3,6 +3,8 @@ var expect = require("chai").expect;
 var Keen = require("../../../../src/core"),
     keenHelper = require("../../helpers/test-config");
 
+var each = require("../../../../src/core/utils/each");
+
 var data_extraction = require("./sample-data/extraction"),
     data_extraction_uneven = require("./sample-data/extraction-uneven")
     data_metric = require("./sample-data/metric"),
@@ -67,6 +69,7 @@ describe("Keen.Dataset", function(){
         records: "result",
         select: true
       });
+
       expect(dataset.output()).to.be.an("array")
         .and.to.be.of.length(56);
       expect(dataset.output()[0]).to.be.of.length(2);
@@ -89,6 +92,7 @@ describe("Keen.Dataset", function(){
           }
         ]
       });
+
       dataset.sortRows("desc", dataset.sum, 1);
       expect(dataset.output()).to.be.an("array")
         .and.to.be.of.length(4);
@@ -97,7 +101,7 @@ describe("Keen.Dataset", function(){
     });
 
     it("interval-groupBy-empties.json", function(){
-      var dataset = new Keen.Dataset()
+      var dataset = new Keen.Dataset();
       dataset.parse(data_interval_groupBy_empties, {
         records: "result",
         unpack: {
@@ -164,6 +168,7 @@ describe("Keen.Dataset", function(){
           }
         }
       });
+
       dataset.sortColumns("desc", dataset.sum, 1);
       dataset.sortRows("asc");
 
@@ -388,6 +393,54 @@ describe("Keen.Dataset", function(){
 
   describe("Access Rows", function(){
 
+    describe("#set", function(){
+
+      it("should create a column and row when they don't already exist (integer)", function(){
+        this.ds.output([['index']]);
+        this.ds.set([1,1], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 10]);
+      });
+
+      it("should create a column and row when they don't already exist (string)", function(){
+        this.ds.output([['index']]);
+        this.ds.set(['A','Row'], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Row", 10]);
+      });
+
+      it("should create multiple columns and rows in the proper order (integers)", function(){
+        this.ds.output([['index']]);
+        this.ds.set([1,1], 10);
+        this.ds.set([2,2], 10);
+        this.ds.set([1,3], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([1, 10, null]);
+        expect(this.ds.selectRow(2)).to.be.an("array")
+          .and.to.deep.equal([2, null, 10]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal([3, 10, null]);
+        expect(this.ds.selectColumn(2)).to.be.an("array")
+          .and.to.deep.equal([2, null, 10, null]);
+      });
+
+      it("should create multiple columns and rows in the proper order (strings)", function(){
+        this.ds.output([['index']]);
+        this.ds.set(['A','Row 1'], 10);
+        this.ds.set(['B','Row 2'], 10);
+        this.ds.set(['A','Row 3'], 10);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Row 1", 10, null]);
+        expect(this.ds.selectRow(2)).to.be.an("array")
+          .and.to.deep.equal(["Row 2", null, 10]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal(["Row 3", 10, null]);
+        expect(this.ds.selectColumn(2)).to.be.an("array")
+          .and.to.deep.equal(["B", null, 10, null]);
+      });
+
+    });
+
     describe("#selectRow", function() {
       it("should return a given row", function(){
         var table = [["Index", "A", "B"],[0, 342, 664],[1, 353, 322]];
@@ -441,6 +494,19 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectRow(3)).to.be.an("array")
           .and.to.deep.equal([2, null, null]);
       });
+      it("should extend other rows when passed array is longer than existing rows", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.appendRow("new", [ 333, 222, 111 ]);
+        expect(this.ds.selectRow("new")).to.be.an("array")
+          .and.to.deep.equal(["new", 333, 222, 111]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["3", null, null, 111]);
+      });
     });
 
     describe("#insertRow", function() {
@@ -480,6 +546,21 @@ describe("Keen.Dataset", function(){
         this.ds.insertRow(1, "Total", function(){});
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["Total", null, null]);
+      });
+      it("should extend other rows when the passed array is longer than other rows", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.insertRow(1, "Total", [123, 321, 323, null]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 123, 321, 323, null]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["3", 323, null, null]);
+        expect(this.ds.selectColumn(4)).to.be.an("array")
+          .and.to.deep.equal(["4", null, null, null]);
       });
     });
 
@@ -522,6 +603,19 @@ describe("Keen.Dataset", function(){
         });
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal([1, 695, 986]);
+      });
+      it("should extend other rows when passed array is longer than existing rows", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.updateRow(1, [10, 10, null, null]);
+        expect(this.ds.selectRow(1)).to.be.an("array")
+          .and.to.deep.equal([0, 10,10,null,null]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["3", null, null]);
       });
     });
 
@@ -673,6 +767,21 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(3)).to.be.an("array")
           .and.to.deep.equal(["C", null, null]);
       });
+      it("should extend other columns when passed array is longer than existing columns", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.appendColumn("C", [123, 456, 789, 321]);
+        expect(this.ds.selectColumn(3)).to.be.an("array")
+          .and.to.deep.equal(["C", 123, 456, 789, 321]);
+        expect(this.ds.selectRow(3)).to.be.an('array')
+          .and.to.deep.equal(["3", null, null, 789]);
+        expect(this.ds.selectRow(4)).to.be.an('array')
+          .and.to.deep.equal(["4", null, null, 321]);
+      });
     });
 
     describe("#insertColumn", function() {
@@ -713,6 +822,23 @@ describe("Keen.Dataset", function(){
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["Total", null, null]);
       });
+
+      it("should extend other columns when passed array is longer than existing columns", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.insertColumn(1, "Total", [10, 10, 10, null]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["Total", 10, 10, 10, null]);
+        expect(this.ds.selectRow(3)).to.be.an('array')
+          .and.to.deep.equal(["3", 10, null, null]);
+        expect(this.ds.selectRow(4)).to.be.an('array')
+          .and.to.deep.equal(["4", null, null, null]);
+      });
+
     });
 
     describe("#updateColumn", function() {
@@ -752,6 +878,21 @@ describe("Keen.Dataset", function(){
         });
         expect(this.ds.selectColumn(1)).to.be.an("array")
           .and.to.deep.equal(["A", 1006, 675]);
+      });
+      it("should extend other columns when passed array is longer than existing columns", function(){
+        var table = [
+          ["Index", "A", "B"],
+          [0, 342, 664],
+          [1, 353, 322]
+        ];
+        this.ds.output(table);
+        this.ds.updateColumn(1, [10, 10, null, null]);
+        expect(this.ds.selectColumn(1)).to.be.an("array")
+          .and.to.deep.equal(["A", 10, 10, null, null]);
+        expect(this.ds.selectColumn(2)).to.be.an("array")
+          .and.to.deep.equal(["B", 664, 322, null, null]);
+        expect(this.ds.selectRow(3)).to.be.an("array")
+          .and.to.deep.equal(["3", null, null]);
       });
     });
 
@@ -987,6 +1128,209 @@ describe("Keen.Dataset", function(){
 
   });
 
+
+  describe("Parsing with #set", function() {
+
+    it("metric.json", function(){
+      var dataset = new Keen.Dataset();
+      dataset.set(['value', 'result'], data_metric.result);
+
+      expect(dataset.output())
+        .to.be.an("array")
+        .and.to.be.of.length(2);
+      expect(dataset.output()[0][0]).to.eql("index");
+      expect(dataset.output()[0][1]).to.eql("value");
+      expect(dataset.output()[1][0]).to.eql("result");
+      expect(dataset.output()[1][1]).to.eql(2450);
+    });
+
+    it("groupby.json", function(){
+      var dataset = new Keen.Dataset();
+      each(data_groupBy.result, function(record, i){
+        dataset.set(['result', record.page], record.result);
+      });
+
+      expect(dataset.output()).to.be.an("array")
+        .and.to.be.of.length(56);
+      expect(dataset.output()[0]).to.be.of.length(2);
+      expect(dataset.output()[0][0]).to.eql("index");
+      expect(dataset.output()[0][1]).to.eql("result");
+    });
+
+    it("groupBy-boolean.json", function(){
+      var dataset = new Keen.Dataset();
+      each(data_groupBy_boolean.result, function(record, i){
+        dataset.set([ 'result', String(record.switch) ], record.result);
+      });
+
+      dataset.sortRows("desc", dataset.sum, 1);
+      expect(dataset.output()).to.be.an("array")
+        .and.to.be.of.length(4);
+      expect(dataset.output()[1][0]).to.eql("true");
+      expect(dataset.output()[2][0]).to.eql("false");
+    });
+
+    it("interval-groupBy-empties.json", function(){
+      var dataset = new Keen.Dataset()
+      each(data_interval_groupBy_empties.result, function(record, i){
+        if (record.value.length) {
+          each(record.value, function(group, j){
+            dataset.set([ group['parsed_user_agent.os.family'] || '', record.timeframe.start ], group.result);
+          });
+        }
+        else {
+          dataset.appendRow(record.timeframe.start);
+        }
+      });
+      expect(dataset.output()).to.be.an("array")
+        .and.to.be.of.length(7);
+    });
+
+    it("interval-groupBy-boolean.json", function(){
+      var dataset = new Keen.Dataset();
+      each(data_interval_groupBy_boolean.result, function(record, i){
+        if (record.value.length) {
+          each(record.value, function(group, j){
+            dataset.set([ String(group.key) || '', record.timeframe.start ], group.result);
+          });
+        }
+        else {
+          dataset.appendRow(record.timeframe.start);
+        }
+      });
+      expect(dataset.output()).to.be.an("array")
+        .and.to.be.of.length(7);
+    });
+
+    it("interval-groupBy-nulls.json", function(){
+      var dataset = new Keen.Dataset()
+      each(data_interval_groupBy_nulls.result, function(record, i){
+        if (record.value.length) {
+          each(record.value, function(group, j){
+            dataset.set([ group['parsed_user_agent.os.family'] || '', record.timeframe.start ], group.result);
+          });
+        }
+        else {
+          dataset.appendRow(record.timeframe.start);
+        }
+      });
+
+      dataset.sortColumns("desc", dataset.sum, 1);
+      dataset.sortRows("asc");
+
+      expect(dataset.output()).to.be.an("array")
+        .and.to.be.of.length(7);
+      expect(dataset.output()[0]).to.be.of.length(3);
+      expect(dataset.output()[0][0]).to.eql("index");
+      expect(dataset.output()[0][1]).to.eql("");
+      expect(dataset.output()[0][2]).to.eql("Windows Vista");
+    });
+
+    it("extraction.json 1", function(){
+      var dataset = new Keen.Dataset();
+      each(data_extraction.result, function(record, i){
+        dataset
+          .set( [ 'Time', i+1 ], record.keen.timestamp )
+          .set( [ 'Page', i+1 ], record.page )
+          .set( [ 'Referrer', i+1 ], record.referrer )
+        // each(record.keen, function(value, key){
+        //   dataset.set([ key, i+1 ], value);
+        // });
+        // each(record, function(value, key){
+        //   if (key === 'keen') return;
+        //   dataset.set([ key, i+1 ], value);
+        // });
+      });
+      dataset.deleteColumn(0);
+
+      expect(dataset.output())
+        .to.be.an("array")
+        .and.to.be.of.length(data_extraction.result.length+1);
+      expect(dataset.output()[0]).to.be.of.length(3);
+      expect(dataset.output()[0][0]).to.eql("Time");
+      expect(dataset.output()[0][1]).to.eql("Page");
+      expect(dataset.output()[0][2]).to.eql("Referrer");
+    });
+
+    // it("extraction.json 2", function(){
+    //   var dataset = new Keen.Dataset();
+    //   each(data_extraction.result, function(record, i){
+    //     dataset
+    //       .set( [ 'keen.timestamp', i+1 ], record.keen.timestamp )
+    //       .set( [ 'page', i+1 ], record.page )
+    //       .set( [ 'referrer', i+1 ], record.referrer )
+    //   });
+    //   dataset.deleteColumn(0);
+    //
+    //   expect(dataset.output()).to.be.an("array")
+    //     .and.to.be.of.length(data_extraction.result.length+1);
+    //   expect(dataset.output()[0]).to.be.of.length(3);
+    //   expect(dataset.output()[0][0]).to.eql("keen.timestamp");
+    //   expect(dataset.output()[0][1]).to.eql("page");
+    //   expect(dataset.output()[0][2]).to.eql("referrer");
+    // });
+
+
+    it("extraction-uneven.json", function(){
+      var dataset = new Keen.Dataset();
+      each(data_extraction_uneven.result, function(record, i){
+        dataset
+          .set( [ 'keen.timestamp', i+1 ], (record.keen ? record.keen.timestamp : null ) )
+          .set( [ 'page', i+1 ], record.page || null )
+          .set( [ 'key', i+1 ], record.key || null )
+      });
+      dataset.deleteColumn(0);
+
+      expect(dataset.output())
+        .to.be.an("array")
+        .and.to.be.of.length(data_extraction_uneven.result.length+1);
+    });
+
+
+    // it("extraction-uneven.json SELECT ALL", function(){
+    //   var dataset = new Keen.Dataset().parse(data_extraction_uneven, {
+    //     records: "result",
+    //     select: true
+    //   });
+    //   dataset.sortRows("asc");
+    //   expect(dataset.output())
+    //     .to.be.an("array")
+    //     .and.to.be.of.length(data_extraction_uneven.result.length+1);
+    //   expect(dataset.output()[0]).to.be.of.length(7);
+    //   expect(dataset.output()[0][0]).to.eql("keen.timestamp");
+    // });
+
+
+    it("funnel.json", function(){
+      var dataset = new Keen.Dataset();
+      each(data_funnel.result, function(record, i){
+        dataset.set( [ 'step', data_funnel.steps[i].event_collection ], record );
+      });
+
+      expect(dataset.output())
+        .to.be.an("array")
+        .and.to.be.of.length(6);
+      expect(dataset.output()[0][0]).to.eql("index");
+      expect(dataset.output()[0][1]).to.eql("step");
+      expect(dataset.output()[1][0]).to.be.eql("pageview");
+      expect(dataset.output()[1][1]).to.be.eql(42);
+    });
+
+
+    it("interval-double-groupBy.json", function(){
+      var dataset = new Keen.Dataset();
+      each(data_interval_double_groupBy.result, function(record, i){
+        each(record.value, function(group, j){
+          var label = group["first.property"] + " " + group["second.property"];
+          dataset.set( [ label, record.timeframe.start ], group.result );
+        });
+      });
+
+      expect(dataset.output()).to.be.an("array")
+        .and.to.be.of.length(4);
+    });
+
+  });
 
 
 });

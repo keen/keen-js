@@ -6,6 +6,7 @@ extend(Dataset.prototype, require("./lib/delete"));
 extend(Dataset.prototype, require("./lib/filter"));
 extend(Dataset.prototype, require("./lib/insert"));
 extend(Dataset.prototype, require("./lib/select"));
+extend(Dataset.prototype, require("./lib/set"));
 extend(Dataset.prototype, require("./lib/sort"));
 extend(Dataset.prototype, require("./lib/update"));
 

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Dataset Demo | Keen IO</title>
+  <link rel='stylesheet' href='../dataviz/keen-bootstrap.min.css'>
+  <link rel='stylesheet' href='../dataviz/keen-dashboards.css'>
+  <!-- // <script src='./jquery-1.11.3.min.js'></script> -->
+
+  <!-- C3.js Deps -->
+  <link href='../dataviz/c3/c3.css' rel='stylesheet'>
+  <script src='../dataviz/c3/d3.js'></script>
+  <script src='../dataviz/c3/c3.js'></script>
+</head>
+<body>
+  <div class='container'>
+
+    <h3>Dataset Demo</h3>
+
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='chart'></div>
+      </div>
+      <div class='col-sm-6'>
+        <!-- Demo Input -->
+        <select class="form-control" id="select-library">
+          <option value="google" selected="selected">Google Charts (default)</option>
+          <option value="c3">C3.js</option>
+          <!-- <option value="chartjs">Chart.js</option> -->
+        </select>
+        <hr>
+
+        <button class="btn btn-primary btn-block" id="btn-render">Render</button>
+
+        <br>
+        <pre id="dataset-output"></pre>
+      </div>
+    </div>
+
+  </div>
+
+  <script src='../../dist/keen.js'></script>
+  <script>
+
+    var btn = document.getElementById('btn-render'),
+        pre = document.getElementById('dataset-output'),
+        select = document.getElementById("select-library");
+
+    var chart = window.chart = new Keen.Dataviz()
+      .el(document.getElementById('chart'))
+      .dataType('cat-ordinal')
+      .height(250)
+      .prepare();
+
+    var dataset = new Keen.Dataset();
+    dataset.output([
+      ['index', 'Group A'],
+      ['1', 10],
+      ['2', 2],
+      ['3', 23],
+      ['4', 31],
+      ['5', 15]
+    ]);
+
+    btn.onclick = render;
+
+    function render(){
+      applySettings();
+      printDataset();
+      chart
+        .data(dataset)
+        .render();
+    }
+
+    function printDataset(){
+      var str = '[\n';
+      Keen.utils.each(dataset.output(), function(row, i){
+        if (i === 0) {
+          str += '  [ ' + row.join(',\t') + '\t\t]\n';
+        }
+        else {
+          str += '  [ ' + row.join(',\t\t') + '\t\t]\n';
+        }
+      });
+      str += '\n]';
+      pre.innerHTML = str;
+    }
+
+    function applySettings(){
+      var lib = select.options[select.selectedIndex].value;
+      var chartType = ('c3' === lib) ? 'line' : 'linechart';
+      chart
+        .destroy()
+        .chartType(chartType)
+        .chartOptions(null)
+        .library(lib);
+    }
+
+
+  </script>
+</body>
+<html>
