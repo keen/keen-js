@@ -3,6 +3,13 @@
 # Unreleased
 -->
 
+<a name="3.2.6"></a>
+# 3.2.6 Dataset Improvements
+
+* `.appendColumn/Row`, `.insertColumn/Row`, and `.updateColumn/Row` methods now accept an unbounded number of values. If you insert a new column with 7 values and all other existing columns only have 3 values the write will succeed and all other columns will be extended with cells containing null values
+* A new .set method plots values into the dataset table, creating columns and rows if they don't exist
+
+
 <a name="3.2.5"></a>
 # 3.2.5 Improvements and fixes
 
