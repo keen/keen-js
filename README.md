@@ -1,5 +1,134 @@
 # Keen IO JavaScript SDK (v3.2.5)
 
+## What Is Keen IO?
+
+The purpose of Keen IO is to help you store huge amounts of data you collect and to provide a tool (Application Programming Interface, or API) for you to analyze that data. Event data (contains an action, a timestamp, and a state) is the type of data that works best within the Keen API.
+
+## What Is The Keen IO API?
+
+The Keen IO Application Programming Interface (API) is an analytics tool, specifically designed for developers to track any event, ie. signups, upgrades, impressions, purchases, powerups, errors, shares, etc. This API requires the use of the JSON format to store the data you would like to analyze. This will enable automatic ingestion of any new events and custom properties you would like to run a query on. With the use of this API, you can build a completely custom analytics solution and embed the analytics on your site or provide insight into your company or projects to your customers.
+
+
+## First Step: Determine If Keen IO Is For You
+
+
+## Second Step: Begin Using the Keen IO Tools
+
+**Copy the link from the Keen website**
+
+## Third Step: Import Data into Keen IO
+
+
+## Fourth Step: Run Querries
+
+### Configure A Project
+
+
+
+### Include The Library
+#### What is the JS Library For?
+
+### HTML and JavaScript Formatting
+
+The HTML Layout describes the formatting of the data vizualization on the displayed dashboard, ie how many figures will be displayed. The Javascript runs the queries and draws the figures within the appropriate sections of the dashboard. Examples of the HTML and JavaScript formatting will be described in more detail below.
+
+#### HTML Layout
+
+**Will show an example of an empty dashboard and the HTML code provided**
+
+
+
+##### More Advanced Dashboards
+
+**Tabs and buttons**
+
+#### JavaScript Layout
+
+**Will show an example of Javascript: how to run a querry and how to draw a figure**
+
+### Query Examples
+
+**What queries can be created? What are the various components? Provide Examples of Filters, timestamp, analysis type, group_by, etc.**
+
+
+
+#### Query Trouble Shooting
+
+##### Ouput to Console
+##### Inspect Network Requests
+
+
+
+
+
+### Vizualization Types
+
+**Describe the vizualzation types and then provide Code Samples**
+
+#### Standard Vizualizations
+
+There are some standard Vizualizations you can create on your Dashboard: Area Charts, Bar Charts, Column Charts, Line Charts, Metric Summary, Pie Charts, and Tables.
+
+The first few charts will use the following querry example written in JavaScript:
+
+	var total_pageviews = new Keen.Query("count", {
+  		eventCollection: "pageviews",
+  		groupBy: "channel",
+  		timeframe: "this_3_days",
+  		interval: "daily"
+	});
+The query above is to determine how many users view a specific page over the web versus over a mobile device.
+
+
+##### Area Charts
+
+Below is the sample of JavaScript code needed to create an Area Chart showing pageviews on the web versus on a mobile device over time.
+
+	client.draw(total_pageviews, document.getElementById("total-daily-revenue-areachart"), {
+  		chartType: "areachart",
+  		title: "Daily revenue (7 days)",
+  		chartOptions: {
+   			isStacked: true
+  		}
+	});
+
+ 
+![Resize icon][1] 
+
+[1]: https://camo.githubusercontent.com/82bd177d318ab150db071297fac9862276382a64/687474703a2f2f6432366233393566777a7535667a2e636c6f756466726f6e742e6e65742f696d616765732f4b65656e2d64656d6f2d6172656163686172742e706e67
+
+The html code will need to include the following line:
+
+	<div id="total-daily-revenue-areachart"></div>
+
+##### Bar Charts
+
+Below is the sample of JavaScript code needed to create an Area Chart showing pageviews on the web versus on a mobile device over time.
+
+	client.draw(total_pageviews, document.getElementById("total-daily-revenue-barchart"), {
+  		chartType: "barchart",
+  		title: "Daily revenue (7 days)",
+  		chartOptions: {
+    		isStacked: true
+  		}
+	});
+
+![Resize icon][2] 
+
+[2]: https://camo.githubusercontent.com/e84d9ed664f3cce116f6fbeea0cdf6164d54bd19/687474703a2f2f6432366233393566777a7535667a2e636c6f756466726f6e742e6e65742f696d616765732f4b65656e2d64656d6f2d62617263686172742e706e67
+
+The html code will need to include the following line
+
+	<div id="total-daily-revenue-barchart"></div>
+
+#### Advanced Visualizations
+
+
+
+
+
+## What is the JS library For??
+
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
 **Charts issue:** A recent update to the Google Visualization API is causing charts to fail in earlier versions of this library. To resolve the issue, simply update from v3.0.x to [v3.1.0](https://d26b395fwzu5fz.cloudfront.net/3.1.0/keen.js). This is a safe upgrade with no breaking changes from earlier affected versions. Read about this release [here](https://github.com/keen/keen-js/releases/tag/v3.1.0).
