@@ -85,9 +85,9 @@ require([ "keen" ], function(Keen) {
 In order to import keen-query and keen-tracker with JSPM, one has to define the following overrides in the package.json:
 
 ```json
-"dependencies": {
-"keen": "github:keen/keen-js@3.2.5"
-},
+  "dependencies": {
+    "keen": "github:keen/keen-js@3.2.5"
+  },
  "overrides": {
     "github:keen/keen-js@3.2.5": {
       "format": "global",
