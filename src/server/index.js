@@ -23,4 +23,6 @@ Keen.utils = {
   "decryptScopedKey": require("./utils/decryptScopedKey")
 };
 
+Keen.version = require('../../package.json').version;
+
 module.exports = Keen;

@@ -8,6 +8,10 @@
 
 * `.appendColumn/Row`, `.insertColumn/Row`, and `.updateColumn/Row` methods now accept an unbounded number of values. If you insert a new column with 7 values and all other existing columns only have 3 values the write will succeed and all other columns will be extended with cells containing null values
 * A new .set method plots values into the dataset table, creating columns and rows if they don't exist
+* Fix `labels` for `client.draw(query, el, cfg)` constructor - disabled in previous release (#299)
+* Fix `Keen.noConflict()` to explicitly use `window` when available (ES6/Babel-friendly design re: #288)
+
+**Important note about `.labels()` (Dataviz):** this method **must** be called _after_ `.data()`, `.parseRequest()`, or `.parseRawData()`, and _before_ `.render()` to take effect. This method executes a one-time, permanent modification of the underlying `Dataset` instance, and will be overwritten every time the chart consumes new data.
 
 
 <a name="3.2.5"></a>

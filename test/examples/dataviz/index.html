@@ -233,6 +233,19 @@ var multiline = new Keen.Query("count", {
       </div>
     </div>
 
+    <h4>Funnels</h4>
+    <div class="row">
+      <div class="col-sm-4">
+        <div id="fun-1">A</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="fun-2">B</div>
+      </div>
+      <div class="col-sm-4">
+        <div id="fun-3">C</div>
+      </div>
+    </div>
+
     <br/>
     <br/>
     <br/>
@@ -266,14 +279,14 @@ var multiline = new Keen.Query("count", {
       var interval = new Keen.Query("count", {
         event_collection: 'pageviews',
         group_by: 'user.device_info.browser.family',
-        timeframe: 'this_2_months',
+        timeframe: 'this_12_months',
         interval: 'weekly'
       });
 
       var multiline = new Keen.Query("count", {
         event_collection: 'pageviews',
         group_by: 'user.device_info.browser.family',
-        timeframe: 'this_2_months',
+        timeframe: 'this_12_months',
         interval: 'weekly'
       });
 
@@ -288,13 +301,31 @@ var multiline = new Keen.Query("count", {
         targetProperty: "keen.id"
       });
 
+      var funnel = new Keen.Query("funnel", {
+        steps: [
+          {
+            eventCollection: "pageviews",
+            actorProperty: "keen.id"
+          },
+          {
+            eventCollection: "pageviews",
+            actorProperty: "keen.id"
+          },
+          {
+            eventCollection: "pageviews",
+            actorProperty: "keen.id"
+          }
+        ]
+      })
+
       window.reqs = {
         metric: client.run(metric),
         groupBy: client.run(groupBy),
         interval: client.run(interval),
         multiline: client.run(multiline),
         extraction: client.run(extraction),
-        uniques: client.run(uniques)
+        uniques: client.run(uniques),
+        funnel: client.run(funnel)
       };
 
       var alt = false;
@@ -657,6 +688,39 @@ var multiline = new Keen.Query("count", {
         raw_unique.parseRawData(res).render();
       });
 
+
+
+
+      /*
+       *  ------------------------------
+       *  Funnel
+       *  ------------------------------
+       */
+
+       var drawn_funnel = client.draw(funnel, document.getElementById('fun-1'), {
+         height: 300,
+         title: 'Drawn Funnel',
+         labels: [ 'A', 'B', 'C' ]
+       });
+
+       var req_funnel = new Keen.Dataviz()
+        .height(300)
+        .chartType('barchart')
+        .el(document.getElementById('fun-2'))
+        .title('Requested Funnel Data')
+        .prepare();
+
+      var raw_funnel = new Keen.Dataviz()
+        .height(300)
+        .chartType('barchart')
+        .el(document.getElementById('fun-3'))
+        .title('Raw Funnel Data')
+        .prepare();
+
+      window.reqs['funnel'].on('complete', function(err, res){
+        req_funnel.parseRequest(this).labels([ 'A', 'B', 'C' ]).render();
+        raw_funnel.parseRawData(res).labels([ 'A', 'B', 'C' ]).render();
+      });
     });
   </script>
 

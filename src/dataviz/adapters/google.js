@@ -133,10 +133,8 @@ module.exports = function(){
         output.vAxis = {
           viewWindow: { min: 0 }
         };
-        if (this.dataType() === "chronological") {
-          output.legend = {
-            position: "none"
-          };
+        if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
+          output.legend = "none";
           output.chartArea = {
             width: "85%"
           };
@@ -151,10 +149,8 @@ module.exports = function(){
           baselineColor: 'transparent',
           gridlines: { color: 'transparent' }
         };
-        if (this.dataType() === "chronological") {
-          output.legend = {
-            position: "none"
-          };
+        if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
+          output.legend = "none";
         }
         break;
 
@@ -166,10 +162,8 @@ module.exports = function(){
         output.vAxis = {
           viewWindow: { min: 0 }
         };
-        if (this.dataType() === "chronological") {
-          output.legend = {
-            position: "none"
-          };
+        if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
+          output.legend = "none";
           output.chartArea = {
             width: "85%"
           };
@@ -185,10 +179,8 @@ module.exports = function(){
         output.vAxis = {
           viewWindow: { min: 0 }
         };
-        if (this.dataType() === "chronological") {
-          output.legend = {
-            position: "none"
-          };
+        if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
+          output.legend = "none";
           output.chartArea = {
             width: "85%"
           };
