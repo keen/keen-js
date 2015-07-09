@@ -10,8 +10,7 @@ var client = new Keen({
   masterKey: "YOUR_MASTER_KEY"
 });
 
-var url = client.url("/events");
-// returns https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events
+var url = 'https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events';
 
 client.get(url, null, client.masterKey(), function(err, res){
   // if (err) handle the error
@@ -43,8 +42,7 @@ var client = new Keen({
   projectId: "YOUR_PROJECT_ID",
   masterKey: "YOUR_MASTER_KEY"
 });
-var url = client.get("/events/purchases");
-// returns https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events/purchases
+var url = 'https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events/purchases';
 
 client.get(url, null, client.masterKey(), function(err, res){
   // if (err) handle the error
@@ -75,8 +73,7 @@ var client = new Keen({
   projectId: "YOUR_PROJECT_ID",
   masterKey: "YOUR_MASTER_KEY"
 });
-var url = client.get("/events/purchases/properties");
-// returns https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events/purchases/properties
+var url = 'https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events/purchases/properties';
 
 client.get(url, null, client.masterKey(), function(err, res){
   // if (err) handle the error
@@ -105,8 +102,7 @@ var client = new Keen({
   projectId: "YOUR_PROJECT_ID",
   masterKey: "YOUR_MASTER_KEY"
 });
-var url = client.get("/events/purchases/properties/keen.id");
-// returns https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events/purchases/properties
+var url = 'https://api.keen.io/3.0/projects/YOUR_PROJECT_ID/events/purchases/properties/keen.id';
 
 client.get(url, null, client.masterKey(), function(err, res){
   // if (err) handle the error
