@@ -33,6 +33,11 @@ module.exports = function(query, el, cfg) {
   request.on("complete", function(){
     visual
       .parseRequest(this)
+      .call(function(){
+        if (config.labels) {
+          this.labels(config.labels);
+        }
+      })
       .render();
   });
   request.on("error", function(res){
