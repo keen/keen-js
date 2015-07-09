@@ -95,6 +95,8 @@ chart.height(); // returns the height
 
 ### .labels(array)
 
+**Important:** this method **must** be called _after_ `.data()`, `.parseRequest()`, or `.parseRawData()`, and _before_ `.render()` to take effect. This method executes a one-time, permanent modification of the underlying `Dataset` instance, and will be overwritten every time the chart consumes new data.
+
 _Avoid if possible, but can be useful for funnels._
 
 ```javascript

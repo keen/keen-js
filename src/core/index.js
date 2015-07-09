@@ -1,4 +1,4 @@
-var root = this;
+var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 
 var Emitter = require('./helpers/emitter-shim');
