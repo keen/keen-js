@@ -55,7 +55,9 @@ Keen.ready(function(){
   });
 
   // Re-run and refresh every 15 minutes...
-  setInterval(req.refresh, 1000 * 60 * 15);
+  setInterval(function() {
+    req.refresh();
+  }, 1000 * 60 * 15);
 
 });
 ```
