@@ -15,7 +15,6 @@ describe("Keen.Dataviz", function(){
       eventCollection: "test-collection"
     });
     this.dataviz = new Keen.Dataviz();
-    // console.log(this.dataviz);
   });
   afterEach(function(){
     this.project = null;
