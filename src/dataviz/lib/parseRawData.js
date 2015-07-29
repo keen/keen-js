@@ -118,7 +118,7 @@ function parseRawData(response){
 
     // Funnel
     // -------------------------------
-    if (typeof response.result[0] == 'number'){
+    if (typeof response.result[0] == 'number' && typeof response.result.steps !== "undefined"){
       dataType = 'cat-ordinal';
       schema = {
         records: '',
@@ -137,7 +137,7 @@ function parseRawData(response){
 
     // Select Unique
     // -------------------------------
-    if (typeof response.result[0] == 'string'){
+    if (typeof response.result[0] == 'string' || typeof response.result[0] == 'number'){
       dataType = 'nominal';
       dataset = new Dataset();
       dataset.appendColumn('unique values', []);
