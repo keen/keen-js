@@ -17,9 +17,9 @@ Keen.ready(function(){
 
   var query = new Keen.Query("count", {
     eventCollection: "pageviews",
+    timeframe: "this_14_days",
     groupBy: "visitor.geo.country"
-    interval: "daily",
-    timeframe: "this_21_days"
+    interval: "daily"
   });
 
   var chart = client.draw(query, document.getElementById("chart-wrapper"), {
