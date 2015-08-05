@@ -7,48 +7,49 @@ Queries are first-class citizens, complete with parameter getters and setters. I
 The `run` method is available on each configured client instance to run one or many analyses on a given project. Read more about running multiple analyses below.
 
 ```javascript
-var your_analysis = new Keen.Query(analysisType, params);
+var your_analysis = new Keen.Query(analysisType, {
+  eventCollection: 'YOUR_EVENT_COLLECTION', // (required)
+  timeframe: "YOUR_TIMEFRAME" // (required)
+  // ... additional parameters
+});
 ```
 
 ## Example Usage
 
 ```javascript
-<script type="text/javascript">
+//Configure the client
+var client = new Keen({
+    projectId: "your_project_id",
+    readKey: "your_read_key"
+});
 
-  //Configure the client
-  var client = new Keen({
-      projectId: "your_project_id",
-      readKey: "your_read_key"
+Keen.ready(function(){
+  // Count the number of times case study pages were viewed
+  var count = new Keen.Query("count", {
+    eventCollection: "pageviews",
+    timeframe: "this_7_days",
+    interval: "daily",
+    maxAge: 300, // activate query caching by assigning maxAge (an integer representing seconds)
+    filters: [
+      {
+        "property_name" : "domain",
+        "operator" : "eq",
+        "property_value" : "www.mysite.io" // look at one particular domain only
+      },
+      {
+        "property_name":"url.full",
+        "operator":"contains",
+        "property_value":"casestudy"  // only count views with "casestudy" in the page URL
+      }
+   ]
   });
 
-  Keen.ready(function(){
-    // Count the number of times case study pages were viewed
-    var count = new Keen.Query("count", {
-      eventCollection: "pageviews",
-      interval: "daily",
-      timeframe: "this_7_days",
-      maxAge: 300, // activate query caching by assigning maxAge (an integer representing seconds)
-      filters: [
-        {
-          "property_name" : "domain",
-          "operator" : "eq",
-          "property_value" : "www.mysite.io" // look at one particular domain only
-        },
-        {
-          "property_name":"url.full",
-          "operator":"contains",
-          "property_value":"casestudy"  // only count views with "casestudy" in the page URL
-        }
-     ]
-    });
-
-    // Send query
-    client.run(count, function(err, response){
-      // Print the query result to the console
-      console.log(response);
-    });
+  // Send query
+  client.run(count, function(err, response){
+    // Print the query result to the console
+    console.log(response);
   });
-</script>
+});
 ```
 ## Query Analysis Types
 
@@ -98,11 +99,13 @@ Query results are also attached to the query object itself, and can be reference
 ```javascript
 var avg_revenue = new Keen.Query("average", {
   eventCollection: "purchase",
+  timeframe: "this_14_days",
   targetProperty: "price",
   groupBy: "geo.country"
 });
 var max_revenue = new Keen.Query("maximum", {
   eventCollection: "purchase",
+  timeframe: "this_14_days",
   targetProperty: "price",
   groupBy: "geo.country"
 });
@@ -131,8 +134,8 @@ Data sent to Keen is available for querying almost immediately. For use cases th
 ```javascript
 var count = new Keen.Query("count", {
     eventCollection: "pageviews",
+    timeframe: "this_14_days",
     groupBy: "property",
-    timeframe: "this_7_days",
     maxAge: 300 // include maxAge as a query parameter to activate Query Caching
 });
 ```

@@ -176,7 +176,11 @@ Wondering what else you should record? Browse our [data modeling guide](https://
 The `<Client>.run` method is available on each configured client instance to run one or many analyses on a given project. Read more about running multiple analyses below.
 
 ```javascript
-var your_analysis = new Keen.Query(analysisType, params);
+var your_analysis = new Keen.Query(analysisType, {
+  eventCollection: 'YOUR_EVENT_COLLECTION', // (required)
+  timeframe: "YOUR_TIMEFRAME" // (required)
+  // ... additional parameters
+});
 ```
 
 ### Example Usage
