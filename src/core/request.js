@@ -40,6 +40,9 @@ Request.prototype.refresh = function(){
       errored = false;
 
   var handleResponse = function(err, res, index){
+    if (errored) {
+      return;
+    }
     if (err) {
       self.trigger("error", err);
       if (self.callback) {

@@ -89,7 +89,7 @@ describe("Keen.Request", function() {
       it('should return a single error when unsuccessful', function(done){
         var response = { error_code: "ResourceNotFoundError", message: "no foo" };
         mock.post("/queries/count", 500, JSON2.stringify(response));
-        mock.post("/queries/count", 200, JSON2.stringify({ result: 1 }));
+        mock.post("/queries/count", 500, JSON2.stringify(response));
         mock.post("/queries/count", 200, JSON2.stringify({ result: 1 }));
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.exist;
