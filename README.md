@@ -289,7 +289,9 @@ Keen.ready(function(){
   });
 
   // How about a chart that updates itself every 15 minutes?
-  setInterval(req.refresh, 1000 * 60 * 15);
+  setInterval(function() {
+    req.refresh();
+  }, 1000 * 60 * 15);
 });
 ```
 
