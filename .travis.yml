@@ -1,9 +1,9 @@
 language: node_js
 node_js:
-  - "0.10"
+- '0.10'
 branches:
   only:
-    - master
+  - master
 env:
   global:
   - secure: |-
@@ -14,10 +14,15 @@ env:
       AjvRPOjPEuDl8qwEUOk2V1HH6C5AoE8V0/1+twsnaEcgfHWGDk3g7oPfMOW3
       ArybZFvN+wpvWfwoJAhRV7yQv9yoGT1fEtMtn3GB9mQiCFO70L/MrqXePJAr
       ajs3LH0wqhj1zW8UUmhTxBSLvzRyW++W5yx2hYr92EkrlpFZZUg=
+  - secure: eue3f4/B2bdEnzu7mhNb/SCo1yMOG7zGYWERuZ6PJMrIR3wMy0KRALutiIRrecSuTCGXLC3L0jECtsSdM9sT9po541Qd0lEMoamNRNC2z0zq8PsB1gTZH05gt56sF9ED6qJ5te+XSkoNk/cBKbeP9TpCLjGDvR8yaM+kALh/AuI=
+  - secure: UUhgz3ztDBF3AqFRRU7PZYdCrxbhaaTkTC9LRnhPaZho4JpYELu1TXLR0AHH06XrPIqsQFKAOXMPquq6C29pxRV0LXbJwvtessSttE8IJRu6jnBTwneKkq5hJ7TjjHqu/fm6Z1u8tVK70VwGIGrY/wCA9nfuqLXRE5uvurnpZVg=
+  - secure: bmR+fRlR2nSUd8Ww471zgCzRLzmJ5YCwXcvQEeGnjwh8XdZ07eLJbtbvnFzZPkl1CgVE+A/KufKDr/OB3rAtczGQgd8JwYu2kAzEPYeL8is52kueIZLGPNflCydHFtJNdohzR6heaKT0lIR1plZz7eFse5ZUIYJfYdESMgazLgY=
 install:
-  - npm install -g browserify
-  - npm install -g bower
-  - npm install
-  - bower install
+- npm install -g browserify
+- npm install -g bower
+- npm install
+- bower install
 notifications:
   email: never
+addons:
+  sauce_connect: true
