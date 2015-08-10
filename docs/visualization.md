@@ -327,8 +327,7 @@ Keen.ready(function(){
               "operator" : "eq",
               "property_value" : "telekinetic watch"
             }
-         ],
-         timeframe: "last_7_days"
+         ]
       },
       {
         event_collection: "activations", // how many activated the device?
@@ -356,7 +355,8 @@ Keen.ready(function(){
         event_collection: "send_invitations",
         actor_property: "user.id"
       }
-    ]
+    ],
+    timeframe: "last_7_days" // inherited by all steps
   });
 
   client.draw(watch_activation_funnel, document.getElementById("chart-05"), {
