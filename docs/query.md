@@ -27,7 +27,10 @@ Keen.ready(function(){
   // Count the number of times case study pages were viewed
   var count = new Keen.Query("count", {
     eventCollection: "pageviews",
-    timeframe: "this_7_days",
+    timeframe: {
+      "start":"2015-07-01T07:00:00.000Z",
+      "end":"2015-08-01T07:00:00.000Z"
+    },
     interval: "daily",
     maxAge: 300, // activate query caching by assigning maxAge (an integer representing seconds)
     filters: [
