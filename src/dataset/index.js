@@ -12,7 +12,7 @@ extend(Dataset.prototype, require("./lib/update"));
 
 extend(Dataset.prototype, require("./lib/analyses"));
 extend(Dataset.prototype, {
-  "format": require("./lib/format"),
+  "format": require("./lib/format")
 });
 
 module.exports = Dataset;
