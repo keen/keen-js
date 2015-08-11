@@ -411,7 +411,7 @@ Keen.ready(function(){
     timeframe: "last_7_days"
   });
 
-  var chart = Keen.Dataviz()
+  var chart = new Keen.Dataviz()
     .el(document.getElementById("paid-session-conversion"))
     .colors(["#6ab975"])
     .title("Conversion %")
