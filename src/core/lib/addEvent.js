@@ -1,4 +1,4 @@
-var JSON2 = require('JSON2');
+var json = require('../utils/json-shim');
 var request = require('superagent');
 
 var Keen = require('../index');
@@ -101,7 +101,7 @@ function prepareGetRequest(url, data){
   // Set API key
   url += getQueryString({
     api_key  : this.writeKey(),
-    data     : base64.encode( JSON2.stringify(data) ),
+    data     : base64.encode( json.stringify(data) ),
     modified : new Date().getTime()
   });
   return ( url.length < getUrlMaxLength() ) ? url : false;

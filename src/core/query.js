@@ -3,7 +3,7 @@ var each = require("./utils/each"),
     getTimezoneOffset = require("./helpers/get-timezone-offset"),
     getQueryString = require("./helpers/get-query-string");
 
-var Emitter = require('./helpers/emitter-shim');
+var Emitter = require('./utils/emitter-shim');
 
 function Query(){
   this.configure.apply(this, arguments);

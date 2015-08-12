@@ -5,7 +5,7 @@ var clone = require('../core/utils/clone'),
     loadStyle = require('./utils/loadStyle');
 
 var Keen = require('../core');
-var Emitter = require('../core/helpers/emitter-shim');
+var Emitter = require('../core/utils/emitter-shim');
 
 var Dataset = require('../dataset');
 

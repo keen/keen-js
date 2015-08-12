@@ -1,7 +1,7 @@
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 
-var Emitter = require('./helpers/emitter-shim');
+var Emitter = require('./utils/emitter-shim');
 
 function Keen(config) {
   this.configure(config || {});
