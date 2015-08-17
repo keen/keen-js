@@ -3,7 +3,7 @@ var each = require("./utils/each"),
     sendQuery = require("./utils/sendQuery");
 
 var Keen = require("./");
-var Emitter = require('./helpers/emitter-shim');
+var Emitter = require('./utils/emitter-shim');
 
 function Request(client, queries, callback){
   var cb = callback;

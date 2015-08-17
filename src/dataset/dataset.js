@@ -3,7 +3,7 @@ var clone = require("../core/utils/clone"),
     flatten = require("./utils/flatten"),
     parse = require("./utils/parse");
 
-var Emitter = require('../core/helpers/emitter-shim');
+var Emitter = require('../core/utils/emitter-shim');
 
 function Dataset(){
   this.data = {
