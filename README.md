@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.2.6)
+# Keen IO JavaScript SDK (v3.2.7)
 
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
@@ -33,19 +33,19 @@ To start recording events from your website or blog, copy/paste this snippet of 
 
 ```html
 <script type="text/javascript">
-  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.6/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.2.7/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
 Or load the library synchronously from our CDN:
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.6/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.2.7/keen.min.js" type="text/javascript"></script>
 ```
 or
 
 ```html
-<script src="//cdn.jsdelivr.net/keen.js/3.2.6/keen.min.js" type="text/javascript"></script>
+<script src="//cdn.jsdelivr.net/keen.js/3.2.7/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
