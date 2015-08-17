@@ -3,6 +3,16 @@
 # Unreleased
 -->
 
+<a name="3.2.7"></a>
+# 3.2.7 Improvements and fixes
+
+* Fix client.run double callback issue when multiple queries fail (#312)
+* Fix select_unique queries targeting numeric properties (#302)
+* Upgrade internal JSON dep to JSON3 (#319)
+* Remove syntax error in Dataset (#318)
+* Update documentation with better examples
+
+
 <a name="3.2.6"></a>
 # 3.2.6 Dataset Improvements
 
