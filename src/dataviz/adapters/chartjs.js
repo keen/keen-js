@@ -120,6 +120,10 @@ module.exports = function(){
         return this;
       },
       render: function(){
+        if(_isEmptyOutput(this.dataset)) {
+          this.error("No results to display");
+          return;
+        }
         var method = ChartNameMap[type],
             opts = extend({}, this.chartOptions()),
             data = dataTransformers[type].call(this);
@@ -143,6 +147,12 @@ module.exports = function(){
     }
   }
 
+  function _isEmptyOutput(dataset) {
+    var flattened = dataset.output().reduce(function(a, b) {
+      return a.concat(b)
+    });
+    return flattened.length === 0
+  }
 
   // Based on this awesome little demo:
   // http://www.javascripter.net/faq/hextorgb.htm
