@@ -27,7 +27,7 @@
     "Tim Schiller <timothy.schiller@gmail.com> (http://tmschl.com)"
   ],
   "engines": {
-    "node": "0.10.x"
+    "node": ">= 0.10.0"
   },
   "browserify": {
     "transform": [
