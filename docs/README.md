@@ -48,7 +48,7 @@ Read our [Tracking guide](./track.md) to learn how to start tracking events with
 
 ## Query events
 
-Read our [Query guide](./query.md) to learn how to query your data fro, Keen IO.
+Read our [Query guide](./query.md) to learn how to query your data from Keen IO.
 
 
 ## Visualize query results
