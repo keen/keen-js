@@ -137,6 +137,8 @@ chartOptions: {
 }
 ```
 
+There are also several examples of common customizations that use Google Charts on [jsFiddle](http://jsfiddle.net/user/keen/fiddles/).
+
 ### Selective Chart types
 
 `chartType`: string identifying the type of chart to render:
