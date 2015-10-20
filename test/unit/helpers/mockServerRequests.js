@@ -7,6 +7,7 @@ var baseUrl = "https://api.keen.io/3.0",
 module.exports = {
   "post": mockPostRequest,
   "get": mockGetRequest,
+  "put": mockPutRequest,
   "del": mockDelRequest
 };
 
@@ -20,6 +21,13 @@ function mockPostRequest(path, responseCode, responseBody, delay){
 function mockGetRequest(path, responseCode, responseBody, delay){
   nock(baseUrl)
     .get("/3.0/projects/" + keenHelper.projectId + path)
+    .delay(delay || 0)
+    .reply(responseCode, responseBody, resHeader);
+}
+
+function mockPutRequest(path, responseCode, responseBody, delay) {
+  nock(baseUrl)
+    .put("/3.0/projects/" + keenHelper.projectId + path)
     .delay(delay || 0)
     .reply(responseCode, responseBody, resHeader);
 }

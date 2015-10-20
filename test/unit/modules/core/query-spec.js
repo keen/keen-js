@@ -116,6 +116,4 @@ describe("Keen.Query", function() {
 
   });
 
-
-
 });

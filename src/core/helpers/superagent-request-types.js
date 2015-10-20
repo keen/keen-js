@@ -5,7 +5,7 @@ var each = require('../utils/each'),
 module.exports = function(type, opts){
   return function(request) {
     var __super__ = request.constructor.prototype.end;
-    if ( 'undefined' === typeof window ) return;
+    if ( typeof window === 'undefined' ) return;
     request.requestType = request.requestType || {};
     request.requestType['type'] = type;
     request.requestType['options'] = request.requestType['options'] || {
@@ -23,7 +23,7 @@ module.exports = function(type, opts){
 
     // Apply options
     if (opts) {
-      if ( 'boolean' === typeof opts.async ) {
+      if ( typeof opts.async === 'boolean' ) {
         request.requestType['options'].async = opts.async;
       }
       if ( opts.success ) {
@@ -40,7 +40,7 @@ module.exports = function(type, opts){
           query,
           timeout;
 
-      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.requestType['options'].async ) {
+      if ( ('GET' !== self['method'] ||  reqType === 'xhr' ) && self.requestType['options'].async ) {
         __super__.call(self, fn);
         return;
       }
@@ -65,10 +65,10 @@ module.exports = function(type, opts){
       if ( !self.requestType['options'].async ) {
         sendXhrSync.call(self);
       }
-      else if ( 'jsonp' === reqType ) {
+      else if ( reqType === 'jsonp' ) {
         sendJsonp.call(self);
       }
-      else if ( 'beacon' === reqType ) {
+      else if ( reqType === 'beacon' ) {
         sendBeacon.call(self);
       }
       return self;

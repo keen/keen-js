@@ -34,6 +34,7 @@
     "post"                : require("./core/lib/post"),
     "put"                 : require("./core/lib/post"),
     "run"                 : require("./core/lib/run"),
+    "savedQueries"        : require("./core/saved-queries"),
     "draw"                : require("./dataviz/extensions/draw")
   });
 
@@ -51,8 +52,6 @@
     "extend"       : extend,
     "parseParams"  : require("./core/utils/parseParams"),
     "prettyNumber" : require("./dataviz/utils/prettyNumber")
-    // "loadScript"   : require("./dataviz/utils/loadScript"),
-    // "loadStyle"    : require("./dataviz/utils/loadStyle")
   };
 
   require("./dataviz/adapters/keen-io")();

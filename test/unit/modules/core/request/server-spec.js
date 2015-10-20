@@ -14,6 +14,7 @@ describe("Keen.Request", function() {
   beforeEach(function() {
     this.client = new Keen({
       projectId: keenHelper.projectId,
+      masterKey: keenHelper.masterKey,
       readKey: keenHelper.readKey
     });
     this.query = new Keen.Query("count", {
@@ -94,6 +95,41 @@ describe("Keen.Request", function() {
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.exist;
           expect(err["code"]).to.equal(response.error_code);
+          expect(res).to.be.a("null");
+          done();
+        });
+      });
+    });
+
+    describe("saved queries", function() {
+      it("returns result of the saved query when saved query is found", function(done) {
+        var savedQuery = new Keen.Query("saved", { queryName: "page-visit-count" });
+        var savedQueryResponse = {
+          query_name: "page-visit-count",
+          query: {
+            analysis_type: "count",
+            event_collection: "pagevisits"
+          },
+          result: 100
+        };
+        mock.get("/queries/saved/page-visit-count/result", 200, JSON2.stringify(savedQueryResponse));
+
+        this.client.run(savedQuery, function(err, res) {
+          expect(res).to.deep.equal(savedQueryResponse);
+          done();
+        });
+      });
+
+      it("returns an error if saved query is not found", function(done) {
+        var savedQuery = new Keen.Query("saved", { queryName: "page-visit-count" });
+        var savedQueryResponse = {
+          message: "Query not found",
+          error_code: "QueryNotFound"
+        };
+        mock.get("/queries/saved/page-visit-count/result", 404, JSON2.stringify(savedQueryResponse));
+
+        this.client.run(savedQuery, function(err, res) {
+          expect(err["code"]).to.equal("QueryNotFound");
           expect(res).to.be.a("null");
           done();
         });

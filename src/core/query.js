@@ -34,7 +34,7 @@ Query.prototype.set = function(attributes) {
     self.params[key] = value;
     if (value instanceof Array) {
       each(value, function(dv, index){
-        if (dv instanceof Array == false && typeof dv === "object") { //  _type(dv)==="Object"
+        if (dv instanceof Array == false && typeof dv === "object") {
           each(dv, function(deepValue, deepKey){
             if (deepKey.match(new RegExp("[A-Z]"))) {
               var _deepKey = deepKey.replace(/([A-Z])/g, function($1) { return "_"+$1.toLowerCase(); });

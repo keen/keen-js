@@ -217,21 +217,117 @@ Keen.ready(function(){
 Read more about advanced queries in our [query guide](./docs/query.md).
 
 
-## Query Caching
+## Saved Queries
 
-Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses.
+Results for a single saved query can also be retrieved by passing the saved query name into `client.run("saved-query-name", callback)`.
+
+**Important:** Visualizing saved query results with `client.draw()` is not yet supported, but will be added soon!
 
 ```javascript
-var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
-    groupBy: "property",
-    timeframe: "this_7_days",
-    maxAge: 300 // include maxAge as a query parameter to activate Query Caching
+// Create a client instance
+var client = new Keen({
+  projectId: "YOUR_PROJECT_ID",
+  readKey: "YOUR_READ_KEY"
+});
+
+Keen.ready(function() {
+  // Retrieve the result of a saved query
+  client.run("saved-query-name", function(err, res) {
+    if (err) {
+      // there was an error
+    }
+    else {
+      // query results are returned here
+    }
+  });
 });
 ```
-`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
 
-**Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
+Saved Queries can also be accessed and managed with the `client.savedQueries()` method, which contains CRUD actions for interacting with the saved queries API resource.
+
+* `.all(callback)`: Return all saved queries for the given project
+* `.get("saved-query-name", callback)`: Return a single saved query by name
+* `.create("saved-query-name", configuration, callback)`: Create a new saved query of a given name
+* `.update("saved-query-name", configuration, callback)`: Update a saved query of a given name
+* `.destroy("saved-query-name", callback)`: Destroy a saved query of a given name
+
+### Example Usage
+
+```javascript
+// Create a client instance
+var client = new Keen({
+  projectId: "YOUR_PROJECT_ID",
+  readKey: "YOUR_READ_KEY"
+});
+
+Keen.ready(function() {
+  var savedQueries = client.savedQueries();
+
+  // Get all saved queries in a project
+  savedQueries.all(function(err, res) {
+    if (err) {
+      // there was an error
+    }
+    else {
+      // do something with array of saved queries
+    }
+  });
+
+  // Get individual saved query by name
+  savedQueries.get("saved-query-name", function(err, res) {
+    if (err) {
+      // there was an error
+    }
+    else {
+      // do something with single saved query object
+    }
+  });
+
+  // Create a new saved query
+  savedQueries.create("saved-query-name",
+    {
+      refresh_rate: 0,
+      query: { ... },
+      metadata: {
+        display_name: "saved query name",
+        ...
+      }
+    },
+    function(err, res) {
+      if (err) {
+        // there was an error
+      }
+      else {
+        // your saved query was created successfully!
+      }
+    }
+  );
+
+  // Update an existing saved query
+  savedQueries.update("saved-query-name",
+    { refresh_rate: 86400 },
+    function(err, res) {
+      if (err) {
+        // there was an error
+      }
+      else {
+        // your saved query was updated successfully!
+      }
+    }
+  );
+
+  // Delete an existing saved query
+  savedQueries.destroy("saved-query-name", function(err, res) {
+    if (err) {
+      // there was an error
+    }
+    else {
+      // your saved query was deleted successfully!
+    }
+  });
+});
+```
+
 
 
 ## Visualization
@@ -305,9 +401,9 @@ The aim is to build up this module to completely represent the API provided by K
 
 ## Resources
 
-[Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkRhdGEgTW9kZWxpbmcgR3VpZGUiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://github.com/keen/data-modeling-guide/)
+[Data Modeling Guide](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkRhdGEgTW9kZWxpbmcgR3VpZGUiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=https://keen.io/guides/data-modeling-guide/)
 
-[API Technical Reference](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkFQSSBUZWNobmljYWwgUmVmZXJlbmNlIiwicmVmZXJyZXIiOiAiUkVBRE1FLm1kIn0=&redirect=https://keen.io/docs/api/reference/?s=gh_js)
+[API Technical Reference](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkFQSSBUZWNobmljYWwgUmVmZXJlbmNlIiwicmVmZXJyZXIiOiAiUkVBRE1FLm1kIn0=&redirect=https://keen.io/docs/api/?s=gh_js)
 
 [API Status](https://api.keen.io/3.0/projects/5337e28273f4bb4499000000/events/click?api_key=a0bb828de21e953a675610cb6e6b8935537b19c2f0ac33937d6d1df2cc8fddbf379a81ad398618897b70d15c6b42647c3e063a689bc367f5c32b66c18010541c0ad1cf3dbd36100dc4475c306b238cb6f5b05f082dc4071e35094a722b1f3e29fad63c933ea8e33e8b892c770df5e1bb&data=eyJwYWdlIjogIkFQSSBTdGF0dXMiLCJyZWZlcnJlciI6ICJSRUFETUUubWQifQ==&redirect=http://status.keen.io/?s=gh_js)
 

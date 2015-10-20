@@ -4,6 +4,7 @@
 require("./modules/core/client-spec");
 require("./modules/core/events-spec");
 require("./modules/core/query-spec");
+require("./modules/core/saved-queries-spec");
 require("./modules/dataset/dataset-spec");
 
 // -------------------------

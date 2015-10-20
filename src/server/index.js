@@ -4,12 +4,13 @@ var Keen = require("../core"),
 extend(Keen.prototype, {
   "addEvent"            : require("../core/lib/addEvent"),
   "addEvents"           : require("../core/lib/addEvents"),
-  "setGlobalProperties" : require("../core/lib/setGlobalProperties"),
+  "del"                 : require("./lib/del"),
   "get"                 : require("./lib/get"),
   "post"                : require("../core/lib/post"),
   "put"                 : require("../core/lib/post"),
-  "del"                 : require("./lib/del"),
-  "run"                 : require("../core/lib/run")
+  "run"                 : require("../core/lib/run"),
+  "setGlobalProperties" : require("../core/lib/setGlobalProperties"),
+  "savedQueries"        : require("../core/saved-queries")
 });
 
 Keen.Query = require("../core/query");

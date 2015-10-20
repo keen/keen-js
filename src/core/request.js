@@ -1,6 +1,7 @@
 var each = require("./utils/each"),
     extend = require("./utils/extend"),
-    sendQuery = require("./utils/sendQuery");
+    sendQuery = require("./utils/sendQuery"),
+    sendSavedQuery = require("./utils/sendSavedQuery");
 
 var Keen = require("./");
 var Emitter = require('./utils/emitter-shim');
@@ -63,18 +64,18 @@ Request.prototype.refresh = function(){
   };
 
   each(self.queries, function(query, index){
-    var path;
     var cbSequencer = function(err, res){
       handleResponse(err, res, index);
     };
 
     if (query instanceof Keen.Query) {
-      path = "/queries/" + query.analysis;
-      sendQuery.call(self, path, query.params, cbSequencer);
-    }
-    else if ( Object.prototype.toString.call(query) === "[object String]" ) {
-      path = "/saved_queries/" + encodeURIComponent(query) + "/result";
-      sendQuery.call(self, path, null, cbSequencer);
+      var path = "/queries/" + query.analysis;
+      if (query.analysis === "saved") {
+        sendSavedQuery.call(self, path, query.params, cbSequencer);
+      }
+      else {
+        sendQuery.call(self, path, query.params, cbSequencer);
+      }
     }
     else {
       var res = {
