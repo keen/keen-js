@@ -172,6 +172,17 @@
     .el(document.getElementById('c3-gauge'))
     .parseRawData({ result: 79.1 })
     .title('Percentage of awesome')
+    .chartOptions({
+      // gauge: {
+      //   label: {
+      //     format: function (value, ratio) {
+      //       console.log(value, ratio);
+      //       return value + ' units';
+      //     }
+      //   },
+      //   units: 'Sits below the label'
+      // }
+    })
     .render();
 
   var c3donut = new Keen.Dataviz()
