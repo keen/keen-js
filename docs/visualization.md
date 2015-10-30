@@ -249,7 +249,8 @@ Visualize single numeric query responses, such as a count, sum, average, etc.
 
 ```javascript
 var count = new Keen.Query("count", {
-  eventCollection: "pageviews"
+  eventCollection: "pageviews",
+  timeframe: "this_14_days"
 });
 client.draw(count, document.getElementById("count-pageviews-metric"), {
   chartType: "metric",
@@ -278,7 +279,8 @@ Pie charts can render `groupBy` queries that do not include an interval.
 ```javascript
 var visitor_origins = new Keen.Query("count", {
   eventCollection: "pageviews",
-  groupBy: "referrer"
+  groupBy: "referrer",
+  timeframe: "this_14_days"
 });
 client.draw(visitor_origins, document.getElementById("count-pageviews-piechart"), {
   chartType: "piechart",
