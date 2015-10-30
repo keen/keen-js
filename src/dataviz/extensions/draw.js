@@ -7,22 +7,7 @@ module.exports = function(query, el, cfg) {
   var DEFAULTS = clone(Dataviz.defaults),
       visual = new Dataviz(),
       request = new Request(this, [query]),
-      config = cfg ? clone(cfg) : {};
-
-  if (config.chartType) {
-    visual.chartType(config.chartType);
-    delete config.chartType;
-  }
-
-  if (config.library) {
-    visual.library(config.library);
-    delete config.library;
-  }
-
-  if (config.chartOptions) {
-    visual.chartOptions(config.chartOptions);
-    delete config.chartOptions;
-  }
+      config = cfg || {};
 
   visual
     .attributes(extend(DEFAULTS, config))

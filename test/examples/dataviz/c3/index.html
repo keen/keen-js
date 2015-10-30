@@ -132,17 +132,23 @@
     readKey: '4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b'
   });
 
+  var count = new Keen.Query('count', {
+    eventCollection: 'pageviews',
+    timeframe: 'this_12_months',
+    groupBy: 'user.device_info.browser.family'
+  })
+
   var interval = new Keen.Query('count', {
     eventCollection: 'pageviews',
-    timeframe: 'this_2_months',
-    interval: 'weekly'
+    timeframe: 'this_12_months',
+    interval: 'monthly'
   });
 
   var multiline = new Keen.Query('count', {
     event_collection: 'pageviews',
     group_by: 'user.device_info.browser.family',
-    timeframe: 'this_2_months',
-    interval: 'weekly'
+    timeframe: 'this_12_months',
+    interval: 'monthly'
   });
 
   var labelMap = {
@@ -174,18 +180,28 @@
     .title('Percentage of awesome')
     .render();
 
-  var c3donut = new Keen.Dataviz()
-    //.library('c3')
-    //.chartType('donut')
-    .el(document.getElementById('c3-donut'))
-    .parseRawData({ result: [
-        { label: 'A', result: 9 },
-        { label: 'B', result: 7 },
-        { label: 'C', result: 4 }
-      ]
-    })
-    //.title('Best Donut!')
-    .render();
+  // var c3donut = new Keen.Dataviz()
+  //   //.library('c3')
+  //   //.chartType('donut')
+  //   .el(document.getElementById('c3-donut'))
+  //   .parseRawData({ result: [
+  //       { label: 'A', result: 9 },
+  //       { label: 'B', result: 7 },
+  //       { label: 'C', result: 4 }
+  //     ]
+  //   })
+  //   //.title('Best Donut!')
+  //   .render();
+
+  client.draw(count, document.getElementById('c3-donut'), {
+    library: 'c3',
+    chartType: 'donut',
+    chartOptions: {
+      test: function(a,b,c){
+        console.log(a,b,c);
+      }
+    }
+  });
 
   var c3pie = new Keen.Dataviz()
     .library('c3')
