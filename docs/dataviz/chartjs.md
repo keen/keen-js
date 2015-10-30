@@ -2,7 +2,7 @@
 
 Chart.js is a lightweight, flexible library that renders charts with HTML5 canvas elements.This SDK includes an adapter that makes it possible to visualize your data with Chart.js by including the dependencies shown below and making a few quick modifications to a chart's configuration.
 
-There are also several examples that use Chart.js on [jsFiddle](http://jsfiddle.net/user/keen/fiddles/).
+There are also several examples that use Chart.js on [jsFiddle](http://jsfiddle.net/user/keen/fiddles/). [This jsFiddle](http://jsfiddle.net/vyp0r08/f1m89naj/2/) demonstrates custom date formatting with [moment.js](http://momentjs.com/).
 
 ### Installation
 
