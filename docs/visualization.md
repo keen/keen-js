@@ -18,7 +18,7 @@ Keen.ready(function(){
   var query = new Keen.Query("count", {
     eventCollection: "pageviews",
     timeframe: "this_14_days",
-    groupBy: "visitor.geo.country"
+    groupBy: "visitor.geo.country",
     interval: "daily"
   });
 
