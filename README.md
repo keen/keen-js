@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.2.7)
+# Keen IO JavaScript SDK (v3.2.8)
 
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
 
