@@ -2,8 +2,8 @@
 <a name="unreleased"></a>
 # Unreleased
 -->
-<a name="3.2.7"></a>
-# 3.2.8 Saved/Cached Queries and fixes
+<a name="3.3.0"></a>
+# 3.3.0 Saved/Cached Queries and fixes
 
 * Add Saved Query support (#345)
 * Update c3js (#346)
