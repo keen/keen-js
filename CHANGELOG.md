@@ -2,6 +2,17 @@
 <a name="unreleased"></a>
 # Unreleased
 -->
+<a name="3.2.7"></a>
+# 3.2.8 Saved/Cached Queries and fixes
+
+* Add Saved Query support (#345)
+* Update c3js (#346)
+* Add missing timeframe field to queries (#348)
+* Preserve functions passed into chartOptions config (#349)
+* Unblock node version (#335)
+* include examples of custom date formatting (#327)
+* Add node 4.0 to .travis.yml config file
+* Fixed syntax error in sample code (#351)
 
 <a name="3.2.7"></a>
 # 3.2.7 Improvements and fixes
