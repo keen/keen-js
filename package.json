@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.2.7",
+  "version": "3.2.8",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {
@@ -24,7 +24,8 @@
     "Cory Watson <github@onemogin.com> (http://www.onemogin.com)",
     "Joshua Coats <joshua@keen.io> (https://github.com/joshukeen)",
     "Micah Wolfe <micah@keen.io> (https://github.com/forzalupo)",
-    "Tim Schiller <timothy.schiller@gmail.com> (http://tmschl.com)"
+    "Tim Schiller <timothy.schiller@gmail.com> (http://tmschl.com)",
+    "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)"
   ],
   "engines": {
     "node": ">= 0.10.0"
