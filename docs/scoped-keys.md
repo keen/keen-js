@@ -36,7 +36,7 @@ var scopedKey = Keen.utils.encryptScopedKey(apiKey, {
 
 // Do something with this new scoped key
 var client = new Keen({
-  projectId: "YOUR_PROJECT_ID";
+  projectId: "YOUR_PROJECT_ID",
   readKey: scopedKey
 });
 ```
