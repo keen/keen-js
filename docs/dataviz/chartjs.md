@@ -11,7 +11,7 @@ There are also several examples that use Chart.js on [jsFiddle](http://jsfiddle.
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/1.0.2/Chart.min.js"></script>
 
 <!-- Load keen.js -->
-<script src="http://d26b395fwzu5fz.cloudfront.net/3.2.7/keen.min.js"></script>
+<script src="http://d26b395fwzu5fz.cloudfront.net/3.3.0/keen.min.js"></script>
 ```
 
 ### Configuration
