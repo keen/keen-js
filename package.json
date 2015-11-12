@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.2.7-r",
+  "version": "3.2.8-r",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {

@@ -1966,7 +1966,7 @@ var each = require('../utils/each'),
 module.exports = function(type, opts){
   return function(request) {
     var __super__ = request.constructor.prototype.end;
-    if ( typeof window === 'undefined' ) return;
+    if ( 'undefined' === typeof window ) return;
     request.requestType = request.requestType || {};
     request.requestType['type'] = type;
     request.requestType['options'] = request.requestType['options'] || {
@@ -1981,7 +1981,7 @@ module.exports = function(type, opts){
       }
     };
     if (opts) {
-      if ( typeof opts.async === 'boolean' ) {
+      if ( 'boolean' === typeof opts.async ) {
         request.requestType['options'].async = opts.async;
       }
       if ( opts.success ) {
@@ -1996,7 +1996,7 @@ module.exports = function(type, opts){
           reqType = (this.requestType) ? this.requestType['type'] : 'xhr',
           query,
           timeout;
-      if ( ('GET' !== self['method'] ||  reqType === 'xhr' ) && self.requestType['options'].async ) {
+      if ( ('GET' !== self['method'] || 'xhr' === reqType) && self.requestType['options'].async ) {
         __super__.call(self, fn);
         return;
       }
@@ -2016,10 +2016,10 @@ module.exports = function(type, opts){
       if ( !self.requestType['options'].async ) {
         sendXhrSync.call(self);
       }
-      else if ( reqType === 'jsonp' ) {
+      else if ( 'jsonp' === reqType ) {
         sendJsonp.call(self);
       }
-      else if ( reqType === 'beacon' ) {
+      else if ( 'beacon' === reqType ) {
         sendBeacon.call(self);
       }
       return self;
@@ -2147,7 +2147,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.3.0';
+Keen.version = '3.2.8-r';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
