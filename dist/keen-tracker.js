@@ -2147,7 +2147,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.2.8-r';
+Keen.version = '3.2.9-r';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
