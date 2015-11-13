@@ -27,6 +27,8 @@ Dataset.defaults = {
 Emitter(Dataset);
 Emitter(Dataset.prototype);
 
+Dataset.parser = require('./utils/parsers')(Dataset);
+
 Dataset.prototype.input = function(obj){
   if (!arguments.length) return this["data"]["input"];
   this["data"]["input"] = (obj ? clone(obj) : null);
