@@ -35,9 +35,6 @@ describe("Keen.Dataset", function(){
     it("should return a new Keen.Dataset instance", function(){
       expect(this.ds).to.be.an.instanceof(Keen.Dataset);
     });
-    it("should have a schema hash with supplied properties", function(){
-      expect(this.ds.schema()).to.deep.equal({ records: "", select: true });
-    });
     it("should output the correct values", function(){
       expect(this.ds.output()).to.be.an("array")
         .and.to.be.of.length(2);
@@ -46,301 +43,6 @@ describe("Keen.Dataset", function(){
       expect(this.ds.output()[1][0]).to.eql("result");
       expect(this.ds.output()[1][1]).to.eql(23456);
     });
-  });
-
-  describe("#parse", function() {
-
-    it("metric.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_metric, {
-        records: "",
-        select: true
-      });
-
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql("label");
-      expect(dataset.output()[0][1]).to.eql("value");
-      expect(dataset.output()[1][0]).to.eql("result");
-      expect(dataset.output()[1][1]).to.eql(2450);
-    });
-
-    it("groupby.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_groupBy, {
-        records: "result",
-        select: true
-      });
-
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(56);
-      expect(dataset.output()[0]).to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql("page");
-      expect(dataset.output()[0][1]).to.eql("result");
-    });
-
-    it("groupBy-boolean.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_groupBy_boolean, {
-        records: "result",
-        select: [
-          {
-            path: "switch",
-            type: "string"
-          },
-          {
-            path: "result",
-            type: "number"
-          }
-        ]
-      });
-
-      dataset.sortRows("desc", dataset.sum, 1);
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(4);
-      expect(dataset.output()[1][0]).to.eql("true");
-      expect(dataset.output()[2][0]).to.eql("false");
-    });
-
-    it("interval-groupBy-empties.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_interval_groupBy_empties, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-          },
-          label: {
-            path: "value -> parsed_user_agent.os.family",
-            type: "string"
-          }
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(7);
-    });
-
-    it("interval-groupBy-boolean.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_interval_groupBy_boolean, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-          },
-          label: {
-            path: "value -> key",
-            type: "string"
-          }
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(7);
-    });
-
-    it("interval-groupBy-nulls.json", function(){
-      var dataset = new Keen.Dataset()
-      dataset.parse(data_interval_groupBy_nulls, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-            , replace: { null: 0 }
-          },
-          label: {
-            path: "value -> parsed_user_agent.os.family",
-            type: "string"
-            , replace: { null: "" }
-            //format: "lowercase"
-          }
-        }
-      });
-
-      dataset.sortColumns("desc", dataset.sum, 1);
-      dataset.sortRows("asc");
-
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(7);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("start");
-      expect(dataset.output()[0][1]).to.eql("");
-      expect(dataset.output()[0][2]).to.eql("Windows Vista");
-    });
-
-    it("extraction.json 1", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_extraction, {
-        records: "result",
-        select: [
-          {
-            path: "keen -> timestamp",
-            type: "date",
-            label: "Time"
-          },
-          {
-            path: "page",
-            type: "string",
-            label: "Page"
-          },
-          {
-            path: "referrer",
-            type: "string",
-            label: "Referrer"
-          }
-        ]
-      });
-
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(data_extraction.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("Time");
-      expect(dataset.output()[0][1]).to.eql("Page");
-      expect(dataset.output()[0][2]).to.eql("Referrer");
-    });
-
-    it("extraction.json 2", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_extraction, {
-        records: "result",
-        select: [
-          {
-            path: "keen -> timestamp",
-            type: "date"
-          },
-          {
-            path: "page",
-            type: "string"
-          },
-          {
-            path: "referrer",
-            type: "string",
-            prefix: "@",
-            suffix: "/mo"
-          }
-        ]
-      });
-
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(data_extraction.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-      expect(dataset.output()[0][1]).to.eql("page");
-      expect(dataset.output()[0][2]).to.eql("referrer");
-    });
-
-
-    it("extraction-uneven.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_extraction_uneven, {
-        records: "result",
-        select: [
-          {
-            path: "keen -> timestamp",
-            type: "date"
-          },
-          {
-            path: "page",
-            type: "string"
-          },
-          {
-            path: "key"
-          }
-        ]
-      });
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(data_extraction_uneven.result.length+1);
-    });
-
-
-    it("extraction-uneven.json SELECT ALL", function(){
-      var dataset = new Keen.Dataset().parse(data_extraction_uneven, {
-        records: "result",
-        select: true
-      });
-      dataset.sortRows("asc");
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(data_extraction_uneven.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(10);
-      expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-    });
-
-
-    it("funnel.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_funnel, {
-        records: "",
-        unpack: {
-          index: {
-            path: "steps -> event_collection",
-            type: "string",
-            label: "Event",
-            replace: {
-              "pageview": "Visit",
-              "signup": "Join",
-              "return-login": "Return",
-              "create-post": "Contrib",
-              "send-invite": "Invite"
-            }
-          },
-          value: {
-            path: "result -> ",
-            type: "number"
-          }
-        }
-      });
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(6);
-      expect(dataset.output()[0][0]).to.eql("Event");
-      expect(dataset.output()[0][1]).to.eql("Value");
-      expect(dataset.output()[1][0]).to.be.eql("Visit");
-      expect(dataset.output()[1][1]).to.be.eql(42);
-    });
-
-
-    it("interval-double-groupBy.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_interval_double_groupBy, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-          },
-          label: {
-            path: "value -> first.property",
-            type: "string",
-            replace: {}
-          }
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(4);
-    });
-
   });
 
   describe("#input", function() {
@@ -381,39 +83,27 @@ describe("Keen.Dataset", function(){
     });
   });
 
-  describe("#schema", function() {
-    it("should set and get the parser schema", function(){
-      var schema = { records: "", select: true };
-      this.ds.schema(schema);
-      expect(this.ds.schema()).to.be.an("object")
-        .and.to.deep.equal(schema);
-    });
-    it("should unset the schema by passing null", function(){
-      this.ds.schema(null);
-      expect(this.ds.schema()).to.be.null;
-    });
-  });
 
   describe("Access Rows", function(){
 
     describe("#set", function(){
 
       it("should create a column and row when they don't already exist (integer)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set([1,1], 10);
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal([1, 10]);
       });
 
       it("should create a column and row when they don't already exist (string)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set(['A','Row'], 10);
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["Row", 10]);
       });
 
       it("should create multiple columns and rows in the proper order (integers)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set([1,1], 10);
         this.ds.set([2,2], 10);
         this.ds.set([1,3], 10);
@@ -428,7 +118,7 @@ describe("Keen.Dataset", function(){
       });
 
       it("should create multiple columns and rows in the proper order (strings)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set(['A','Row 1'], 10);
         this.ds.set(['B','Row 2'], 10);
         this.ds.set(['A','Row 3'], 10);
@@ -1143,7 +833,7 @@ describe("Keen.Dataset", function(){
       expect(dataset.output())
         .to.be.an('array')
         .and.to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql('index');
+      expect(dataset.output()[0][0]).to.eql('Index');
       expect(dataset.output()[0][1]).to.eql('Value');
       expect(dataset.output()[1][0]).to.eql('Result');
       expect(dataset.output()[1][1]).to.eql(2450);
@@ -1156,7 +846,7 @@ describe("Keen.Dataset", function(){
       expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(13);
       expect(dataset.output()[0]).to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql('index');
+      expect(dataset.output()[0][0]).to.eql('Index');
       expect(dataset.output()[0][1]).to.eql('Result');
 
       // timeframe.end
@@ -1170,7 +860,7 @@ describe("Keen.Dataset", function(){
       expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(56);
       expect(dataset.output()[0]).to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql('index');
+      expect(dataset.output()[0][0]).to.eql('Index');
       expect(dataset.output()[0][1]).to.eql('Result');
     });
 
@@ -1208,7 +898,7 @@ describe("Keen.Dataset", function(){
       expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(7);
       expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql('index');
+      expect(dataset.output()[0][0]).to.eql('Index');
       expect(dataset.output()[0][1]).to.eql('');
       expect(dataset.output()[0][2]).to.eql('Windows Vista');
     });
@@ -1239,7 +929,7 @@ describe("Keen.Dataset", function(){
       expect(dataset.output())
         .to.be.an('array')
         .and.to.be.of.length(6);
-      expect(dataset.output()[0][0]).to.eql('index');
+      expect(dataset.output()[0][0]).to.eql('Index');
       expect(dataset.output()[0][1]).to.eql('Step Value');
       expect(dataset.output()[1][0]).to.be.eql('pageview');
       expect(dataset.output()[1][1]).to.be.eql(42);

@@ -117,19 +117,65 @@
         <div id='c3-funnel'></div>
       </div>
     </div>
+    <hr>
+
+    <h2>Saved Queries (auto-viz)</h2>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-metric'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-grouped-metric'></div>
+      </div>
+    </div>
 
     <br/>
     <br/>
+
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-interval'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-grouped-interval'></div>
+      </div>
+    </div>
+
     <br/>
     <br/>
 
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-double-grouped-metric'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-double-grouped-interval'></div>
+      </div>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-extraction'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-list'></div>
+      </div>
+    </div>
+
+    <br/>
+    <br/>
+    
   </div>
 
   <script src='../../../dist/keen.js'></script>
   <script>
   var client = new Keen({
     projectId: '52f2ae5905cd661a7800000a',
-    readKey: '4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b'
+    readKey: '4e4d72e5bf8b69686ed87a5a9671bba7ad829fbd10a1c281ee51b6e9c1ce9548e941e1f336f9de9281a5acc66ca8fdabc9b3c806e390eca01665f6a308a9b03d8b332b3fbd9f3cdfc3b3e16b0da6d84851e53fe20fbbce300801b8a401a6395b9f4ab9c89bff566e9678a74ca6624f9b',
+    masterKey: '9EEFED753A37A9921D1E9A5C448AD76E'
   });
 
   var count = new Keen.Query('count', {
@@ -208,7 +254,7 @@
     library: 'c3',
     chartType: 'donut',
     chartOptions: {
-      
+
     }
   });
 
@@ -409,6 +455,68 @@
     })
     .render();
 
+
+
+
+    // RENDERING SAVED QUERIES
+
+    // client.savedQueries().create('weekly-clicks-by-campaign', {
+    //   refresh_rate: 0,
+    //   query: {
+    //     analysis_type: 'count',
+    //     event_collection: 'clicks',
+    //     timeframe: 'this_12_months',
+    //     interval: 'weekly',
+    //     group_by: 'ad.campaign_id' //['ad.campaign_id', 'user.id']
+    //   }
+    // });
+
+    // var saved_query_chart = new Keen.Dataviz();
+
+    client.draw('total-clicks-this-12-months', document.getElementById('sq-metric'), {
+      height: 200,
+      chartOptions: {
+        gauge: {
+          min: 0,
+          max: 200
+        }
+      }
+    });
+    client.draw('total-clicks-by-campaign-this-12-months', document.getElementById('sq-grouped-metric'), {
+      height: 200
+    });
+
+    client.draw('weekly-clicks-this-12-months', document.getElementById('sq-interval'), {
+      height: 200
+    });
+
+    client.draw('weekly-clicks-by-campaign', document.getElementById('sq-grouped-interval'), {
+      height: 200
+    });
+
+    client.draw('total-clicks-by-campaign-by-user-id', document.getElementById('sq-double-grouped-metric'), {
+      height: 400,
+      chartType: 'bar',
+      chartOptions: {
+        legend: { show: false }
+      }
+    });
+
+    client.draw('weekly-clicks-by-campaign-by-user-id', document.getElementById('sq-double-grouped-interval'), {
+      height: 400,
+      chartOptions: {
+        legend: { show: false }
+      }
+    });
+
+    client.draw('export-last-10', document.getElementById('sq-extraction'), {
+      height: 200
+    });
+    client.draw('list-campaign-ids', document.getElementById('sq-list'), {
+      height: 200
+    });
+
+    // client.run('test-extraction-no-collection');
 
   </script>
 </body>

@@ -35,6 +35,7 @@ function initialize(lib){
 function parseMetric(){
   return function(res){
     var dataset = new Dataset();
+    dataset.data.input = res;
     return dataset.set(['Value', 'Result'], res.result);
   }
 }
@@ -48,6 +49,7 @@ function parseInterval(){
       var index = options[0] && options[0] === 'timeframe.end' ? record.timeframe.end : record.timeframe.start;
       dataset.set(['Result', index], record.value);
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -64,6 +66,7 @@ function parseGroupedMetric(){
       });
       dataset.set(['Result', String(record[label])], record.result);
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -90,6 +93,7 @@ function parseGroupedInterval(){
         dataset.appendRow(index);
       }
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -103,6 +107,7 @@ function parseDoubleGroupedMetric(){
     each(res.result, function(record, i){
       dataset.set([ record[options[0][0]], record[options[0][1]] ], record.result);
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -120,6 +125,7 @@ function parseDoubleGroupedInterval(){
         dataset.set([ label, index ], value.result);
       });
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -127,9 +133,11 @@ function parseDoubleGroupedInterval(){
 function parseFunnel(){
   return function(res){
     var dataset = new Dataset();
+    dataset.appendColumn('Step Value');
     each(res.result, function(value, i){
-      dataset.set( [ 'Step Value', res.steps[i].event_collection ], value );
+      dataset.appendRow(res.steps[i].event_collection, [ value ]);
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -140,6 +148,7 @@ function parseList(){
     each(res.result, function(value, i){
       dataset.set( [ 'Value', i+1 ], value );
     });
+    dataset.data.input = res;
     return dataset;
   }
 }
@@ -153,6 +162,7 @@ function parseExtraction(){
       });
     });
     dataset.deleteColumn(0);
+    dataset.data.input = res;
     return dataset;
   }
 }

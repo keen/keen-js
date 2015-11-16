@@ -1,166 +1,133 @@
-var Dataviz = require('../dataviz'),
-    Dataset = require('../../dataset');
+var Dataset = require('../../dataset');
 
-var each = require('../../core/utils/each');
+module.exports = function(response){
+  var dataType,
+      indexBy = this.indexBy() ? this.indexBy() : 'timestamp.start',
+      parser,
+      parserArgs = [],
+      query = (typeof response.query !== 'undefined') ? response.query : {};
 
-module.exports = function(raw){
-  this.dataset = parseRawData.call(this, raw);
-  return this;
-};
-
-function parseRawData(response){
-  var self = this,
-      schema = {},
-      indexBy,
-      delimeter,
-      indexTarget,
-      labelSet,
-      labelMap,
-      dataType,
-      dataset;
-
-  indexBy = self.indexBy() ? self.indexBy() : Dataviz.defaults.indexBy;
-  delimeter = Dataset.defaults.delimeter;
-  indexTarget = indexBy.split('.').join(delimeter);
-
-  labelSet = self.labels() || null;
-  labelMap = self.labelMapping() || null;
-
-  // Metric
-  // -------------------------------
-  if (typeof response.result == 'number'){
-    //return new Dataset(response, {
-    dataType = 'singular';
-    schema = {
-      records: '',
-      select: [{
-        path: 'result',
-        type: 'string',
-        label: 'Metric'
-      }]
-    }
+  if (query.analysis_type === 'funnel') {
+    dataType = 'cat-ordinal';
+    parser = 'funnel';
   }
-
-  // Everything else
-  // -------------------------------
-  if (response.result instanceof Array && response.result.length > 0){
-
-    // Interval w/ single value
-    // -------------------------------
-    if (response.result[0].timeframe && (typeof response.result[0].value == 'number' || response.result[0].value == null)) {
-      dataType = 'chronological';
-      schema = {
-        records: 'result',
-        select: [
-          {
-            path: indexTarget,
-            type: 'date'
-          },
-          {
-            path: 'value',
-            type: 'number'
-            // format: '10'
-          }
-        ]
-      }
-    }
-
-    // Static GroupBy
-    // -------------------------------
-    if (typeof response.result[0].result == 'number'){
-      dataType = 'categorical';
-      schema = {
-        records: 'result',
-        select: []
-      };
-      for (var key in response.result[0]){
-        if (response.result[0].hasOwnProperty(key) && key !== 'result'){
-          schema.select.push({
-            path: key,
-            type: 'string'
-          });
-          break;
-        }
-      }
-      schema.select.push({
-        path: 'result',
-        type: 'number'
-      });
-    }
-
-    // Grouped Interval
-    // -------------------------------
-    if (response.result[0].value instanceof Array){
-      dataType = 'cat-chronological';
-      schema = {
-        records: 'result',
-        unpack: {
-          index: {
-            path: indexTarget,
-            type: 'date'
-          },
-          value: {
-            path: 'value -> result',
-            type: 'number'
-          }
-        }
-      }
-      for (var key in response.result[0].value[0]){
-        if (response.result[0].value[0].hasOwnProperty(key) && key !== 'result'){
-          schema.unpack.label = {
-            path: 'value -> ' + key,
-            type: 'string'
-          }
-          break;
-        }
-      }
-    }
-
-    // Funnel
-    // -------------------------------
-    if (typeof response.result[0] == 'number' && typeof response.steps !== "undefined"){
-      dataType = 'cat-ordinal';
-      schema = {
-        records: '',
-        unpack: {
-          index: {
-            path: 'steps -> event_collection',
-            type: 'string'
-          },
-          value: {
-            path: 'result -> ',
-            type: 'number'
-          }
-        }
-      }
-    }
-
-    // Select Unique
-    // -------------------------------
-    if ((typeof response.result[0] == 'string' || typeof response.result[0] == 'number') && typeof response.steps === "undefined"){
+  else if (query.analysis_type === 'extraction'){
+    dataType = 'extraction';
+    parser = 'extraction';
+  }
+  else if (query.analysis_type === 'select_unique') {
+    if (!query.group_by && !query.interval) {
       dataType = 'nominal';
-      dataset = new Dataset();
-      dataset.appendColumn('unique values', []);
-      each(response.result, function(result, i){
-        dataset.appendRow(result);
-      });
+      parser = 'list';
     }
+    // else { Not supported }
+  }
+  else if (query.analysis_type) {
+    if (!query.group_by && !query.interval) {
+      dataType = 'singular';
+      parser = 'metric';
+    }
+    else if (query.group_by && !query.interval) {
+      if (typeof query.group_by === 'string') {
+        dataType = 'categorical';
+        parser = 'grouped-metric';
+      }
+      else {
+        dataType = 'categorical';
+        parser = 'double-grouped-metric';
+        parserArgs.push(query.group_by);
+      }
+    }
+    else if (query.interval && !query.group_by) {
+      dataType = 'chronological';
+      parser = 'interval';
+      parserArgs.push(indexBy);
+    }
+    else if (query.group_by && query.interval) {
+      if (typeof query.group_by === 'string') {
+        dataType = 'cat-chronological';
+        parser = 'grouped-interval';
+        parserArgs.push(indexBy);
+      }
+      else {
+        dataType = 'cat-chronological';
+        parser = 'double-grouped-interval';
+        parserArgs.push(query.group_by);
+        parserArgs.push(indexBy);
+      }
+    }
+  }
 
-    // Extraction
+  if (!parser) {
+
+    // Metric
     // -------------------------------
-    if (dataType === void 0) {
-      dataType = 'extraction';
-      schema = { records: 'result', select: true };
+    if (typeof response.result === 'number'){
+      dataType = 'singular';
+      parser = 'metric';
     }
 
+    // Everything else
+    // -------------------------------
+    if (response.result instanceof Array && response.result.length > 0){
+
+      // Interval w/ single value
+      // -------------------------------
+      if (response.result[0].timeframe && (typeof response.result[0].value == 'number' || response.result[0].value == null)) {
+        dataType = 'chronological';
+        parser = 'interval';
+        parserArgs.push(indexBy)
+      }
+
+      // Static GroupBy
+      // -------------------------------
+      if (typeof response.result[0].result == 'number'){
+        dataType = 'categorical';
+        parser = 'grouped-metric';
+      }
+
+      // Grouped Interval
+      // -------------------------------
+      if (response.result[0].value instanceof Array){
+        dataType = 'cat-chronological';
+        parser = 'grouped-interval';
+        parserArgs.push(indexBy)
+      }
+
+      // Funnel
+      // -------------------------------
+      if (typeof response.result[0] == 'number' && typeof response.steps !== "undefined"){
+        dataType = 'cat-ordinal';
+        parser = 'funnel';
+      }
+
+      // Select Unique
+      // -------------------------------
+      if ((typeof response.result[0] == 'string' || typeof response.result[0] == 'number') && typeof response.steps === "undefined"){
+        dataType = 'nominal';
+        parser = 'list';
+      }
+
+      // Extraction
+      // -------------------------------
+      if (dataType === void 0) {
+        dataType = 'extraction';
+        parser = 'extraction';
+      }
+    }
   }
 
-  dataset = dataset instanceof Dataset ? dataset : new Dataset(response, schema);
-
-  // Set dataType
   if (dataType) {
-    self.dataType(dataType);
+    this.dataType(dataType);
   }
 
-  return dataset;
-}
+  this.dataset = Dataset.parser.apply(this, [parser].concat(parserArgs))(response);
+
+  if (parser.indexOf('interval') > -1) {
+    this.dataset.updateColumn(0, function(value, i){
+      return new Date(value);
+    });
+  }
+  return this;
+  // Eg: Dataset.parser('double-grouped-interval', ['first', 'second'], 'timeframe.end');
+};

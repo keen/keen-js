@@ -10,11 +10,10 @@ module.exports = function(obj){
 function applyLabelMapping(){
   var self = this,
   labelMap = this.labelMapping(),
-  schema = this.dataset.schema() || {},
   dt = this.dataType() || "";
 
   if (labelMap) {
-    if (dt.indexOf("chronological") > -1 || (schema.unpack && self.dataset.output()[0].length > 2)) {
+    if (dt.indexOf("chronological") > -1 || (self.dataset.output()[0].length > 2)) {
       // loop over header cells
       each(self.dataset.output()[0], function(c, i){
         if (i > 0) {
@@ -22,7 +21,7 @@ function applyLabelMapping(){
         }
       });
     }
-    else if (schema.select && self.dataset.output()[0].length === 2) {
+    else if (self.dataset.output()[0].length === 2) {
       // update column 0
       self.dataset.updateColumn(0, function(c, i){
         return labelMap[c] || c;

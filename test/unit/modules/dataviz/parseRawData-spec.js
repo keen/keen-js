@@ -27,16 +27,9 @@ describe('Keen.DataTypeParser', function(){
       this.dataviz.parseRawData(response);
 
       expect(this.dataviz.dataType()).to.equal('singular');
-      expect(this.dataviz.dataset.schema()).to.deep.equal({
-        records: '',
-        select: [{
-          path: 'result',
-          type: 'string',
-          label: 'Metric'
-        }]
-      });
+
       expect(this.dataviz.dataset.output()).to.deep.equal([
-        ['Metric', 'value'], ['result', 123]
+        ['Index', 'Value'], ['Result', 123]
       ]);
     });
 
@@ -49,10 +42,10 @@ describe('Keen.DataTypeParser', function(){
 
       expect(this.dataviz.dataType()).to.equal('nominal');
       expect(this.dataviz.dataset.output()).to.deep.equal([
-        ['index', 'unique values'],
-        ['bob@aol.com', null],
-        ['joe@yahoo.biz', null],
-        ['travis@gmail.com', null]
+        ['Index', 'Value'],
+        [1, 'bob@aol.com'],
+        [2, 'joe@yahoo.biz'],
+        [3, 'travis@gmail.com']
       ]);
     });
 
@@ -67,20 +60,9 @@ describe('Keen.DataTypeParser', function(){
       this.dataviz.parseRawData(response);
 
       expect(this.dataviz.dataType()).to.equal('categorical');
-      expect(this.dataviz.dataset.schema()).to.deep.equal({
-        records: 'result', select: [
-        {
-          'path': 'user.email',
-          'type': 'string'
-        },
-        {
-          'path': 'result',
-          'type': 'number'
-        }
-        ]
-      });
+
       expect(this.dataviz.dataset.output()).to.deep.equal([
-        ['user.email', 'result'],
+        ['Index', 'Result'],
         ['user1@keen.io', 39],
         ['user2@keen.io', 27]
       ]);
@@ -105,18 +87,11 @@ describe('Keen.DataTypeParser', function(){
           'value': 9
         }
       ]
-    }; 
+    };
 
     this.dataviz.parseRawData(response);
 
     expect(this.dataviz.dataType()).to.equal('chronological');
-    expect(this.dataviz.dataset.schema()).to.deep.equal({
-      records: 'result',
-      select: [
-        { path: 'timeframe -> start', type: 'date' },
-        { path: 'value', type: 'number' }
-      ]
-    });
   });
 
   it('parses grouped interval', function() {
@@ -150,23 +125,6 @@ describe('Keen.DataTypeParser', function(){
     this.dataviz.parseRawData(response);
 
     expect(this.dataviz.dataType()).to.equal('cat-chronological');
-    expect(this.dataviz.dataset.schema()).to.deep.equal({
-      records: 'result',
-      unpack: {
-        index: {
-          path: 'timeframe -> start',
-          type: 'date'
-        },
-        label: {
-          path: 'value -> user.email',
-          type: 'string'
-        },
-        value: {
-          path: 'value -> result',
-          type: 'number'
-        }
-      }
-    });
   });
 
   it('parses funnel', function() {
@@ -198,21 +156,9 @@ describe('Keen.DataTypeParser', function(){
     this.dataviz.parseRawData(response);
 
     expect(this.dataviz.dataType()).to.equal('cat-ordinal');
-    expect(this.dataviz.dataset.schema()).to.deep.equal({
-      records: '',
-      unpack: {
-        index: {
-          path: 'steps -> event_collection',
-          type: 'string'
-        },
-        value: {
-          path: 'result -> ',
-          type: 'number'
-        }
-      }
-    });
+
     expect(this.dataviz.dataset.output()).to.deep.equal([
-      ['event_collection', 'Value'],
+      ['Index', 'Step Value'],
       ['signed up', 3],
       ['completed profile', 1],
       ['referred user', 0]
@@ -260,8 +206,6 @@ describe('Keen.DataTypeParser', function(){
     this.dataviz.parseRawData(response);
 
     expect(this.dataviz.dataType()).to.equal('extraction');
-    expect(this.dataviz.dataset.schema()).to.deep.equal({
-      records: 'result', select: true
-    });
+
   });
 });
