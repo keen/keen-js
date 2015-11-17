@@ -1,32 +1,49 @@
-var Dataset = require("../../dataset"),
-    Dataviz = require("../dataviz"),
-    each = require("../../core/utils/each");
+var Dataset = require('../../dataset'),
+    Dataviz = require('../dataviz'),
+    each = require('../../core/utils/each');
 
 module.exports = function(str){
-  if (!arguments.length) return this.view["attributes"].indexBy;
-  this.view["attributes"].indexBy = (str ? String(str) : Dataviz.defaults.indexBy);
+  if (!arguments.length) return this.view['attributes'].indexBy;
+  this.view['attributes'].indexBy = (str ? String(str) : Dataviz.defaults.indexBy);
   indexBy.call(this);
   return this;
 };
 
 function indexBy(){
-  var self = this,
-  root = this.dataset.meta.schema || this.dataset.meta.unpack,
-  newOrder = this.indexBy().split(".").join(Dataset.defaults.delimeter);
-  // Replace in schema and re-run dataset.parse()
-  each(root, function(def, i){
-    // update 'select' configs
-    if (i === "select" && def instanceof Array) {
-      each(def, function(c, j){
-        if (c.path.indexOf("timeframe -> ") > -1) {
-          self.dataset.meta.schema[i][j].path = newOrder;
-        }
-      });
+  var parser, options;
+  if (this.dataset.output().length > 1
+    && !isNaN(new Date(this.dataset.output()[1][0]).getTime())) {
+    // Parser is known and should be re-used
+    if (this.dataset.parser
+      && this.dataset.parser.name
+        && this.dataset.parser.options) {
+      if (this.dataset.parser.options.length === 1) {
+        parser = Dataset.parser(this.dataset.parser.name, this.indexBy());
+        this.dataset.parser.options[0] = this.indexBy();
+      }
+      else {
+        parser = Dataset.parser(this.dataset.parser.name, this.dataset.parser.options[0], this.indexBy());
+        this.dataset.parser.options[1] = this.indexBy();
+      }
     }
-    // update 'unpack' configs
-    else if (i === "unpack" && typeof def === "object") {
-      self.dataset.meta.schema[i]['index'].path = newOrder;
+    // Parser is unknown and should be inferred (optimistic)
+    else if (this.dataset.output()[0].length === 2) {
+      parser = Dataset.parser('interval', this.indexBy());
+      this.dataset.parser = {
+        name: 'interval',
+        options: [this.indexBy()]
+      };
     }
-  });
-  this.dataset.parse();
+    else {
+      parser = Dataset.parser('grouped-interval', this.indexBy());
+      this.dataset.parser = {
+        name: 'grouped-interval',
+        options: [this.indexBy()]
+      };
+    }
+    this.dataset = parser(this.dataset.input());
+    this.dataset.updateColumn(0, function(value){
+      return (typeof value === 'string') ? new Date(value) : value;
+    });
+  }
 }

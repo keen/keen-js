@@ -14,6 +14,7 @@ function Dataset(){
     schema: {},
     method: undefined
   };
+  this.parser = undefined;
   // temp fwd
   if (arguments.length > 0) {
     this.parse.apply(this, arguments);

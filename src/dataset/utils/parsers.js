@@ -36,6 +36,10 @@ function parseMetric(){
   return function(res){
     var dataset = new Dataset();
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'metric'
+      // options: options
+    };
     return dataset.set(['Value', 'Result'], res.result);
   }
 }
@@ -50,6 +54,11 @@ function parseInterval(){
       dataset.set(['Result', index], record.value);
     });
     dataset.data.input = res;
+    dataset.parser = 'interval';
+    dataset.parser = {
+      name: 'interval',
+      options: options
+    };
     return dataset;
   }
 }
@@ -67,6 +76,10 @@ function parseGroupedMetric(){
       dataset.set(['Result', String(record[label])], record.result);
     });
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'grouped-metric'
+      // options: options
+    };
     return dataset;
   }
 }
@@ -94,6 +107,10 @@ function parseGroupedInterval(){
       }
     });
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'grouped-interval',
+      options: options
+    };
     return dataset;
   }
 }
@@ -108,6 +125,10 @@ function parseDoubleGroupedMetric(){
       dataset.set([ record[options[0][0]], record[options[0][1]] ], record.result);
     });
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'double-grouped-metric',
+      options: options
+    };
     return dataset;
   }
 }
@@ -126,6 +147,10 @@ function parseDoubleGroupedInterval(){
       });
     });
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'double-grouped-interval',
+      options: options
+    };
     return dataset;
   }
 }
@@ -138,6 +163,10 @@ function parseFunnel(){
       dataset.appendRow(res.steps[i].event_collection, [ value ]);
     });
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'funnel'
+      // options: options
+    };
     return dataset;
   }
 }
@@ -149,6 +178,10 @@ function parseList(){
       dataset.set( [ 'Value', i+1 ], value );
     });
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'list'
+      // options: options
+    };
     return dataset;
   }
 }
@@ -163,6 +196,10 @@ function parseExtraction(){
     });
     dataset.deleteColumn(0);
     dataset.data.input = res;
+    dataset.parser = {
+      name: 'extraction'
+      // options: options
+    };
     return dataset;
   }
 }
