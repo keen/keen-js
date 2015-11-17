@@ -141,7 +141,7 @@ gulp.task('test:karma', ['build', 'test:prepare', 'test-with-karma']);
 gulp.task('test:local', ['test:prepare', 'test-with-mocha', 'test-with-phantom', 'test-with-karma']);
 
 gulp.task('test:sauce', ['build', 'test:prepare', 'test-with-sauce']);
-gulp.task('test:cli', ['test:prepare', 'test-with-mocha', 'test-with-phantom', 'test-with-sauce']);
+gulp.task('test:cli', ['test:prepare', 'test-with-mocha', 'test-with-phantom']);
 gulp.task('test:all', ['test:prepare', 'test-with-mocha', 'test-with-phantom', 'test-with-karma', 'test-with-sauce']);
 
 
