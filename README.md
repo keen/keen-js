@@ -254,7 +254,7 @@ Saved Queries can also be accessed and managed with the `client.savedQueries()` 
 // Create a client instance
 var client = new Keen({
   projectId: "YOUR_PROJECT_ID",
-  readKey: "YOUR_READ_KEY"
+  masterKey: "YOUR_MASTER_KEY"
 });
 
 Keen.ready(function() {
