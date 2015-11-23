@@ -72,7 +72,7 @@ The library is loaded with an explicitly named module ID ("keen"), which present
 ```javascript
 requirejs.config({
   "paths": {
-    "keen": "https://d26b395fwzu5fz.cloudfront.net/3.3.0/keen.js"
+    "keen": "https://d26b395fwzu5fz.cloudfront.net/3.3.0/keen"
   }
 });
 require([ "keen" ], function(Keen) {
