@@ -117,9 +117,54 @@
         <div id='c3-funnel'></div>
       </div>
     </div>
+    <hr>
+
+    <h2>Saved Queries (auto-viz)</h2>
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-metric'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-grouped-metric'></div>
+      </div>
+    </div>
 
     <br/>
     <br/>
+
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-interval'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-grouped-interval'></div>
+      </div>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-double-grouped-metric'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-double-grouped-interval'></div>
+      </div>
+    </div>
+
+    <br/>
+    <br/>
+
+    <div class='row'>
+      <div class='col-sm-6'>
+        <div id='sq-extraction'></div>
+      </div>
+      <div class='col-sm-6'>
+        <div id='sq-list'></div>
+      </div>
+    </div>
+
     <br/>
     <br/>
 
@@ -208,7 +253,7 @@
     library: 'c3',
     chartType: 'donut',
     chartOptions: {
-      
+
     }
   });
 
@@ -409,6 +454,68 @@
     })
     .render();
 
+
+
+
+    // RENDERING SAVED QUERIES
+
+    // client.savedQueries().create('weekly-clicks-by-campaign', {
+    //   refresh_rate: 0,
+    //   query: {
+    //     analysis_type: 'count',
+    //     event_collection: 'clicks',
+    //     timeframe: 'this_12_months',
+    //     interval: 'weekly',
+    //     group_by: 'ad.campaign_id' //['ad.campaign_id', 'user.id']
+    //   }
+    // });
+
+    // var saved_query_chart = new Keen.Dataviz();
+
+    client.draw('total-clicks-this-12-months', document.getElementById('sq-metric'), {
+      height: 200,
+      chartOptions: {
+        gauge: {
+          min: 0,
+          max: 200
+        }
+      }
+    });
+    client.draw('total-clicks-by-campaign-this-12-months', document.getElementById('sq-grouped-metric'), {
+      height: 200
+    });
+
+    client.draw('weekly-clicks-this-12-months', document.getElementById('sq-interval'), {
+      height: 200
+    });
+
+    client.draw('weekly-clicks-by-campaign', document.getElementById('sq-grouped-interval'), {
+      height: 200
+    });
+
+    client.draw('total-clicks-by-campaign-by-user-id', document.getElementById('sq-double-grouped-metric'), {
+      height: 400,
+      chartType: 'bar',
+      chartOptions: {
+        legend: { show: false }
+      }
+    });
+
+    client.draw('weekly-clicks-by-campaign-by-user-id', document.getElementById('sq-double-grouped-interval'), {
+      height: 400,
+      chartOptions: {
+        legend: { show: false }
+      }
+    });
+
+    client.draw('export-last-10', document.getElementById('sq-extraction'), {
+      height: 200
+    });
+    client.draw('list-campaign-ids', document.getElementById('sq-list'), {
+      height: 200
+    });
+
+    // client.run('test-extraction-no-collection');
 
   </script>
 </body>

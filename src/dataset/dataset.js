@@ -8,12 +8,13 @@ var Emitter = require('../core/utils/emitter-shim');
 function Dataset(){
   this.data = {
     input: {},
-    output: [['index']]
+    output: [['Index']]
   };
   this.meta = {
     schema: {},
     method: undefined
   };
+  this.parser = undefined;
   // temp fwd
   if (arguments.length > 0) {
     this.parse.apply(this, arguments);
@@ -26,6 +27,8 @@ Dataset.defaults = {
 
 Emitter(Dataset);
 Emitter(Dataset.prototype);
+
+Dataset.parser = require('./utils/parsers')(Dataset);
 
 Dataset.prototype.input = function(obj){
   if (!arguments.length) return this["data"]["input"];

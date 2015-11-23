@@ -151,7 +151,6 @@ describe("Keen.Dataviz", function(){
             [ "Tuesday", 12 ],
             [ "Wednesday", 13 ]
           ]);
-          this.dataset.meta.schema = { records: "result", select: true };
           this.dataType("categorical");
         })
         .labelMapping({

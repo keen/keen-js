@@ -5,16 +5,19 @@ var Keen = require("../../../../src/core"),
 
 var each = require("../../../../src/core/utils/each");
 
-var data_extraction = require("./sample-data/extraction"),
-    data_extraction_uneven = require("./sample-data/extraction-uneven")
-    data_metric = require("./sample-data/metric"),
-    data_groupBy = require("./sample-data/groupBy"),
-    data_groupBy_boolean = require("./sample-data/groupBy-boolean"),
-    data_interval_double_groupBy = require("./sample-data/interval-double-groupBy"),
-    data_interval_groupBy_empties = require("./sample-data/interval-groupBy-empties"),
-    data_interval_groupBy_boolean = require("./sample-data/interval-groupBy-boolean"),
-    data_interval_groupBy_nulls = require("./sample-data/interval-groupBy-nulls"),
-    data_funnel = require("./sample-data/funnel");
+var data_extraction = require('./sample-data/extraction'),
+    data_extraction_uneven = require('./sample-data/extraction-uneven')
+    data_metric = require('./sample-data/metric'),
+    data_interval = require('./sample-data/interval'),
+    data_groupBy = require('./sample-data/groupBy'),
+    data_groupBy_boolean = require('./sample-data/groupBy-boolean'),
+    data_double_groupBy = require('./sample-data/double-groupBy'),
+    data_interval_double_groupBy = require('./sample-data/interval-double-groupBy'),
+    data_interval_groupBy_empties = require('./sample-data/interval-groupBy-empties'),
+    data_interval_groupBy_boolean = require('./sample-data/interval-groupBy-boolean'),
+    data_interval_groupBy_nulls = require('./sample-data/interval-groupBy-nulls'),
+    data_funnel = require('./sample-data/funnel'),
+    data_uniques = require('./sample-data/select-unique');
 
 describe("Keen.Dataset", function(){
 
@@ -32,9 +35,6 @@ describe("Keen.Dataset", function(){
     it("should return a new Keen.Dataset instance", function(){
       expect(this.ds).to.be.an.instanceof(Keen.Dataset);
     });
-    it("should have a schema hash with supplied properties", function(){
-      expect(this.ds.schema()).to.deep.equal({ records: "", select: true });
-    });
     it("should output the correct values", function(){
       expect(this.ds.output()).to.be.an("array")
         .and.to.be.of.length(2);
@@ -43,301 +43,6 @@ describe("Keen.Dataset", function(){
       expect(this.ds.output()[1][0]).to.eql("result");
       expect(this.ds.output()[1][1]).to.eql(23456);
     });
-  });
-
-  describe("#parse", function() {
-
-    it("metric.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_metric, {
-        records: "",
-        select: true
-      });
-
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql("label");
-      expect(dataset.output()[0][1]).to.eql("value");
-      expect(dataset.output()[1][0]).to.eql("result");
-      expect(dataset.output()[1][1]).to.eql(2450);
-    });
-
-    it("groupby.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_groupBy, {
-        records: "result",
-        select: true
-      });
-
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(56);
-      expect(dataset.output()[0]).to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql("page");
-      expect(dataset.output()[0][1]).to.eql("result");
-    });
-
-    it("groupBy-boolean.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_groupBy_boolean, {
-        records: "result",
-        select: [
-          {
-            path: "switch",
-            type: "string"
-          },
-          {
-            path: "result",
-            type: "number"
-          }
-        ]
-      });
-
-      dataset.sortRows("desc", dataset.sum, 1);
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(4);
-      expect(dataset.output()[1][0]).to.eql("true");
-      expect(dataset.output()[2][0]).to.eql("false");
-    });
-
-    it("interval-groupBy-empties.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_interval_groupBy_empties, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-          },
-          label: {
-            path: "value -> parsed_user_agent.os.family",
-            type: "string"
-          }
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(7);
-    });
-
-    it("interval-groupBy-boolean.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_interval_groupBy_boolean, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-          },
-          label: {
-            path: "value -> key",
-            type: "string"
-          }
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(7);
-    });
-
-    it("interval-groupBy-nulls.json", function(){
-      var dataset = new Keen.Dataset()
-      dataset.parse(data_interval_groupBy_nulls, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-            , replace: { null: 0 }
-          },
-          label: {
-            path: "value -> parsed_user_agent.os.family",
-            type: "string"
-            , replace: { null: "" }
-            //format: "lowercase"
-          }
-        }
-      });
-
-      dataset.sortColumns("desc", dataset.sum, 1);
-      dataset.sortRows("asc");
-
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(7);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("start");
-      expect(dataset.output()[0][1]).to.eql("");
-      expect(dataset.output()[0][2]).to.eql("Windows Vista");
-    });
-
-    it("extraction.json 1", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_extraction, {
-        records: "result",
-        select: [
-          {
-            path: "keen -> timestamp",
-            type: "date",
-            label: "Time"
-          },
-          {
-            path: "page",
-            type: "string",
-            label: "Page"
-          },
-          {
-            path: "referrer",
-            type: "string",
-            label: "Referrer"
-          }
-        ]
-      });
-
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(data_extraction.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("Time");
-      expect(dataset.output()[0][1]).to.eql("Page");
-      expect(dataset.output()[0][2]).to.eql("Referrer");
-    });
-
-    it("extraction.json 2", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_extraction, {
-        records: "result",
-        select: [
-          {
-            path: "keen -> timestamp",
-            type: "date"
-          },
-          {
-            path: "page",
-            type: "string"
-          },
-          {
-            path: "referrer",
-            type: "string",
-            prefix: "@",
-            suffix: "/mo"
-          }
-        ]
-      });
-
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(data_extraction.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-      expect(dataset.output()[0][1]).to.eql("page");
-      expect(dataset.output()[0][2]).to.eql("referrer");
-    });
-
-
-    it("extraction-uneven.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_extraction_uneven, {
-        records: "result",
-        select: [
-          {
-            path: "keen -> timestamp",
-            type: "date"
-          },
-          {
-            path: "page",
-            type: "string"
-          },
-          {
-            path: "key"
-          }
-        ]
-      });
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(data_extraction_uneven.result.length+1);
-    });
-
-
-    it("extraction-uneven.json SELECT ALL", function(){
-      var dataset = new Keen.Dataset().parse(data_extraction_uneven, {
-        records: "result",
-        select: true
-      });
-      dataset.sortRows("asc");
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(data_extraction_uneven.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(7);
-      expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-    });
-
-
-    it("funnel.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_funnel, {
-        records: "",
-        unpack: {
-          index: {
-            path: "steps -> event_collection",
-            type: "string",
-            label: "Event",
-            replace: {
-              "pageview": "Visit",
-              "signup": "Join",
-              "return-login": "Return",
-              "create-post": "Contrib",
-              "send-invite": "Invite"
-            }
-          },
-          value: {
-            path: "result -> ",
-            type: "number"
-          }
-        }
-      });
-      expect(dataset.output())
-        .to.be.an("array")
-        .and.to.be.of.length(6);
-      expect(dataset.output()[0][0]).to.eql("Event");
-      expect(dataset.output()[0][1]).to.eql("Value");
-      expect(dataset.output()[1][0]).to.be.eql("Visit");
-      expect(dataset.output()[1][1]).to.be.eql(42);
-    });
-
-
-    it("interval-double-groupBy.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.parse(data_interval_double_groupBy, {
-        records: "result",
-        unpack: {
-          index: {
-            path: "timeframe -> start",
-            type: "date"
-          },
-          value: {
-            path: "value -> result",
-            type: "number"
-          },
-          label: {
-            path: "value -> first.property",
-            type: "string",
-            replace: {}
-          }
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
-        .and.to.be.of.length(4);
-    });
-
   });
 
   describe("#input", function() {
@@ -378,39 +83,27 @@ describe("Keen.Dataset", function(){
     });
   });
 
-  describe("#schema", function() {
-    it("should set and get the parser schema", function(){
-      var schema = { records: "", select: true };
-      this.ds.schema(schema);
-      expect(this.ds.schema()).to.be.an("object")
-        .and.to.deep.equal(schema);
-    });
-    it("should unset the schema by passing null", function(){
-      this.ds.schema(null);
-      expect(this.ds.schema()).to.be.null;
-    });
-  });
 
   describe("Access Rows", function(){
 
     describe("#set", function(){
 
       it("should create a column and row when they don't already exist (integer)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set([1,1], 10);
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal([1, 10]);
       });
 
       it("should create a column and row when they don't already exist (string)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set(['A','Row'], 10);
         expect(this.ds.selectRow(1)).to.be.an("array")
           .and.to.deep.equal(["Row", 10]);
       });
 
       it("should create multiple columns and rows in the proper order (integers)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set([1,1], 10);
         this.ds.set([2,2], 10);
         this.ds.set([1,3], 10);
@@ -425,7 +118,7 @@ describe("Keen.Dataset", function(){
       });
 
       it("should create multiple columns and rows in the proper order (strings)", function(){
-        this.ds.output([['index']]);
+        this.ds.output([['Index']]);
         this.ds.set(['A','Row 1'], 10);
         this.ds.set(['B','Row 2'], 10);
         this.ds.set(['A','Row 3'], 10);
@@ -1131,205 +824,148 @@ describe("Keen.Dataset", function(){
   });
 
 
-  describe("Parsing with #set", function() {
+  describe('Parse with #set', function() {
 
-    it("metric.json", function(){
-      var dataset = new Keen.Dataset();
-      dataset.set(['value', 'result'], data_metric.result);
+    it('metric.json', function(){
+      var parser = Keen.Dataset.parser('metric');
+      var dataset = parser(data_metric);
 
       expect(dataset.output())
-        .to.be.an("array")
+        .to.be.an('array')
         .and.to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql("index");
-      expect(dataset.output()[0][1]).to.eql("value");
-      expect(dataset.output()[1][0]).to.eql("result");
+      expect(dataset.output()[0][0]).to.eql('Index');
+      expect(dataset.output()[0][1]).to.eql('Value');
+      expect(dataset.output()[1][0]).to.eql('Result');
       expect(dataset.output()[1][1]).to.eql(2450);
     });
 
-    it("groupby.json", function(){
-      var dataset = new Keen.Dataset();
-      each(data_groupBy.result, function(record, i){
-        dataset.set(['result', record.page], record.result);
-      });
+    it('interval.json (indexed by timeframe.end)', function(){
+      var parser = Keen.Dataset.parser('interval', 'timeframe.end');
+      var dataset = parser(data_interval);
 
-      expect(dataset.output()).to.be.an("array")
+      expect(dataset.output()).to.be.an('array')
+        .and.to.be.of.length(13);
+      expect(dataset.output()[0]).to.be.of.length(2);
+      expect(dataset.output()[0][0]).to.eql('Index');
+      expect(dataset.output()[0][1]).to.eql('Result');
+
+      // timeframe.end
+      expect(dataset.output()[1][0])
+        .to.eql('2015-01-01T00:00:00.000Z');
+    });
+
+    it('groupby.json', function(){
+      var dataset = Keen.Dataset.parser('grouped-metric')(data_groupBy);
+
+      expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(56);
       expect(dataset.output()[0]).to.be.of.length(2);
-      expect(dataset.output()[0][0]).to.eql("index");
-      expect(dataset.output()[0][1]).to.eql("result");
+      expect(dataset.output()[0][0]).to.eql('Index');
+      expect(dataset.output()[0][1]).to.eql('Result');
     });
 
-    it("groupBy-boolean.json", function(){
-      var dataset = new Keen.Dataset();
-      each(data_groupBy_boolean.result, function(record, i){
-        dataset.set([ 'result', String(record.switch) ], record.result);
-      });
+    it('groupBy-boolean.json', function(){
+      var dataset = Keen.Dataset.parser('grouped-metric')(data_groupBy_boolean);
+      dataset.sortRows('desc', dataset.sum, 1);
 
-      dataset.sortRows("desc", dataset.sum, 1);
-      expect(dataset.output()).to.be.an("array")
+      expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(4);
-      expect(dataset.output()[1][0]).to.eql("true");
-      expect(dataset.output()[2][0]).to.eql("false");
+      expect(dataset.output()[1][0]).to.eql('true');
+      expect(dataset.output()[2][0]).to.eql('false');
     });
 
-    it("interval-groupBy-empties.json", function(){
-      var dataset = new Keen.Dataset()
-      each(data_interval_groupBy_empties.result, function(record, i){
-        if (record.value.length) {
-          each(record.value, function(group, j){
-            dataset.set([ group['parsed_user_agent.os.family'] || '', record.timeframe.start ], group.result);
-          });
-        }
-        else {
-          dataset.appendRow(record.timeframe.start);
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
+    it('interval-groupBy-empties.json', function(){
+      var dataset = Keen.Dataset.parser('grouped-interval')(data_interval_groupBy_empties);
+      expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(7);
     });
 
-    it("interval-groupBy-boolean.json", function(){
-      var dataset = new Keen.Dataset();
-      each(data_interval_groupBy_boolean.result, function(record, i){
-        if (record.value.length) {
-          each(record.value, function(group, j){
-            dataset.set([ String(group.key) || '', record.timeframe.start ], group.result);
-          });
-        }
-        else {
-          dataset.appendRow(record.timeframe.start);
-        }
-      });
-      expect(dataset.output()).to.be.an("array")
+    it('interval-groupBy-boolean.json (indexed by timeframe.end)', function(){
+      var parser = Keen.Dataset.parser('grouped-interval', 'timeframe.end');
+      var dataset = parser(data_interval_groupBy_boolean);
+      expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(7);
+      expect(dataset.output()[1][0])
+        .to.eql('2013-11-01T07:00:00.000Z');
     });
 
-    it("interval-groupBy-nulls.json", function(){
-      var dataset = new Keen.Dataset()
-      each(data_interval_groupBy_nulls.result, function(record, i){
-        if (record.value.length) {
-          each(record.value, function(group, j){
-            dataset.set([ group['parsed_user_agent.os.family'] || '', record.timeframe.start ], group.result);
-          });
-        }
-        else {
-          dataset.appendRow(record.timeframe.start);
-        }
-      });
+    it('interval-groupBy-nulls.json', function(){
+      var dataset = Keen.Dataset.parser('grouped-interval')(data_interval_groupBy_nulls);
 
-      dataset.sortColumns("desc", dataset.sum, 1);
-      dataset.sortRows("asc");
+      dataset.sortColumns('desc', dataset.sum, 1);
+      dataset.sortRows('asc');
 
-      expect(dataset.output()).to.be.an("array")
+      expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(7);
       expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("index");
-      expect(dataset.output()[0][1]).to.eql("");
-      expect(dataset.output()[0][2]).to.eql("Windows Vista");
+      expect(dataset.output()[0][0]).to.eql('Index');
+      expect(dataset.output()[0][1]).to.eql('');
+      expect(dataset.output()[0][2]).to.eql('Windows Vista');
     });
 
-    it("extraction.json 1", function(){
-      var dataset = new Keen.Dataset();
-      each(data_extraction.result, function(record, i){
-        dataset
-          .set( [ 'Time', i+1 ], record.keen.timestamp )
-          .set( [ 'Page', i+1 ], record.page )
-          .set( [ 'Referrer', i+1 ], record.referrer )
-        // each(record.keen, function(value, key){
-        //   dataset.set([ key, i+1 ], value);
-        // });
-        // each(record, function(value, key){
-        //   if (key === 'keen') return;
-        //   dataset.set([ key, i+1 ], value);
-        // });
-      });
-      dataset.deleteColumn(0);
+    it('extraction.json 1', function(){
+      var dataset = Keen.Dataset.parser('extraction')(data_extraction);
 
       expect(dataset.output())
-        .to.be.an("array")
+        .to.be.an('array')
         .and.to.be.of.length(data_extraction.result.length+1);
-      expect(dataset.output()[0]).to.be.of.length(3);
-      expect(dataset.output()[0][0]).to.eql("Time");
-      expect(dataset.output()[0][1]).to.eql("Page");
-      expect(dataset.output()[0][2]).to.eql("Referrer");
+      expect(dataset.output()[0]).to.be.of.length(7);
+      expect(dataset.output()[0][0]).to.eql('keen.timestamp');
+      expect(dataset.output()[0][1]).to.eql('keen.created_at');
+      expect(dataset.output()[0][2]).to.eql('keen.id');
     });
 
-    // it("extraction.json 2", function(){
-    //   var dataset = new Keen.Dataset();
-    //   each(data_extraction.result, function(record, i){
-    //     dataset
-    //       .set( [ 'keen.timestamp', i+1 ], record.keen.timestamp )
-    //       .set( [ 'page', i+1 ], record.page )
-    //       .set( [ 'referrer', i+1 ], record.referrer )
-    //   });
-    //   dataset.deleteColumn(0);
-    //
-    //   expect(dataset.output()).to.be.an("array")
-    //     .and.to.be.of.length(data_extraction.result.length+1);
-    //   expect(dataset.output()[0]).to.be.of.length(3);
-    //   expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-    //   expect(dataset.output()[0][1]).to.eql("page");
-    //   expect(dataset.output()[0][2]).to.eql("referrer");
-    // });
-
-
-    it("extraction-uneven.json", function(){
-      var dataset = new Keen.Dataset();
-      each(data_extraction_uneven.result, function(record, i){
-        dataset
-          .set( [ 'keen.timestamp', i+1 ], (record.keen ? record.keen.timestamp : null ) )
-          .set( [ 'page', i+1 ], record.page || null )
-          .set( [ 'key', i+1 ], record.key || null )
-      });
-      dataset.deleteColumn(0);
+    it('extraction-uneven.json', function(){
+      var dataset = Keen.Dataset.parser('extraction')(data_extraction_uneven);
 
       expect(dataset.output())
-        .to.be.an("array")
+        .to.be.an('array')
         .and.to.be.of.length(data_extraction_uneven.result.length+1);
     });
 
-
-    // it("extraction-uneven.json SELECT ALL", function(){
-    //   var dataset = new Keen.Dataset().parse(data_extraction_uneven, {
-    //     records: "result",
-    //     select: true
-    //   });
-    //   dataset.sortRows("asc");
-    //   expect(dataset.output())
-    //     .to.be.an("array")
-    //     .and.to.be.of.length(data_extraction_uneven.result.length+1);
-    //   expect(dataset.output()[0]).to.be.of.length(7);
-    //   expect(dataset.output()[0][0]).to.eql("keen.timestamp");
-    // });
-
-
-    it("funnel.json", function(){
-      var dataset = new Keen.Dataset();
-      each(data_funnel.result, function(record, i){
-        dataset.set( [ 'step', data_funnel.steps[i].event_collection ], record );
-      });
+    it('funnel.json', function(){
+      var dataset = Keen.Dataset.parser('funnel')(data_funnel);
 
       expect(dataset.output())
-        .to.be.an("array")
+        .to.be.an('array')
         .and.to.be.of.length(6);
-      expect(dataset.output()[0][0]).to.eql("index");
-      expect(dataset.output()[0][1]).to.eql("step");
-      expect(dataset.output()[1][0]).to.be.eql("pageview");
+      expect(dataset.output()[0][0]).to.eql('Index');
+      expect(dataset.output()[0][1]).to.eql('Step Value');
+      expect(dataset.output()[1][0]).to.be.eql('pageview');
       expect(dataset.output()[1][1]).to.be.eql(42);
     });
 
+    it('double-groupBy.json', function(){
+      var parser = Keen.Dataset.parser('double-grouped-metric', [
+        'session.geo_information.city',
+        'session.geo_information.province' ]);
+      var dataset = parser(data_double_groupBy);
 
-    it("interval-double-groupBy.json", function(){
-      var dataset = new Keen.Dataset();
-      each(data_interval_double_groupBy.result, function(record, i){
-        each(record.value, function(group, j){
-          var label = group["first.property"] + " " + group["second.property"];
-          dataset.set( [ label, record.timeframe.start ], group.result );
-        });
-      });
+      expect(dataset.output()).to.be.an('array')
+        .and.to.be.of.length(118);
+      expect(dataset.output()[0])
+        .to.be.of.length(193);
+    });
 
-      expect(dataset.output()).to.be.an("array")
+    it('interval-double-groupBy.json (indexed by timeframe.end)', function(){
+      var parser = Keen.Dataset.parser('double-grouped-interval', [
+        'first.property',
+        'second.property' ], 'timeframe.end');
+      var dataset = parser(data_interval_double_groupBy);
+
+      expect(dataset.output()).to.be.an('array')
         .and.to.be.of.length(4);
+      expect(dataset.output()[0]).to.be.an('array')
+        .and.to.be.of.length(5);
+      expect(dataset.selectColumn(0)[1]).to.be.a('string')
+        .and.to.eql('2014-04-23T07:00:00.000Z');
+    });
+
+    it('select-unique.json', function(){
+      var dataset = Keen.Dataset.parser('list')(data_uniques);
+
+      expect(dataset.output()).to.be.an('array')
+        .and.to.be.of.length(60);
     });
 
   });
