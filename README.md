@@ -22,7 +22,7 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
 
 ```ssh
 # via npm
-# Please see this [issue thread for versioning information](https://github.com/keen/keen-js/issues/355#issuecomment-156231882).
+# Please see https://github.com/keen/keen-js/issues/355#issuecomment-156231882
 $ npm install keen-js
 
 # or bower
