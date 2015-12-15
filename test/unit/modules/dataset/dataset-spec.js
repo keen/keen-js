@@ -942,9 +942,9 @@ describe("Keen.Dataset", function(){
       var dataset = parser(data_double_groupBy);
 
       expect(dataset.output()).to.be.an('array')
-        .and.to.be.of.length(118);
+        .and.to.be.of.length(194);
       expect(dataset.output()[0])
-        .to.be.of.length(193);
+        .to.be.of.length(2);
     });
 
     it('interval-double-groupBy.json (indexed by timeframe.end)', function(){

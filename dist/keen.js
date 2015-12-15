@@ -4158,7 +4158,7 @@ function parseDoubleGroupedMetric(){
   return function(res){
     var dataset = new Dataset();
     each(res.result, function(record, i){
-      dataset.set([ record[options[0][0]], record[options[0][1]] ], record.result);
+      dataset.set([ 'Result', record[options[0][0]] + ' ' + record[options[0][1]] ], record.result);
     });
     dataset.data.input = res;
     dataset.parser = {
@@ -5377,12 +5377,22 @@ module.exports = function(str){
 };
 },{}],83:[function(require,module,exports){
 var Dataset = require('../../dataset');
+var extend = require('../../core/utils/extend');
 module.exports = function(response){
   var dataType,
       indexBy = this.indexBy() ? this.indexBy() : 'timestamp.start',
       parser,
       parserArgs = [],
       query = (typeof response.query !== 'undefined') ? response.query : {};
+  query = extend({
+    analysis_type: null,
+    event_collection: null,
+    filters: [],
+    group_by: null,
+    interval: null,
+    timeframe: null,
+    timezone: null
+  }, query);
   if (query.analysis_type === 'funnel') {
     dataType = 'cat-ordinal';
     parser = 'funnel';
@@ -5477,25 +5487,30 @@ module.exports = function(response){
   }
   return this;
 };
-},{"../../dataset":37}],84:[function(require,module,exports){
-var getDefaultTitle = require('../helpers/getDefaultTitle'),
+},{"../../core/utils/extend":31,"../../dataset":37}],84:[function(require,module,exports){
+var Query = require('../../core/query');
+var dataType = require('./dataType'),
+    extend = require('../../core/utils/extend'),
+    getDefaultTitle = require('../helpers/getDefaultTitle'),
     getQueryDataType = require('../helpers/getQueryDataType'),
     parseRawData = require('./parseRawData'),
-    Query = require('../../core/query');
+    title = require('./title');
 module.exports = function(req){
-  var dataType;
+  var response = req.data instanceof Array ? req.data[0] : req.data;
   if (req.queries[0] instanceof Query) {
-    dataType = getQueryDataType(req.queries[0]);
-    this.dataType(dataType);
+    response.query = extend({
+      analysis_type: req.queries[0].analysis
+    }, req.queries[0].params);
+    dataType.call(this, getQueryDataType(req.queries[0]));
     this.view.defaults.title = getDefaultTitle.call(this, req);
-    if (!this.title()) {
-      this.title(this.view.defaults.title);
+    if (!title.call(this)) {
+      title.call(this, this.view.defaults.title);
     }
   }
-  parseRawData.call(this, req.data instanceof Array ? req.data[0] : req.data);
+  parseRawData.call(this, response);
   return this;
 };
-},{"../../core/query":24,"../helpers/getDefaultTitle":59,"../helpers/getQueryDataType":60,"./parseRawData":83}],85:[function(require,module,exports){
+},{"../../core/query":24,"../../core/utils/extend":31,"../helpers/getDefaultTitle":59,"../helpers/getQueryDataType":60,"./dataType":75,"./parseRawData":83,"./title":89}],85:[function(require,module,exports){
 var Dataviz = require("../dataviz");
 module.exports = function(){
   var loader;

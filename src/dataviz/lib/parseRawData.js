@@ -1,4 +1,5 @@
 var Dataset = require('../../dataset');
+var extend = require('../../core/utils/extend');
 
 module.exports = function(response){
   var dataType,
@@ -6,6 +7,17 @@ module.exports = function(response){
       parser,
       parserArgs = [],
       query = (typeof response.query !== 'undefined') ? response.query : {};
+
+  // Ensure all required params are present
+  query = extend({
+    analysis_type: null,
+    event_collection: null,
+    filters: [],
+    group_by: null,
+    interval: null,
+    timeframe: null,
+    timezone: null
+  }, query);
 
   if (query.analysis_type === 'funnel') {
     dataType = 'cat-ordinal';

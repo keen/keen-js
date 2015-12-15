@@ -1,21 +1,30 @@
-var getDefaultTitle = require('../helpers/getDefaultTitle'),
+var Query = require('../../core/query');
+var dataType = require('./dataType'),
+    extend = require('../../core/utils/extend'),
+    getDefaultTitle = require('../helpers/getDefaultTitle'),
     getQueryDataType = require('../helpers/getQueryDataType'),
     parseRawData = require('./parseRawData'),
-    Query = require('../../core/query');
+    title = require('./title');
 
 module.exports = function(req){
-  var dataType;
+  var response = req.data instanceof Array ? req.data[0] : req.data;
   if (req.queries[0] instanceof Query) {
-    dataType = getQueryDataType(req.queries[0]);
-    this.dataType(dataType);
+
+    // Include query body (Saved Query response structure)
+    response.query = extend({
+      analysis_type: req.queries[0].analysis
+    }, req.queries[0].params);
+
+    // Infer and set dataType
+    dataType.call(this, getQueryDataType(req.queries[0]));
     // Update the default title every time
     this.view.defaults.title = getDefaultTitle.call(this, req);
     // Update the active title if not set
-    if (!this.title()) {
-      this.title(this.view.defaults.title);
+    if (!title.call(this)) {
+      title.call(this, this.view.defaults.title);
     }
   }
 
-  parseRawData.call(this, req.data instanceof Array ? req.data[0] : req.data);
+  parseRawData.call(this, response);
   return this;
 };

@@ -122,7 +122,7 @@ function parseDoubleGroupedMetric(){
   return function(res){
     var dataset = new Dataset();
     each(res.result, function(record, i){
-      dataset.set([ record[options[0][0]], record[options[0][1]] ], record.result);
+      dataset.set([ 'Result', record[options[0][0]] + ' ' + record[options[0][1]] ], record.result);
     });
     dataset.data.input = res;
     dataset.parser = {

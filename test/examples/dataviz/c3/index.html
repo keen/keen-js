@@ -119,6 +119,34 @@
     </div>
     <hr>
 
+    <h2>Multi-group_by (auto-viz)</h2>
+    <div class='row'>
+      <div class='col-sm-4'>
+        <div id='c3-bar-multigroupby'></div>
+      </div>
+      <div class='col-sm-4'>
+        <div id='c3-line-multigroupby'></div>
+      </div>
+      <div class='col-sm-4'>
+        <div id='c3-area-multigroupby'></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Multi-group_by-interval (auto-viz)</h2>
+    <div class='row'>
+      <div class='col-sm-4'>
+        <div id='c3-line-multigroupby-interval'></div>
+      </div>
+      <div class='col-sm-4'>
+        <div id='c3-area-multigroupby-interval'></div>
+      </div>
+      <div class='col-sm-4'>
+        <div id='c3-step-multigroupby-interval'></div>
+      </div>
+    </div>
+    <hr>
+
     <h2>Saved Queries (auto-viz)</h2>
     <div class='row'>
       <div class='col-sm-6'>
@@ -196,6 +224,19 @@
     interval: 'monthly'
   });
 
+  var multigroupby = new Keen.Query('count', {
+    event_collection: 'pageviews',
+    group_by: ['user.device_info.browser.family', 'user.device_info.browser.major'],
+    timeframe: 'this_12_months'
+  });
+
+  var multigroupbyinterval = new Keen.Query('count', {
+    event_collection: 'pageviews',
+    group_by: ['user.device_info.browser.family', 'user.device_info.browser.major'],
+    timeframe: 'this_12_months',
+    interval: 'monthly'
+  });
+
   var labelMap = {
     'Firefox': 'FF',
     'Mobile Safari': 'iPhone'
@@ -203,6 +244,8 @@
 
   var reqInterval = client.run(interval);
   var reqMultiline = client.run(multiline);
+  var reqMultigroupby = client.run(multigroupby);
+  var reqMultigroupbyinterval = client.run(multigroupbyinterval);
 
   // Not required w/ synchronous loading
   // Keen.ready(function(){});
@@ -453,6 +496,87 @@
       ]
     })
     .render();
+
+    // RENDERING MULTI_GROUPBY
+
+    var c3bar_multigroupby = client.draw(multigroupby, document.getElementById('c3-bar-multigroupby'), {
+      library: 'c3',
+      chartType: 'bar', // 'donut'
+      stacked: true,
+      chartOptions: {
+        axis: {
+          rotated: true,
+          x: {
+            type: 'category',
+            categories: ['Chrome 19', 'Firefox 11', 'IE 9', 'Mobile Safari 5']
+          }
+        }
+      }
+    });
+
+    var c3line_multigroupby = new Keen.Dataviz()
+      .el(document.getElementById('c3-line-multigroupby'))
+      .library('c3')
+      .chartType('line')
+      .stacked(true)
+      .prepare();
+
+    var c3area_multigroupby = new Keen.Dataviz()
+      .el(document.getElementById('c3-area-multigroupby'))
+      .library('c3')
+      .chartType('area')
+      .stacked(true)
+      .prepare();
+
+    reqMultigroupby.on('complete', function(err, res){
+      // console.log(res.result);
+      // Process request
+      c3line_multigroupby.parseRequest(this).render();
+      // .call(function(){
+      //   console.log(this.data());
+      // });
+      // Manually include query
+      res.query = multigroupby.params;
+      res.query.analysis_type = 'count';
+      c3area_multigroupby.parseRawData(res).render();
+    });
+
+
+
+    // RENDERING MULTI-GROUPBY + INTERVAL
+
+    var c3line_multigroupby_interval = client.draw(multigroupbyinterval, document.getElementById('c3-line-multigroupby-interval'), {
+      library: 'c3',
+      chartType: 'line',
+      stacked: true
+    });
+
+    var c3area_multigroupby_interval = new Keen.Dataviz()
+      .el(document.getElementById('c3-area-multigroupby-interval'))
+      .library('c3')
+      .chartType('area')
+      .stacked(true)
+      .prepare();
+
+    var c3step_multigroupby_interval = new Keen.Dataviz()
+      .el(document.getElementById('c3-step-multigroupby-interval'))
+      .library('c3')
+      .chartType('step')
+      .stacked(true)
+      .prepare();
+
+    reqMultigroupbyinterval.on('complete', function(err, res){
+      // console.log(res.result);
+      // Process request
+      c3area_multigroupby_interval.parseRequest(this).render();
+      // .call(function(){
+      //   console.log(this.data());
+      // });
+      // Manually include query
+      res.query = multigroupbyinterval.params;
+      res.query.analysis_type = 'count';
+      c3step_multigroupby_interval.parseRawData(res).render();
+    });
 
 
 

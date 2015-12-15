@@ -119,7 +119,7 @@ gulp.task('test-with-sauce', ['build', 'test:prepare'], function(){
     logColors: true,
     reporters: [ 'saucelabs' ],
     sauceLabs: {
-      testName: moment().format('ddd, MMM Do, h:mm:ss a'),
+      testName: pkg.name + moment().format(': ddd, MMM Do, h:mm:ss a'),
       recordScreenshots: false,
       recordVideo: false
     },
