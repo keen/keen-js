@@ -1,6 +1,8 @@
 # Keen IO JavaScript SDK (v3.3.0)
 
 **Important:** v3.2.0 introduced several breaking changes from previous versions. Check out the [Changelog](./CHANGELOG.md#3.2.0) before upgrading.
+**Important:** Several of our versions have been dropped from npm and are unable to be republished.
+Please see this [issue thread for more information](https://github.com/keen/keen-js/issues/355#issuecomment-156231882).
 
 <!--
 [![Build Status](https://api.travis-ci.org/keen/keen-js.png?branch=master)](https://travis-ci.org/keen/keen-js) [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
@@ -20,6 +22,7 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
 
 ```ssh
 # via npm
+# Please see https://github.com/keen/keen-js/issues/355#issuecomment-156231882
 $ npm install keen-js
 
 # or bower

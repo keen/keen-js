@@ -1,5 +1,7 @@
 # Installation
 
+**Important:** Several of our versions have been dropped from npm and are unable to be republished.
+Please see this [issue thread for more information](https://github.com/keen/keen-js/issues/355#issuecomment-156231882).
 
 ```ssh
 # via npm
