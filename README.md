@@ -1,5 +1,9 @@
 # Keen IO JavaScript SDK (v3.4.0-rc)
 
+<!--
+[![Build Status](https://api.travis-ci.org/keen/keen-js.png?branch=master)](https://travis-ci.org/keen/keen-js) [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
+-->
+
 ## Documentation
 
 Docs have been moved into the master branch, so they stay in sync with each release. Check out the latest [here](./docs).
@@ -14,6 +18,7 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
 
 ```ssh
 # via npm
+# Please see https://github.com/keen/keen-js/issues/355#issuecomment-156231882
 $ npm install keen-js
 
 # or bower
