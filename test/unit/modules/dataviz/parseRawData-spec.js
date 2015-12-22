@@ -54,7 +54,11 @@ describe('Keen.DataTypeParser', function(){
         'result': [
           { 'user.email': 'user1@keen.io', 'result': 39 },
           { 'user.email': 'user2@keen.io', 'result': 27 }
-        ]
+        ],
+        query: {
+          'analysis_type': 'count',
+          'group_by': ['user.email']
+        }
       };
 
       this.dataviz.parseRawData(response);
@@ -119,7 +123,12 @@ describe('Keen.DataTypeParser', function(){
             { 'user.email': 'kirk@keen.io', 'result': 1 }
           ]
         }
-      ]
+      ],
+      'query': {
+        'analysis_type': 'count',
+        'group_by': ['user.email'],
+        'interval': 'daily'
+      }
     };
 
     this.dataviz.parseRawData(response);

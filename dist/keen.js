@@ -2472,7 +2472,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.0-rc2';
+Keen.version = '3.4.0-rc3';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -5413,14 +5413,14 @@ module.exports = function(response){
       parser = 'metric';
     }
     else if (query.group_by && !query.interval) {
-      if (typeof query.group_by === 'string') {
-        dataType = 'categorical';
-        parser = 'grouped-metric';
-      }
-      else {
+      if (query.group_by instanceof Array && query.group_by.length > 1) {
         dataType = 'categorical';
         parser = 'double-grouped-metric';
         parserArgs.push(query.group_by);
+      }
+      else {
+        dataType = 'categorical';
+        parser = 'grouped-metric';
       }
     }
     else if (query.interval && !query.group_by) {
@@ -5429,15 +5429,15 @@ module.exports = function(response){
       parserArgs.push(indexBy);
     }
     else if (query.group_by && query.interval) {
-      if (typeof query.group_by === 'string') {
+      if (query.group_by instanceof Array && query.group_by.length > 1) {
         dataType = 'cat-chronological';
-        parser = 'grouped-interval';
+        parser = 'double-grouped-interval';
+        parserArgs.push(query.group_by);
         parserArgs.push(indexBy);
       }
       else {
         dataType = 'cat-chronological';
-        parser = 'double-grouped-interval';
-        parserArgs.push(query.group_by);
+        parser = 'grouped-interval';
         parserArgs.push(indexBy);
       }
     }
