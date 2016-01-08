@@ -2,7 +2,7 @@ var request = require('superagent');
 var responseHandler = require('../helpers/superagent-handle-response');
 
 module.exports = function(path, params, callback){
-  request
+  return request
     .get(this.client.url(path))
     .set('Content-Type', 'application/json')
     .set('Authorization', this.client.readKey())
@@ -12,6 +12,4 @@ module.exports = function(path, params, callback){
       responseHandler(err, res, callback);
       callback = null;
     });
-
-  return;
 }

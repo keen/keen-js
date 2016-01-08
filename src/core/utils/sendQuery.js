@@ -18,19 +18,15 @@ module.exports = function(path, params, callback){
   }
 
   if (getXHR() || getContext() === 'server' ) {
-    request
+    return request
       .post(url)
         .set('Content-Type', 'application/json')
         .set('Authorization', this.client.readKey())
         .timeout(this.timeout())
         .send(params || {})
-        .end(handleResponse);
+        .end(function handleResponse(err, res){
+          responseHandler(err, res, callback);
+          callback = null;
+        });
   }
-
-  function handleResponse(err, res){
-    responseHandler(err, res, callback);
-    callback = null;
-  }
-
-  return;
 }

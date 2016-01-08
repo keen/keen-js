@@ -14,6 +14,7 @@ function Request(client, queries, callback){
   };
   this.configure(client, queries, cb);
   cb = callback = null;
+  this.activeQueries = [];
 };
 Emitter(Request.prototype);
 
@@ -34,6 +35,15 @@ Request.prototype.timeout = function(ms){
   this.config.timeout = (!isNaN(parseInt(ms)) ? parseInt(ms) : null);
   return this;
 };
+
+// Abort all remaining requests
+Request.prototype.abort = function(){
+  for(var n = 0; n < this.activeQueries.length; n++) {
+    this.activeQueries[n].abort();
+  }
+  this.activeQueries = [];
+  return this;
+}
 
 Request.prototype.refresh = function(){
   var self = this,
@@ -62,6 +72,7 @@ Request.prototype.refresh = function(){
         self.callback(null, self.data);
       }
     }
+    self.activeQueries.splice(index, 1);
   };
 
   each(self.queries, function(query, index){
@@ -72,16 +83,16 @@ Request.prototype.refresh = function(){
 
     if (typeof query === 'string') {
       path += '/saved/' + query + '/result';
-      sendSavedQuery.call(self, path, {}, cbSequencer);
+      self.activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
     }
     else if (query instanceof Query) {
       path += '/' + query.analysis;
       if (query.analysis === 'saved') {
         path += '/' + query.params.query_name + '/result';
-        sendSavedQuery.call(self, path, {}, cbSequencer);
+        self.activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
       }
       else {
-        sendQuery.call(self, path, query.params, cbSequencer);
+        self.activeQueries[index] = sendQuery.call(self, path, query.params, cbSequencer);
       }
     }
     else {
