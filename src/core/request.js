@@ -14,7 +14,8 @@ function Request(client, queries, callback){
   };
   this.configure(client, queries, cb);
   cb = callback = null;
-  this.activeQueries = [];
+  this._activeQueries = [];
+  this._isAborted = false;
 };
 Emitter(Request.prototype);
 
@@ -38,10 +39,11 @@ Request.prototype.timeout = function(ms){
 
 // Abort all remaining requests
 Request.prototype.abort = function(){
-  for(var n = 0; n < this.activeQueries.length; n++) {
-    this.activeQueries[n].abort();
-  }
-  this.activeQueries = [];
+  this._isAborted = true;
+  this._activeQueries.forEach(function(query) {
+    query.abort();
+  });
+  this._activeQueries = [];
   return this;
 }
 
@@ -50,9 +52,10 @@ Request.prototype.refresh = function(){
       completions = 0,
       response = [],
       errored = false;
+  this._isAborted = false;
 
   var handleResponse = function(err, res, index){
-    if (errored) {
+    if (errored || self._isAborted) {
       return;
     }
     if (err) {
@@ -72,7 +75,7 @@ Request.prototype.refresh = function(){
         self.callback(null, self.data);
       }
     }
-    self.activeQueries.splice(index, 1);
+    self._activeQueries.splice(index, 1);
   };
 
   each(self.queries, function(query, index){
@@ -83,16 +86,16 @@ Request.prototype.refresh = function(){
 
     if (typeof query === 'string') {
       path += '/saved/' + query + '/result';
-      self.activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
+      self._activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
     }
     else if (query instanceof Query) {
       path += '/' + query.analysis;
       if (query.analysis === 'saved') {
         path += '/' + query.params.query_name + '/result';
-        self.activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
+        self._activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
       }
       else {
-        self.activeQueries[index] = sendQuery.call(self, path, query.params, cbSequencer);
+        self._activeQueries[index] = sendQuery.call(self, path, query.params, cbSequencer);
       }
     }
     else {
