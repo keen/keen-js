@@ -17,11 +17,12 @@ module.exports = function(){
   var dataTypes = {
     // dataType            : // chartTypes
     //"singular"             : [],
-    "categorical"          : ["doughnut", "pie", "polar-area", "radar"],
+    "cat-numeric"          : ["doughnut", "pie", "polar-area", "radar"],
     "cat-interval"         : ["bar", "line"],
     "cat-ordinal"          : ["bar", "line"],
     "chronological"        : ["line", "bar"],
     "cat-chronological"    : ["line", "bar"]
+    // "categorical"       : [],
     // "nominal"           : [],
     // "extraction"        : []
   };

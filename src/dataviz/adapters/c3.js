@@ -27,11 +27,12 @@ module.exports = function(){
   var dataTypes = {
     // dataType            : // chartTypes
     'singular'             : ['gauge'],
-    'categorical'          : ['donut', 'pie'],
+    'cat-numeric'          : ['donut', 'pie'],
     'cat-interval'         : ['area-step', 'step', 'bar', 'area', 'area-spline', 'spline', 'line'],
     'cat-ordinal'          : ['bar', 'area', 'area-spline', 'spline', 'line', 'step', 'area-step'],
     'chronological'        : ['area', 'area-spline', 'spline', 'line', 'bar', 'step', 'area-step'],
     'cat-chronological'    : ['line', 'spline', 'area', 'area-spline', 'bar', 'step', 'area-step']
+    // 'categorical'       : [],
     // 'nominal'           : [],
     // 'extraction'        : []
   };

@@ -40,13 +40,17 @@ module.exports = function(response){
       parser = 'metric';
     }
     else if (query.group_by && !query.interval) {
-      if (query.group_by instanceof Array && query.group_by.length > 1) {
+      if (response.result && typeof response.result[0].result === "number") {
+        dataType = 'cat-numeric';
+      }
+      else {
         dataType = 'categorical';
+      }
+      if (query.group_by instanceof Array && query.group_by.length > 1) {
         parser = 'double-grouped-metric';
         parserArgs.push(query.group_by);
       }
       else {
-        dataType = 'categorical';
         parser = 'grouped-metric';
       }
     }
@@ -94,7 +98,7 @@ module.exports = function(response){
       // Static GroupBy
       // -------------------------------
       if (typeof response.result[0].result == 'number'){
-        dataType = 'categorical';
+        dataType = 'cat-numeric';
         parser = 'grouped-metric';
       }
 

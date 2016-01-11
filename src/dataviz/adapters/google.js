@@ -33,12 +33,13 @@ module.exports = function(){
   var dataTypes = {
     // dataType           // chartTypes (namespace)
     // 'singular':        null,
-    'categorical':        ['piechart', 'barchart', 'columnchart', 'table'],
     'cat-interval':       ['columnchart', 'barchart', 'table'],
     'cat-ordinal':        ['barchart', 'columnchart', 'areachart', 'linechart', 'table'],
     'chronological':      ['areachart', 'linechart', 'table'],
     'cat-chronological':  ['linechart', 'columnchart', 'barchart', 'areachart'],
+    'cat-numeric':        ['piechart', 'barchart', 'columnchart', 'table'],
     'nominal':            ['table'],
+    'categorical':        ['table'],
     'extraction':         ['table']
   };
 

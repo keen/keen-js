@@ -63,13 +63,48 @@ describe('Keen.DataTypeParser', function(){
 
       this.dataviz.parseRawData(response);
 
-      expect(this.dataviz.dataType()).to.equal('categorical');
+      expect(this.dataviz.dataType()).to.equal('cat-numeric');
 
       expect(this.dataviz.dataset.output()).to.deep.equal([
         ['Index', 'Result'],
         ['user1@keen.io', 39],
         ['user2@keen.io', 27]
       ]);
+    });
+
+    it('parses grouped-metric with numeric result', function() {
+      var response = {
+        result: [
+          { index: "index1", result: 0 },
+          { index: "index2", result: 1 },
+          { index: "index3", result: 2 },
+          { index: "index4", result: 3 },
+        ]
+      };
+
+      this.dataviz.parseRawData(response);
+
+      expect(this.dataviz.dataType()).to.equal('cat-numeric');
+    });
+
+    it('parses grouped-metric with string results', function() {
+      var response = {
+        result: [
+          { index: "index1", result: "0" },
+          { index: "index2", result: "1" },
+          { index: "index3", result: "2" },
+          { index: "index4", result: "3" },
+        ],
+        query: {
+          'analysis_type': 'maximum',
+          'group_by': ['user.email'],
+          'target_property': 'index'
+        }
+      };
+
+      this.dataviz.parseRawData(response);
+
+      expect(this.dataviz.dataType()).to.equal('categorical');
     });
   });
 
