@@ -99,7 +99,7 @@ function parseGroupedInterval(){
               label = key;
             }
           });
-          dataset.set([ group[label] || '', index ], group.result);
+          dataset.set([ String(group[label]) || '', index ], group.result);
         });
       }
       else {
