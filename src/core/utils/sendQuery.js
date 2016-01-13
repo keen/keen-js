@@ -17,7 +17,7 @@ module.exports = function(path, params, callback){
     return;
   }
 
-  if (getXHR() || getContext() === 'server' ) {
+  if (getContext() === 'server' || getXHR()) {
     request
       .post(url)
         .set('Content-Type', 'application/json')
