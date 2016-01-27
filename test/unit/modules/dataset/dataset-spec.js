@@ -899,7 +899,7 @@ describe("Keen.Dataset", function(){
         .and.to.be.of.length(7);
       expect(dataset.output()[0]).to.be.of.length(3);
       expect(dataset.output()[0][0]).to.eql('Index');
-      expect(dataset.output()[0][1]).to.eql('');
+      expect(dataset.output()[0][1]).to.eql('null');
       expect(dataset.output()[0][2]).to.eql('Windows Vista');
     });
 

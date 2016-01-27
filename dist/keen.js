@@ -802,7 +802,7 @@ Emitter.prototype.hasListeners = function(event){
  */
 ;(function (root, factory) {
   /* CommonJS */
-  if (typeof exports == 'object') module.exports = factory()
+  if (typeof module == 'object' && module.exports) module.exports = factory()
   /* AMD module */
   else if (typeof define == 'function' && define.amd) define(factory)
   /* Browser global */
@@ -2472,7 +2472,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.0-rc3';
+Keen.version = '3.4.0-rc4';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -4137,7 +4137,7 @@ function parseGroupedInterval(){
               label = key;
             }
           });
-          dataset.set([ group[label] || '', index ], group.result);
+          dataset.set([ String(group[label]) || '', index ], group.result);
         });
       }
       else {
