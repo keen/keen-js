@@ -73,9 +73,12 @@ module.exports = function(){
         options['isStacked'] = (this.stacked() || options['isStacked']);
 
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
-        if (options.dateFormatter) {
-          options.dateFormatter.format(this.view._artifacts['datatable'], 0);
-          delete options.dateFormatter;
+        if (options.formatters) {
+          var self = this;
+          options.formatters.forEach(function(f) {
+            f.formatter.format(self.view._artifacts['datatable'], f.columnIndex);
+          });
+          delete options.formatters;
         }
         // if (this.view._artifacts['datatable']) {}
         if (this.view._artifacts['googlechart']) {
