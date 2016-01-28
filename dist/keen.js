@@ -4543,6 +4543,10 @@ module.exports = function(){
         extend(options, this.chartOptions(), this.attributes());
         options['isStacked'] = (this.stacked() || options['isStacked']);
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
+        if (options.dateFormatter) {
+          options.dateFormatter.format(this.view._artifacts['datatable'], 0);
+          delete options.dateFormatter;
+        }
         if (this.view._artifacts['googlechart']) {
           this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
         }
