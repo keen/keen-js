@@ -207,33 +207,48 @@
 
   var count = new Keen.Query('count', {
     eventCollection: 'pageviews',
-    timeframe: 'this_12_months',
+    timeframe: {
+      start: '2015-01-01',
+      end: '2015-05-01'
+    },
     groupBy: 'user.device_info.browser.family'
   })
 
   var interval = new Keen.Query('count', {
     eventCollection: 'pageviews',
-    timeframe: 'this_12_months',
+    timeframe: {
+      start: '2015-01-01',
+      end: '2015-05-01'
+    },
     interval: 'monthly'
   });
 
   var multiline = new Keen.Query('count', {
     event_collection: 'pageviews',
     group_by: 'user.device_info.browser.family',
-    timeframe: 'this_12_months',
+    timeframe: {
+      start: '2015-01-01',
+      end: '2015-05-01'
+    },
     interval: 'monthly'
   });
 
   var multigroupby = new Keen.Query('count', {
     event_collection: 'pageviews',
     group_by: ['user.device_info.browser.family', 'user.device_info.browser.major'],
-    timeframe: 'this_12_months'
+    timeframe: {
+      start: '2015-01-01',
+      end: '2015-05-01'
+    }
   });
 
   var multigroupbyinterval = new Keen.Query('count', {
     event_collection: 'pageviews',
     group_by: ['user.device_info.browser.family', 'user.device_info.browser.major'],
-    timeframe: 'this_12_months',
+    timeframe: {
+      start: '2015-01-01',
+      end: '2015-05-01'
+    },
     interval: 'monthly'
   });
 
@@ -255,6 +270,17 @@
   Keen.Dataviz.dataTypeMap['categorical'] = { library: 'c3', chartType: 'donut' };
   Keen.Dataviz.dataTypeMap['chronological'] = { library: 'c3', chartType: 'area' };
   Keen.Dataviz.dataTypeMap['cat-chronological'] = { library: 'c3', chartType: 'line' };
+
+  function c3DateFormatter(ms){
+  var date = new Date(ms);
+  var months = [
+    'J', 'F', 'M',
+    'A', 'M', 'J',
+    'J', 'A', 'S',
+    'O', 'N', 'D'
+  ];
+  return months[date.getMonth()];
+}
 
   // Better ?
   // Keen.Dataviz.setLibrary('c3'); // use all
@@ -317,6 +343,7 @@
   var c3area = new Keen.Dataviz()
     // .library('c3')
     .chartType('area')
+    .dateFormat('%Y-%m')
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-area'))
@@ -325,6 +352,7 @@
   var c3line = new Keen.Dataviz()
     // .library('c3')
     .chartType('line')
+    .dateFormat('%Y-%m')
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-line'))
@@ -333,6 +361,7 @@
   var c3bar = new Keen.Dataviz()
     // .library('c3')
     .chartType('bar')
+    .dateFormat(c3DateFormatter)
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-bar'))
@@ -341,6 +370,7 @@
   var c3areaspline = new Keen.Dataviz()
     // .library('c3')
     .chartType('area-spline')
+    .dateFormat(c3DateFormatter)
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-area-spline'))
@@ -349,6 +379,7 @@
   var c3spline = new Keen.Dataviz()
     // .library('c3')
     .chartType('spline')
+    .dateFormat(c3DateFormatter)
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-spline'))
@@ -357,6 +388,7 @@
   var c3areastep = new Keen.Dataviz()
     // .library('c3')
     .chartType('area-spline')
+    .dateFormat(c3DateFormatter)
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-area-step'))
@@ -365,6 +397,7 @@
   var c3step = new Keen.Dataviz()
     // .library('c3')
     .chartType('step')
+    .dateFormat(c3DateFormatter)
     .height(300)
     .labelMapping(labelMap)
     .el(document.getElementById('c3-step'))
