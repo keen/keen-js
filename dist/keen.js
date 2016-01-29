@@ -4543,12 +4543,15 @@ module.exports = function(){
         extend(options, this.chartOptions(), this.attributes());
         options['isStacked'] = (this.stacked() || options['isStacked']);
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
-        if (options.formatters) {
-          var self = this;
-          options.formatters.forEach(function(f) {
-            f.formatter.format(self.view._artifacts['datatable'], f.columnIndex);
-          });
-          delete options.formatters;
+        if (options.dateFormat) {
+          if (typeof options.dateFormat === 'function') {
+            options.dateFormat(this.view._artifacts['datatable']);
+          }
+          else if (typeof options.dateFormat === 'string') {
+            new google.visualization.DateFormat({
+              pattern: options.dateFormat
+            }).format(this.view._artifacts['datatable'], 0);
+          }
         }
         if (this.view._artifacts['googlechart']) {
           this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
@@ -4607,6 +4610,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
       case "barchart":
         output.hAxis = {
@@ -4618,6 +4624,9 @@ module.exports = function(){
         };
         if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
           output.legend = "none";
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.vAxis.format = this.dateFormat();
         }
         break;
       case "columnchart":
@@ -4634,6 +4643,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
       case "linechart":
         output.lineWidth = 2;
@@ -4649,6 +4661,9 @@ module.exports = function(){
           output.chartArea = {
             width: "85%"
           };
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
         }
         break;
       case "piechart":
@@ -4826,7 +4841,6 @@ function Dataviz(){
       dataType: undefined
     },
     attributes: clone(Dataviz.defaults),
-    dateFormat: undefined,
     defaults: clone(Dataviz.defaults),
     el: undefined,
     loader: { library: 'keen-io', chartType: 'spinner' }
@@ -5165,7 +5179,12 @@ module.exports = function(fn){
 var extend = require('../../core/utils/extend');
 module.exports = function(obj){
   if (!arguments.length) return this.view.adapter.chartOptions;
-  extend(this.view.adapter.chartOptions, obj);
+  if (typeof obj === 'object' && obj !== null) {
+    extend(this.view.adapter.chartOptions, obj);
+  }
+  else {
+    this.view.adapter.chartOptions = {};
+  }
   return this;
 };
 },{"../../core/utils/extend":31}],71:[function(require,module,exports){
@@ -5238,12 +5257,12 @@ module.exports = function(str){
 };
 },{}],76:[function(require,module,exports){
 module.exports = function(val){
-  if (!arguments.length) return this.view.dateFormat;
+  if (!arguments.length) return this.view.attributes.dateFormat;
   if (typeof val === 'string' || typeof val === 'function') {
-    this.view.dateFormat = val;
+    this.view.attributes.dateFormat = val;
   }
   else {
-    this.view.dateFormat = undefined;
+    this.view.attributes.dateFormat = undefined;
   }
   return this;
 };

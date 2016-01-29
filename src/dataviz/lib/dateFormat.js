@@ -1,10 +1,10 @@
 module.exports = function(val){
-  if (!arguments.length) return this.view.dateFormat;
+  if (!arguments.length) return this.view.attributes.dateFormat;
   if (typeof val === 'string' || typeof val === 'function') {
-    this.view.dateFormat = val;
+    this.view.attributes.dateFormat = val;
   }
   else {
-    this.view.dateFormat = undefined;
+    this.view.attributes.dateFormat = undefined;
   }
   return this;
 };
