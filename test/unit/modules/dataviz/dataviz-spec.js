@@ -318,6 +318,27 @@ describe("Keen.Dataviz", function(){
     });
   });
 
+  describe("#dateFormat", function(){
+    it("should return undefined by default", function(){
+      expect(this.dataviz.dateFormat()).to.be.an("undefined");
+    });
+    it("should set and get a new dateFormat string", function(){
+      this.dataviz.dateFormat('test');
+      expect(this.dataviz.dateFormat()).to.be.a("string")
+        .and.to.eql('test');
+    });
+    it("should set and get a new dateFormat function", function(){
+      var noop = function(){};
+      this.dataviz.dateFormat(noop);
+      expect(this.dataviz.dateFormat()).to.be.a("function")
+        .and.to.eql(noop);
+    });
+    it("should unset dateFormat by passing null", function(){
+      this.dataviz.dateFormat(null);
+      expect(this.dataviz.dateFormat()).to.be.an("undefined");
+    });
+  });
+
   describe("#el", function(){
 
     beforeEach(function(){

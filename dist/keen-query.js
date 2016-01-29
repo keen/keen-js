@@ -2422,7 +2422,7 @@ module.exports = function(path, params, callback){
     this.client.trigger('error', 'Query not sent: Missing readKey property');
     return;
   }
-  if (getXHR() || getContext() === 'server' ) {
+  if (getContext() === 'server' || getXHR()) {
     request
       .post(url)
         .set('Content-Type', 'application/json')

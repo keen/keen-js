@@ -11,6 +11,7 @@ extend(Dataviz.prototype, {
   'colors'           : require('./lib/colors'),
   'data'             : require('./lib/data'),
   'dataType'         : require('./lib/dataType'),
+  'dateFormat'       : require('./lib/dateFormat'),
   'defaultChartType' : require('./lib/defaultChartType'),
   'el'               : require('./lib/el'),
   'height'           : require('./lib/height'),

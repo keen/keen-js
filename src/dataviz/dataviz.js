@@ -24,6 +24,7 @@ function Dataviz(){
       dataType: undefined
     },
     attributes: clone(Dataviz.defaults),
+    dateFormat: undefined,
     defaults: clone(Dataviz.defaults),
     el: undefined,
     loader: { library: 'keen-io', chartType: 'spinner' }
