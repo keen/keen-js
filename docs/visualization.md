@@ -83,10 +83,20 @@ The second argument for the `#draw` method is a reference to the DOM element whe
   labelMapping: {},
   labels: [],
   chartOptions: {
-    // pass directly through to underlying vizz library
+    // pass directly through to underlying visualization library
   }
 }
 ```
+
+### Date Formatting
+
+`dateFormat`: string or function that is used by the chosen underlying visualization suite (currently only supported by Google Charts and C3.js).
+
+Learn how to use this method for the following visualization libraries:
+
+* [Google Charts](./dataviz/google.md) (default)
+* [C3.js](./dataviz/c3.md)
+
 
 ### Customized Labels
 
