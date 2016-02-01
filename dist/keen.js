@@ -4969,7 +4969,12 @@ module.exports = function(){
   if (library && !chartType && map[dataType]) {
     chartType = map[dataType].chartType;
   }
-  return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
+  if (library && chartType && Dataviz.libraries[library][chartType]) {
+    return Dataviz.libraries[library][chartType];
+  }
+  else {
+    return {};
+  }
 };
 },{"../../core/utils/extend":31,"../dataviz":56}],59:[function(require,module,exports){
 module.exports = function(req){
@@ -5077,10 +5082,15 @@ var getAdapterActions = require("../../helpers/getAdapterActions"),
     Dataviz = require("../../dataviz");
 module.exports = function(){
   var actions = getAdapterActions.call(this);
-  if (actions['error']) {
-    actions['error'].apply(this, arguments);
-  } else {
-    Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+  if (this.el()) {
+    if (actions['error']) {
+      actions['error'].apply(this, arguments);
+    } else {
+      Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+    }
+  }
+  else {
+    this.emit('error', 'No DOM element provided');
   }
   return this;
 };
@@ -5095,7 +5105,13 @@ module.exports = function(){
   } else {
     if (this.el()) this.el().innerHTML = "";
   }
-  if (actions.initialize) actions.initialize.apply(this, arguments);
+  if (actions.initialize) {
+    actions.initialize.apply(this, arguments);
+  }
+  else {
+    this.error('Incorrect chartType');
+    this.emit('error', 'Incorrect chartType');
+  }
   this.view._initialized = true;
   return this;
 };
