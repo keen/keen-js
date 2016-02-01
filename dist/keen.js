@@ -802,7 +802,7 @@ Emitter.prototype.hasListeners = function(event){
  */
 ;(function (root, factory) {
   /* CommonJS */
-  if (typeof module == 'object' && module.exports) module.exports = factory()
+  if (typeof exports == 'object') module.exports = factory()
   /* AMD module */
   else if (typeof define == 'function' && define.amd) define(factory)
   /* Browser global */
@@ -2741,6 +2741,20 @@ module.exports = function(query, callback) {
   var queries = [],
       cb = callback,
       request;
+  if (!this.config.projectId || !this.config.projectId.length) {
+    handleConfigError.call(this, 'Missing projectId property');
+  }
+  if (!this.config.readKey || !this.config.readKey.length) {
+    handleConfigError.call(this, 'Missing readKey property');
+  }
+  function handleConfigError(msg){
+    var err = 'Query not sent: ' + msg;
+    this.trigger('error', err);
+    if (cb) {
+      cb.call(this, err, null);
+      cb = callback = null;
+    }
+  }
   if (query instanceof Array) {
     queries = query;
   } else {
@@ -3141,7 +3155,7 @@ module.exports = function(path, params, callback){
     this.client.trigger('error', 'Query not sent: Missing readKey property');
     return;
   }
-  if (getXHR() || getContext() === 'server' ) {
+  if (getContext() === 'server' || getXHR()) {
     request
       .post(url)
         .set('Content-Type', 'application/json')
