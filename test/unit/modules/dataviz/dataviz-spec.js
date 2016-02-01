@@ -459,6 +459,15 @@ describe("Keen.Dataviz", function(){
         this.dataviz.el(document.getElementById("chart-test")).render();
         expect(this.dataviz.view._rendered).to.be.true;
       });
+      it("should emit an error event when an incorrect chartType is used", function(){
+        this.dataviz
+          .el(document.getElementById("chart-test"))
+          .on('error', function(){
+            console.log(arguments);
+          })
+          .chartType('nope!')
+          .render();
+      });
     });
 
     describe("#update", function(){
@@ -481,7 +490,7 @@ describe("Keen.Dataviz", function(){
     });
     describe("#error", function(){
       it("should call the #error method of a given adapter if available", function(){
-        this.dataviz.error();
+        this.dataviz.el(document).error();
         expect(Keen.Dataviz.libraries.demo.chart.error.called).to.be.ok;
       });
     });
