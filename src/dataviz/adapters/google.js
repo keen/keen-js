@@ -73,7 +73,19 @@ module.exports = function(){
         options['isStacked'] = (this.stacked() || options['isStacked']);
 
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
-        // if (this.view._artifacts['datatable']) {}
+
+        // Apply date formatting (also applied to hAxis/vAxis as defaults)
+        if (options.dateFormat) {
+          if (typeof options.dateFormat === 'function') {
+            options.dateFormat(this.view._artifacts['datatable']);
+          }
+          else if (typeof options.dateFormat === 'string') {
+            new google.visualization.DateFormat({
+              pattern: options.dateFormat
+            }).format(this.view._artifacts['datatable'], 0);
+          }
+        }
+
         if (this.view._artifacts['googlechart']) {
           this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
         }
@@ -139,6 +151,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
 
       case "barchart":
@@ -151,6 +166,9 @@ module.exports = function(){
         };
         if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
           output.legend = "none";
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.vAxis.format = this.dateFormat();
         }
         break;
 
@@ -168,6 +186,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
 
       case "linechart":
@@ -184,6 +205,9 @@ module.exports = function(){
           output.chartArea = {
             width: "85%"
           };
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
         }
         break;
 

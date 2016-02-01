@@ -4332,7 +4332,7 @@ module.exports = function(){
         setup['axis']['x'] = {
           type: 'timeseries',
           tick: {
-            format: '%Y-%m-%d'
+            format: this.dateFormat() || getDateFormatDefault(this.data()[1][0], this.data()[2][0])
           }
         };
       }
@@ -4354,6 +4354,33 @@ module.exports = function(){
     if (this.view._artifacts['c3']) {
       this.view._artifacts['c3'].destroy();
       this.view._artifacts['c3'] = null;
+    }
+  }
+  function getDateFormatDefault(a, b){
+    var d = Math.abs(new Date(a).getTime() - new Date(b).getTime());
+    var months = [
+      'Jan', 'Feb', 'Mar',
+      'Apr', 'May', 'June',
+      'July', 'Aug', 'Sept',
+      'Oct', 'Nov', 'Dec'
+    ];
+    if (d >= 2419200000) {
+      return function(ms){
+        var date = new Date(ms);
+        return months[date.getMonth()] + ' ' + date.getFullYear();
+      };
+    }
+    else if (d >= 86400000) {
+      return function(ms){
+        var date = new Date(ms);
+        return months[date.getMonth()] + ' ' + date.getDate();
+      };
+    }
+    else if (d >= 3600000) {
+      return '%I:%M %p';
+    }
+    else {
+      return '%I:%M:%S %p';
     }
   }
   Dataviz.register('c3', charts, { capabilities: dataTypes });
@@ -4557,6 +4584,16 @@ module.exports = function(){
         extend(options, this.chartOptions(), this.attributes());
         options['isStacked'] = (this.stacked() || options['isStacked']);
         this.view._artifacts['datatable'] = google.visualization.arrayToDataTable(this.data());
+        if (options.dateFormat) {
+          if (typeof options.dateFormat === 'function') {
+            options.dateFormat(this.view._artifacts['datatable']);
+          }
+          else if (typeof options.dateFormat === 'string') {
+            new google.visualization.DateFormat({
+              pattern: options.dateFormat
+            }).format(this.view._artifacts['datatable'], 0);
+          }
+        }
         if (this.view._artifacts['googlechart']) {
           this.view._artifacts['googlechart'].draw(this.view._artifacts['datatable'], options);
         }
@@ -4614,6 +4651,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
       case "barchart":
         output.hAxis = {
@@ -4625,6 +4665,9 @@ module.exports = function(){
         };
         if (this.dataType() === "chronological" || this.dataType() === "cat-ordinal") {
           output.legend = "none";
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.vAxis.format = this.dateFormat();
         }
         break;
       case "columnchart":
@@ -4641,6 +4684,9 @@ module.exports = function(){
             width: "85%"
           };
         }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
+        }
         break;
       case "linechart":
         output.lineWidth = 2;
@@ -4656,6 +4702,9 @@ module.exports = function(){
           output.chartArea = {
             width: "85%"
           };
+        }
+        if (this.dateFormat() && typeof this.dateFormat() === 'string') {
+          output.hAxis.format = this.dateFormat();
         }
         break;
       case "piechart":
@@ -4809,7 +4858,7 @@ module.exports = function(){
     capabilities: dataTypes
   });
 };
-},{"../../core":16,"../../core/utils/clone":28,"../../core/utils/each":29,"../../core/utils/extend":31,"../dataviz":56,"../utils/prettyNumber":94}],56:[function(require,module,exports){
+},{"../../core":16,"../../core/utils/clone":28,"../../core/utils/each":29,"../../core/utils/extend":31,"../dataviz":56,"../utils/prettyNumber":95}],56:[function(require,module,exports){
 var clone = require('../core/utils/clone'),
     each = require('../core/utils/each'),
     extend = require('../core/utils/extend'),
@@ -4922,7 +4971,7 @@ Dataviz.find = function(target){
   if (match) return match;
 };
 module.exports = Dataviz;
-},{"../core":16,"../core/utils/clone":28,"../core/utils/each":29,"../core/utils/emitter-shim":30,"../core/utils/extend":31,"../dataset":37,"./utils/loadScript":92,"./utils/loadStyle":93}],57:[function(require,module,exports){
+},{"../core":16,"../core/utils/clone":28,"../core/utils/each":29,"../core/utils/emitter-shim":30,"../core/utils/extend":31,"../dataset":37,"./utils/loadScript":93,"./utils/loadStyle":94}],57:[function(require,module,exports){
 var clone = require("../../core/utils/clone"),
     extend = require("../../core/utils/extend"),
     Dataviz = require("../dataviz"),
@@ -5037,6 +5086,7 @@ extend(Dataviz.prototype, {
   'colors'           : require('./lib/colors'),
   'data'             : require('./lib/data'),
   'dataType'         : require('./lib/dataType'),
+  'dateFormat'       : require('./lib/dateFormat'),
   'defaultChartType' : require('./lib/defaultChartType'),
   'el'               : require('./lib/el'),
   'height'           : require('./lib/height'),
@@ -5061,7 +5111,7 @@ extend(Dataviz.prototype, {
   'update'           : require('./lib/actions/update')
 });
 module.exports = Dataviz;
-},{"../core/utils/extend":31,"./dataviz":56,"./lib/actions/destroy":62,"./lib/actions/error":63,"./lib/actions/initialize":64,"./lib/actions/render":65,"./lib/actions/update":66,"./lib/adapter":67,"./lib/attributes":68,"./lib/call":69,"./lib/chartOptions":70,"./lib/chartType":71,"./lib/colorMapping":72,"./lib/colors":73,"./lib/data":74,"./lib/dataType":75,"./lib/defaultChartType":76,"./lib/el":77,"./lib/height":78,"./lib/indexBy":79,"./lib/labelMapping":80,"./lib/labels":81,"./lib/library":82,"./lib/parseRawData":83,"./lib/parseRequest":84,"./lib/prepare":85,"./lib/sortGroups":86,"./lib/sortIntervals":87,"./lib/stacked":88,"./lib/title":89,"./lib/width":90}],62:[function(require,module,exports){
+},{"../core/utils/extend":31,"./dataviz":56,"./lib/actions/destroy":62,"./lib/actions/error":63,"./lib/actions/initialize":64,"./lib/actions/render":65,"./lib/actions/update":66,"./lib/adapter":67,"./lib/attributes":68,"./lib/call":69,"./lib/chartOptions":70,"./lib/chartType":71,"./lib/colorMapping":72,"./lib/colors":73,"./lib/data":74,"./lib/dataType":75,"./lib/dateFormat":76,"./lib/defaultChartType":77,"./lib/el":78,"./lib/height":79,"./lib/indexBy":80,"./lib/labelMapping":81,"./lib/labels":82,"./lib/library":83,"./lib/parseRawData":84,"./lib/parseRequest":85,"./lib/prepare":86,"./lib/sortGroups":87,"./lib/sortIntervals":88,"./lib/stacked":89,"./lib/title":90,"./lib/width":91}],62:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions");
 module.exports = function(){
   var actions = getAdapterActions.call(this);
@@ -5130,7 +5180,7 @@ module.exports = function(){
   }
   return this;
 };
-},{"../../helpers/getAdapterActions":58,"../../utils/applyTransforms":91}],66:[function(require,module,exports){
+},{"../../helpers/getAdapterActions":58,"../../utils/applyTransforms":92}],66:[function(require,module,exports){
 var getAdapterActions = require("../../helpers/getAdapterActions"),
     applyTransforms = require("../../utils/applyTransforms");
 module.exports = function(){
@@ -5143,7 +5193,7 @@ module.exports = function(){
   }
   return this;
 };
-},{"../../helpers/getAdapterActions":58,"../../utils/applyTransforms":91}],67:[function(require,module,exports){
+},{"../../helpers/getAdapterActions":58,"../../utils/applyTransforms":92}],67:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function(obj){
   if (!arguments.length) return this.view.adapter;
@@ -5177,7 +5227,7 @@ module.exports = function(obj){
   });
   return this;
 };
-},{"../../core/utils/each":29,"./chartOptions":70,"./chartType":71,"./library":82}],69:[function(require,module,exports){
+},{"../../core/utils/each":29,"./chartOptions":70,"./chartType":71,"./library":83}],69:[function(require,module,exports){
 module.exports = function(fn){
   fn.call(this);
   return this;
@@ -5186,7 +5236,12 @@ module.exports = function(fn){
 var extend = require('../../core/utils/extend');
 module.exports = function(obj){
   if (!arguments.length) return this.view.adapter.chartOptions;
-  extend(this.view.adapter.chartOptions, obj);
+  if (typeof obj === 'object' && obj !== null) {
+    extend(this.view.adapter.chartOptions, obj);
+  }
+  else {
+    this.view.adapter.chartOptions = {};
+  }
   return this;
 };
 },{"../../core/utils/extend":31}],71:[function(require,module,exports){
@@ -5258,24 +5313,35 @@ module.exports = function(str){
   return this;
 };
 },{}],76:[function(require,module,exports){
+module.exports = function(val){
+  if (!arguments.length) return this.view.attributes.dateFormat;
+  if (typeof val === 'string' || typeof val === 'function') {
+    this.view.attributes.dateFormat = val;
+  }
+  else {
+    this.view.attributes.dateFormat = undefined;
+  }
+  return this;
+};
+},{}],77:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view.adapter.defaultChartType;
   this.view.adapter.defaultChartType = (str ? String(str) : null);
   return this;
 };
-},{}],77:[function(require,module,exports){
+},{}],78:[function(require,module,exports){
 module.exports = function(el){
   if (!arguments.length) return this.view.el;
   this.view.el = el;
   return this;
 };
-},{}],78:[function(require,module,exports){
+},{}],79:[function(require,module,exports){
 module.exports = function(num){
   if (!arguments.length) return this.view["attributes"]["height"];
   this.view["attributes"]["height"] = (!isNaN(parseInt(num)) ? parseInt(num) : null);
   return this;
 };
-},{}],79:[function(require,module,exports){
+},{}],80:[function(require,module,exports){
 var Dataset = require('../../dataset'),
     Dataviz = require('../dataviz'),
     each = require('../../core/utils/each');
@@ -5321,7 +5387,7 @@ function indexBy(){
     });
   }
 }
-},{"../../core/utils/each":29,"../../dataset":37,"../dataviz":56}],80:[function(require,module,exports){
+},{"../../core/utils/each":29,"../../dataset":37,"../dataviz":56}],81:[function(require,module,exports){
 var each = require("../../core/utils/each");
 module.exports = function(obj){
   if (!arguments.length) return this.view["attributes"].labelMapping;
@@ -5348,7 +5414,7 @@ function applyLabelMapping(){
     }
   }
 }
-},{"../../core/utils/each":29}],81:[function(require,module,exports){
+},{"../../core/utils/each":29}],82:[function(require,module,exports){
 var each = require('../../core/utils/each');
 module.exports = function(arr){
   if (!arguments.length) {
@@ -5399,13 +5465,13 @@ function getLabels(){
   }
   return labels;
 }
-},{"../../core/utils/each":29}],82:[function(require,module,exports){
+},{"../../core/utils/each":29}],83:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view.adapter.library;
   this.view.adapter.library = (str ? String(str) : null);
   return this;
 };
-},{}],83:[function(require,module,exports){
+},{}],84:[function(require,module,exports){
 var Dataset = require('../../dataset');
 var extend = require('../../core/utils/extend');
 module.exports = function(response){
@@ -5517,7 +5583,7 @@ module.exports = function(response){
   }
   return this;
 };
-},{"../../core/utils/extend":31,"../../dataset":37}],84:[function(require,module,exports){
+},{"../../core/utils/extend":31,"../../dataset":37}],85:[function(require,module,exports){
 var Query = require('../../core/query');
 var dataType = require('./dataType'),
     extend = require('../../core/utils/extend'),
@@ -5540,7 +5606,7 @@ module.exports = function(req){
   parseRawData.call(this, response);
   return this;
 };
-},{"../../core/query":24,"../../core/utils/extend":31,"../helpers/getDefaultTitle":59,"../helpers/getQueryDataType":60,"./dataType":75,"./parseRawData":83,"./title":89}],85:[function(require,module,exports){
+},{"../../core/query":24,"../../core/utils/extend":31,"../helpers/getDefaultTitle":59,"../helpers/getQueryDataType":60,"./dataType":75,"./parseRawData":84,"./title":90}],86:[function(require,module,exports){
 var Dataviz = require("../dataviz");
 module.exports = function(){
   var loader;
@@ -5560,7 +5626,7 @@ module.exports = function(){
   }
   return this;
 };
-},{"../dataviz":56}],86:[function(require,module,exports){
+},{"../dataviz":56}],87:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"].sortGroups;
   this.view["attributes"].sortGroups = (str ? String(str) : null);
@@ -5578,7 +5644,7 @@ function runSortGroups(){
   }
   return;
 }
-},{}],87:[function(require,module,exports){
+},{}],88:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"].sortIntervals;
   this.view["attributes"].sortIntervals = (str ? String(str) : null);
@@ -5590,25 +5656,25 @@ function runSortIntervals(){
   this.dataset.sortRows(this.sortIntervals());
   return;
 }
-},{}],88:[function(require,module,exports){
+},{}],89:[function(require,module,exports){
 module.exports = function(bool){
   if (!arguments.length) return this.view['attributes']['stacked'];
   this.view['attributes']['stacked'] = bool ? true : false;
   return this;
 };
-},{}],89:[function(require,module,exports){
+},{}],90:[function(require,module,exports){
 module.exports = function(str){
   if (!arguments.length) return this.view["attributes"]["title"];
   this.view["attributes"]["title"] = (str ? String(str) : null);
   return this;
 };
-},{}],90:[function(require,module,exports){
+},{}],91:[function(require,module,exports){
 module.exports = function(num){
   if (!arguments.length) return this.view["attributes"]["width"];
   this.view["attributes"]["width"] = (!isNaN(parseInt(num)) ? parseInt(num) : null);
   return this;
 };
-},{}],91:[function(require,module,exports){
+},{}],92:[function(require,module,exports){
 module.exports = function(){
   if (this.labelMapping()) {
     this.labelMapping(this.labelMapping());
@@ -5623,7 +5689,7 @@ module.exports = function(){
     this.sortIntervals(this.sortIntervals());
   }
 };
-},{}],92:[function(require,module,exports){
+},{}],93:[function(require,module,exports){
 module.exports = function(url, cb) {
   var doc = document;
   var handler;
@@ -5657,7 +5723,7 @@ module.exports = function(url, cb) {
     }, false);
   }
 };
-},{}],93:[function(require,module,exports){
+},{}],94:[function(require,module,exports){
 module.exports = function(url, cb) {
   var link = document.createElement('link');
   link.setAttribute('rel', 'stylesheet');
@@ -5666,7 +5732,7 @@ module.exports = function(url, cb) {
   cb();
   document.head.appendChild(link);
 };
-},{}],94:[function(require,module,exports){
+},{}],95:[function(require,module,exports){
 module.exports = function(_input) {
   var input = Number(_input),
       sciNo = input.toPrecision(3),
@@ -5720,7 +5786,7 @@ module.exports = function(_input) {
     }
   }
 };
-},{}],95:[function(require,module,exports){
+},{}],96:[function(require,module,exports){
 (function (global){
 ;(function (f) {
   if (typeof define === "function" && define.amd) {
@@ -5785,4 +5851,4 @@ module.exports = function(_input) {
   return Keen;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":61,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":53,"./dataviz/adapters/google":54,"./dataviz/adapters/keen-io":55,"./dataviz/extensions/draw":57,"./dataviz/utils/prettyNumber":94,"domready":2,"spin.js":4}]},{},[95]);
+},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":61,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":53,"./dataviz/adapters/google":54,"./dataviz/adapters/keen-io":55,"./dataviz/extensions/draw":57,"./dataviz/utils/prettyNumber":95,"domready":2,"spin.js":4}]},{},[96]);
