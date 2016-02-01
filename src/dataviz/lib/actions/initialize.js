@@ -9,7 +9,14 @@ module.exports = function(){
   } else {
     if (this.el()) this.el().innerHTML = "";
   }
-  if (actions.initialize) actions.initialize.apply(this, arguments);
+
+  if (actions.initialize) {
+    actions.initialize.apply(this, arguments);
+  }
+  else {
+    this.error('Incorrect chartType');
+    this.emit('error', 'Incorrect chartType');
+  }
   this.view._initialized = true;
   return this;
 };

@@ -74,6 +74,48 @@ describe("Keen.Request", function() {
         .refresh();
     });
 
+    it("should return an error when projectId is not present", function(){
+      var brokenClient = new Keen({
+        readKey: '123'
+      })
+      brokenClient.run(this.query, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.a('null');
+      });
+    });
+
+    it("should return an error when projectId is empty", function(){
+      var brokenClient = new Keen({
+        projectId: '',
+        readKey: '123'
+      })
+      brokenClient.run(this.query, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.a('null');
+      });
+    });
+
+    it("should return an error when readKey is not present", function(){
+      var brokenClient = new Keen({
+        projectId: '123'
+      })
+      brokenClient.run(this.query, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.a('null');
+      });
+    });
+
+    it("should return an error when readKey is not empty", function(){
+      var brokenClient = new Keen({
+        projectId: '123',
+        readKey: ''
+      })
+      brokenClient.run(this.query, function(err, res){
+        expect(err).to.exist;
+        expect(res).to.be.a('null');
+      });
+    });
+
     describe("Multiple queries", function(){
       it("should return a single response when successful", function(done){
         var response = [{ result: 1 }, { result: 1 }, { result: 1 }];

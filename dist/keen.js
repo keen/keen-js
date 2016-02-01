@@ -2741,6 +2741,20 @@ module.exports = function(query, callback) {
   var queries = [],
       cb = callback,
       request;
+  if (!this.config.projectId || !this.config.projectId.length) {
+    handleConfigError.call(this, 'Missing projectId property');
+  }
+  if (!this.config.readKey || !this.config.readKey.length) {
+    handleConfigError.call(this, 'Missing readKey property');
+  }
+  function handleConfigError(msg){
+    var err = 'Query not sent: ' + msg;
+    this.trigger('error', err);
+    if (cb) {
+      cb.call(this, err, null);
+      cb = callback = null;
+    }
+  }
   if (query instanceof Array) {
     queries = query;
   } else {
@@ -5004,7 +5018,12 @@ module.exports = function(){
   if (library && !chartType && map[dataType]) {
     chartType = map[dataType].chartType;
   }
-  return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
+  if (library && chartType && Dataviz.libraries[library][chartType]) {
+    return Dataviz.libraries[library][chartType];
+  }
+  else {
+    return {};
+  }
 };
 },{"../../core/utils/extend":31,"../dataviz":56}],59:[function(require,module,exports){
 module.exports = function(req){
@@ -5113,10 +5132,15 @@ var getAdapterActions = require("../../helpers/getAdapterActions"),
     Dataviz = require("../../dataviz");
 module.exports = function(){
   var actions = getAdapterActions.call(this);
-  if (actions['error']) {
-    actions['error'].apply(this, arguments);
-  } else {
-    Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+  if (this.el()) {
+    if (actions['error']) {
+      actions['error'].apply(this, arguments);
+    } else {
+      Dataviz.libraries['keen-io']['error'].render.apply(this, arguments);
+    }
+  }
+  else {
+    this.emit('error', 'No DOM element provided');
   }
   return this;
 };
@@ -5131,7 +5155,13 @@ module.exports = function(){
   } else {
     if (this.el()) this.el().innerHTML = "";
   }
-  if (actions.initialize) actions.initialize.apply(this, arguments);
+  if (actions.initialize) {
+    actions.initialize.apply(this, arguments);
+  }
+  else {
+    this.error('Incorrect chartType');
+    this.emit('error', 'Incorrect chartType');
+  }
   this.view._initialized = true;
   return this;
 };

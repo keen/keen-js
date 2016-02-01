@@ -23,5 +23,11 @@ module.exports = function(){
   }
 
   // Return if found
-  return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
+  if (library && chartType && Dataviz.libraries[library][chartType]) {
+    return Dataviz.libraries[library][chartType];
+  }
+  else {
+    return {};
+  }
+  // return (library && chartType) ? Dataviz.libraries[library][chartType] : {};
 };
