@@ -366,7 +366,7 @@ Keen.ready(function(){
     .chartType("columnchart")
     .prepare(); // starts spinner
 
-  var req = client.run(query, function(err, res){
+  var req = client.run(count, function(err, res){
     if (err) {
       // Display the API error
       chart.error(err.message);
