@@ -6,7 +6,9 @@ var Keen = require("../../../../src/server"),
 describe("Scoped Keys", function(){
 
   beforeEach(function(){
-    this.client = new Keen({});
+    this.client = new Keen({
+      host: 'server-js.keen.io/3.0'
+    });
   });
 
   describe("New key validation", function(){
