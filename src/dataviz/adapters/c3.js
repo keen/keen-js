@@ -84,20 +84,19 @@ module.exports = function(){
   });
 
   function getSetupTemplate(type){
-    var setup = {
+    var setup = extend({
       axis: {},
-      bindto: this.el(),
-      data: {
-        columns: []
-      },
-      color: {
-        pattern: this.colors()
-      },
-      size: {
-        height: this.height(),
-        width: this.width()
-      }
-    };
+      color: {},
+      data: {},
+      size: {}
+    }, this.chartOptions());
+
+    // Enforced options
+    setup.bindto = this.el();
+    setup.color.pattern = this.colors();
+    setup.data.columns = [];
+    setup.size.height = this.height();
+    setup.size.width = this.width();
 
     // Enforce type, sorry no overrides here
     setup['data']['type'] = type;
@@ -128,7 +127,7 @@ module.exports = function(){
         setup['axis']['y'] = { label: this.title() }
       }
     }
-    return extend(setup, this.chartOptions());
+    return setup;
   }
 
   function _selfDestruct(){

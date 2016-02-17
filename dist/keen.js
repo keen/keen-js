@@ -4314,20 +4314,17 @@ module.exports = function(){
     };
   });
   function getSetupTemplate(type){
-    var setup = {
+    var setup = extend({
       axis: {},
-      bindto: this.el(),
-      data: {
-        columns: []
-      },
-      color: {
-        pattern: this.colors()
-      },
-      size: {
-        height: this.height(),
-        width: this.width()
-      }
-    };
+      color: {},
+      data: {},
+      size: {}
+    }, this.chartOptions());
+    setup.bindto = this.el();
+    setup.color.pattern = this.colors();
+    setup.data.columns = [];
+    setup.size.height = this.height();
+    setup.size.width = this.width();
     setup['data']['type'] = type;
     if (type === 'gauge') {}
     else if (type === 'pie' || type === 'donut') {
@@ -4355,7 +4352,7 @@ module.exports = function(){
         setup['axis']['y'] = { label: this.title() }
       }
     }
-    return extend(setup, this.chartOptions());
+    return setup;
   }
   function _selfDestruct(){
     if (this.view._artifacts['c3']) {

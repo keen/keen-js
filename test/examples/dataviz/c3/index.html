@@ -293,6 +293,7 @@
     .parseRawData({ result: 79.1 })
     .title('Percentage of awesome')
     .chartOptions({
+      data: {}
       // gauge: {
       //   label: {
       //     format: function (value, ratio) {
@@ -322,7 +323,7 @@
     library: 'c3',
     chartType: 'donut',
     chartOptions: {
-
+      data: {}
     }
   });
 
@@ -504,6 +505,7 @@
     .labels(c3FunnelCats)
     .height(300)
     .chartOptions({
+      data: {},
       // Overriding `axis` below wipes out auto-categorization
       // axis: {
       //     x: {
@@ -543,7 +545,8 @@
             type: 'category',
             categories: ['Chrome 19', 'Firefox 11', 'IE 9', 'Mobile Safari 5']
           }
-        }
+        },
+        data: {}
       }
     });
 
@@ -632,6 +635,7 @@
     client.draw('total-clicks-this-12-months', document.getElementById('sq-metric'), {
       height: 200,
       chartOptions: {
+        data: {},
         gauge: {
           min: 0,
           max: 200
@@ -654,6 +658,7 @@
       height: 400,
       chartType: 'bar',
       chartOptions: {
+        data: {},
         legend: { show: false }
       }
     });
@@ -661,6 +666,7 @@
     client.draw('weekly-clicks-by-campaign-by-user-id', document.getElementById('sq-double-grouped-interval'), {
       height: 400,
       chartOptions: {
+        data: {},
         legend: { show: false }
       }
     });
