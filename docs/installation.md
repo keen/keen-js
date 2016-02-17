@@ -81,3 +81,5 @@ require([ "keen" ], function(Keen) {
   var client = new Keen({ ... });
 });
 ```
+
+This library uses the Google Charts API for data visualization, which imposes a few installation challenges for RequireJS usage. [Read this to learn more](https://github.com/keen/keen-js/issues/341#issuecomment-148039517).
