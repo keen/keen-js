@@ -43,6 +43,7 @@ describe("Scoped Keys", function(){
       expect(decryptedOptions).to.deep.equal(this.keyOptions);
 
       // Apply and test scoped key
+      this.timeout(300 * 1000);
       this.client
         .projectId(this.projectId)
         .readKey(scopedKey)
@@ -96,6 +97,7 @@ describe("Scoped Keys", function(){
       expect(decryptedOptions).to.deep.equal(this.keyOptions);
 
       // Apply and test scoped key
+      this.timeout(300 * 1000);
       this.client
         .projectId(this.projectId)
         .readKey(scopedKey)
