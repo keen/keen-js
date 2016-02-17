@@ -73,7 +73,7 @@ module.exports = function(){
     render: function(){
       var bgColor = (this.colors().length == 1) ? this.colors()[0] : "#49c5b1",
           title = this.title() || "Result",
-          value = this.data()[1][1] || 0,
+          value = (this.data()[1] && this.data()[1][1]) ? this.data()[1][1] : 0,
           width = this.width(),
           opts = this.chartOptions() || {},
           prefix = "",
