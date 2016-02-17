@@ -63,7 +63,7 @@ If you only need to track events, replace the URLs in your installation with thi
 https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen-tracker.min.js
 ```
 
-## AMD/CommonJS
+## AMD/RequireJS
 
 We want to make this library AMD/CommonJS-friendly, so if you run into any conflicts or bugs with specific loaders, please let us know by opening a new issue.
 
@@ -83,3 +83,54 @@ require([ "keen" ], function(Keen) {
 ```
 
 This library uses the Google Charts API for data visualization, which imposes a few installation challenges for RequireJS usage. [Read this to learn more](https://github.com/keen/keen-js/issues/341#issuecomment-148039517).
+
+## JSPM Installation
+
+In order to import keen-query and keen-tracker with JSPM, one has to define the following overrides in the package.json:
+
+```json
+  "dependencies": {
+    "keen": "github:keen/keen-js@3.2.5"
+  },
+ "overrides": {
+    "github:keen/keen-js@3.2.5": {
+      "format": "global",
+      "main": "dist/keen-tracker.js",
+      "files": [
+        "dist/keen-tracker.js",
+        "dist/keen-query.js"
+      ],
+      "shim": {
+        "dist/keen-tracker.": {
+          "exports": "Keen"
+        },
+        "dist/keen-query": {
+          "exports": "Keen"
+        }
+      }
+    }
+  }
+```
+
+The main file will be `keen-tracker` and the secondary file will be `keen-query`. After running `jspm install`, you will be able to use the following statements to import Keen tracker and Keen query:
+
+```JavaScript
+import Keen from 'keen';
+import KeenQuery from 'keen/dist/keen-query';
+```
+
+You can use Keen straight away and for KeenQuery you need to call Keen.ready:
+
+```javascript
+var client = new Keen({
+  // ...
+});
+
+client.addEvent('event-collection', {
+  title: 'Some Event Property'
+});
+
+KeenQuery.ready(function() {
+  // Compose and run queries here
+});
+```
