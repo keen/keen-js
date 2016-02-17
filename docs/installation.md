@@ -38,7 +38,7 @@ Unlike the core `Keen` object and its tracking-related methods, `Keen.Query`, `K
 Keen.ready(function(){
   // runs once library has loaded
   var query = new Keen.Query("count", {
-    eventCollection: "pageviews"
+    event_collection: "pageviews"
   });
   // .. run query, visualize, etc.
 });

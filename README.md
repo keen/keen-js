@@ -173,7 +173,7 @@ The `<Client>.run` method is available on each configured client instance to run
 
 ```javascript
 var your_analysis = new Keen.Query(analysisType, {
-  eventCollection: 'YOUR_EVENT_COLLECTION', // (required)
+  event_collection: 'YOUR_EVENT_COLLECTION', // (required)
   timeframe: "YOUR_TIMEFRAME" // (required)
   // ... additional parameters
 });
@@ -192,8 +192,8 @@ Keen.ready(function(){
 
   // Create a query instance
   var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
-    groupBy: "property",
+    event_collection: "pageviews",
+    group_by: "property",
     timeframe: "this_7_days"
   });
 
@@ -348,8 +348,8 @@ Keen.ready(function(){
 
   // Create a query instance
   var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
-    groupBy: "visitor.geo.country",
+    event_collection: "pageviews",
+    group_by: "visitor.geo.country",
     interval: "daily",
     timeframe: "this_21_days"
   });
