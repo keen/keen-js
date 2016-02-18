@@ -367,7 +367,7 @@ var multiline = new Keen.Query("count", {
        *  ------------------------------
        */
 
-      var drawn_metric = client.draw(metric, document.getElementById("1-1"), {
+      var drawn_metric = window.metric = client.draw(metric, document.getElementById("1-1"), {
         colors: ["#f35757"],
         height: 138,
         title: "Single Metric",

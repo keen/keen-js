@@ -8,7 +8,7 @@ The `run` method is available on each configured client instance to run one or m
 
 ```javascript
 var your_analysis = new Keen.Query(analysisType, {
-  eventCollection: 'YOUR_EVENT_COLLECTION', // (required)
+  event_collection: 'YOUR_EVENT_COLLECTION', // (required)
   timeframe: "YOUR_TIMEFRAME" // (required)
   // ... additional parameters
 });
@@ -19,20 +19,20 @@ var your_analysis = new Keen.Query(analysisType, {
 ```javascript
 //Configure the client
 var client = new Keen({
-    projectId: "your_project_id",
-    readKey: "your_read_key"
+  projectId: "your_project_id",
+  readKey: "your_read_key"
 });
 
 Keen.ready(function(){
   // Count the number of times case study pages were viewed
   var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
+    event_collection: "pageviews",
     timeframe: {
       "start":"2015-07-01T07:00:00.000Z",
       "end":"2015-08-01T07:00:00.000Z"
     },
     interval: "daily",
-    maxAge: 300, // activate query caching by assigning maxAge (an integer representing seconds)
+    max_age: 300, // activate query caching by assigning max_age (an integer representing seconds)
     filters: [
       {
         "property_name" : "domain",
@@ -66,7 +66,7 @@ Extractions let you pull the raw data out of Keen IO.  Learn more about extracti
 
 ```javascript
 var extraction = new Keen.Query('extraction', {
-  eventCollection: "pageviews",
+  event_collection: "pageviews",
   timeframe: "today"
 });
 ```
@@ -81,12 +81,12 @@ var extraction = new Keen.Query('extraction', {
 var funnel = new Keen.Query('funnel', {
   steps: [
     {
-  	  eventCollection: "view_landing_page",
-  	  actorProperty: "user.id"
+  	  event_collection: "view_landing_page",
+  	  actor_property: "user.id"
     },
     {
-  	  eventCollection: "signed_up",
-  	  actorProperty: "user.id"
+  	  event_collection: "signed_up",
+  	  actor_property: "user.id"
     },
   ],
   timeframe: "this_6_months"
@@ -101,16 +101,16 @@ Query results are also attached to the query object itself, and can be reference
 
 ```javascript
 var avg_revenue = new Keen.Query("average", {
-  eventCollection: "purchase",
+  event_collection: "purchase",
   timeframe: "this_14_days",
-  targetProperty: "price",
-  groupBy: "geo.country"
+  target_property: "price",
+  group_by: "geo.country"
 });
 var max_revenue = new Keen.Query("maximum", {
-  eventCollection: "purchase",
+  event_collection: "purchase",
   timeframe: "this_14_days",
-  targetProperty: "price",
-  groupBy: "geo.country"
+  target_property: "price",
+  group_by: "geo.country"
 });
 
 var mashup = client.run([avg_revenue, max_revenue], function(err, res){
@@ -132,17 +132,17 @@ mashup.refresh();
 ```
 ## Query Caching
 
-Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `maxAge` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses.
+Data sent to Keen is available for querying almost immediately. For use cases that don’t require up-to-the-second answers but require fast performance, query caching can be used to speed up a query. To include query caching as a feature, just add the `max_age` query parameter to any other query parameters you’ve already specified. The first time your application makes a query specifying the max_age the answer will be calculated normally before it can be cached for future uses.
 
 ```javascript
 var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
+    event_collection: "pageviews",
     timeframe: "this_14_days",
-    groupBy: "property",
-    maxAge: 300 // include maxAge as a query parameter to activate Query Caching
+    group_by: "property",
+    max_age: 300 // include max_age as a query parameter to activate Query Caching
 });
 ```
-`maxAge` is an integer which represents seconds. The maximum value for `maxAge` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
+`max_age` is an integer which represents seconds. The maximum value for `max_age` is 129600 seconds or 36 hours. Read more about Query Caching in the Keen IO [Data Analysis Docs](https://keen.io/docs/data-analysis/caching/).
 
 **Tip:** If you want to speed up your queries but maintain freshness, you can cache a year-long query and combine the result with a normal query that calculates the most current day’s answer.
 

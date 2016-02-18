@@ -1,4 +1,4 @@
-# Keen IO JavaScript SDK (v3.4.0-rc)
+# Keen IO JavaScript SDK (v3.4.0)
 
 <!--
 [![Build Status](https://api.travis-ci.org/keen/keen-js.png?branch=master)](https://travis-ci.org/keen/keen-js) [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
@@ -29,19 +29,19 @@ To start recording events from your website or blog, copy/paste this snippet of 
 
 ```html
 <script type="text/javascript">
-  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+  !function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.4.0/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
 Or load the library synchronously from our CDN:
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.4.0/keen.min.js" type="text/javascript"></script>
 ```
 or
 
 ```html
-<script src="//cdn.jsdelivr.net/keen.js/3.4.0-rc/keen.min.js" type="text/javascript"></script>
+<script src="//cdn.jsdelivr.net/keen.js/3.4.0/keen.min.js" type="text/javascript"></script>
 ```
 
 Read our [Installation guide](./docs/installation.md) to learn about all the ways this library can fit into your workflow.
@@ -173,7 +173,7 @@ The `<Client>.run` method is available on each configured client instance to run
 
 ```javascript
 var your_analysis = new Keen.Query(analysisType, {
-  eventCollection: 'YOUR_EVENT_COLLECTION', // (required)
+  event_collection: 'YOUR_EVENT_COLLECTION', // (required)
   timeframe: "YOUR_TIMEFRAME" // (required)
   // ... additional parameters
 });
@@ -192,8 +192,8 @@ Keen.ready(function(){
 
   // Create a query instance
   var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
-    groupBy: "property",
+    event_collection: "pageviews",
+    group_by: "property",
     timeframe: "this_7_days"
   });
 
@@ -348,8 +348,8 @@ Keen.ready(function(){
 
   // Create a query instance
   var count = new Keen.Query("count", {
-    eventCollection: "pageviews",
-    groupBy: "visitor.geo.country",
+    event_collection: "pageviews",
+    group_by: "visitor.geo.country",
     interval: "daily",
     timeframe: "this_21_days"
   });

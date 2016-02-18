@@ -16,9 +16,9 @@ client.draw(query, node, config);
 Keen.ready(function(){
 
   var query = new Keen.Query("count", {
-    eventCollection: "pageviews",
+    event_collection: "pageviews",
     timeframe: "this_14_days",
-    groupBy: "visitor.geo.country",
+    group_by: "visitor.geo.country",
     interval: "daily"
   });
 
@@ -168,8 +168,8 @@ Area, bar, column and line charts all operate on the same underlying query/respo
 
 ```javascript
 var total_pageviews = new Keen.Query("count", {
-  eventCollection: "pageviews",
-  groupBy: "channel",
+  event_collection: "pageviews",
+  group_by: "channel",
   timeframe: "this_3_days",
   interval: "daily"
 });
@@ -259,7 +259,7 @@ Visualize single numeric query responses, such as a count, sum, average, etc.
 
 ```javascript
 var count = new Keen.Query("count", {
-  eventCollection: "pageviews",
+  event_collection: "pageviews",
   timeframe: "this_14_days"
 });
 client.draw(count, document.getElementById("count-pageviews-metric"), {
@@ -284,12 +284,12 @@ client.draw(count, document.getElementById("count-pageviews-metric"), {
 
 ![Pie chart](http://d26b395fwzu5fz.cloudfront.net/images/Keen-demo-piechart.png)
 
-Pie charts can render `groupBy` queries that do not include an interval.
+Pie charts can render `group_by` queries that do not include an interval.
 
 ```javascript
 var visitor_origins = new Keen.Query("count", {
-  eventCollection: "pageviews",
-  groupBy: "referrer",
+  event_collection: "pageviews",
+  group_by: "referrer",
   timeframe: "this_14_days"
 });
 client.draw(visitor_origins, document.getElementById("count-pageviews-piechart"), {
@@ -307,7 +307,7 @@ Tables can render any query response, including extractions.
 
 ```javascript
 var all = new Keen.Query("extraction", {
-  eventCollection: "pageviews",
+  event_collection: "pageviews",
   timeframe: "this_7_days"
 });
 client.draw(all, document.getElementById("extract-pageviews-table"), {
@@ -414,14 +414,14 @@ Here's an example that runs two queries, divides them, and then outputs the resu
 Keen.ready(function(){
 
   var sessions_count = new Keen.Query("count_unique", {
-    eventCollection: "screen_view", // Use this collection because there is at least 1 screenview per session
-    targetProperty: "session.id",
+    event_collection: "screen_view", // Use this collection because there is at least 1 screenview per session
+    target_property: "session.id",
     timeframe: "last_7_days"
   });
 
   var paid_sessions_count = new Keen.Query("count_unique", { // Find number of sessions with payments
-    eventCollection: "payment",
-    targetProperty: "session.id",
+    event_collection: "payment",
+    target_property: "session.id",
     timeframe: "last_7_days"
   });
 
@@ -464,14 +464,14 @@ Keen.ready(function(){
   var timeframe = "last_30_days"
 
   var pageviews = new Keen.Query("count", { // first query
-  	eventCollection: "pageviews",
+  	event_collection: "pageviews",
   	interval: interval,
   	timeframe: timeframe
   });
 
   var uniqueVisitors = new Keen.Query("count_unique", { // second query
-  	eventCollection: "pageviews",
-  	targetProperty: "uuid",
+  	event_collection: "pageviews",
+  	target_property: "uuid",
   	interval: interval,
   	timeframe: timeframe
   });

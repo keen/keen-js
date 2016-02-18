@@ -720,27 +720,6 @@ Emitter.prototype.hasListeners = function(event){
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
 /**
- * Reduce `arr` with `fn`.
- *
- * @param {Array} arr
- * @param {Function} fn
- * @param {Mixed} initial
- *
- * TODO: combatible error handling?
- */
-module.exports = function(arr, fn, initial){  
-  var idx = 0;
-  var len = arr.length;
-  var curr = arguments.length == 3
-    ? initial
-    : arr[idx++];
-  while (idx < len) {
-    curr = fn.call(null, curr, arr[idx], ++idx, arr);
-  }
-  return curr;
-};
-},{}],4:[function(require,module,exports){
-/**
  * Module dependencies.
  */
 var Emitter = require('emitter');
@@ -1663,7 +1642,7 @@ request.put = function(url, data, fn){
  * Expose `request`.
  */
 module.exports = request;
-},{"emitter":5,"reduce":3}],5:[function(require,module,exports){
+},{"emitter":4,"reduce":5}],4:[function(require,module,exports){
 /**
  * Expose `Emitter`.
  */
@@ -1797,6 +1776,27 @@ Emitter.prototype.listeners = function(event){
  */
 Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
+};
+},{}],5:[function(require,module,exports){
+/**
+ * Reduce `arr` with `fn`.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Mixed} initial
+ *
+ * TODO: combatible error handling?
+ */
+module.exports = function(arr, fn, initial){  
+  var idx = 0;
+  var len = arr.length;
+  var curr = arguments.length == 3
+    ? initial
+    : arr[idx++];
+  while (idx < len) {
+    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+  }
+  return curr;
 };
 },{}],6:[function(require,module,exports){
 module.exports = function(){
@@ -2025,7 +2025,7 @@ function xhrShim(opts){
   };
   return this;
 }
-},{"../utils/each":18,"./get-xhr-object":9,"superagent":4}],12:[function(require,module,exports){
+},{"../utils/each":18,"./get-xhr-object":9,"superagent":3}],12:[function(require,module,exports){
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 var Emitter = require('./utils/emitter-shim');
@@ -2036,7 +2036,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.0-rc4';
+Keen.version = '3.4.0';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -2126,7 +2126,7 @@ module.exports = function(url, params, api_key, callback){
       callback = null;
     });
 };
-},{"../helpers/get-query-string":7,"../helpers/superagent-handle-response":10,"../helpers/superagent-request-types":11,"superagent":4}],14:[function(require,module,exports){
+},{"../helpers/get-query-string":7,"../helpers/superagent-handle-response":10,"../helpers/superagent-request-types":11,"superagent":3}],14:[function(require,module,exports){
 var Request = require("../request");
 module.exports = function(query, callback) {
   var queries = [],
@@ -2368,7 +2368,7 @@ function savedQueries() {
   return this;
 }
 module.exports = savedQueries;
-},{"./helpers/superagent-handle-response":10,"superagent":4}],18:[function(require,module,exports){
+},{"./helpers/superagent-handle-response":10,"superagent":3}],18:[function(require,module,exports){
 module.exports = function(o, cb, s){
   var n;
   if (!o){
@@ -2451,7 +2451,7 @@ module.exports = function(path, params, callback){
   }
   return;
 }
-},{"../helpers/get-context":6,"../helpers/get-xhr-object":9,"../helpers/superagent-handle-response":10,"superagent":4}],24:[function(require,module,exports){
+},{"../helpers/get-context":6,"../helpers/get-xhr-object":9,"../helpers/superagent-handle-response":10,"superagent":3}],24:[function(require,module,exports){
 var request = require('superagent');
 var responseHandler = require('../helpers/superagent-handle-response');
 module.exports = function(path, params, callback){
@@ -2474,7 +2474,7 @@ module.exports = function(path, params, callback){
     });
   return;
 }
-},{"../helpers/superagent-handle-response":10,"superagent":4}],25:[function(require,module,exports){
+},{"../helpers/superagent-handle-response":10,"superagent":3}],25:[function(require,module,exports){
 (function (global){
 ;(function (f) {
   if (typeof define === "function" && define.amd) {

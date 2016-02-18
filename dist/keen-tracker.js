@@ -770,27 +770,6 @@ Emitter.prototype.hasListeners = function(event){
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 /**
- * Reduce `arr` with `fn`.
- *
- * @param {Array} arr
- * @param {Function} fn
- * @param {Mixed} initial
- *
- * TODO: combatible error handling?
- */
-module.exports = function(arr, fn, initial){  
-  var idx = 0;
-  var len = arr.length;
-  var curr = arguments.length == 3
-    ? initial
-    : arr[idx++];
-  while (idx < len) {
-    curr = fn.call(null, curr, arr[idx], ++idx, arr);
-  }
-  return curr;
-};
-},{}],5:[function(require,module,exports){
-/**
  * Module dependencies.
  */
 var Emitter = require('emitter');
@@ -1713,7 +1692,7 @@ request.put = function(url, data, fn){
  * Expose `request`.
  */
 module.exports = request;
-},{"emitter":6,"reduce":4}],6:[function(require,module,exports){
+},{"emitter":5,"reduce":6}],5:[function(require,module,exports){
 /**
  * Expose `Emitter`.
  */
@@ -1847,6 +1826,27 @@ Emitter.prototype.listeners = function(event){
  */
 Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
+};
+},{}],6:[function(require,module,exports){
+/**
+ * Reduce `arr` with `fn`.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Mixed} initial
+ *
+ * TODO: combatible error handling?
+ */
+module.exports = function(arr, fn, initial){  
+  var idx = 0;
+  var len = arr.length;
+  var curr = arguments.length == 3
+    ? initial
+    : arr[idx++];
+  while (idx < len) {
+    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+  }
+  return curr;
 };
 },{}],7:[function(require,module,exports){
 var Keen = require("./index"),
@@ -2136,7 +2136,7 @@ function xhrShim(opts){
   };
   return this;
 }
-},{"../utils/each":20,"./get-xhr-object":11,"superagent":5}],14:[function(require,module,exports){
+},{"../utils/each":20,"./get-xhr-object":11,"superagent":4}],14:[function(require,module,exports){
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 var Emitter = require('./utils/emitter-shim');
@@ -2147,7 +2147,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.0-rc4';
+Keen.version = '3.4.0';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -2305,7 +2305,7 @@ function prepareGetRequest(url, data){
   });
   return ( url.length < getUrlMaxLength() ) ? url : false;
 }
-},{"../helpers/get-context":8,"../helpers/get-query-string":9,"../helpers/get-url-max-length":10,"../helpers/get-xhr-object":11,"../helpers/superagent-handle-response":12,"../helpers/superagent-request-types":13,"../index":14,"../utils/base64":19,"../utils/each":20,"../utils/json-shim":23,"superagent":5}],16:[function(require,module,exports){
+},{"../helpers/get-context":8,"../helpers/get-query-string":9,"../helpers/get-url-max-length":10,"../helpers/get-xhr-object":11,"../helpers/superagent-handle-response":12,"../helpers/superagent-request-types":13,"../index":14,"../utils/base64":19,"../utils/each":20,"../utils/json-shim":23,"superagent":4}],16:[function(require,module,exports){
 var Keen = require('../index');
 var request = require('superagent');
 var each = require('../utils/each'),
@@ -2376,7 +2376,7 @@ module.exports = function(payload, callback) {
   }
   return;
 };
-},{"../helpers/get-context":8,"../helpers/get-xhr-object":11,"../helpers/superagent-handle-response":12,"../helpers/superagent-request-types":13,"../index":14,"../utils/each":20,"superagent":5}],17:[function(require,module,exports){
+},{"../helpers/get-context":8,"../helpers/get-xhr-object":11,"../helpers/superagent-handle-response":12,"../helpers/superagent-request-types":13,"../index":14,"../utils/each":20,"superagent":4}],17:[function(require,module,exports){
 module.exports = function(newGlobalProperties) {
   if (newGlobalProperties && typeof(newGlobalProperties) == "function") {
     this.config.globalProperties = newGlobalProperties;

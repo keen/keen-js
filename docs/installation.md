@@ -15,7 +15,7 @@ For quick browser use, copy/paste this snippet of JavaScript above the `</head>`
 
 ```html
 <script type="text/javascript">
-!function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
+!function(a,b){a("Keen","https://d26b395fwzu5fz.cloudfront.net/3.4.0/keen.min.js",b)}(function(a,b,c){var d,e,f;c["_"+a]={},c[a]=function(b){c["_"+a].clients=c["_"+a].clients||{},c["_"+a].clients[b.projectId]=this,this._config=b},c[a].ready=function(b){c["_"+a].ready=c["_"+a].ready||[],c["_"+a].ready.push(b)},d=["addEvent","setGlobalProperties","trackExternalLink","on"];for(var g=0;g<d.length;g++){var h=d[g],i=function(a){return function(){return this["_"+a]=this["_"+a]||[],this["_"+a].push(arguments),this}};c[a].prototype[h]=i(h)}e=document.createElement("script"),e.async=!0,e.src=b,f=document.getElementsByTagName("script")[0],f.parentNode.insertBefore(e,f)},this);
 </script>
 ```
 
@@ -38,7 +38,7 @@ Unlike the core `Keen` object and its tracking-related methods, `Keen.Query`, `K
 Keen.ready(function(){
   // runs once library has loaded
   var query = new Keen.Query("count", {
-    eventCollection: "pageviews"
+    event_collection: "pageviews"
   });
   // .. run query, visualize, etc.
 });
@@ -52,7 +52,7 @@ Keen.ready(function(){
 Simple, synchronous loading.
 
 ```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen.min.js" type="text/javascript"></script>
+<script src="https://d26b395fwzu5fz.cloudfront.net/3.4.0/keen.min.js" type="text/javascript"></script>
 ```
 
 ## Tracking-only
@@ -60,10 +60,10 @@ Simple, synchronous loading.
 If you only need to track events, replace the URLs in your installation with this version:
 
 ```
-https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen-tracker.min.js
+https://d26b395fwzu5fz.cloudfront.net/3.4.0/keen-tracker.min.js
 ```
 
-## AMD/CommonJS
+## AMD/RequireJS
 
 We want to make this library AMD/CommonJS-friendly, so if you run into any conflicts or bugs with specific loaders, please let us know by opening a new issue.
 
@@ -74,10 +74,63 @@ The library is loaded with an explicitly named module ID ("keen"), which present
 ```javascript
 requirejs.config({
   "paths": {
-    "keen": "https://d26b395fwzu5fz.cloudfront.net/3.4.0-rc/keen"
+    "keen": "https://d26b395fwzu5fz.cloudfront.net/3.4.0/keen"
   }
 });
 require([ "keen" ], function(Keen) {
   var client = new Keen({ ... });
+});
+```
+
+This library uses the Google Charts API for data visualization, which imposes a few installation challenges for RequireJS usage. [Read this to learn more](https://github.com/keen/keen-js/issues/341#issuecomment-148039517).
+
+## JSPM Installation
+
+In order to import keen-query and keen-tracker with JSPM, one has to define the following overrides in the package.json:
+
+```json
+  "dependencies": {
+    "keen": "github:keen/keen-js@3.2.5"
+  },
+ "overrides": {
+    "github:keen/keen-js@3.2.5": {
+      "format": "global",
+      "main": "dist/keen-tracker.js",
+      "files": [
+        "dist/keen-tracker.js",
+        "dist/keen-query.js"
+      ],
+      "shim": {
+        "dist/keen-tracker.": {
+          "exports": "Keen"
+        },
+        "dist/keen-query": {
+          "exports": "Keen"
+        }
+      }
+    }
+  }
+```
+
+The main file will be `keen-tracker` and the secondary file will be `keen-query`. After running `jspm install`, you will be able to use the following statements to import Keen tracker and Keen query:
+
+```JavaScript
+import Keen from 'keen';
+import KeenQuery from 'keen/dist/keen-query';
+```
+
+You can use Keen straight away and for KeenQuery you need to call Keen.ready:
+
+```javascript
+var client = new Keen({
+  // ...
+});
+
+client.addEvent('event-collection', {
+  title: 'Some Event Property'
+});
+
+KeenQuery.ready(function() {
+  // Compose and run queries here
 });
 ```

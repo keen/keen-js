@@ -15,14 +15,14 @@ var interval = "daily"
 var timeframe = "last_30_days"
 
 var pageviews = new Keen.Query("count", { // first query
-	eventCollection: "pageviews",
+	event_collection: "pageviews",
 	interval: interval,
 	timeframe: timeframe
 });
 
 var uniqueVisitors = new Keen.Query("count_unique", { // second query
-	eventCollection: "pageviews",
-	targetProperty: "uuid",
+	event_collection: "pageviews",
+	target_property: "uuid",
 	interval: interval,
 	timeframe: timeframe
 });
@@ -85,14 +85,14 @@ Keen.ready(function(){
   var timeframe = "last_30_days"
 
   var posts = new Keen.Query("count", { // first query
-    eventCollection: "posts",
+    event_collection: "posts",
     interval: interval,
     timeframe: timeframe
   });
 
   var uniquePosters= new Keen.Query("count_unique", { // second query
-    eventCollection: "posts",
-    targetProperty: "uuid",
+    event_collection: "posts",
+    target_property: "uuid",
     interval: interval,
     timeframe: timeframe
   });
@@ -174,7 +174,7 @@ Each data point on the line chart tells you what percentage of users who signed 
       // Use an action that happen every session
       var step2CollectionName = "session_starts";
 
-      var actorProperty = "player_id" ;
+      var actor_property = "player_id" ;
 
       // Number of days ago the user did step1
       var retentionPeriod = 30;
@@ -193,10 +193,10 @@ Each data point on the line chart tells you what percentage of users who signed 
 				})
 				.prepare();
 
-      calculateRetention(daysInChart, step1CollectionName, step2CollectionName, retentionPeriod, actorProperty, div);
+      calculateRetention(daysInChart, step1CollectionName, step2CollectionName, retentionPeriod, actor_property, div);
     });
 
-    function calculateRetention(daysInChart, step1CollectionName, step2CollectionName, retentionPeriod, actorProperty, div) {
+    function calculateRetention(daysInChart, step1CollectionName, step2CollectionName, retentionPeriod, actor_property, div) {
       var dataForLineChart = [];
 
       for (i=0; i < daysInChart; i++) {
@@ -221,8 +221,8 @@ Each data point on the line chart tells you what percentage of users who signed 
 
           // Funnel steps used for calculating retention
           var step1 = {
-            eventCollection: step1CollectionName,
-            actorProperty: actorProperty,
+            event_collection: step1CollectionName,
+            actor_property: actor_property,
             timeframe: {
               start: firstStepDate.toISOString().replace("Z","") + TIMEZONE_OFFSET,
               end: firstStepDateEnd.toISOString().replace("Z","") + TIMEZONE_OFFSET
@@ -230,8 +230,8 @@ Each data point on the line chart tells you what percentage of users who signed 
           };
 
           var step2 = {
-            eventCollection: step2CollectionName,
-            actorProperty: actorProperty,
+            event_collection: step2CollectionName,
+            actor_property: actor_property,
             timeframe: {
               start: secondStepDate.toISOString().replace("Z","") + TIMEZONE_OFFSET,
               end: secondStepDateEnd.toISOString().replace("Z","") + TIMEZONE_OFFSET
