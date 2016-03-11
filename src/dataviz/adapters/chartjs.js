@@ -97,6 +97,11 @@ module.exports = function(){
   each(["doughnut", "pie", "polar-area", "radar", "bar", "line"], function(type, index){
     charts[type] = {
       initialize: function(){
+        // Check and message for empty dataset
+        if (this.data()[0].length === 1 || this.data().length === 1) {
+          this.error('No data to display');
+          return;
+        }
         if (this.el().nodeName.toLowerCase() !== "canvas") {
           var canvas = document.createElement('canvas');
           this.el().innerHTML = "";
@@ -121,7 +126,7 @@ module.exports = function(){
       },
       render: function(){
         if(_isEmptyOutput(this.dataset)) {
-          this.error("No results to display");
+          this.error("No data to display");
           return;
         }
         var method = ChartNameMap[type],

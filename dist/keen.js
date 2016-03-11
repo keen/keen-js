@@ -2472,7 +2472,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.0';
+Keen.version = '3.4.1-rc1';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -4274,8 +4274,11 @@ module.exports = function(){
   each(['gauge', 'donut', 'pie', 'bar', 'area', 'area-spline', 'spline', 'line', 'step', 'area-step'], function(type, index){
     charts[type] = {
       render: function(){
-        var setup = getSetupTemplate.call(this, type);
-        this.view._artifacts['c3'] = c3.generate(setup);
+        if (this.data()[0].length === 1 || this.data().length === 1) {
+          this.error('No data to display');
+          return;
+        }
+        this.view._artifacts['c3'] = c3.generate(getSetupTemplate.call(this, type));
         this.update();
       },
       update: function(){
@@ -4475,6 +4478,10 @@ module.exports = function(){
   each(["doughnut", "pie", "polar-area", "radar", "bar", "line"], function(type, index){
     charts[type] = {
       initialize: function(){
+        if (this.data()[0].length === 1 || this.data().length === 1) {
+          this.error('No data to display');
+          return;
+        }
         if (this.el().nodeName.toLowerCase() !== "canvas") {
           var canvas = document.createElement('canvas');
           this.el().innerHTML = "";
@@ -4496,7 +4503,7 @@ module.exports = function(){
       },
       render: function(){
         if(_isEmptyOutput(this.dataset)) {
-          this.error("No results to display");
+          this.error("No data to display");
           return;
         }
         var method = ChartNameMap[type],

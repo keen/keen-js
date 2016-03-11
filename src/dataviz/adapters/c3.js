@@ -40,8 +40,12 @@ module.exports = function(){
   each(['gauge', 'donut', 'pie', 'bar', 'area', 'area-spline', 'spline', 'line', 'step', 'area-step'], function(type, index){
     charts[type] = {
       render: function(){
-        var setup = getSetupTemplate.call(this, type);
-        this.view._artifacts['c3'] = c3.generate(setup);
+        // Check and message for empty dataset
+        if (this.data()[0].length === 1 || this.data().length === 1) {
+          this.error('No data to display');
+          return;
+        }
+        this.view._artifacts['c3'] = c3.generate(getSetupTemplate.call(this, type));
         this.update();
       },
       update: function(){
