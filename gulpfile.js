@@ -11,6 +11,7 @@ var aws = require('gulp-awspublish'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
     moment = require('moment'),
     rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
     squash = require('gulp-remove-empty-lines'),
     strip = require('gulp-strip-comments'),
     transform = require('vinyl-transform');
@@ -31,6 +32,12 @@ gulp.task('build:browserify', function() {
       var b = browserify(filename);
       return b.bundle();
     }))
+    // Clean out nested AMD defintions
+    .pipe(replace('(isLoader)', '(false)'))
+    .pipe(replace('define(function () {', '(function(){'))
+    .pipe(replace('define(definition)', '{}'))
+    .pipe(replace('define(factory)', '{}'))
+    // Clean up source
     .pipe(strip({ line: true }))
     .pipe(squash())
     .pipe(gulp.dest('./dist/'));

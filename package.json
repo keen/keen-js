@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.4.1-rc1",
+  "version": "3.4.1-rc2",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {
@@ -57,6 +57,7 @@
     "gulp-mocha-phantomjs": "^0.5.1",
     "gulp-remove-empty-lines": "0.0.2",
     "gulp-rename": "^1.2.0",
+    "gulp-replace": "^0.5.4",
     "gulp-strip-comments": "^1.0.1",
     "gulp-util": "^3.0.1",
     "gulp-yuicompressor": "0.0.3",

@@ -711,8 +711,8 @@ Emitter.prototype.hasListeners = function(event){
       "stringify": JSON3.stringify
     };
   }
-  if (isLoader) {
-    define(function () {
+  if (false) {
+    (function(){
       return JSON3;
     });
   }
@@ -2036,7 +2036,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.1-rc1';
+Keen.version = '3.4.1-rc2';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){

@@ -137,7 +137,7 @@ Emitter.prototype.hasListeners = function(event){
   */
 !function (name, definition) {
   if (typeof module != 'undefined') module.exports = definition()
-  else if (typeof define == 'function' && typeof define.amd == 'object') define(definition)
+  else if (typeof define == 'function' && typeof define.amd == 'object') {}
   else this[name] = definition()
 }('domready', function (ready) {
   var fns = [], fn, f = false
@@ -761,8 +761,8 @@ Emitter.prototype.hasListeners = function(event){
       "stringify": JSON3.stringify
     };
   }
-  if (isLoader) {
-    define(function () {
+  if (false) {
+    (function(){
       return JSON3;
     });
   }
@@ -804,7 +804,7 @@ Emitter.prototype.hasListeners = function(event){
   /* CommonJS */
   if (typeof exports == 'object') module.exports = factory()
   /* AMD module */
-  else if (typeof define == 'function' && define.amd) define(factory)
+  else if (typeof define == 'function' && define.amd) {}
   /* Browser global */
   else root.Spinner = factory()
 }(this, function () {
@@ -2472,7 +2472,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.1-rc1';
+Keen.version = '3.4.1-rc2';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){

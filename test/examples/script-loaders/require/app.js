@@ -1,19 +1,13 @@
 requirejs.config({
   paths: {
     "keen": "../../../dist/keen"
+    // "keen": "//d26b395fwzu5fz.cloudfront.net/3.4.1-rc1/keen"
   }
 });
 
-require([
-    "keen",
-    // "../../../dist/adapters/keen-adapter-c3",
-    //  "../../../dist/adapters/keen-adapter-google",
-    //  "../../../dist/adapters/keen-adapter-chartjs"
-  ], function(KeenAMD) {
+require(["keen"], function(KeenAMD) {
 
   console.log(arguments);
-  // console.log(require.s.contexts._.defined);
-  // console.log(require.s.contexts._.registry);
 
   // ---------------------------------
 
