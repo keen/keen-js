@@ -720,16 +720,44 @@ Emitter.prototype.hasListeners = function(event){
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],3:[function(require,module,exports){
 /**
+ * Reduce `arr` with `fn`.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Mixed} initial
+ *
+ * TODO: combatible error handling?
+ */
+module.exports = function(arr, fn, initial){  
+  var idx = 0;
+  var len = arr.length;
+  var curr = arguments.length == 3
+    ? initial
+    : arr[idx++];
+  while (idx < len) {
+    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+  }
+  return curr;
+};
+},{}],4:[function(require,module,exports){
+/**
  * Module dependencies.
  */
 var Emitter = require('emitter');
 var reduce = require('reduce');
+var requestBase = require('./request-base');
+var isObject = require('./is-object');
 /**
  * Root reference for iframes.
  */
-var root = 'undefined' == typeof window
-  ? this
-  : window;
+var root;
+if (typeof window !== 'undefined') {
+  root = window;
+} else if (typeof self !== 'undefined') {
+  root = self;
+} else {
+  root = this;
+}
 /**
  * Noop.
  */
@@ -756,11 +784,16 @@ function isHost(obj) {
   }
 }
 /**
+ * Expose `request`.
+ */
+var request = module.exports = require('./request').bind(null, Request);
+/**
  * Determine XHR.
  */
-function getXHR() {
+request.getXHR = function () {
   if (root.XMLHttpRequest
-    && ('file:' != root.location.protocol || !root.ActiveXObject)) {
+      && (!root.location || 'file:' != root.location.protocol
+          || !root.ActiveXObject)) {
     return new XMLHttpRequest;
   } else {
     try { return new ActiveXObject('Microsoft.XMLHTTP'); } catch(e) {}
@@ -769,7 +802,7 @@ function getXHR() {
     try { return new ActiveXObject('Msxml2.XMLHTTP'); } catch(e) {}
   }
   return false;
-}
+};
 /**
  * Removes leading and trailing whitespace, added to support IE.
  *
@@ -780,16 +813,6 @@ function getXHR() {
 var trim = ''.trim
   ? function(s) { return s.trim(); }
   : function(s) { return s.replace(/(^\s*|\s*$)/g, ''); };
-/**
- * Check if `obj` is an object.
- *
- * @param {Object} obj
- * @return {Boolean}
- * @api private
- */
-function isObject(obj) {
-  return obj === Object(obj);
-}
 /**
  * Serialize the given `obj`.
  *
@@ -802,11 +825,27 @@ function serialize(obj) {
   var pairs = [];
   for (var key in obj) {
     if (null != obj[key]) {
-      pairs.push(encodeURIComponent(key)
-        + '=' + encodeURIComponent(obj[key]));
-    }
-  }
+      pushEncodedKeyValuePair(pairs, key, obj[key]);
+        }
+      }
   return pairs.join('&');
+}
+/**
+ * Helps 'serialize' with serializing arrays.
+ * Mutates the pairs array.
+ *
+ * @param {Array} pairs
+ * @param {String} key
+ * @param {Mixed} val
+ */
+function pushEncodedKeyValuePair(pairs, key, val) {
+  if (Array.isArray(val)) {
+    return val.forEach(function(v) {
+      pushEncodedKeyValuePair(pairs, key, v);
+    });
+  }
+  pairs.push(encodeURIComponent(key)
+    + '=' + encodeURIComponent(val));
 }
 /**
  * Expose serialization method.
@@ -899,6 +938,16 @@ function parseHeader(str) {
   return fields;
 }
 /**
+ * Check if `mime` is json or has +json structured syntax suffix.
+ *
+ * @param {String} mime
+ * @return {Boolean}
+ * @api private
+ */
+function isJSON(mime) {
+  return /[\/+]json\b/.test(mime);
+}
+/**
  * Return the mime type for the given `str`.
  *
  * @param {String} str
@@ -973,15 +1022,16 @@ function Response(req, options) {
   options = options || {};
   this.req = req;
   this.xhr = this.req.xhr;
-  this.text = this.req.method !='HEAD' 
-     ? this.xhr.responseText 
+  this.text = ((this.req.method !='HEAD' && (this.xhr.responseType === '' || this.xhr.responseType === 'text')) || typeof this.xhr.responseType === 'undefined')
+     ? this.xhr.responseText
      : null;
+  this.statusText = this.req.xhr.statusText;
   this.setStatusProperties(this.xhr.status);
   this.header = this.headers = parseHeader(this.xhr.getAllResponseHeaders());
   this.header['content-type'] = this.xhr.getResponseHeader('content-type');
   this.setHeaderProperties(this.header);
   this.body = this.req.method != 'HEAD'
-    ? this.parseBody(this.text)
+    ? this.parseBody(this.text ? this.text : this.xhr.response)
     : null;
 }
 /**
@@ -1023,7 +1073,10 @@ Response.prototype.setHeaderProperties = function(header){
  */
 Response.prototype.parseBody = function(str){
   var parse = request.parse[this.type];
-  return parse && str && str.length
+  if (!parse && isJSON(this.type)) {
+    parse = request.parse['application/json'];
+  }
+  return parse && str && (str.length || str instanceof Object)
     ? parse(str)
     : null;
 };
@@ -1048,8 +1101,11 @@ Response.prototype.parseBody = function(str){
  * @api private
  */
 Response.prototype.setStatusProperties = function(status){
+  if (status === 1223) {
+    status = 204;
+  }
   var type = status / 100 | 0;
-  this.status = status;
+  this.status = this.statusCode = status;
   this.statusType = type;
   this.info = 1 == type;
   this.ok = 2 == type;
@@ -1059,7 +1115,7 @@ Response.prototype.setStatusProperties = function(status){
     ? this.toError()
     : false;
   this.accepted = 202 == status;
-  this.noContent = 204 == status || 1223 == status;
+  this.noContent = 204 == status;
   this.badRequest = 400 == status;
   this.unauthorized = 401 == status;
   this.notAcceptable = 406 == status;
@@ -1096,7 +1152,6 @@ request.Response = Response;
  */
 function Request(method, url) {
   var self = this;
-  Emitter.call(this);
   this._query = this._query || [];
   this.method = method;
   this.url = url;
@@ -1106,48 +1161,36 @@ function Request(method, url) {
     var err = null;
     var res = null;
     try {
-      res = new Response(self); 
+      res = new Response(self);
     } catch(e) {
       err = new Error('Parser is unable to parse the response');
       err.parse = true;
       err.original = e;
+      err.rawResponse = self.xhr && self.xhr.responseText ? self.xhr.responseText : null;
+      err.statusCode = self.xhr && self.xhr.status ? self.xhr.status : null;
+      return self.callback(err);
     }
-    self.callback(err, res);
+    self.emit('response', res);
+    if (err) {
+      return self.callback(err, res);
+    }
+    if (res.status >= 200 && res.status < 300) {
+      return self.callback(err, res);
+    }
+    var new_err = new Error(res.statusText || 'Unsuccessful HTTP response');
+    new_err.original = err;
+    new_err.response = res;
+    new_err.status = res.status;
+    self.callback(new_err, res);
   });
 }
 /**
- * Mixin `Emitter`.
+ * Mixin `Emitter` and `requestBase`.
  */
 Emitter(Request.prototype);
-/**
- * Allow for extension
- */
-Request.prototype.use = function(fn) {
-  fn(this);
-  return this;
+for (var key in requestBase) {
+  Request.prototype[key] = requestBase[key];
 }
-/**
- * Set timeout to `ms`.
- *
- * @param {Number} ms
- * @return {Request} for chaining
- * @api public
- */
-Request.prototype.timeout = function(ms){
-  this._timeout = ms;
-  return this;
-};
-/**
- * Clear previous timeout.
- *
- * @return {Request} for chaining
- * @api public
- */
-Request.prototype.clearTimeout = function(){
-  this._timeout = 0;
-  clearTimeout(this._timer);
-  return this;
-};
 /**
  * Abort the request, and clear potential timeout.
  *
@@ -1161,64 +1204,6 @@ Request.prototype.abort = function(){
   this.clearTimeout();
   this.emit('abort');
   return this;
-};
-/**
- * Set header `field` to `val`, or multiple fields with one object.
- *
- * Examples:
- *
- *      req.get('/')
- *        .set('Accept', 'application/json')
- *        .set('X-API-Key', 'foobar')
- *        .end(callback);
- *
- *      req.get('/')
- *        .set({ Accept: 'application/json', 'X-API-Key': 'foobar' })
- *        .end(callback);
- *
- * @param {String|Object} field
- * @param {String} val
- * @return {Request} for chaining
- * @api public
- */
-Request.prototype.set = function(field, val){
-  if (isObject(field)) {
-    for (var key in field) {
-      this.set(key, field[key]);
-    }
-    return this;
-  }
-  this._header[field.toLowerCase()] = val;
-  this.header[field] = val;
-  return this;
-};
-/**
- * Remove header `field`.
- *
- * Example:
- *
- *      req.get('/')
- *        .unset('User-Agent')
- *        .end(callback);
- *
- * @param {String} field
- * @return {Request} for chaining
- * @api public
- */
-Request.prototype.unset = function(field){
-  delete this._header[field.toLowerCase()];
-  delete this.header[field];
-  return this;
-};
-/**
- * Get case-insensitive header `field` value.
- *
- * @param {String} field
- * @return {String}
- * @api private
- */
-Request.prototype.getHeader = function(field){
-  return this._header[field.toLowerCase()];
 };
 /**
  * Set Content-Type to `type`, mapping values from `request.types`.
@@ -1243,6 +1228,24 @@ Request.prototype.getHeader = function(field){
  */
 Request.prototype.type = function(type){
   this.set('Content-Type', request.types[type] || type);
+  return this;
+};
+/**
+ * Set responseType to `val`. Presently valid responseTypes are 'blob' and 
+ * 'arraybuffer'.
+ *
+ * Examples:
+ *
+ *      req.get('/')
+ *        .responseType('blob')
+ *        .end(callback);
+ *
+ * @param {String} val
+ * @return {Request} for chaining
+ * @api public
+ */
+Request.prototype.responseType = function(val){
+  this._responseType = val;
   return this;
 };
 /**
@@ -1273,12 +1276,26 @@ Request.prototype.accept = function(type){
  *
  * @param {String} user
  * @param {String} pass
+ * @param {Object} options with 'type' property 'auto' or 'basic' (default 'basic')
  * @return {Request} for chaining
  * @api public
  */
-Request.prototype.auth = function(user, pass){
-  var str = btoa(user + ':' + pass);
-  this.set('Authorization', 'Basic ' + str);
+Request.prototype.auth = function(user, pass, options){
+  if (!options) {
+    options = {
+      type: 'basic'
+    }
+  }
+  switch (options.type) {
+    case 'basic':
+      var str = btoa(user + ':' + pass);
+      this.set('Authorization', 'Basic ' + str);
+    break;
+    case 'auto':
+      this.username = user;
+      this.password = pass;
+    break;
+  }
   return this;
 };
 /**
@@ -1300,26 +1317,6 @@ Request.prototype.query = function(val){
   return this;
 };
 /**
- * Write the field `name` and `val` for "multipart/form-data"
- * request bodies.
- *
- * ``` js
- * request.post('/upload')
- *   .field('foo', 'bar')
- *   .end(callback);
- * ```
- *
- * @param {String} name
- * @param {String|Blob|File} val
- * @return {Request} for chaining
- * @api public
- */
-Request.prototype.field = function(name, val){
-  if (!this._formData) this._formData = new FormData();
-  this._formData.append(name, val);
-  return this;
-};
-/**
  * Queue the given `file` as an attachment to the specified `field`,
  * with optional `filename`.
  *
@@ -1336,31 +1333,25 @@ Request.prototype.field = function(name, val){
  * @api public
  */
 Request.prototype.attach = function(field, file, filename){
-  if (!this._formData) this._formData = new FormData();
-  this._formData.append(field, file, filename);
+  this._getFormData().append(field, file, filename || file.name);
   return this;
 };
+Request.prototype._getFormData = function(){
+  if (!this._formData) {
+    this._formData = new root.FormData();
+  }
+  return this._formData;
+};
 /**
- * Send `data`, defaulting the `.type()` to "json" when
+ * Send `data` as the request body, defaulting the `.type()` to "json" when
  * an object is given.
  *
  * Examples:
  *
  *      
- *       request.get('/search')
- *         .end(callback)
- *
- *      
- *       request.get('/search')
- *         .send({ search: 'query' })
- *         .send({ range: '1..5' })
- *         .send({ order: 'desc' })
- *         .end(callback)
- *
- *      
  *       request.post('/user')
  *         .type('json')
- *         .send('{"name":"tj"})
+ *         .send('{"name":"tj"}')
  *         .end(callback)
  *
  *      
@@ -1392,14 +1383,14 @@ Request.prototype.attach = function(field, file, filename){
  */
 Request.prototype.send = function(data){
   var obj = isObject(data);
-  var type = this.getHeader('Content-Type');
+  var type = this._header['content-type'];
   if (obj && isObject(this._data)) {
     for (var key in data) {
       this._data[key] = data[key];
     }
   } else if ('string' == typeof data) {
     if (!type) this.type('form');
-    type = this.getHeader('Content-Type');
+    type = this._header['content-type'];
     if ('application/x-www-form-urlencoded' == type) {
       this._data = this._data
         ? this._data + '&' + data
@@ -1410,8 +1401,22 @@ Request.prototype.send = function(data){
   } else {
     this._data = data;
   }
-  if (!obj) return this;
+  if (!obj || isHost(data)) return this;
   if (!type) this.type('json');
+  return this;
+};
+/**
+ * @deprecated
+ */
+Response.prototype.parse = function serialize(fn){
+  if (root.console) {
+    console.warn("Client-side parse() method has been renamed to serialize(). This method is not compatible with superagent v2.0");
+  }
+  this.serialize(fn);
+  return this;
+};
+Response.prototype.serialize = function serialize(fn){
+  this._parser = fn;
   return this;
 };
 /**
@@ -1425,9 +1430,7 @@ Request.prototype.send = function(data){
 Request.prototype.callback = function(err, res){
   var fn = this._callback;
   this.clearTimeout();
-  if (2 == fn.length) return fn(err, res);
-  if (err) return this.emit('error', err);
-  fn(res);
+  fn(err, res);
 };
 /**
  * Invoke callback with x-domain error.
@@ -1435,8 +1438,11 @@ Request.prototype.callback = function(err, res){
  * @api private
  */
 Request.prototype.crossDomainError = function(){
-  var err = new Error('Origin is not allowed by Access-Control-Allow-Origin');
+  var err = new Error('Request has been terminated\nPossible causes: the network is offline, Origin is not allowed by Access-Control-Allow-Origin, the page is being unloaded, etc.');
   err.crossDomain = true;
+  err.status = this.status;
+  err.method = this.method;
+  err.url = this.url;
   this.callback(err);
 };
 /**
@@ -1474,27 +1480,41 @@ Request.prototype.withCredentials = function(){
  */
 Request.prototype.end = function(fn){
   var self = this;
-  var xhr = this.xhr = getXHR();
+  var xhr = this.xhr = request.getXHR();
   var query = this._query.join('&');
   var timeout = this._timeout;
   var data = this._formData || this._data;
   this._callback = fn || noop;
   xhr.onreadystatechange = function(){
     if (4 != xhr.readyState) return;
-    if (0 == xhr.status) {
-      if (self.aborted) return self.timeoutError();
+    var status;
+    try { status = xhr.status } catch(e) { status = 0; }
+    if (0 == status) {
+      if (self.timedout) return self.timeoutError();
+      if (self.aborted) return;
       return self.crossDomainError();
     }
     self.emit('end');
   };
-  if (xhr.upload) {
-    xhr.upload.onprogress = function(e){
+  var handleProgress = function(e){
+    if (e.total > 0) {
       e.percent = e.loaded / e.total * 100;
-      self.emit('progress', e);
-    };
+    }
+    e.direction = 'download';
+    self.emit('progress', e);
+  };
+  if (this.hasListeners('progress')) {
+    xhr.onprogress = handleProgress;
+  }
+  try {
+    if (xhr.upload && this.hasListeners('progress')) {
+      xhr.upload.onprogress = handleProgress;
+    }
+  } catch(e) {
   }
   if (timeout && !this._timer) {
     this._timer = setTimeout(function(){
+      self.timedout = true;
       self.abort();
     }, timeout);
   }
@@ -1504,47 +1524,33 @@ Request.prototype.end = function(fn){
       ? '&' + query
       : '?' + query;
   }
-  xhr.open(this.method, this.url, true);
+  if (this.username && this.password) {
+    xhr.open(this.method, this.url, true, this.username, this.password);
+  } else {
+    xhr.open(this.method, this.url, true);
+  }
   if (this._withCredentials) xhr.withCredentials = true;
   if ('GET' != this.method && 'HEAD' != this.method && 'string' != typeof data && !isHost(data)) {
-    var serialize = request.serialize[this.getHeader('Content-Type')];
+    var contentType = this._header['content-type'];
+    var serialize = this._parser || request.serialize[contentType ? contentType.split(';')[0] : ''];
+    if (!serialize && isJSON(contentType)) serialize = request.serialize['application/json'];
     if (serialize) data = serialize(data);
   }
   for (var field in this.header) {
     if (null == this.header[field]) continue;
     xhr.setRequestHeader(field, this.header[field]);
   }
+  if (this._responseType) {
+    xhr.responseType = this._responseType;
+  }
   this.emit('request', this);
-  xhr.send(data);
+  xhr.send(typeof data !== 'undefined' ? data : null);
   return this;
 };
 /**
  * Expose `Request`.
  */
 request.Request = Request;
-/**
- * Issue a request:
- *
- * Examples:
- *
- *    request('GET', '/users').end(callback)
- *    request('/users').end(callback)
- *    request('/users', callback)
- *
- * @param {String} method
- * @param {String|Function} url or callback
- * @return {Request}
- * @api public
- */
-function request(method, url) {
-  if ('function' == typeof url) {
-    return new Request('GET', method).end(url);
-  }
-  if (1 == arguments.length) {
-    return new Request('GET', method);
-  }
-  return new Request(method, url);
-}
 /**
  * GET `url` with optional callback `fn(res)`.
  *
@@ -1585,11 +1591,13 @@ request.head = function(url, data, fn){
  * @return {Request}
  * @api public
  */
-request.del = function(url, fn){
+function del(url, fn){
   var req = request('DELETE', url);
   if (fn) req.end(fn);
   return req;
 };
+request['del'] = del;
+request['delete'] = del;
 /**
  * PATCH `url` with optional `data` and callback `fn(res)`.
  *
@@ -1638,171 +1646,196 @@ request.put = function(url, data, fn){
   if (fn) req.end(fn);
   return req;
 };
+},{"./is-object":5,"./request":7,"./request-base":6,"emitter":1,"reduce":3}],5:[function(require,module,exports){
 /**
- * Expose `request`.
- */
-module.exports = request;
-},{"emitter":4,"reduce":5}],4:[function(require,module,exports){
-/**
- * Expose `Emitter`.
- */
-module.exports = Emitter;
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-/**
- * Mixin the emitter properties.
+ * Check if `obj` is an object.
  *
  * @param {Object} obj
- * @return {Object}
+ * @return {Boolean}
  * @api private
  */
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
-  }
-  return obj;
+function isObject(obj) {
+  return null != obj && 'object' == typeof obj;
+}
+module.exports = isObject;
+},{}],6:[function(require,module,exports){
+/**
+ * Module of mixed-in functions shared between node and client code
+ */
+var isObject = require('./is-object');
+/**
+ * Clear previous timeout.
+ *
+ * @return {Request} for chaining
+ * @api public
+ */
+exports.clearTimeout = function _clearTimeout(){
+  this._timeout = 0;
+  clearTimeout(this._timer);
+  return this;
+};
+/**
+ * Force given parser
+ *
+ * Sets the body parser no matter type.
+ *
+ * @param {Function}
+ * @api public
+ */
+exports.parse = function parse(fn){
+  this._parser = fn;
+  return this;
+};
+/**
+ * Set timeout to `ms`.
+ *
+ * @param {Number} ms
+ * @return {Request} for chaining
+ * @api public
+ */
+exports.timeout = function timeout(ms){
+  this._timeout = ms;
+  return this;
+};
+/**
+ * Faux promise support
+ *
+ * @param {Function} fulfill
+ * @param {Function} reject
+ * @return {Request}
+ */
+exports.then = function then(fulfill, reject) {
+  return this.end(function(err, res) {
+    err ? reject(err) : fulfill(res);
+  });
 }
 /**
- * Listen on the given `event` with `fn`.
+ * Allow for extension
+ */
+exports.use = function use(fn) {
+  fn(this);
+  return this;
+}
+/**
+ * Get request header `field`.
+ * Case-insensitive.
  *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
+ * @param {String} field
+ * @return {String}
  * @api public
  */
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks[event] = this._callbacks[event] || [])
-    .push(fn);
-  return this;
+exports.get = function(field){
+  return this._header[field.toLowerCase()];
 };
 /**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
+ * Get case-insensitive header `field` value.
+ * This is a deprecated internal API. Use `.get(field)` instead.
  *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
+ * (getHeader is no longer used internally by the superagent code base)
+ *
+ * @param {String} field
+ * @return {String}
+ * @api private
+ * @deprecated
  */
-Emitter.prototype.once = function(event, fn){
-  var self = this;
-  this._callbacks = this._callbacks || {};
-  function on() {
-    self.off(event, on);
-    fn.apply(this, arguments);
-  }
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
+exports.getHeader = exports.get;
 /**
- * Remove the given callback for `event` or all
- * registered callbacks.
+ * Set header `field` to `val`, or multiple fields with one object.
+ * Case-insensitive.
  *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
+ * Examples:
+ *
+ *      req.get('/')
+ *        .set('Accept', 'application/json')
+ *        .set('X-API-Key', 'foobar')
+ *        .end(callback);
+ *
+ *      req.get('/')
+ *        .set({ Accept: 'application/json', 'X-API-Key': 'foobar' })
+ *        .end(callback);
+ *
+ * @param {String|Object} field
+ * @param {String} val
+ * @return {Request} for chaining
  * @api public
  */
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  if (0 == arguments.length) {
-    this._callbacks = {};
+exports.set = function(field, val){
+  if (isObject(field)) {
+    for (var key in field) {
+      this.set(key, field[key]);
+    }
     return this;
   }
-  var callbacks = this._callbacks[event];
-  if (!callbacks) return this;
-  if (1 == arguments.length) {
-    delete this._callbacks[event];
-    return this;
-  }
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
+  this._header[field.toLowerCase()] = val;
+  this.header[field] = val;
   return this;
 };
 /**
- * Emit `event` with the given args.
+ * Remove header `field`.
+ * Case-insensitive.
  *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
+ * Example:
+ *
+ *      req.get('/')
+ *        .unset('User-Agent')
+ *        .end(callback);
+ *
+ * @param {String} field
  */
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks[event];
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
+exports.unset = function(field){
+  delete this._header[field.toLowerCase()];
+  delete this.header[field];
   return this;
 };
 /**
- * Return array of callbacks for `event`.
+ * Write the field `name` and `val` for "multipart/form-data"
+ * request bodies.
  *
- * @param {String} event
- * @return {Array}
+ * ``` js
+ * request.post('/upload')
+ *   .field('foo', 'bar')
+ *   .end(callback);
+ * ```
+ *
+ * @param {String} name
+ * @param {String|Blob|File|Buffer|fs.ReadStream} val
+ * @return {Request} for chaining
  * @api public
  */
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks[event] || [];
+exports.field = function(name, val) {
+  this._getFormData().append(name, val);
+  return this;
 };
+},{"./is-object":5}],7:[function(require,module,exports){
 /**
- * Check if this emitter has `event` handlers.
+ * Issue a request:
  *
- * @param {String} event
- * @return {Boolean}
+ * Examples:
+ *
+ *    request('GET', '/users').end(callback)
+ *    request('/users').end(callback)
+ *    request('/users', callback)
+ *
+ * @param {String} method
+ * @param {String|Function} url or callback
+ * @return {Request}
  * @api public
  */
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-},{}],5:[function(require,module,exports){
-/**
- * Reduce `arr` with `fn`.
- *
- * @param {Array} arr
- * @param {Function} fn
- * @param {Mixed} initial
- *
- * TODO: combatible error handling?
- */
-module.exports = function(arr, fn, initial){  
-  var idx = 0;
-  var len = arr.length;
-  var curr = arguments.length == 3
-    ? initial
-    : arr[idx++];
-  while (idx < len) {
-    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+function request(RequestConstructor, method, url) {
+  if ('function' == typeof url) {
+    return new RequestConstructor('GET', method).end(url);
   }
-  return curr;
-};
-},{}],6:[function(require,module,exports){
+  if (2 == arguments.length) {
+    return new RequestConstructor('GET', method);
+  }
+  return new RequestConstructor(method, url);
+}
+module.exports = request;
+},{}],8:[function(require,module,exports){
 module.exports = function(){
   return "undefined" == typeof window ? "server" : "browser";
 };
-},{}],7:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 var each = require('../utils/each'),
     json = require('../utils/json-shim');
 module.exports = function(params){
@@ -1815,11 +1848,11 @@ module.exports = function(params){
   });
   return '?' + query.join('&');
 };
-},{"../utils/each":18,"../utils/json-shim":21}],8:[function(require,module,exports){
+},{"../utils/each":20,"../utils/json-shim":23}],10:[function(require,module,exports){
 module.exports = function(){
   return new Date().getTimezoneOffset() * -60;
 };
-},{}],9:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 module.exports = function() {
   var root = "undefined" == typeof window ? this : window;
   if (root.XMLHttpRequest && ("file:" != root.location.protocol || !root.ActiveXObject)) {
@@ -1832,7 +1865,7 @@ module.exports = function() {
   }
   return false;
 };
-},{}],10:[function(require,module,exports){
+},{}],12:[function(require,module,exports){
 module.exports = function(err, res, callback) {
   var cb = callback || function() {};
   if (res && !res.ok) {
@@ -1848,7 +1881,7 @@ module.exports = function(err, res, callback) {
   }
   return;
 };
-},{}],11:[function(require,module,exports){
+},{}],13:[function(require,module,exports){
 var superagent = require('superagent');
 var each = require('../utils/each'),
     getXHR = require('./get-xhr-object');
@@ -2025,7 +2058,7 @@ function xhrShim(opts){
   };
   return this;
 }
-},{"../utils/each":18,"./get-xhr-object":9,"superagent":3}],12:[function(require,module,exports){
+},{"../utils/each":20,"./get-xhr-object":11,"superagent":4}],14:[function(require,module,exports){
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 var Emitter = require('./utils/emitter-shim');
@@ -2036,7 +2069,7 @@ function Keen(config) {
 Keen.debug = false;
 Keen.enabled = true;
 Keen.loaded = true;
-Keen.version = '3.4.1-rc3';
+Keen.version = '3.4.1-rc4';
 Emitter(Keen);
 Emitter(Keen.prototype);
 Keen.prototype.configure = function(cfg){
@@ -2106,7 +2139,7 @@ Keen.ready = function(fn){
   }
 };
 module.exports = Keen;
-},{"./utils/emitter-shim":19}],13:[function(require,module,exports){
+},{"./utils/emitter-shim":21}],15:[function(require,module,exports){
 var request = require('superagent');
 var getQueryString = require('../helpers/get-query-string'),
     handleResponse = require('../helpers/superagent-handle-response'),
@@ -2126,7 +2159,7 @@ module.exports = function(url, params, api_key, callback){
       callback = null;
     });
 };
-},{"../helpers/get-query-string":7,"../helpers/superagent-handle-response":10,"../helpers/superagent-request-types":11,"superagent":3}],14:[function(require,module,exports){
+},{"../helpers/get-query-string":9,"../helpers/superagent-handle-response":12,"../helpers/superagent-request-types":13,"superagent":4}],16:[function(require,module,exports){
 var Request = require("../request");
 module.exports = function(query, callback) {
   var queries = [],
@@ -2155,7 +2188,7 @@ module.exports = function(query, callback) {
   cb = callback = null;
   return request;
 };
-},{"../request":16}],15:[function(require,module,exports){
+},{"../request":18}],17:[function(require,module,exports){
 var each = require("./utils/each"),
     extend = require("./utils/extend"),
     getTimezoneOffset = require("./helpers/get-timezone-offset"),
@@ -2217,7 +2250,7 @@ Query.prototype.addFilter = function(property, operator, value) {
   return this;
 };
 module.exports = Query;
-},{"./helpers/get-query-string":7,"./helpers/get-timezone-offset":8,"./utils/each":18,"./utils/emitter-shim":19,"./utils/extend":20}],16:[function(require,module,exports){
+},{"./helpers/get-query-string":9,"./helpers/get-timezone-offset":10,"./utils/each":20,"./utils/emitter-shim":21,"./utils/extend":22}],18:[function(require,module,exports){
 var each = require('./utils/each'),
     extend = require('./utils/extend'),
     sendQuery = require('./utils/sendQuery'),
@@ -2310,7 +2343,7 @@ Request.prototype.refresh = function(){
   return this;
 };
 module.exports = Request;
-},{"./":12,"./query":15,"./utils/each":18,"./utils/emitter-shim":19,"./utils/extend":20,"./utils/sendQuery":23,"./utils/sendSavedQuery":24}],17:[function(require,module,exports){
+},{"./":14,"./query":17,"./utils/each":20,"./utils/emitter-shim":21,"./utils/extend":22,"./utils/sendQuery":25,"./utils/sendSavedQuery":26}],19:[function(require,module,exports){
 var request = require('superagent');
 var responseHandler = require('./helpers/superagent-handle-response');
 function savedQueries() {
@@ -2368,7 +2401,7 @@ function savedQueries() {
   return this;
 }
 module.exports = savedQueries;
-},{"./helpers/superagent-handle-response":10,"superagent":3}],18:[function(require,module,exports){
+},{"./helpers/superagent-handle-response":12,"superagent":4}],20:[function(require,module,exports){
 module.exports = function(o, cb, s){
   var n;
   if (!o){
@@ -2392,11 +2425,11 @@ module.exports = function(o, cb, s){
   }
   return 1;
 };
-},{}],19:[function(require,module,exports){
+},{}],21:[function(require,module,exports){
 var Emitter = require('component-emitter');
 Emitter.prototype.trigger = Emitter.prototype.emit;
 module.exports = Emitter;
-},{"component-emitter":1}],20:[function(require,module,exports){
+},{"component-emitter":1}],22:[function(require,module,exports){
 module.exports = function(target){
   for (var i = 1; i < arguments.length; i++) {
     for (var prop in arguments[i]){
@@ -2405,9 +2438,9 @@ module.exports = function(target){
   }
   return target;
 };
-},{}],21:[function(require,module,exports){
+},{}],23:[function(require,module,exports){
 module.exports = ('undefined' !== typeof window && window.JSON) ? window.JSON : require("json3");
-},{"json3":2}],22:[function(require,module,exports){
+},{"json3":2}],24:[function(require,module,exports){
 function parseParams(str){
   var urlParams = {},
       match,
@@ -2421,7 +2454,7 @@ function parseParams(str){
   return urlParams;
 };
 module.exports = parseParams;
-},{}],23:[function(require,module,exports){
+},{}],25:[function(require,module,exports){
 var request = require('superagent');
 var getContext = require('../helpers/get-context'),
     getXHR = require('../helpers/get-xhr-object'),
@@ -2451,7 +2484,7 @@ module.exports = function(path, params, callback){
   }
   return;
 }
-},{"../helpers/get-context":6,"../helpers/get-xhr-object":9,"../helpers/superagent-handle-response":10,"superagent":3}],24:[function(require,module,exports){
+},{"../helpers/get-context":8,"../helpers/get-xhr-object":11,"../helpers/superagent-handle-response":12,"superagent":4}],26:[function(require,module,exports){
 var request = require('superagent');
 var responseHandler = require('../helpers/superagent-handle-response');
 module.exports = function(path, params, callback){
@@ -2474,7 +2507,7 @@ module.exports = function(path, params, callback){
     });
   return;
 }
-},{"../helpers/superagent-handle-response":10,"superagent":3}],25:[function(require,module,exports){
+},{"../helpers/superagent-handle-response":12,"superagent":4}],27:[function(require,module,exports){
 (function (global){
 ;(function (f) {
   if (typeof define === "function" && define.amd) {
@@ -2515,4 +2548,4 @@ module.exports = function(path, params, callback){
   return Keen;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core":12,"./core/lib/get":13,"./core/lib/run":14,"./core/query":15,"./core/request":16,"./core/saved-queries":17,"./core/utils/each":18,"./core/utils/extend":20,"./core/utils/parseParams":22}]},{},[25]);
+},{"./core":14,"./core/lib/get":15,"./core/lib/run":16,"./core/query":17,"./core/request":18,"./core/saved-queries":19,"./core/utils/each":20,"./core/utils/extend":22,"./core/utils/parseParams":24}]},{},[27]);

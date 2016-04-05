@@ -1,6 +1,7 @@
 {
   "name": "keen-js",
-  "version": "3.4.1-rc3",
+  "version": "3.4.1-rc4",
+  "license": "MIT",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
   "repository": {
@@ -27,9 +28,6 @@
     "Tim Schiller <timothy.schiller@gmail.com> (http://tmschl.com)",
     "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)"
   ],
-  "engines": {
-    "node": ">= 0.10.0"
-  },
   "browserify": {
     "transform": [
       "browserify-versionify"
@@ -42,7 +40,7 @@
     "domready": "0.3.0",
     "json3": "^3.3.2",
     "spin.js": "^2.0.1",
-    "superagent": "^0.21.0"
+    "superagent": "^1.8.3"
   },
   "devDependencies": {
     "browserify": "^8.0.3",
@@ -54,7 +52,7 @@
     "gulp-awspublish": "0.0.23",
     "gulp-connect": "^2.2.0",
     "gulp-mocha": "^2.0.0",
-    "gulp-mocha-phantomjs": "^0.5.1",
+    "gulp-mocha-phantomjs": "^0.11.0",
     "gulp-remove-empty-lines": "0.0.2",
     "gulp-rename": "^1.2.0",
     "gulp-replace": "^0.5.4",
@@ -73,7 +71,6 @@
     "lodash.template": "^2.4.1",
     "moment": "^2.8.4",
     "nock": "^0.51.0",
-    "phantomjs": "^1.9.17",
     "vinyl-transform": "^1.0.0"
   }
 }
