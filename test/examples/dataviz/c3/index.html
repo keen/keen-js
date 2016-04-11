@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <meta http-equiv="content-type" content="text/html; charset=UTF8">
   <title>Keen IO Comprehensive Test</title>
   <link rel='stylesheet' href='../keen-bootstrap.min.css'>
   <link rel='stylesheet' href='../keen-dashboards.css'>
@@ -143,6 +144,20 @@
       </div>
       <div class='col-sm-4'>
         <div id='c3-step-multigroupby-interval'></div>
+      </div>
+    </div>
+    <hr>
+
+    <h2>Multi-group_by-interval (Custom axis)</h2>
+    <div class='row'>
+      <div class='col-sm-4'>
+        <div id='c3-line-multigroupby-interval-custom'></div>
+      </div>
+      <div class='col-sm-4'>
+        <div id='c3-area-multigroupby-interval-custom'></div>
+      </div>
+      <div class='col-sm-4'>
+        <div id='c3-step-multigroupby-interval-custom'></div>
       </div>
     </div>
     <hr>
@@ -615,6 +630,24 @@
     });
 
 
+    // RENDERING MULTI-GROUPBY + INTERVAL (CUSTOM)
+
+    var c3line_multigroupby_interval_custom = client.draw(multigroupbyinterval, document.getElementById('c3-line-multigroupby-interval-custom'), {
+      library: 'c3',
+      chartType: 'line',
+      stacked: true,
+      chartOptions: {
+        axis: {
+          x: {
+            type: 'timeseries',
+            tick: {
+              count: 3,
+              format: '%m/%Y'
+            }
+          }
+        }
+      }
+    });
 
 
     // RENDERING SAVED QUERIES
