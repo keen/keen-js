@@ -770,6 +770,27 @@ Emitter.prototype.hasListeners = function(event){
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
 },{}],4:[function(require,module,exports){
 /**
+ * Reduce `arr` with `fn`.
+ *
+ * @param {Array} arr
+ * @param {Function} fn
+ * @param {Mixed} initial
+ *
+ * TODO: combatible error handling?
+ */
+module.exports = function(arr, fn, initial){  
+  var idx = 0;
+  var len = arr.length;
+  var curr = arguments.length == 3
+    ? initial
+    : arr[idx++];
+  while (idx < len) {
+    curr = fn.call(null, curr, arr[idx], ++idx, arr);
+  }
+  return curr;
+};
+},{}],5:[function(require,module,exports){
+/**
  * Copyright (c) 2011-2014 Felix Gnass
  * Licensed under the MIT license
  * http://spin.js.org/
@@ -802,7 +823,7 @@ Emitter.prototype.hasListeners = function(event){
  */
 ;(function (root, factory) {
   /* CommonJS */
-  if (typeof exports == 'object') module.exports = factory()
+  if (typeof module == 'object' && module.exports) module.exports = factory()
   /* AMD module */
   else if (typeof define == 'function' && define.amd) define(factory)
   /* Browser global */
@@ -1089,7 +1110,7 @@ Emitter.prototype.hasListeners = function(event){
   }
   return Spinner
 }));
-},{}],5:[function(require,module,exports){
+},{}],6:[function(require,module,exports){
 /**
  * Module dependencies.
  */
@@ -2013,7 +2034,7 @@ request.put = function(url, data, fn){
  * Expose `request`.
  */
 module.exports = request;
-},{"emitter":6,"reduce":7}],6:[function(require,module,exports){
+},{"emitter":7,"reduce":4}],7:[function(require,module,exports){
 /**
  * Expose `Emitter`.
  */
@@ -2147,27 +2168,6 @@ Emitter.prototype.listeners = function(event){
  */
 Emitter.prototype.hasListeners = function(event){
   return !! this.listeners(event).length;
-};
-},{}],7:[function(require,module,exports){
-/**
- * Reduce `arr` with `fn`.
- *
- * @param {Array} arr
- * @param {Function} fn
- * @param {Mixed} initial
- *
- * TODO: combatible error handling?
- */
-module.exports = function(arr, fn, initial){  
-  var idx = 0;
-  var len = arr.length;
-  var curr = arguments.length == 3
-    ? initial
-    : arr[idx++];
-  while (idx < len) {
-    curr = fn.call(null, curr, arr[idx], ++idx, arr);
-  }
-  return curr;
 };
 },{}],8:[function(require,module,exports){
 var Keen = require("./index"),
@@ -2461,7 +2461,7 @@ function xhrShim(opts){
   };
   return this;
 }
-},{"../utils/each":29,"./get-xhr-object":13,"superagent":5}],16:[function(require,module,exports){
+},{"../utils/each":29,"./get-xhr-object":13,"superagent":6}],16:[function(require,module,exports){
 var root = 'undefined' !== typeof window ? window : this;
 var previous_Keen = root.Keen;
 var Emitter = require('./utils/emitter-shim');
@@ -2630,7 +2630,7 @@ function prepareGetRequest(url, data){
   });
   return ( url.length < getUrlMaxLength() ) ? url : false;
 }
-},{"../helpers/get-context":9,"../helpers/get-query-string":10,"../helpers/get-url-max-length":12,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/base64":27,"../utils/each":29,"../utils/json-shim":32,"superagent":5}],18:[function(require,module,exports){
+},{"../helpers/get-context":9,"../helpers/get-query-string":10,"../helpers/get-url-max-length":12,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/base64":27,"../utils/each":29,"../utils/json-shim":32,"superagent":6}],18:[function(require,module,exports){
 var Keen = require('../index');
 var request = require('superagent');
 var each = require('../utils/each'),
@@ -2701,7 +2701,7 @@ module.exports = function(payload, callback) {
   }
   return;
 };
-},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/each":29,"superagent":5}],19:[function(require,module,exports){
+},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"../index":16,"../utils/each":29,"superagent":6}],19:[function(require,module,exports){
 var request = require('superagent');
 var getQueryString = require('../helpers/get-query-string'),
     handleResponse = require('../helpers/superagent-handle-response'),
@@ -2721,7 +2721,7 @@ module.exports = function(url, params, api_key, callback){
       callback = null;
     });
 };
-},{"../helpers/get-query-string":10,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"superagent":5}],20:[function(require,module,exports){
+},{"../helpers/get-query-string":10,"../helpers/superagent-handle-response":14,"../helpers/superagent-request-types":15,"superagent":6}],20:[function(require,module,exports){
 var request = require('superagent');
 var handleResponse = require('../helpers/superagent-handle-response');
 module.exports = function(url, data, api_key, callback){
@@ -2735,7 +2735,7 @@ module.exports = function(url, data, api_key, callback){
       callback = null;
     });
 };
-},{"../helpers/superagent-handle-response":14,"superagent":5}],21:[function(require,module,exports){
+},{"../helpers/superagent-handle-response":14,"superagent":6}],21:[function(require,module,exports){
 var Request = require("../request");
 module.exports = function(query, callback) {
   var queries = [],
@@ -3035,7 +3035,7 @@ function savedQueries() {
   return this;
 }
 module.exports = savedQueries;
-},{"./helpers/superagent-handle-response":14,"superagent":5}],27:[function(require,module,exports){
+},{"./helpers/superagent-handle-response":14,"superagent":6}],27:[function(require,module,exports){
 module.exports = {
   map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
   encode: function (n) {
@@ -3170,7 +3170,7 @@ module.exports = function(path, params, callback){
   }
   return;
 }
-},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"superagent":5}],35:[function(require,module,exports){
+},{"../helpers/get-context":9,"../helpers/get-xhr-object":13,"../helpers/superagent-handle-response":14,"superagent":6}],35:[function(require,module,exports){
 var request = require('superagent');
 var responseHandler = require('../helpers/superagent-handle-response');
 module.exports = function(path, params, callback){
@@ -3193,7 +3193,7 @@ module.exports = function(path, params, callback){
     });
   return;
 }
-},{"../helpers/superagent-handle-response":14,"superagent":5}],36:[function(require,module,exports){
+},{"../helpers/superagent-handle-response":14,"superagent":6}],36:[function(require,module,exports){
 var clone = require("../core/utils/clone"),
     each = require("../core/utils/each"),
     flatten = require("./utils/flatten"),
@@ -5855,4 +5855,4 @@ module.exports = function(_input) {
   return Keen;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":61,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":53,"./dataviz/adapters/google":54,"./dataviz/adapters/keen-io":55,"./dataviz/extensions/draw":57,"./dataviz/utils/prettyNumber":95,"domready":2,"spin.js":4}]},{},[96]);
+},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":61,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":53,"./dataviz/adapters/google":54,"./dataviz/adapters/keen-io":55,"./dataviz/extensions/draw":57,"./dataviz/utils/prettyNumber":95,"domready":2,"spin.js":5}]},{},[96]);
