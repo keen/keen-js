@@ -24,6 +24,7 @@ describe('#getSetupTemplate', function() {
         .chartOptions({ axis: axisData });
 
       var setup = getSetupTemplate.call(this.dataviz, 'line');
+      axisData['x']['type'] = 'timeseries';
 
       expect(setup['axis']).to.deep.equal(axisData);
     });

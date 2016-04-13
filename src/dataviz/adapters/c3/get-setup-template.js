@@ -28,30 +28,18 @@ module.exports = function (type) {
     if (this.dataType().indexOf('chron') > -1) {
       setup['data']['x'] = 'x';
 
-      if (chartOptions['axis'] && chartOptions['axis']['x']) {
-        setup['axis']['x'] = chartOptions['axis']['x'];
-      }
-      else {
-        setup['axis']['x'] = {
-          type: 'timeseries',
-          tick: {
-            format: this.dateFormat() || getDateFormatDefault(this.data()[1][0], this.data()[2][0])
-          }
-        };
-      }
+      setup['axis']['x'] = setup['axis']['x'] || {};
+      setup['axis']['x']['type'] = 'timeseries';
+      setup['axis']['x']['tick'] = setup['axis']['x']['tick'] || {
+        format: this.dateFormat() || getDateFormatDefault(this.data()[1][0], this.data()[2][0])
+      };
     }
 
     else {
       if (this.dataType() === 'cat-ordinal') {
-        if (chartOptions['axis'] && chartOptions['axis']['x']) {
-          setup['axis']['x'] = chartOptions['axis']['x'];
-        }
-        else {
-          setup['axis']['x'] = {
-            type: 'category',
-            categories: this.labels()
-          };
-        }
+        setup['axis']['x'] = setup['axis']['x'] || {};
+        setup['axis']['x']['type'] = 'category';
+        setup['axis']['x']['categories'] = setup['axis']['x']['categories'] || this.labels()
       }
     }
 
