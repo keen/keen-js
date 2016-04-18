@@ -5858,8 +5858,4 @@ module.exports = function(_input) {
   return Keen;
 });
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-<<<<<<< 84aa17dca0e4fbc5f265cd07951aa3713e15b7ff
-},{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":61,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":53,"./dataviz/adapters/google":54,"./dataviz/adapters/keen-io":55,"./dataviz/extensions/draw":57,"./dataviz/utils/prettyNumber":95,"domready":2,"spin.js":5}]},{},[96]);
-=======
 },{"./core":16,"./core/async":8,"./core/lib/addEvent":17,"./core/lib/addEvents":18,"./core/lib/get":19,"./core/lib/post":20,"./core/lib/run":21,"./core/lib/setGlobalProperties":22,"./core/lib/trackExternalLink":23,"./core/query":24,"./core/request":25,"./core/saved-queries":26,"./core/utils/base64":27,"./core/utils/each":29,"./core/utils/extend":31,"./core/utils/parseParams":33,"./dataset":37,"./dataviz":62,"./dataviz/adapters/c3":52,"./dataviz/adapters/chartjs":54,"./dataviz/adapters/google":55,"./dataviz/adapters/keen-io":56,"./dataviz/extensions/draw":58,"./dataviz/utils/prettyNumber":96,"domready":2,"spin.js":5}]},{},[97]);
->>>>>>> Fix 'getSetupTemplate' so it accepts some custom user configuration in 'chartOptions'
