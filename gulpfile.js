@@ -11,6 +11,7 @@ var aws = require('gulp-awspublish'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
     moment = require('moment'),
     rename = require('gulp-rename'),
+    replace = require('gulp-replace'),
     squash = require('gulp-remove-empty-lines'),
     strip = require('gulp-strip-comments'),
     transform = require('vinyl-transform');
@@ -25,12 +26,19 @@ gulp.task('build:browserify', function() {
   return gulp.src([
       './src/keen.js',
       './src/keen-tracker.js',
-      './src/keen-query.js'
+      './src/keen-query.js',
+      './src/keen-c3.js'
     ])
     .pipe(transform(function(filename) {
       var b = browserify(filename);
       return b.bundle();
     }))
+    // Clean out nested AMD defintions
+    .pipe(replace('(isLoader)', '(false)'))
+    .pipe(replace('define(function () {', '(function(){'))
+    .pipe(replace('define(definition)', '{}'))
+    .pipe(replace('define(factory)', '{}'))
+    // Clean up source
     .pipe(strip({ line: true }))
     .pipe(squash())
     .pipe(gulp.dest('./dist/'));
@@ -40,7 +48,8 @@ gulp.task('build:minify', ['build:browserify'], function(){
   return gulp.src([
       './dist/keen.js',
       './dist/keen-tracker.js',
-      './dist/keen-query.js'
+      './dist/keen-query.js',
+      './dist/keen-c3.js'
       // './src/loader.js'
     ])
     .pipe(compress({ type: 'js' }))
@@ -179,7 +188,8 @@ gulp.task('aws', ['build', 'test:local'], function() {
       './dist/keen-tracker.js',
       './dist/keen-tracker.min.js',
       './dist/keen-query.js',
-      './dist/keen-query.min.js'
+      './dist/keen-c3.min.js',
+      './dist/keen-c3.js'
     ])
     .pipe(rename(function(path) {
       path.dirname += '/' + pkg['version'];
