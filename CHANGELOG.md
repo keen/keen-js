@@ -3,6 +3,14 @@
 # Unreleased
 -->
 
+<a name="3.4.1"></a>
+# Custom axis options for C3 charts, fixed `npm install` issues.
+**Fixed:**
+* C3 adapter no longer overwrites custom axis configurations. (#398)
+* Added sinon, requirejs, and upgraded mocha-phantomjs in `package.json` to stop `npm install` errors. (#399)
+* Update empty response handling and messaging for C3/ChartJS
+
+
 <a name="3.4.0"></a>
 # New features, fixed scoped key generation
 

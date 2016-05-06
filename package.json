@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.4.1-rc4",
+  "version": "3.4.1",
   "license": "MIT",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
@@ -69,8 +69,12 @@
     "karma-sauce-launcher": "^0.2.10",
     "karma-sinon": "^1.0.4",
     "lodash.template": "^2.4.1",
+    "requirejs": "^2.2.0",
     "moment": "^2.8.4",
+    "mocha": "^2.4.5",
     "nock": "^0.51.0",
+    "phantomjs": "^1.9.17",
+    "sinon": "^1.17.3",
     "vinyl-transform": "^1.0.0"
   }
 }
