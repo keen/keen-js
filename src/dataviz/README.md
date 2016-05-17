@@ -272,7 +272,7 @@ chart.library(); // returns current library selection
 #### .chartType(string)
 
 ```javascript
-chart.chartType("bar");
+chart.chartType("barchart");
 chart.chartType(); // returns current chartType selection
 ```
 
