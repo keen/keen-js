@@ -200,9 +200,9 @@ chart.data(); // returns current Dataset instance
 
 If you pass in a Keen.Request instance, this method will forward the call to `.parseRequest()`, which is explicitly intended for this type of work. Feel free to use that method when possible.
 
-If you pas in raw data, this method will forward the call to `.parseRawData()`, which tries it's best to make sense of what you've given it. If you run into trouble here, just give us a shout.
+If you pass in raw data, this method will forward the call to `.parseRawData()`, which tries it's best to make sense of what you've given it. If you run into trouble here, just give us a shout.
 
-Each of these scenarios results in a new Keen.Dataset instance. If you pass in a Keen.Dataset instance directly, it will be piped directly into to fierce beating heart of the Dataviz beast.
+Each of these scenarios results in a new Keen.Dataset instance. If you pass in a [Keen.Dataset](/docs/dataset/README.md) instance directly, it will be piped directly into to fierce beating heart of the Dataviz beast.
 
 
 ### .parseRequest(<Keen.Request>)
