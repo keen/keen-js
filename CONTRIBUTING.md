@@ -1,4 +1,4 @@
-# Keen IO Javascript Client
+# Keen IO JavaScript Client
 
 First off, thank you for considering contributing to this official Keen IO client. It's people like you that make Keen IO such a great tool.
 
@@ -65,7 +65,7 @@ Fetch the branch and/or deploy to staging to test the following:
 ## How to report a bug
 If you find a security vulnerability, do NOT open an issue. Email team@keen.io instead.
 
-If you find a bug that's not a security vulnerability please had over to the issues tab of this rep and open up an issue.
+If you find a bug that's not a security vulnerability please head over to the issues tab of this rep and open up an issue.
 
 ## Suggesting features
 
