@@ -67,6 +67,8 @@ If you find a security vulnerability, do NOT open an issue. Email team@keen.io i
 
 If you find a bug that's not a security vulnerability please head over to the issues tab of this rep and open up an issue.
 
+We created these labels to help us organize issues: bugs, docs, enhancements, and feature-request. Please use them when creating an issue where it makes sense!
+
 ## Suggesting features
 
 We welcome your feedback and requests. If you have a straight forward request please open up an issue that details the request. If you want to talk to someone on the Keen team head over to http://keen.chat or send a note to team@keen.io and we will make sure and get you in touch with the product team.
