@@ -1,5 +1,5 @@
 var each = require("../../core/utils/each");
-var chartOptions = require("./chartOptions")
+var chartOptions = require("./chartOptions"),
     chartType = require("./chartType"),
     library = require("./library");
 

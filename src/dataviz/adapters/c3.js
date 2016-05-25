@@ -6,8 +6,8 @@
 
 var Dataviz = require('../dataviz'),
     each = require('../../core/utils/each'),
-    extend = require('../../core/utils/extend');
-    getSetupTemplate = require('./c3/get-setup-template')
+    extend = require('../../core/utils/extend'),
+    getSetupTemplate = require('./c3/get-setup-template');
 
 module.exports = function(){
 
