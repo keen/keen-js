@@ -1,6 +1,27 @@
-# Thanks for Contributing!
+# Keen IO JavaScript Client
 
-Run the following commands to get this project set up locally.
+First off, thank you for considering contributing to this official Keen IO client. It's people like you that make Keen IO such a great tool.
+
+We put these guidelines together to try and make working with our SDK as straight forward as possible, and hopefully help you understand how we communicate about potential changes and improvements.
+
+Improving documentation, bug triaging, building modules for various frameworks or writing tutorials are all examples of helpful contributions we really appreciate.
+
+Please, don't use the issue tracker for support questions. If you have a support question please come hang out in http://keen.chat or send an email to team@keen.io
+
+## Guidelines
+
+* Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
+* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See the [Python Community Code of Conduct](https://www.python.org/psf/codeofconduct/).
+
+## Your First Contribution
+
+Here are a couple of friendly tutorials with more information about contributing to OSS projects: http://makeapullrequest.com/,  http://www.firsttimersonly.com/, and [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
+
+At this point, you're ready to make your changes! Feel free to ask for help; everyone is a beginner at first :smile_cat:
+
+If a maintainer asks you to "rebase" your PR, they're saying that a lot of code has changed, and that you need to update your branch so it's easier to merge.
+
+### Run the following commands to get this project set up locally.
 
 ```ssh
 $ git clone https://github.com/keenlabs/keen-js.git && cd keen-js
@@ -16,7 +37,7 @@ $ gulp with-tests
 # View test results at http://localhost:9999
 ```
 
-## Submitting a Pull Request
+### Submitting a Pull Request
 
 Use the template below. If certain testing steps are not relevant, specify that in the PR. If additional checks are needed, add 'em! Please run through all testing steps before asking for a review.
 
@@ -40,3 +61,18 @@ Fetch the branch and/or deploy to staging to test the following:
 
 ## Related tickets?
 ```
+
+## How to report a bug
+If you find a security vulnerability, do NOT open an issue. Email team@keen.io instead.
+
+If you find a bug that's not a security vulnerability please head over to the issues tab of this rep and open up an issue.
+
+We created these labels to help us organize issues: bugs, docs, enhancements, and feature-request. Please use them when creating an issue where it makes sense!
+
+## Suggesting features
+
+We welcome your feedback and requests. If you have a straight forward request please open up an issue that details the request. If you want to talk to someone on the Keen team head over to http://keen.chat or send a note to team@keen.io and we will make sure and get you in touch with the product team.
+
+# Code review process
+
+The core team looks at Pull Requests and issues on a regular basis and will typically respond within 5 business days.
