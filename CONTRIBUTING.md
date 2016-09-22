@@ -11,7 +11,8 @@ Please, don't use the issue tracker for support questions. If you have a support
 ## Guidelines
 
 * Create issues for any major changes and enhancements that you wish to make. Discuss things transparently and get community feedback.
-* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. See our [Community Code of Conduct](#community-code-of-conduct).
+* Be welcoming to newcomers and encourage diverse new contributors from all backgrounds. 
+* Please take time to read our [Community Code of Conduct](#community-code-of-conduct) which includes Reporting Guidelines.
 
 ## Community Code of Conduct 
 
