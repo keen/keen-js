@@ -391,7 +391,7 @@ Read more about building charts from query responses in our [visualization guide
 
 ## Contributing
 
-This is an open source project and we love involvement from the community! Hit us up with pull requests and issues.
+This is an open source project and we love involvement from the community! If you are interested in getting involved, please see [CONTRIBUTING.md](CONTRIBUTING.md).
 
 The aim is to build up this module to completely represent the API provided by Keen IO, which is quite extensive. The more contributions the better!
 
