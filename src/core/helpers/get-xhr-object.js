@@ -1,6 +1,12 @@
 module.exports = function() {
   // yay, superagent!
-  var root = "undefined" == typeof window ? this : window;
+  var root = (typeof window !== "undefined"
+    ? window
+    : (typeof process === 'object' &&
+       typeof require === 'function' &&
+       typeof global === 'object')
+      ? global
+      : this);
   if (root.XMLHttpRequest && ("file:" != root.location.protocol || !root.ActiveXObject)) {
     return new XMLHttpRequest;
   } else {
