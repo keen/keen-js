@@ -71,7 +71,8 @@ module.exports = function(){
     },
 
     render: function(){
-      var bgColor = (this.colors().length == 1) ? this.colors()[0] : "#49c5b1",
+      var bgColor = (this.colors().length >= 1) ? this.colors()[0] : "#49c5b1",
+          textColor = (this.colors().length == 2) ? this.colors()[1] : "#fff",
           title = this.title() || "Result",
           value = (this.data()[1] && this.data()[1][1]) ? this.data()[1][1] : 0,
           width = this.width(),
@@ -98,7 +99,7 @@ module.exports = function(){
       }
 
       this.el().innerHTML = '' +
-        '<div class="keen-widget keen-metric" style="background-color: ' + bgColor + '; width:' + styles.width + ';" title="' + value + '">' +
+        '<div class="keen-widget keen-metric" style="background-color: ' + bgColor + '; color: ' + textColor + '; width:' + styles.width + ';" title="' + value + '">' +
           '<span class="keen-metric-value">' + prefix + formattedNum + suffix + '</span>' +
           '<span class="keen-metric-title">' + title + '</span>' +
         '</div>';
