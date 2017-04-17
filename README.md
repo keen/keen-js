@@ -217,8 +217,6 @@ Read more about advanced queries in our [query guide](./docs/query.md).
 
 Results for a single saved query can also be retrieved by passing the saved query name into `client.run("saved-query-name", callback)`.
 
-**Important:** Visualizing saved query results with `client.draw()` is not yet supported, but will be added soon!
-
 ```javascript
 // Create a client instance
 var client = new Keen({
