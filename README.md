@@ -32,6 +32,6 @@ These modules can also be loaded independently, based on your needs:
 
 ```html
 <meta charset="utf-8">
-<link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.js" rel="stylesheet" />
+<link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.css" rel="stylesheet" />
 <script src="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.js"></script>
 ```
