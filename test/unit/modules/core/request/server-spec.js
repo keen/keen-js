@@ -15,16 +15,17 @@ describe("Keen.Request", function() {
     this.client = new Keen({
       projectId: keenHelper.projectId,
       masterKey: keenHelper.masterKey,
-      readKey: keenHelper.readKey
+      readKey: keenHelper.readKey,
+      protocol: keenHelper.protocol
     });
     this.query = new Keen.Query("count", {
-      eventCollection: "test-collection"
+      event_collection: "test-collection"
     });
   });
 
   afterEach(function(){
-    this.client = void 0;
-    this.query = void 0;
+    this.client = undefined;
+    this.query = undefined;
   });
 
   describe("<Client>.run method", function(){
@@ -41,24 +42,25 @@ describe("Keen.Request", function() {
       expect(function(){ self.run("string"); }).to.throw(Error);
     });
 
-    it("should return a response when successful", function(done){
-      var response = { result: 1 };
+    it("should return a response when successful", function(){
+      var response = { result: 0 };
       mock.post("/queries/count", 200, JSON2.stringify(response));
       this.client.run(this.query, function(err, res){
         expect(err).to.be.a("null");
-        expect(res).to.deep.equal(response);
-        done();
+        expect(res.query).to.be.an('object');
+        expect(res.result).to.equal(0);
+        // done();
       });
     });
 
-    it("should return an error when unsuccessful", function(done){
+    it("should return an error when unsuccessful", function(){
       var response = { error_code: "ResourceNotFoundError", message: "no foo" };
       mock.post("/queries/count", 500, JSON2.stringify(response));
       this.client.run(this.query, function(err, res){
         expect(err).to.exist;
         expect(err["code"]).to.equal(response.error_code);
         expect(res).to.be.a("null");
-        done();
+        // done();
       });
     });
 
@@ -118,18 +120,20 @@ describe("Keen.Request", function() {
 
     describe("Multiple queries", function(){
       it("should return a single response when successful", function(done){
-        var response = [{ result: 1 }, { result: 1 }, { result: 1 }];
+        var response = [{ result: 0 }, { result: 0 }, { result: 0 }];
         mock.post("/queries/count", 200, JSON2.stringify(response[0]));
         mock.post("/queries/count", 200, JSON2.stringify(response[1]));
         mock.post("/queries/count", 200, JSON2.stringify(response[2]));
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.be.a("null");
           expect(res).to.be.an("array").and.to.have.length(3);
-          expect(res).to.deep.equal(response);
+          expect(res[0].result).to.equal(0);
+          expect(res[1].result).to.equal(0);
+          expect(res[2].result).to.equal(0);
           done();
         });
       });
-      it('should return a single error when unsuccessful', function(done){
+      it('should return a single error when unsuccessful', function(done) {
         var response = { error_code: "ResourceNotFoundError", message: "no foo" };
         mock.post("/queries/count", 500, JSON2.stringify(response));
         mock.post("/queries/count", 500, JSON2.stringify(response));
@@ -144,7 +148,7 @@ describe("Keen.Request", function() {
     });
 
     describe("saved queries", function() {
-      it("returns result of the saved query when saved query is found", function(done) {
+      it("returns result of the saved query when saved query is found", function() {
         var savedQuery = new Keen.Query("saved", { queryName: "page-visit-count" });
         var savedQueryResponse = {
           query_name: "page-visit-count",
@@ -158,22 +162,20 @@ describe("Keen.Request", function() {
 
         this.client.run(savedQuery, function(err, res) {
           expect(res).to.deep.equal(savedQueryResponse);
-          done();
         });
       });
 
-      it("returns an error if saved query is not found", function(done) {
+      it("returns an error if saved query is not found", function() {
         var savedQuery = new Keen.Query("saved", { queryName: "page-visit-count" });
         var savedQueryResponse = {
-          message: "Query not found",
-          error_code: "QueryNotFound"
+          // message: "Query not found",
+          // error_code: "QueryNotFound"
         };
         mock.get("/queries/saved/page-visit-count/result", 404, JSON2.stringify(savedQueryResponse));
 
         this.client.run(savedQuery, function(err, res) {
-          expect(err["code"]).to.equal("QueryNotFound");
+          expect(err["code"]).to.equal("InvalidHTTPMethodError");
           expect(res).to.be.a("null");
-          done();
         });
       });
     });

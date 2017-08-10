@@ -15,7 +15,7 @@ describe("Keen.Request", function() {
       requestType: "xhr"
     });
     this.query = new Keen.Query("count", {
-      eventCollection: "test-collection"
+      event_collection: "test-collection"
     });
     this.postUrl = this.client.url("queries", "count");
     this.server = sinon.fakeServer.create();

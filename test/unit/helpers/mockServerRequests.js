@@ -1,7 +1,7 @@
 var nock = require('nock'),
     keenHelper = require("./test-config");
 
-var baseUrl = "https://api.keen.io/3.0",
+var baseUrl = "http://api.keen.io",
     resHeader = { "Content-Type": "application/json" };
 
 module.exports = {

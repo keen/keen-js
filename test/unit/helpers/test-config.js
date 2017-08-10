@@ -4,7 +4,7 @@ module.exports = {
   readKey    : "f979d53e026bdbf1ba16f01ce168bc7bcf9d5308ba672fb14e1834793a9e705eefa04793f0f87fb76b1d49a6cc2747b96a8abae0e4569d70314099b3f7790f55e98c9ac482e3883aab86a4bb577c295dbbca4867e95e2e4b15038fac5d80957ded3e868e4e6e319d3aa9275abc22b16e",
   masterKey  : "FC135394DD08E3976870B7E7E83BDCD8",
   protocol   : "http",
-  host       : "mocha.keen.io/9999/3.0",
+  host       : "api.keen.io",
   collection : "mocha",
   properties: {
     username : "keenio",
