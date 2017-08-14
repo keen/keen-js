@@ -36,25 +36,27 @@ The individual packages listed above can also be loaded independently.
 
 **What is an event?** An event is a record of something important happening in the life of your app or service: like a click, a purchase, or a device activation.
 
-This example demonstrates how to record an event to the pageviews stream. The properties defined in the event body below are only for example and can be fully customized or replaced to suit your needs.
-
 ### Record an Event
+
+This example demonstrates how to record an event to the pageviews stream. The properties defined in the event body below are only for example and can be fully customized or replaced to suit your needs. This example uses [`Keen.helpers.getBrowserProfile()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#browser-profile) and [`Keen.helpers.getDatetimeIndex()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#datetime-index) to help build out an insightful data model.
 
 ```javascript
 var client = new Keen({
   projectId: 'YOUR_PROJECT_ID',
   writeKey: 'YOUR_WRITE_KEY'
 });
-var helpers = Keen.helpers;
 
 client.recordEvent('pageviews', {
-  // Define your event data model
-  browser_profile: helpers.getBrowserProfile(),
-  datetime_index: helpers.getDatetimeIndex(),
-  device_type: 'mobile'
+  // Define your event data model..
+  // Here are a few examples to get you started:
+  browser_profile: Keen.helpers.getBrowserProfile(),
+  datetime_index: Keen.helpers.getDatetimeIndex(),
+  device_type: 'mobile',
   page_title: document.title,
   user: {
     display_name: 'Doug Engelbart',
+    id: 'f3d43412df1h23k123l23b',
+    is_admin: false,
     profile_url: 'https://dougengelbart.org',
   }
 });
@@ -62,12 +64,10 @@ client.recordEvent('pageviews', {
 
 **[Documentation](https://github.com/keen/keen-tracking.js/blob/master/README.md)**
 
-This example uses [`Keen.helpers.getBrowserProfile()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#browser-profile) and [`Keen.helpers.getDatetimeIndex()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#datetime-index) to help build out an insightful data model.
-
 See also:
 
 * [Record events in batches](https://github.com/keen/keen-tracking.js/blob/master/README.md#record-multiple-events)
-* [Data Modeling Helpers](https://github.com/keen/keen-tracking.js/blob/master/README.md#helpers)
+* [Data modeling helpers](https://github.com/keen/keen-tracking.js/blob/master/README.md#helpers)
 * Data Enrichment Add-Ons
 
 **[Examples](https://github.com/keen/keen-tracking.js/blob/master/README.md#example-setup)**
