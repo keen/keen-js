@@ -78,9 +78,11 @@ See also:
 
 ## Compute
 
+Keen's powerful Compute API gives you fast answers to the questions that matter.
+
 ### Run a Query
 
-The following example demonstrates how to query the pageviews stream created in the previous section. This query will return the total number of daily pageviews for a rolling 14 day timeframe, segmented by `device_type`.
+The following example demonstrates how to query the pageviews stream created in the previous section. This query will return the total number of pageviews each day, for a rolling 14 day timeframe, segmented by `device_type`.
 
 ```javascript
 var client = new Keen({
