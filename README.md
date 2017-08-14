@@ -36,14 +36,14 @@ The individual packages listed above can also be loaded independently.
 
 ```javascript
 var client = new Keen({
-	projectId: 'YOUR_PROJECT_ID',
-	writeKey: 'YOUR_WRITE_KEY'
+  projectId: 'YOUR_PROJECT_ID',
+  writeKey: 'YOUR_WRITE_KEY'
 });
 
 client.recordEvent('pageviews', {
-	// Define your event data model
+  // Define your event data model
   device_type: 'mobile',
-	page_title: document.title,
+  page_title: document.title,
   user: {
     display_name: 'Doug Engelbart',
     profile_url: 'https://dougengelbart.org',
@@ -61,8 +61,8 @@ client.recordEvent('pageviews', {
 
 ```javascript
 var client = new Keen({
-	projectId: 'YOUR_PROJECT_ID',
-	readKey: 'YOUR_READ_KEY'
+  projectId: 'YOUR_PROJECT_ID',
+  readKey: 'YOUR_READ_KEY'
 });
 
 client
