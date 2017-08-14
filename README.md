@@ -38,7 +38,7 @@ The individual packages listed above can also be loaded independently.
 
 ### Record an Event
 
-This example demonstrates how to record an event to the pageviews stream. The properties defined in the event body below are only for example and can be fully customized or replaced to suit your needs. This example uses [`Keen.helpers.getBrowserProfile()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#browser-profile) and [`Keen.helpers.getDatetimeIndex()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#datetime-index) to help build out an insightful data model.
+The following example demonstrates how to record an event to the pageviews stream. The properties defined in the event body below are only for example and can be replaced or renamed to suit your needs.
 
 ```javascript
 var client = new Keen({
@@ -57,10 +57,12 @@ client.recordEvent('pageviews', {
     display_name: 'Doug Engelbart',
     id: 'f3d43412df1h23k123l23b',
     is_admin: false,
-    profile_url: 'https://dougengelbart.org',
+    profile_url: 'https://dougengelbart.org'
   }
 });
 ```
+
+This example also uses [`Keen.helpers.getBrowserProfile()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#browser-profile) and [`Keen.helpers.getDatetimeIndex()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#datetime-index) to help build out an insightful data model. These helpers produce useful properties like `screen.width` and `day_of_week`, which are excellent for segmenting query results.
 
 **[Documentation](https://github.com/keen/keen-tracking.js/blob/master/README.md)**
 
@@ -76,6 +78,10 @@ See also:
 
 ## Compute
 
+### Run a Query
+
+The following example demonstrates how to query the pageviews stream created in the previous section. This query will return the total number of daily pageviews for a rolling 14 day timeframe, segmented by `device_type`.
+
 ```javascript
 var client = new Keen({
   projectId: 'YOUR_PROJECT_ID',
@@ -85,6 +91,8 @@ var client = new Keen({
 client
   .query('count', {
     event_collection: 'pageviews',
+    group_by: 'device_type',
+    interval: 'daily',
     timeframe: 'this_14_days'
   })
   .then(function(res){
