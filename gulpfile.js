@@ -207,11 +207,8 @@ gulp.task('aws', ['build', 'test:local'], function() {
   return gulp.src([
       './dist/keen.js',
       './dist/keen.min.js',
-      './dist/keen-tracker.js',
-      './dist/keen-tracker.min.js',
-      './dist/keen-query.js',
-      './dist/keen-c3.min.js',
-      './dist/keen-c3.js'
+      './dist/keen.css',
+      './dist/keen.min.css'
     ])
     .pipe(rename(function(path) {
       path.dirname += '/' + pkg['version'];
