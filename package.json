@@ -3,7 +3,6 @@
   "version": "4.0.0-pr2",
   "license": "MIT",
   "main": "lib/index.js",
-  "browser": "lib/browser.js",
   "style": "style/index.css",
   "repository": {
     "type": "git",
