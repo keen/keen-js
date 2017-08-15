@@ -7,6 +7,7 @@ var aws = require('gulp-awspublish'),
     compress = require('gulp-yuicompressor'),
     del = require('del'),
     karma = require('karma').server,
+    minifyCss = require('gulp-minify-css'),
     mocha = require('gulp-mocha'),
     mochaPhantomJS = require('gulp-mocha-phantomjs'),
     moment = require('moment'),
@@ -18,11 +19,23 @@ var aws = require('gulp-awspublish'),
     transform = require('vinyl-transform'),
     uglify = require('gulp-uglify');
 
+// Style
+var postcss = require('gulp-postcss'),
+    postcss_cssnext = require('postcss-cssnext'),
+    postcss_import = require('postcss-import'),
+    postcss_reporter = require('postcss-reporter');
+
+
 // -------------------------
 // Build tasks
 // -------------------------
 
-gulp.task('build', ['build:browserify', 'build:minify']);
+gulp.task('build', [
+  'build:browserify',
+  'build:minify',
+  'build:styles',
+  'build:minify-styles'
+]);
 
 gulp.task('build:browserify', function() {
   return gulp.src([ './lib/browser.js' ])
@@ -46,6 +59,24 @@ gulp.task('build:minify', ['build:browserify'], function(cb){
     rename({ suffix: '.min' }),
     gulp.dest('./dist/')
   ], cb);
+});
+
+gulp.task('build:styles', function(){
+  gulp.src('./style/index.css')
+    .pipe(postcss([
+      postcss_import(),
+      postcss_cssnext(),
+      postcss_reporter()
+    ]))
+    .pipe(rename('keen.css'))
+    .pipe(gulp.dest('./dist'));
+});
+
+gulp.task('build:minify-styles', ['build:styles'], function(){
+  gulp.src('./dist/keen.css')
+    .pipe(minifyCss({ compatibility: 'ie9' }))
+    .pipe(rename({ suffix: '.min' }))
+    .pipe(gulp.dest('./dist/'));
 });
 
 gulp.task('connect', ['build'], function () {

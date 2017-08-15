@@ -1,18 +1,12 @@
 # Keen IO JavaScript SDK (v4)
 
-This is v4 of the Keen IO JavaScript SDK, which is actually just a bundled release of the following packages:
-
-* [keen-tracking.js](https://github.com/keen/keen-tracking.js)
-* [keen-analysis.js](https://github.com/keen/keen-analysis.js)
-* [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)
-
-Previous versions and their documentation are available as branches of this repo.
+This is v4 of the Keen IO JavaScript SDK. Previous versions and their documentation are available as branches of this repo.
 
 ### Get Project ID & API Keys
 
 If you haven’t done so already, [login to Keen IO to create a project](https://keen.io/login?s=gh_js). The Project ID and API Keys are available on the Access page of the Project Console. You will need these for the next steps.
 
-## Installation
+### Installation
 
 Install this package from NPM:
 
@@ -24,11 +18,17 @@ Or load it synchronously from the CDN:
 
 ```html
 <meta charset="utf-8">
-<link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr1/keen.min.js"></script>
+<link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.css" rel="stylesheet" />
+<script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.js"></script>
 ```
 
-The individual packages listed above can also be loaded independently.
+Under the hood, this is a bundled release of the following packages, which can each be loaded individually to suit your needs:
+
+* [keen-tracking.js](https://github.com/keen/keen-tracking.js)
+* [keen-analysis.js](https://github.com/keen/keen-analysis.js)
+* [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)
+
+When **keen-js** is loaded as a global, these packages will be assigned to a shared `Keen` namespace.
 
 ---
 
@@ -41,7 +41,9 @@ The individual packages listed above can also be loaded independently.
 The following example demonstrates how to record an event to the pageviews stream. The properties defined in the event body below are only for example and can be replaced or renamed to suit your needs.
 
 ```javascript
-var client = new Keen({
+import Keen from 'keen-js';
+
+const client = new Keen({
   projectId: 'YOUR_PROJECT_ID',
   writeKey: 'YOUR_WRITE_KEY'
 });
@@ -85,7 +87,9 @@ Keen's powerful Compute API gives you fast answers to the questions that matter.
 The following example demonstrates how to query the pageviews stream created in the previous section. This query will return the total number of pageviews each day, for a rolling 14 day timeframe, segmented values found in `device_type`.
 
 ```javascript
-var client = new Keen({
+import Keen from 'keen-js';
+
+const client = new Keen({
   projectId: 'YOUR_PROJECT_ID',
   readKey: 'YOUR_READ_KEY'
 });
@@ -97,10 +101,10 @@ client
     interval: 'daily',
     timeframe: 'this_14_days'
   })
-  .then(function(res) {
+  .then(res => {
     // Handle results
   })
-  .catch(function(err) {
+  .catch(err => {
     // Handle errors
   });
 ```
@@ -121,8 +125,8 @@ See also:
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.css" rel="stylesheet" />
-    <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr1/keen.min.js"></script>
+    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.css" rel="stylesheet" />
+    <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.js"></script>
   </head>
   <body>
     <!-- DOM Element -->
@@ -139,7 +143,7 @@ See also:
         .el('#my-chart-div')
         .height(180)
         .title('Pageviews (14d)')
-        .type('metric')
+        .type('area')
         .prepare();
 
       client
