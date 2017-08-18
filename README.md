@@ -1,6 +1,6 @@
 # Keen IO JavaScript SDK (v4)
 
-This is v4 of the Keen IO JavaScript SDK. Previous versions and their documentation are available as branches of this repo.
+This is v4 of the Keen IO JS SDK. Previous versions and their documentation are available as [branches](https://github.com/keen/keen-js/branches) of this repo.
 
 ### Get Project ID & API Keys
 
@@ -22,13 +22,13 @@ Or load it synchronously from the CDN:
 <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.js"></script>
 ```
 
-Under the hood, this is a bundled release of the following packages, which can each be loaded individually to suit your needs:
+Under the hood, this is simply a bundled release of the following packages:
 
 * [keen-tracking.js](https://github.com/keen/keen-tracking.js)
 * [keen-analysis.js](https://github.com/keen/keen-analysis.js)
 * [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)
 
-When **keen-js** is loaded as a global, these packages will be assigned to a shared `Keen` namespace.
+When **keen-js** is loaded as a global, these packages will be assigned to a shared `Keen` namespace. We recommend using the standalone packages that best suit your needs.
 
 ---
 
