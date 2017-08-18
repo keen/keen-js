@@ -36,7 +36,7 @@ When **keen-js** is loaded as a global, these packages will be assigned to a sha
 
 **What is an event?** An event is a record of something important happening in the life of your app or service: like a click, a purchase, or a device activation.
 
-This package contains [keen-tracking.js](https://github.com/keen/keen-tracking.js) as-is, without modification. You can install and use the `'keen-tracking'` package independently, or load the exact same functionality from `'keen-js'`, like so:
+This package contains [keen-tracking.js](https://github.com/keen/keen-tracking.js) as-is, and can be used interchangeably. If you only need tracking functionality, we recommend using the standalone package.
 
 ```javascript
 // import Keen from 'keen-tracking';
@@ -66,7 +66,7 @@ See also:
 
 Keen's powerful Compute API gives you fast answers to the questions that matter.
 
-This package contains [keen-analysis.js](https://github.com/keen/keen-analysis.js) as-is, without modification. You can install and use the `'keen-analysis'` package independently, or load the exact same functionality from `'keen-js'`, like so:
+This package contains [keen-analysis.js](https://github.com/keen/keen-analysis.js) as-is, and can be used interchangeably. If you only need compute functionality, we recommend using the standalone package.
 
 ```javascript
 // import Keen from 'keen-analysis';
@@ -104,7 +104,7 @@ See also:
 
 ## Visualize
 
-This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is and can be used interchangeably.
+This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, and can be used interchangeably.
 
 **[Examples and documentation are available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js)**.
 
