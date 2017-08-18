@@ -214,7 +214,7 @@ This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.css"  rel="stylesheet" />
+    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.css" rel="stylesheet" />
     <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.js"></script>
   </head>
   <body>
