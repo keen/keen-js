@@ -34,9 +34,11 @@ When **keen-js** is loaded as a global, these packages will be assigned to a sha
 
 ## Getting started
 
-* [Stream](#stream)
-* [Compute](#compute)
-* [Visualize](#visualize)
+The following examples are intended to help you get up and running quickly with keen-js:
+
+* [Setup and Pageview Tracking](#setup-and-pageview-tracking)
+* [Running a Query](#running-a-query)
+* [Rendering a Chart](#render-a-chart)
 
 ---
 
@@ -145,7 +147,7 @@ Every event that is recorded will inherit this baseline data model. Additional p
 * [Extend event data models for a single event stream](https://github.com/keen/keen-tracking.js/blob/master/docs/extend-events.md)
 * [Queue events to be recorded at a given time interval](https://github.com/keen/keen-tracking.js/blob/master/docs/defer-events.md)
 
-[Full documentation is available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js/blob/master/docs/README.md)
+**Documentation:** [Full documentation is available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js/blob/master/docs/README.md).
 
 ---
 
@@ -157,6 +159,7 @@ Keen's powerful Compute API gives you fast answers to the questions that matter.
 This package contains [keen-analysis.js](https://github.com/keen/keen-analysis.js) as-is, and can be used interchangeably. If you only need compute functionality, we recommend using the standalone package.
 
 [Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
+
 
 ### Running a Query
 
@@ -214,17 +217,20 @@ client
 * [Cached Datasets](https://github.com/keen/keen-analysis.js/blob/master/README.md#cached-datasets)
 * [All other API resources](https://github.com/keen/keen-analysis.js/blob/master/README.md#api-resources)
 
-[Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
+**Documentation:** [Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
 
 ---
+
 
 ## Visualize
 
 This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, and can be used interchangeably.
 
-Live examples are available at [keen.github.io/keen-dataviz.js](https://keen.github.io/keen-dataviz.js).
+**Examples:** [keen.github.io/keen-dataviz.js](https://keen.github.io/keen-dataviz.js).
 
-[Full documentation is available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js).
+**Documentation:** [Full documentation is available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js).
+
+### Rendering a Chart
 
 ```html
 <html>
