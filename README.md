@@ -104,7 +104,7 @@ See also:
 
 ## Visualize
 
-This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, without modification. This means you can use either package interchangeably.
+This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is and can be used interchangeably.
 
 **[Examples and documentation are available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js)**.
 
