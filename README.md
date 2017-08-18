@@ -177,28 +177,6 @@ const client = new Keen({
 client
   .query('count', {
     event_collection: 'pageviews',
-    timeframe: 'this_14_days'
-  })
-  .then(res => {
-    // Handle results
-  })
-  .catch(err => {
-    // Hanlde errors
-  });
-```
-
-```javascript
-// import Keen from 'keen-analysis';
-import Keen from 'keen-js';
-
-const client = new Keen({
-  projectId: 'YOUR_PROJECT_ID',
-  readKey: 'YOUR_READ_KEY'
-});
-
-client
-  .query('count', {
-    event_collection: 'pageviews',
     group_by: 'device_type',
     interval: 'daily',
     timeframe: 'this_14_days'
