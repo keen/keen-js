@@ -58,7 +58,7 @@ See also:
 
 * [Record events in batches](https://github.com/keen/keen-tracking.js/blob/master/docs/record-events.md#record-multiple-events)
 * [Data modeling helpers](https://github.com/keen/keen-tracking.js/blob/master/docs/helpers.md)
-* [Data Enrichment Add-Ons](https://keen.io/docs/streams/data-enrichment-overview/)
+* [Data enrichment add-ons](https://keen.io/docs/streams/data-enrichment-overview/)
 
 ---
 
