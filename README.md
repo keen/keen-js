@@ -102,7 +102,7 @@ See also:
 
 ---
 
-# Visualize
+## Visualize
 
 This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, without modification. This means you can use either package interchangeably.
 
