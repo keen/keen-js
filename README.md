@@ -11,7 +11,7 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
 Install this package from NPM:
 
 ```ssh
-npm install keen-js
+npm install keen-js --save
 ```
 
 Or load it synchronously from the CDN:
@@ -52,7 +52,7 @@ client.recordEvent('pageviews', {
 });
 ```
 
-[Examples and documentation are available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js#getting-started).
+**[Examples and documentation are available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js#getting-started)**.
 
 See also:
 
@@ -92,7 +92,7 @@ client
   });
 ```
 
-[Examples and documentation are available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
+**[Examples and documentation are available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started)**.
 
 See also:
 
@@ -104,7 +104,9 @@ See also:
 
 # Visualize
 
-This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, without modification. You can install and use the `'keen-dataviz'` package independently, or load the exact same functionality from `'keen-js'`, like so:
+This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, without modification. This means you can use either package interchangeably.
+
+**[Examples and documentation are available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js)**.
 
 ```html
 <html>
