@@ -38,7 +38,7 @@ The following examples are intended to help you get up and running quickly with 
 
 * [Setup and Pageview Tracking](#setup-and-pageview-tracking)
 * [Running a Query](#running-a-query)
-* [Rendering a Chart](#render-a-chart)
+* [Rendering a Chart](#rendering-a-chart)
 
 ---
 
