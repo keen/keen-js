@@ -36,11 +36,10 @@ When **keen-js** is loaded as a global, these packages will be assigned to a sha
 
 **What is an event?** An event is a record of something important happening in the life of your app or service: like a click, a purchase, or a device activation.
 
-### Record an Event
-
-The following example demonstrates how to record an event to the pageviews stream. The properties defined in the event body below are only for example and can be replaced or renamed to suit your needs.
+This package contains [keen-tracking.js](https://github.com/keen/keen-tracking.js) as-is, without modification. You can install and use the `'keen-tracking'` package independently, or load the exact same functionality from `'keen-js'`, like so:
 
 ```javascript
+// import Keen from 'keen-tracking';
 import Keen from 'keen-js';
 
 const client = new Keen({
@@ -49,32 +48,17 @@ const client = new Keen({
 });
 
 client.recordEvent('pageviews', {
-  // Define your event data model..
-  // Here are a few examples to get you started:
-  browser_profile: Keen.helpers.getBrowserProfile(),
-  datetime_index: Keen.helpers.getDatetimeIndex(),
-  device_type: 'mobile',
-  page_title: document.title,
-  user: {
-    display_name: 'Doug Engelbart',
-    id: 'f3d43412df1h23k123l23b',
-    is_admin: false,
-    profile_url: 'https://dougengelbart.org'
-  }
+  /* Data Model */
 });
 ```
 
-This example also uses [`Keen.helpers.getBrowserProfile()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#browser-profile) and [`Keen.helpers.getDatetimeIndex()`](https://github.com/keen/keen-tracking.js/blob/master/README.md#datetime-index) to help build out an insightful data model. These helpers produce useful properties like `screen.width` and `day_of_week`, which are excellent for segmenting query results.
-
-**[Documentation](https://github.com/keen/keen-tracking.js/blob/master/README.md)**
+[Examples and documentation are available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js#getting-started).
 
 See also:
 
-* [Record events in batches](https://github.com/keen/keen-tracking.js/blob/master/README.md#record-multiple-events)
-* [Data modeling helpers](https://github.com/keen/keen-tracking.js/blob/master/README.md#helpers)
-* Data Enrichment Add-Ons
-
-**[Examples](https://github.com/keen/keen-tracking.js/blob/master/README.md#example-setup)**
+* [Record events in batches](https://github.com/keen/keen-tracking.js/blob/master/docs/record-events.md#record-multiple-events)
+* [Data modeling helpers](https://github.com/keen/keen-tracking.js/blob/master/docs/helpers.md)
+* [Data Enrichment Add-Ons](https://keen.io/docs/streams/data-enrichment-overview/)
 
 ---
 
@@ -82,11 +66,10 @@ See also:
 
 Keen's powerful Compute API gives you fast answers to the questions that matter.
 
-### Run a Query
-
-The following example demonstrates how to query the pageviews stream created in the previous section. This query will return the total number of pageviews each day, for a rolling 14 day timeframe, segmented values found in `device_type`.
+This package contains [keen-analysis.js](https://github.com/keen/keen-analysis.js) as-is, without modification. You can install and use the `'keen-analysis'` package independently, or load the exact same functionality from `'keen-js'`, like so:
 
 ```javascript
+// import Keen from 'keen-analysis';
 import Keen from 'keen-js';
 
 const client = new Keen({
@@ -109,23 +92,25 @@ client
   });
 ```
 
-**[Documentation](https://github.com/keen/keen-analysis.js/blob/master/README.md)**
+[Examples and documentation are available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
 
 See also:
 
-* [Saved and Cached Queries](https://github.com/keen/keen-analysis.js/blob/master/README.md#saved-queries)
+* [Saved and Cached Queries](https://github.com/keen/keen-analysis.js/blob/master/README.md#saved-and-cached-queries)
 * [Cached Datasets](https://github.com/keen/keen-analysis.js/blob/master/README.md#cached-datasets)
-* [All other API resources](https://github.com/keen/keen-analysis.js/blob/master/README.md#example-get-request)
+* [All other API resources](https://github.com/keen/keen-analysis.js/blob/master/README.md#api-resources)
 
 ---
 
 # Visualize
 
+This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, without modification. You can install and use the `'keen-dataviz'` package independently, or load the exact same functionality from `'keen-js'`, like so:
+
 ```html
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.css" rel="stylesheet" />
+    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.css"  rel="stylesheet" />
     <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0-pr2/keen.min.js"></script>
   </head>
   <body>
@@ -166,22 +151,4 @@ See also:
 </html>
 ```
 
-<!-- ### Tracking
-
-```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/keen-tracking-1.1.4.min.js"></script>
-```
-
-### Analysis
-
-```html
-<script src="https://d26b395fwzu5fz.cloudfront.net/keen-analysis-1.3.0.min.js"></script>
-```
-
-### Visualization
-
-```html
-<meta charset="utf-8">
-<link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-1.1.3.min.js"></script>
-``` -->
+**Important:** the `<meta charset="utf-8">` charset encoding meta tag is required for this library to function properly.
