@@ -24384,26 +24384,31 @@ function deferEvents(eventsHash){
 function queueCapacity(num){
   if (!arguments.length) return this.queue.config.capacity;
   this.queue.config.capacity = num ? Number(num): 0;
+  this.queue.check();
   return this;
 }
 function queueInterval(num){
   if (!arguments.length) return this.queue.config.interval;
   this.queue.config.interval = num ? Number(num): 0;
+  this.queue.check();
   return this;
 }
 function recordDeferredEvents(){
-  var self = this, currentQueue;
+  var self = this,
+      clonedQueueConfig,
+      clonedQueueEvents;
   if (self.queue.capacity > 0) {
-    currentQueue = JSON.parse(JSON.stringify(self.queue));
+    clonedQueueConfig = JSON.parse(JSON.stringify(self.queue.config));
+    clonedQueueEvents = JSON.parse(JSON.stringify(self.queue.events));
     self.queue = queue();
-    self.queue.options = currentQueue.options;
-    self.emit('recordDeferredEvents', currentQueue.events);
-    self.recordEvents(currentQueue.events, function(err, res){
+    self.queue.config = clonedQueueConfig;
+    self.emit('recordDeferredEvents', clonedQueueEvents);
+    self.recordEvents(clonedQueueEvents, function(err, res){
       if (err) {
-        self.recordEvents(currentQueue.events);
+        self.recordEvents(clonedQueueEvents);
       }
       else {
-        currentQueue = void 0;
+        clonedQueueEvents = undefined;
       }
     });
   }
@@ -25168,34 +25173,63 @@ function deferFormSubmit(evt, form, callback){
 }
 },{"./each":59,"component-emitter":4}],62:[function(require,module,exports){
 var Emitter = require('component-emitter');
-module.exports = queue;
-function queue(){
-  var self = this;
+function queue() {
   if (this instanceof queue === false) {
     return new queue();
   }
-  self.capacity = 0;
-  self.interval = 0;
-  self.config = {
+  this.capacity = 0;
+  this.config = {
     capacity: 5000,
     interval: 15
   };
-  self.events = {
+  this.events = {
   };
-  setInterval(function(){
-    self.interval++;
-    checkQueue.call(self);
-  }, 1000);
-  return self;
-}
-function checkQueue(){
-  if ((this.capacity > 0 && this.interval >= this.config.interval)
-    || this.capacity >= this.config.capacity) {
-      this.emit('flush');
-      this.interval = 0;
-  }
+  this.interval = 0;
+  this.timer = null;
+  this.start();
+  return this;
 }
 Emitter(queue.prototype);
+queue.prototype.check = function() {
+  if (shouldFlushQueue(this)) {
+    this.flush();
+  }
+  if (this.config.interval === 0) {
+    this.pause();
+  }
+  return this;
+};
+queue.prototype.flush = function() {
+  this.emit('flush');
+  this.interval = 0;
+  return this;
+};
+queue.prototype.pause = function() {
+  if (this.timer) {
+    clearInterval(this.timer);
+    this.timer = null;
+  }
+  return this;
+};
+queue.prototype.start = function() {
+  var self = this;
+  self.pause();
+  self.timer = setInterval(function() {
+    self.interval++;
+    self.check();
+  }, 1000);
+  return self;
+};
+function shouldFlushQueue(props) {
+  if (props.capacity > 0 && props.interval >= props.config.interval) {
+    return true;
+  }
+  else if (props.capacity >= props.config.capacity) {
+    return true;
+  }
+  return false;
+}
+module.exports = queue;
 },{"component-emitter":4}],63:[function(require,module,exports){
 module.exports = timer;
 function timer(num){
