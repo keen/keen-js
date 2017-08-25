@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "4.0.0-pr3",
+  "version": "4.0.0",
   "license": "MIT",
   "main": "lib/index.js",
   "style": "style/index.css",
