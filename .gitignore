@@ -1,0 +1,8 @@
+*.log
+.DS_Store
+.tmp
+.awspublish-*
+bower_components
+node_modules
+test/keen-unit-all.js
+test/unit/build/*

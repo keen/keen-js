@@ -1,0 +1,23 @@
+language: node_js
+node_js:
+  - "4.0"
+branches:
+  only:
+    - master
+env:
+  global:
+  - secure: |-
+      Gz4y8zxEhPJVGfAq7UROzXS0qo9RyKFfc4hsJHy5hWBbTVCoe7BvcxtOfHkF
+      6DG246MPtxvkZsqaqPUJ55eg+ED+GTyG7lWsKJb9TA/8QtqKlHSyaW9pKZgi
+      Nwx1a9i7wGMCQ2GQ58KOHVAx33wpf3TVvXyEdxXNeLxDhAqlA1U=
+  - secure: |-
+      AjvRPOjPEuDl8qwEUOk2V1HH6C5AoE8V0/1+twsnaEcgfHWGDk3g7oPfMOW3
+      ArybZFvN+wpvWfwoJAhRV7yQv9yoGT1fEtMtn3GB9mQiCFO70L/MrqXePJAr
+      ajs3LH0wqhj1zW8UUmhTxBSLvzRyW++W5yx2hYr92EkrlpFZZUg=
+install:
+  - npm install -g browserify
+  - npm install -g bower
+  - npm install
+  - bower install
+notifications:
+  email: never
