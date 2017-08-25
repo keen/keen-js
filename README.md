@@ -4,8 +4,6 @@
 [![Build Status](https://api.travis-ci.org/keen/keen-js.png?branch=master)](https://travis-ci.org/keen/keen-js) [![Selenium Test Status](https://saucelabs.com/buildstatus/keenlabs-js)](https://saucelabs.com/u/keenlabs-js)
 -->
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fkeen%2Fkeen-js.svg?type=shield)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fkeen%2Fkeen-js?ref=badge_shield)
-
 ## Documentation
 
 Docs have been moved into the master branch, so they stay in sync with each release. Check out the latest [here](./docs).
@@ -409,6 +407,6 @@ The aim is to build up this module to completely represent the API provided by K
 
 Need a hand with something? Shoot us an email at [contact@keen.io](mailto:contact@keen.io)
 
-## License
+<!-- ## License
 
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fkeen%2Fkeen-js.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fkeen%2Fkeen-js?ref=badge_large)
+[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fkeen%2Fkeen-js.svg?type=large)](https://app.fossa.io/projects/git%2Bhttps%3A%2F%2Fgithub.com%2Fkeen%2Fkeen-js?ref=badge_large) -->
