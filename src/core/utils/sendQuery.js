@@ -17,20 +17,16 @@ module.exports = function(path, params, callback){
     return;
   }
 
-  if (getContext() === 'server' || getXHR()) {
-    request
+  if (getXHR() || getContext() === 'server' ) {
+    return request
       .post(url)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', this.client.readKey())
-        .timeout(this.timeout())
-        .send(params || {})
-        .end(handleResponse);
+      .set('Content-Type', 'application/json')
+      .set('Authorization', this.client.readKey())
+      .timeout(this.timeout())
+      .send(params || {})
+      .end(function handleResponse(err, res){
+        responseHandler(err, res, callback);
+        callback = null;
+      });
   }
-
-  function handleResponse(err, res){
-    responseHandler(err, res, callback);
-    callback = null;
-  }
-
-  return;
 }

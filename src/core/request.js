@@ -14,6 +14,8 @@ function Request(client, queries, callback){
   };
   this.configure(client, queries, cb);
   cb = callback = null;
+  this._activeQueries = [];
+  this._isCancelled = false;
 };
 Emitter(Request.prototype);
 
@@ -35,14 +37,25 @@ Request.prototype.timeout = function(ms){
   return this;
 };
 
+// Cancel all remaining requests
+Request.prototype.cancel = function(){
+  this._isCancelled = true;
+  this._activeQueries.forEach(function(query) {
+    query.abort();
+  });
+  this._activeQueries = [];
+  return this;
+}
+
 Request.prototype.refresh = function(){
   var self = this,
       completions = 0,
       response = [],
       errored = false;
+  this._isCancelled = false;
 
   var handleResponse = function(err, res, index){
-    if (errored) {
+    if (errored || self._isCancelled) {
       return;
     }
     if (err) {
@@ -62,6 +75,7 @@ Request.prototype.refresh = function(){
         self.callback(null, self.data);
       }
     }
+    self._activeQueries.splice(index, 1);
   };
 
   each(self.queries, function(query, index){
@@ -72,16 +86,16 @@ Request.prototype.refresh = function(){
 
     if (typeof query === 'string') {
       path += '/saved/' + query + '/result';
-      sendSavedQuery.call(self, path, {}, cbSequencer);
+      self._activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
     }
     else if (query instanceof Query) {
       path += '/' + query.analysis;
       if (query.analysis === 'saved') {
         path += '/' + query.params.query_name + '/result';
-        sendSavedQuery.call(self, path, {}, cbSequencer);
+        self._activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
       }
       else {
-        sendQuery.call(self, path, query.params, cbSequencer);
+        self._activeQueries[index] = sendQuery.call(self, path, query.params, cbSequencer);
       }
     }
     else {

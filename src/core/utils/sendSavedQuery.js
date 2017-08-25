@@ -10,7 +10,7 @@ module.exports = function(path, params, callback){
     key = this.client.masterKey();
   }
 
-  request
+  return request
     .get(this.client.url(path))
     .set('Content-Type', 'application/json')
     .set('Authorization', key)
@@ -20,6 +20,4 @@ module.exports = function(path, params, callback){
       responseHandler(err, res, callback);
       callback = null;
     });
-
-  return;
 }

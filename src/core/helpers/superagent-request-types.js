@@ -52,7 +52,7 @@ module.exports = function(type, opts){
       // timeout
       if (timeout && !self._timer) {
         self._timer = setTimeout(function(){
-          abortRequest.call(self);
+          cancelRequest.call(self);
         }, timeout);
       }
       if (query) {
@@ -180,11 +180,11 @@ function handleError(){
   this.emit('end');
 }
 
-// custom spin on self.abort();
-function abortRequest(){
-  this.aborted = true;
+// custom spin on self.cancel();
+function cancelRequest(){
+  this.cancelled = true;
   this.clearTimeout();
-  this.emit('abort');
+  this.emit('cancel');
 }
 
 // hackety hack hack :) keep moving

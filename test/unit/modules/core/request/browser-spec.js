@@ -142,6 +142,21 @@ describe("Keen.Request", function() {
       });
     });
 
+    describe("cancel queries", function() {
+      it("with multiple queries", function(done) {
+        var response = [{ result: 1 }, { result: 1 }, { result: 1 }];
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response[0]) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response[1]) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response[2]) ] );
+        this.server.respond();
+        var run = this.client.run([this.query, this.query, this.query], function(err, res){
+          expect().fail("callback shouldn't have been called.");
+        });
+        run.cancel();
+        setTimeout(done, 100);
+      });
+    });
+
   });
 
 });

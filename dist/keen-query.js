@@ -1927,7 +1927,7 @@ module.exports = function(type, opts){
       self._callback = fn || noop;
       if (timeout && !self._timer) {
         self._timer = setTimeout(function(){
-          abortRequest.call(self);
+          cancelRequest.call(self);
         }, timeout);
       }
       if (query) {
@@ -2044,10 +2044,10 @@ function handleError(){
   this.xhr.status = opts['status'];
   this.emit('end');
 }
-function abortRequest(){
-  this.aborted = true;
+function cancelRequest(){
+  this.cancelled = true;
   this.clearTimeout();
-  this.emit('abort');
+  this.emit('cancel');
 }
 function xhrShim(opts){
   this.xhr = {
@@ -2265,6 +2265,8 @@ function Request(client, queries, callback){
   };
   this.configure(client, queries, cb);
   cb = callback = null;
+  this._activeQueries = [];
+  this._isCancelled = false;
 };
 Emitter(Request.prototype);
 Request.prototype.configure = function(client, queries, callback){
@@ -2283,13 +2285,22 @@ Request.prototype.timeout = function(ms){
   this.config.timeout = (!isNaN(parseInt(ms)) ? parseInt(ms) : null);
   return this;
 };
+Request.prototype.cancel = function(){
+  this._isCancelled = true;
+  this._activeQueries.forEach(function(query) {
+    query.abort();
+  });
+  this._activeQueries = [];
+  return this;
+}
 Request.prototype.refresh = function(){
   var self = this,
       completions = 0,
       response = [],
       errored = false;
+  this._isCancelled = false;
   var handleResponse = function(err, res, index){
-    if (errored) {
+    if (errored || self._isCancelled) {
       return;
     }
     if (err) {
@@ -2309,6 +2320,7 @@ Request.prototype.refresh = function(){
         self.callback(null, self.data);
       }
     }
+    self._activeQueries.splice(index, 1);
   };
   each(self.queries, function(query, index){
     var cbSequencer = function(err, res){
@@ -2317,16 +2329,16 @@ Request.prototype.refresh = function(){
     var path = '/queries';
     if (typeof query === 'string') {
       path += '/saved/' + query + '/result';
-      sendSavedQuery.call(self, path, {}, cbSequencer);
+      self._activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
     }
     else if (query instanceof Query) {
       path += '/' + query.analysis;
       if (query.analysis === 'saved') {
         path += '/' + query.params.query_name + '/result';
-        sendSavedQuery.call(self, path, {}, cbSequencer);
+        self._activeQueries[index] = sendSavedQuery.call(self, path, {}, cbSequencer);
       }
       else {
-        sendQuery.call(self, path, query.params, cbSequencer);
+        self._activeQueries[index] = sendQuery.call(self, path, query.params, cbSequencer);
       }
     }
     else {
@@ -2469,20 +2481,18 @@ module.exports = function(path, params, callback){
     this.client.trigger('error', 'Query not sent: Missing readKey property');
     return;
   }
-  if (getContext() === 'server' || getXHR()) {
-    request
+  if (getXHR() || getContext() === 'server' ) {
+    return request
       .post(url)
-        .set('Content-Type', 'application/json')
-        .set('Authorization', this.client.readKey())
-        .timeout(this.timeout())
-        .send(params || {})
-        .end(handleResponse);
+      .set('Content-Type', 'application/json')
+      .set('Authorization', this.client.readKey())
+      .timeout(this.timeout())
+      .send(params || {})
+      .end(function handleResponse(err, res){
+        responseHandler(err, res, callback);
+        callback = null;
+      });
   }
-  function handleResponse(err, res){
-    responseHandler(err, res, callback);
-    callback = null;
-  }
-  return;
 }
 },{"../helpers/get-context":8,"../helpers/get-xhr-object":11,"../helpers/superagent-handle-response":12,"superagent":4}],26:[function(require,module,exports){
 var request = require('superagent');
@@ -2495,7 +2505,7 @@ module.exports = function(path, params, callback){
   else if (this.client.masterKey()) {
     key = this.client.masterKey();
   }
-  request
+  return request
     .get(this.client.url(path))
     .set('Content-Type', 'application/json')
     .set('Authorization', key)
@@ -2505,7 +2515,6 @@ module.exports = function(path, params, callback){
       responseHandler(err, res, callback);
       callback = null;
     });
-  return;
 }
 },{"../helpers/superagent-handle-response":12,"superagent":4}],27:[function(require,module,exports){
 (function (global){

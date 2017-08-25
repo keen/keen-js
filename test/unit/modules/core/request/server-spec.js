@@ -178,6 +178,31 @@ describe("Keen.Request", function() {
       });
     });
 
+    describe("cancel queries", function() {
+      it("with multiple queries", function(done) {
+        var response = [{ result: 0 }, { result: 1 }, { result: 2 }];
+        mock.post("/queries/count", 200, JSON2.stringify(response[0]));
+        mock.post("/queries/count", 200, JSON2.stringify(response[1]));
+        mock.post("/queries/count", 200, JSON2.stringify(response[2]));
+
+        var req = new Keen.Request(this.client, [this.query, this.query, this.query], function(err, res){
+          expect().fail("callback shouldn't have been called.");
+        });
+        req
+          .refresh()
+          .cancel();
+        setTimeout(done, 100);
+      });
+
+      it("with no queries", function(done) {
+        var req = new Keen.Request(this.client, [], function(err, res){
+          expect().fail("callback shouldn't have been called.");
+        });
+        req.refresh().cancel();
+        done();
+      });
+    });
+
   });
 
 });

@@ -2038,7 +2038,7 @@ module.exports = function(type, opts){
       self._callback = fn || noop;
       if (timeout && !self._timer) {
         self._timer = setTimeout(function(){
-          abortRequest.call(self);
+          cancelRequest.call(self);
         }, timeout);
       }
       if (query) {
@@ -2155,10 +2155,10 @@ function handleError(){
   this.xhr.status = opts['status'];
   this.emit('end');
 }
-function abortRequest(){
-  this.aborted = true;
+function cancelRequest(){
+  this.cancelled = true;
   this.clearTimeout();
-  this.emit('abort');
+  this.emit('cancel');
 }
 function xhrShim(opts){
   this.xhr = {
