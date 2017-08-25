@@ -7,7 +7,7 @@ describe("Scoped Keys", function(){
 
   beforeEach(function(){
     this.client = new Keen({
-      host: 'server-js.keen.io/3.0'
+      // host: 'server-js.keen.io/3.0'
     });
   });
 
@@ -35,26 +35,12 @@ describe("Scoped Keys", function(){
       };
     });
 
-    it("should encrypt a scoped key with given options", function(done) {
+    it("should encrypt a scoped key with given options", function() {
       // Encrypt a scoped key..
       var scopedKey = Keen.utils.encryptScopedKey(this.apiKey, this.keyOptions);
       // ..then decrypt it
       var decryptedOptions = Keen.utils.decryptScopedKey(this.apiKey, scopedKey);
       expect(decryptedOptions).to.deep.equal(this.keyOptions);
-
-      // Apply and test scoped key
-      this.timeout(300 * 1000);
-      this.client
-        .projectId(this.projectId)
-        .readKey(scopedKey)
-        .run(this.query, function(err, res){
-          if (err) {
-            done(err);
-          }
-          else {
-            done();
-          }
-        });
     });
 
     it("should decrypt a scoped key and return the correct options", function() {
@@ -89,26 +75,12 @@ describe("Scoped Keys", function(){
       };
     });
 
-    it("should encrypt an old scoped key with given options", function(done) {
+    it("should encrypt an old scoped key with given options", function() {
       // Encrypt a scoped key..
       var scopedKey = Keen.utils.encryptScopedKey(this.apiKey, this.keyOptions);
       // ..then decrypt it
       var decryptedOptions = Keen.utils.decryptScopedKey(this.apiKey, scopedKey);
       expect(decryptedOptions).to.deep.equal(this.keyOptions);
-
-      // Apply and test scoped key
-      this.timeout(300 * 1000);
-      this.client
-        .projectId(this.projectId)
-        .readKey(scopedKey)
-        .run(this.query, function(err, res){
-          if (err) {
-            done(err);
-          }
-          else {
-            done();
-          }
-        });
     });
 
     it("should decrypt an old scoped key and return the correct options", function() {
