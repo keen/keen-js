@@ -2,6 +2,15 @@
 <a name="unreleased"></a>
 # Unreleased
 -->
+<a name="3.5.0"></a>
+# Cancel requests in flight
+
+**New:**
+* Resolves #365 by allowing active requests to be cancelled – big thanks to @codingtwinky for this contribution (#370).
+
+**Fixed:**
+* Properly detect global object (#418).
+
 
 <a name="3.4.1"></a>
 # Custom axis options for C3 charts, fixed `npm install` issues.

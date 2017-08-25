@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "3.4.1",
+  "version": "3.5.0",
   "license": "MIT",
   "main": "src/server/index.js",
   "browser": "src/keen.js",
