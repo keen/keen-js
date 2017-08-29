@@ -18,8 +18,8 @@ Or load it synchronously from the CDN:
 
 ```html
 <meta charset="utf-8">
-<link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0/keen.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0/keen.min.js"></script>
+<link href="https://d26b395fwzu5fz.cloudfront.net/4.0.1/keen.min.css" rel="stylesheet" />
+<script src="https://d26b395fwzu5fz.cloudfront.net/4.0.1/keen.min.js"></script>
 ```
 
 Under the hood, this is simply a bundled release of the following packages:
@@ -147,6 +147,11 @@ Every event that is recorded will inherit this baseline data model. Additional p
 * [Extend event data models for a single event stream](https://github.com/keen/keen-tracking.js/blob/master/docs/extend-events.md)
 * [Queue events to be recorded at a given time interval](https://github.com/keen/keen-tracking.js/blob/master/docs/defer-events.md)
 
+**React Examples**
+
+* [React Flux Logger](https://github.com/keen/keen-tracking.js/tree/master/docs/examples/react-flux): How to instrument a Flux ReduceStore
+* [React Redux Middleware](https://github.com/keen/keen-tracking.js/tree/master/docs/examples/react-redux-middleware): How to instrument a Redux Store
+
 **Documentation:** [Full documentation is available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js/blob/master/docs/README.md).
 
 ---
@@ -214,8 +219,8 @@ This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.0/keen.min.css" rel="stylesheet" />
-    <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.0/keen.min.js"></script>
+    <link href="https://d26b395fwzu5fz.cloudfront.net/4.0.1/keen.min.css" rel="stylesheet" />
+    <script src="https://d26b395fwzu5fz.cloudfront.net/4.0.1/keen.min.js"></script>
   </head>
   <body>
     <!-- DOM Element -->
