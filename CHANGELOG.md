@@ -2,6 +2,13 @@
 <a name="unreleased"></a>
 # Unreleased
 -->
+<a name="4.0.1"></a>
+# Fix Package Dependencies
+
+**Fixed:**
+* Removed unnecessary `browserify.transform` definition from `package.json`
+
+
 <a name="4.0.0"></a>
 # Hello, version 4
 
