@@ -15,6 +15,7 @@ var KeenBase = require('keen-tracking');
 KeenBase.extendLibrary(KeenBase, require('keen-analysis'));
 KeenBase.Dataviz = require('keen-dataviz');
 KeenBase.Dataset = require('keen-dataviz/lib/dataset');
+KeenBase.version = require('../package.json').version;
 KeenBase.prototype.draw = function(query, el, attributes){
   var chart = KeenBase.Dataviz()
     .attributes(attributes)
@@ -31,7 +32,7 @@ KeenBase.prototype.draw = function(query, el, attributes){
   return chart;
 };
 module.exports = KeenBase;
-},{"keen-analysis":7,"keen-dataviz":30,"keen-dataviz/lib/dataset":18,"keen-tracking":45}],3:[function(require,module,exports){
+},{"../package.json":71,"keen-analysis":7,"keen-dataviz":30,"keen-dataviz/lib/dataset":18,"keen-tracking":45}],3:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -119,6 +120,31 @@ var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol
 } : function (obj) {
   return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
 };
+var classCallCheck = function (instance, Constructor) {
+  if (!(instance instanceof Constructor)) {
+    throw new TypeError("Cannot call a class as a function");
+  }
+};
+var inherits = function (subClass, superClass) {
+  if (typeof superClass !== "function" && superClass !== null) {
+    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+  }
+  subClass.prototype = Object.create(superClass && superClass.prototype, {
+    constructor: {
+      value: subClass,
+      enumerable: false,
+      writable: true,
+      configurable: true
+    }
+  });
+  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+};
+var possibleConstructorReturn = function (self, call) {
+  if (!self) {
+    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+  }
+  return call && (typeof call === "object" || typeof call === "function") ? call : self;
+};
 var isValue = function isValue(v) {
     return v || v === 0;
 };
@@ -174,251 +200,283 @@ var getPathBox = function getPathBox(path) {
         minY = Math.min(items[0].y, items[1].y);
     return { x: minX, y: minY, width: box.width, height: box.height };
 };
-var tickTextCharSize;
-function c3_axis(d3, params) {
-    var scale = d3.scale.linear(),
-        orient = "bottom",
-        innerTickSize = 6,
-        outerTickSize,
-        tickPadding = 3,
-        tickValues = null,
-        tickFormat,
-        tickArguments;
-    var tickOffset = 0,
-        tickCulling = true,
-        tickCentered;
-    params = params || {};
-    outerTickSize = params.withOuterTick ? 6 : 0;
-    function axisX(selection, x) {
-        selection.attr("transform", function (d) {
-            return "translate(" + Math.ceil(x(d) + tickOffset) + ", 0)";
-        });
+var c3_axis_fn;
+var c3_axis_internal_fn;
+function AxisInternal(component, params) {
+    var internal = this;
+    internal.component = component;
+    internal.params = params || {};
+    internal.d3 = component.d3;
+    internal.scale = internal.d3.scale.linear();
+    internal.range;
+    internal.orient = "bottom";
+    internal.innerTickSize = 6;
+    internal.outerTickSize = this.params.withOuterTick ? 6 : 0;
+    internal.tickPadding = 3;
+    internal.tickValues = null;
+    internal.tickFormat;
+    internal.tickArguments;
+    internal.tickOffset = 0;
+    internal.tickCulling = true;
+    internal.tickCentered;
+    internal.tickTextCharSize;
+    internal.tickTextRotate = internal.params.tickTextRotate;
+    internal.tickLength;
+    internal.axis = internal.generateAxis();
+}
+c3_axis_internal_fn = AxisInternal.prototype;
+c3_axis_internal_fn.axisX = function (selection, x, tickOffset) {
+    selection.attr("transform", function (d) {
+        return "translate(" + Math.ceil(x(d) + tickOffset) + ", 0)";
+    });
+};
+c3_axis_internal_fn.axisY = function (selection, y) {
+    selection.attr("transform", function (d) {
+        return "translate(0," + Math.ceil(y(d)) + ")";
+    });
+};
+c3_axis_internal_fn.scaleExtent = function (domain) {
+    var start = domain[0],
+        stop = domain[domain.length - 1];
+    return start < stop ? [start, stop] : [stop, start];
+};
+c3_axis_internal_fn.generateTicks = function (scale) {
+    var internal = this;
+    var i,
+        domain,
+        ticks = [];
+    if (scale.ticks) {
+        return scale.ticks.apply(scale, internal.tickArguments);
     }
-    function axisY(selection, y) {
-        selection.attr("transform", function (d) {
-            return "translate(0," + Math.ceil(y(d)) + ")";
-        });
+    domain = scale.domain();
+    for (i = Math.ceil(domain[0]); i < domain[1]; i++) {
+        ticks.push(i);
     }
-    function scaleExtent(domain) {
-        var start = domain[0],
-            stop = domain[domain.length - 1];
-        return start < stop ? [start, stop] : [stop, start];
+    if (ticks.length > 0 && ticks[0] > 0) {
+        ticks.unshift(ticks[0] - (ticks[1] - ticks[0]));
     }
-    function generateTicks(scale) {
-        var i,
-            domain,
-            ticks = [];
-        if (scale.ticks) {
-            return scale.ticks.apply(scale, tickArguments);
+    return ticks;
+};
+c3_axis_internal_fn.copyScale = function () {
+    var internal = this;
+    var newScale = internal.scale.copy(),
+        domain;
+    if (internal.params.isCategory) {
+        domain = internal.scale.domain();
+        newScale.domain([domain[0], domain[1] - 1]);
+    }
+    return newScale;
+};
+c3_axis_internal_fn.textFormatted = function (v) {
+    var internal = this,
+        formatted = internal.tickFormat ? internal.tickFormat(v) : v;
+    return typeof formatted !== 'undefined' ? formatted : '';
+};
+c3_axis_internal_fn.updateRange = function () {
+    var internal = this;
+    internal.range = internal.scale.rangeExtent ? internal.scale.rangeExtent() : internal.scaleExtent(internal.scale.range());
+    return internal.range;
+};
+c3_axis_internal_fn.updateTickTextCharSize = function (tick) {
+    var internal = this;
+    if (internal.tickTextCharSize) {
+        return internal.tickTextCharSize;
+    }
+    var size = {
+        h: 11.5,
+        w: 5.5
+    };
+    tick.select('text').text(function (d) {
+        return internal.textFormatted(d);
+    }).each(function (d) {
+        var box = this.getBoundingClientRect(),
+            text = internal.textFormatted(d),
+            h = box.height,
+            w = text ? box.width / text.length : undefined;
+        if (h && w) {
+            size.h = h;
+            size.w = w;
         }
-        domain = scale.domain();
-        for (i = Math.ceil(domain[0]); i < domain[1]; i++) {
-            ticks.push(i);
-        }
-        if (ticks.length > 0 && ticks[0] > 0) {
-            ticks.unshift(ticks[0] - (ticks[1] - ticks[0]));
-        }
-        return ticks;
+    }).text('');
+    internal.tickTextCharSize = size;
+    return size;
+};
+c3_axis_internal_fn.transitionise = function (selection) {
+    return this.params.withoutTransition ? selection : this.d3.transition(selection);
+};
+c3_axis_internal_fn.isVertical = function () {
+    return this.orient === 'left' || this.orient === 'right';
+};
+c3_axis_internal_fn.tspanData = function (d, i, ticks, scale) {
+    var internal = this;
+    var splitted = internal.params.tickMultiline ? internal.splitTickText(d, ticks, scale) : [].concat(internal.textFormatted(d));
+    return splitted.map(function (s) {
+        return { index: i, splitted: s, length: splitted.length };
+    });
+};
+c3_axis_internal_fn.splitTickText = function (d, ticks, scale) {
+    var internal = this,
+        tickText = internal.textFormatted(d),
+        maxWidth = internal.params.tickWidth,
+        subtext,
+        spaceIndex,
+        textWidth,
+        splitted = [];
+    if (Object.prototype.toString.call(tickText) === "[object Array]") {
+        return tickText;
     }
-    function copyScale() {
-        var newScale = scale.copy(),
-            domain;
-        if (params.isCategory) {
-            domain = scale.domain();
-            newScale.domain([domain[0], domain[1] - 1]);
-        }
-        return newScale;
+    if (!maxWidth || maxWidth <= 0) {
+        maxWidth = internal.isVertical() ? 95 : internal.params.isCategory ? Math.ceil(scale(ticks[1]) - scale(ticks[0])) - 12 : 110;
     }
-    function textFormatted(v) {
-        var formatted = tickFormat ? tickFormat(v) : v;
-        return typeof formatted !== 'undefined' ? formatted : '';
-    }
-    function getSizeFor1Char(tick) {
-        if (tickTextCharSize) {
-            return tickTextCharSize;
-        }
-        var size = {
-            h: 11.5,
-            w: 5.5
-        };
-        tick.select('text').text(textFormatted).each(function (d) {
-            var box = this.getBoundingClientRect(),
-                text = textFormatted(d),
-                h = box.height,
-                w = text ? box.width / text.length : undefined;
-            if (h && w) {
-                size.h = h;
-                size.w = w;
+    function split(splitted, text) {
+        spaceIndex = undefined;
+        for (var i = 1; i < text.length; i++) {
+            if (text.charAt(i) === ' ') {
+                spaceIndex = i;
             }
-        }).text('');
-        tickTextCharSize = size;
-        return size;
+            subtext = text.substr(0, i + 1);
+            textWidth = internal.tickTextCharSize.w * subtext.length;
+            if (maxWidth < textWidth) {
+                return split(splitted.concat(text.substr(0, spaceIndex ? spaceIndex : i)), text.slice(spaceIndex ? spaceIndex + 1 : i));
+            }
+        }
+        return splitted.concat(text);
     }
-    function transitionise(selection) {
-        return params.withoutTransition ? selection : d3.transition(selection);
+    return split(splitted, tickText + "");
+};
+c3_axis_internal_fn.updateTickLength = function () {
+    var internal = this;
+    internal.tickLength = Math.max(internal.innerTickSize, 0) + internal.tickPadding;
+};
+c3_axis_internal_fn.lineY2 = function (d) {
+    var internal = this,
+        tickPosition = internal.scale(d) + (internal.tickCentered ? 0 : internal.tickOffset);
+    return internal.range[0] < tickPosition && tickPosition < internal.range[1] ? internal.innerTickSize : 0;
+};
+c3_axis_internal_fn.textY = function () {
+    var internal = this,
+        rotate = internal.tickTextRotate;
+    return rotate ? 11.5 - 2.5 * (rotate / 15) * (rotate > 0 ? 1 : -1) : internal.tickLength;
+};
+c3_axis_internal_fn.textTransform = function () {
+    var internal = this,
+        rotate = internal.tickTextRotate;
+    return rotate ? "rotate(" + rotate + ")" : "";
+};
+c3_axis_internal_fn.textTextAnchor = function () {
+    var internal = this,
+        rotate = internal.tickTextRotate;
+    return rotate ? rotate > 0 ? "start" : "end" : "middle";
+};
+c3_axis_internal_fn.tspanDx = function () {
+    var internal = this,
+        rotate = internal.tickTextRotate;
+    return rotate ? 8 * Math.sin(Math.PI * (rotate / 180)) : 0;
+};
+c3_axis_internal_fn.tspanDy = function (d, i) {
+    var internal = this,
+        dy = internal.tickTextCharSize.h;
+    if (i === 0) {
+        if (internal.isVertical()) {
+            dy = -((d.length - 1) * (internal.tickTextCharSize.h / 2) - 3);
+        } else {
+            dy = ".71em";
+        }
     }
+    return dy;
+};
+c3_axis_internal_fn.generateAxis = function () {
+    var internal = this,
+        d3 = internal.d3,
+        params = internal.params;
     function axis(g) {
         g.each(function () {
             var g = axis.g = d3.select(this);
-            var scale0 = this.__chart__ || scale,
-                scale1 = this.__chart__ = copyScale();
-            var ticks = tickValues ? tickValues : generateTicks(scale1),
+            var scale0 = this.__chart__ || internal.scale,
+                scale1 = this.__chart__ = internal.copyScale();
+            var ticks = internal.tickValues ? internal.tickValues : internal.generateTicks(scale1),
                 tick = g.selectAll(".tick").data(ticks, scale1),
                 tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick").style("opacity", 1e-6),
             tickExit = tick.exit().remove(),
-                tickUpdate = transitionise(tick).style("opacity", 1),
+                tickUpdate = internal.transitionise(tick).style("opacity", 1),
                 tickTransform,
                 tickX,
                 tickY;
-            var range = scale.rangeExtent ? scale.rangeExtent() : scaleExtent(scale.range()),
-                path = g.selectAll(".domain").data([0]),
-                pathUpdate = (path.enter().append("path").attr("class", "domain"), transitionise(path));
+            if (params.isCategory) {
+                internal.tickOffset = Math.ceil((scale1(1) - scale1(0)) / 2);
+                tickX = internal.tickCentered ? 0 : internal.tickOffset;
+                tickY = internal.tickCentered ? internal.tickOffset : 0;
+            } else {
+                internal.tickOffset = tickX = 0;
+            }
             tickEnter.append("line");
             tickEnter.append("text");
-            var lineEnter = tickEnter.select("line"),
-                lineUpdate = tickUpdate.select("line"),
-                textEnter = tickEnter.select("text"),
-                textUpdate = tickUpdate.select("text");
-            if (params.isCategory) {
-                tickOffset = Math.ceil((scale1(1) - scale1(0)) / 2);
-                tickX = tickCentered ? 0 : tickOffset;
-                tickY = tickCentered ? tickOffset : 0;
-            } else {
-                tickOffset = tickX = 0;
-            }
-            var text,
-                tspan,
-                sizeFor1Char = getSizeFor1Char(g.select('.tick')),
-                counts = [];
-            var tickLength = Math.max(innerTickSize, 0) + tickPadding,
-                isVertical = orient === 'left' || orient === 'right';
-            function splitTickText(d, maxWidth) {
-                var tickText = textFormatted(d),
-                    subtext,
-                    spaceIndex,
-                    textWidth,
-                    splitted = [];
-                if (Object.prototype.toString.call(tickText) === "[object Array]") {
-                    return tickText;
-                }
-                if (!maxWidth || maxWidth <= 0) {
-                    maxWidth = isVertical ? 95 : params.isCategory ? Math.ceil(scale1(ticks[1]) - scale1(ticks[0])) - 12 : 110;
-                }
-                function split(splitted, text) {
-                    spaceIndex = undefined;
-                    for (var i = 1; i < text.length; i++) {
-                        if (text.charAt(i) === ' ') {
-                            spaceIndex = i;
-                        }
-                        subtext = text.substr(0, i + 1);
-                        textWidth = sizeFor1Char.w * subtext.length;
-                        if (maxWidth < textWidth) {
-                            return split(splitted.concat(text.substr(0, spaceIndex ? spaceIndex : i)), text.slice(spaceIndex ? spaceIndex + 1 : i));
-                        }
-                    }
-                    return splitted.concat(text);
-                }
-                return split(splitted, tickText + "");
-            }
-            function tspanDy(d, i) {
-                var dy = sizeFor1Char.h;
-                if (i === 0) {
-                    if (orient === 'left' || orient === 'right') {
-                        dy = -((counts[d.index] - 1) * (sizeFor1Char.h / 2) - 3);
-                    } else {
-                        dy = ".71em";
-                    }
-                }
-                return dy;
-            }
-            function tickSize(d) {
-                var tickPosition = scale(d) + (tickCentered ? 0 : tickOffset);
-                return range[0] < tickPosition && tickPosition < range[1] ? innerTickSize : 0;
-            }
-            text = tick.select("text");
-            tspan = text.selectAll('tspan').data(function (d, i) {
-                var splitted = params.tickMultiline ? splitTickText(d, params.tickWidth) : [].concat(textFormatted(d));
-                counts[i] = splitted.length;
-                return splitted.map(function (s) {
-                    return { index: i, splitted: s };
-                });
+            internal.updateRange();
+            internal.updateTickLength();
+            internal.updateTickTextCharSize(g.select('.tick'));
+            var lineUpdate = tickUpdate.select("line"),
+                textUpdate = tickUpdate.select("text"),
+                tspanUpdate = tick.select("text").selectAll('tspan').data(function (d, i) {
+                return internal.tspanData(d, i, ticks, scale1);
             });
-            tspan.enter().append('tspan');
-            tspan.exit().remove();
-            tspan.text(function (d) {
+            tspanUpdate.enter().append('tspan');
+            tspanUpdate.exit().remove();
+            tspanUpdate.text(function (d) {
                 return d.splitted;
             });
-            var rotate = params.tickTextRotate;
-            function textAnchorForText(rotate) {
-                if (!rotate) {
-                    return 'middle';
-                }
-                return rotate > 0 ? "start" : "end";
-            }
-            function textTransform(rotate) {
-                if (!rotate) {
-                    return '';
-                }
-                return "rotate(" + rotate + ")";
-            }
-            function dxForText(rotate) {
-                if (!rotate) {
-                    return 0;
-                }
-                return 8 * Math.sin(Math.PI * (rotate / 180));
-            }
-            function yForText(rotate) {
-                if (!rotate) {
-                    return tickLength;
-                }
-                return 11.5 - 2.5 * (rotate / 15) * (rotate > 0 ? 1 : -1);
-            }
-            switch (orient) {
+            var path = g.selectAll(".domain").data([0]),
+                pathUpdate = (path.enter().append("path").attr("class", "domain"), internal.transitionise(path));
+            switch (internal.orient) {
                 case "bottom":
                     {
-                        tickTransform = axisX;
-                        lineEnter.attr("y2", innerTickSize);
-                        textEnter.attr("y", tickLength);
-                        lineUpdate.attr("x1", tickX).attr("x2", tickX).attr("y2", tickSize);
-                        textUpdate.attr("x", 0).attr("y", yForText(rotate)).style("text-anchor", textAnchorForText(rotate)).attr("transform", textTransform(rotate));
-                        tspan.attr('x', 0).attr("dy", tspanDy).attr('dx', dxForText(rotate));
-                        pathUpdate.attr("d", "M" + range[0] + "," + outerTickSize + "V0H" + range[1] + "V" + outerTickSize);
+                        tickTransform = internal.axisX;
+                        lineUpdate.attr("x1", tickX).attr("x2", tickX).attr("y2", function (d, i) {
+                            return internal.lineY2(d, i);
+                        });
+                        textUpdate.attr("x", 0).attr("y", function (d, i) {
+                            return internal.textY(d, i);
+                        }).attr("transform", function (d, i) {
+                            return internal.textTransform(d, i);
+                        }).style("text-anchor", function (d, i) {
+                            return internal.textTextAnchor(d, i);
+                        });
+                        tspanUpdate.attr('x', 0).attr("dy", function (d, i) {
+                            return internal.tspanDy(d, i);
+                        }).attr('dx', function (d, i) {
+                            return internal.tspanDx(d, i);
+                        });
+                        pathUpdate.attr("d", "M" + internal.range[0] + "," + internal.outerTickSize + "V0H" + internal.range[1] + "V" + internal.outerTickSize);
                         break;
                     }
                 case "top":
                     {
-                        tickTransform = axisX;
-                        lineEnter.attr("y2", -innerTickSize);
-                        textEnter.attr("y", -tickLength);
-                        lineUpdate.attr("x2", 0).attr("y2", -innerTickSize);
-                        textUpdate.attr("x", 0).attr("y", -tickLength);
-                        text.style("text-anchor", "middle");
-                        tspan.attr('x', 0).attr("dy", "0em");
-                        pathUpdate.attr("d", "M" + range[0] + "," + -outerTickSize + "V0H" + range[1] + "V" + -outerTickSize);
+                        tickTransform = internal.axisX;
+                        lineUpdate.attr("x2", 0).attr("y2", -internal.innerTickSize);
+                        textUpdate.attr("x", 0).attr("y", -internal.tickLength).style("text-anchor", "middle");
+                        tspanUpdate.attr('x', 0).attr("dy", "0em");
+                        pathUpdate.attr("d", "M" + internal.range[0] + "," + -internal.outerTickSize + "V0H" + internal.range[1] + "V" + -internal.outerTickSize);
                         break;
                     }
                 case "left":
                     {
-                        tickTransform = axisY;
-                        lineEnter.attr("x2", -innerTickSize);
-                        textEnter.attr("x", -tickLength);
-                        lineUpdate.attr("x2", -innerTickSize).attr("y1", tickY).attr("y2", tickY);
-                        textUpdate.attr("x", -tickLength).attr("y", tickOffset);
-                        text.style("text-anchor", "end");
-                        tspan.attr('x', -tickLength).attr("dy", tspanDy);
-                        pathUpdate.attr("d", "M" + -outerTickSize + "," + range[0] + "H0V" + range[1] + "H" + -outerTickSize);
+                        tickTransform = internal.axisY;
+                        lineUpdate.attr("x2", -internal.innerTickSize).attr("y1", tickY).attr("y2", tickY);
+                        textUpdate.attr("x", -internal.tickLength).attr("y", internal.tickOffset).style("text-anchor", "end");
+                        tspanUpdate.attr('x', -internal.tickLength).attr("dy", function (d, i) {
+                            return internal.tspanDy(d, i);
+                        });
+                        pathUpdate.attr("d", "M" + -internal.outerTickSize + "," + internal.range[0] + "H0V" + internal.range[1] + "H" + -internal.outerTickSize);
                         break;
                     }
                 case "right":
                     {
-                        tickTransform = axisY;
-                        lineEnter.attr("x2", innerTickSize);
-                        textEnter.attr("x", tickLength);
-                        lineUpdate.attr("x2", innerTickSize).attr("y2", 0);
-                        textUpdate.attr("x", tickLength).attr("y", 0);
-                        text.style("text-anchor", "start");
-                        tspan.attr('x', tickLength).attr("dy", tspanDy);
-                        pathUpdate.attr("d", "M" + outerTickSize + "," + range[0] + "H0V" + range[1] + "H" + outerTickSize);
+                        tickTransform = internal.axisY;
+                        lineUpdate.attr("x2", internal.innerTickSize).attr("y2", 0);
+                        textUpdate.attr("x", internal.tickLength).attr("y", 0).style("text-anchor", "start");
+                        tspanUpdate.attr('x', internal.tickLength).attr("dy", function (d, i) {
+                            return internal.tspanDy(d, i);
+                        });
+                        pathUpdate.attr("d", "M" + internal.outerTickSize + "," + internal.range[0] + "H0V" + internal.range[1] + "H" + internal.outerTickSize);
                         break;
                     }
             }
@@ -431,87 +489,101 @@ function c3_axis(d3, params) {
             } else if (scale0.rangeBand) {
                 scale0 = scale1;
             } else {
-                tickExit.call(tickTransform, scale1);
+                tickExit.call(tickTransform, scale1, internal.tickOffset);
             }
-            tickEnter.call(tickTransform, scale0);
-            tickUpdate.call(tickTransform, scale1);
+            tickEnter.call(tickTransform, scale0, internal.tickOffset);
+            tickUpdate.call(tickTransform, scale1, internal.tickOffset);
         });
     }
     axis.scale = function (x) {
         if (!arguments.length) {
-            return scale;
+            return internal.scale;
         }
-        scale = x;
+        internal.scale = x;
         return axis;
     };
     axis.orient = function (x) {
         if (!arguments.length) {
-            return orient;
+            return internal.orient;
         }
-        orient = x in { top: 1, right: 1, bottom: 1, left: 1 } ? x + "" : "bottom";
+        internal.orient = x in { top: 1, right: 1, bottom: 1, left: 1 } ? x + "" : "bottom";
         return axis;
     };
     axis.tickFormat = function (format) {
         if (!arguments.length) {
-            return tickFormat;
+            return internal.tickFormat;
         }
-        tickFormat = format;
+        internal.tickFormat = format;
         return axis;
     };
     axis.tickCentered = function (isCentered) {
         if (!arguments.length) {
-            return tickCentered;
+            return internal.tickCentered;
         }
-        tickCentered = isCentered;
+        internal.tickCentered = isCentered;
         return axis;
     };
     axis.tickOffset = function () {
-        return tickOffset;
+        return internal.tickOffset;
     };
     axis.tickInterval = function () {
         var interval, length;
         if (params.isCategory) {
-            interval = tickOffset * 2;
+            interval = internal.tickOffset * 2;
         } else {
-            length = axis.g.select('path.domain').node().getTotalLength() - outerTickSize * 2;
+            length = axis.g.select('path.domain').node().getTotalLength() - internal.outerTickSize * 2;
             interval = length / axis.g.selectAll('line').size();
         }
         return interval === Infinity ? 0 : interval;
     };
     axis.ticks = function () {
         if (!arguments.length) {
-            return tickArguments;
+            return internal.tickArguments;
         }
-        tickArguments = arguments;
+        internal.tickArguments = arguments;
         return axis;
     };
     axis.tickCulling = function (culling) {
         if (!arguments.length) {
-            return tickCulling;
+            return internal.tickCulling;
         }
-        tickCulling = culling;
+        internal.tickCulling = culling;
         return axis;
     };
     axis.tickValues = function (x) {
         if (typeof x === 'function') {
-            tickValues = function tickValues() {
-                return x(scale.domain());
+            internal.tickValues = function () {
+                return x(internal.scale.domain());
             };
         } else {
             if (!arguments.length) {
-                return tickValues;
+                return internal.tickValues;
             }
-            tickValues = x;
+            internal.tickValues = x;
         }
         return axis;
     };
     return axis;
-}
-function Axis(owner) {
-    API.call(this, owner);
-}
-inherit(API, Axis);
-Axis.prototype.init = function init() {
+};
+var Axis = function (_Component) {
+    inherits(Axis, _Component);
+    function Axis(owner) {
+        classCallCheck(this, Axis);
+        var fn = {
+            fn: c3_axis_fn,
+            internal: {
+                fn: c3_axis_internal_fn
+            }
+        };
+        var _this = possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this, owner, 'axis', fn));
+        _this.d3 = owner.d3;
+        _this.internal = AxisInternal;
+        return _this;
+    }
+    return Axis;
+}(Component);
+c3_axis_fn = Axis.prototype;
+c3_axis_fn.init = function init() {
     var $$ = this.owner,
         config = $$.config,
         main = $$.main;
@@ -523,7 +595,7 @@ Axis.prototype.init = function init() {
     ).attr("transform", $$.getTranslate('y2')).style("visibility", config.axis_y2_show ? 'visible' : 'hidden');
     $$.axes.y2.append("text").attr("class", CLASS.axisY2Label).attr("transform", config.axis_rotated ? "" : "rotate(-90)").style("text-anchor", this.textAnchorForY2AxisLabel.bind(this));
 };
-Axis.prototype.getXAxis = function getXAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
+c3_axis_fn.getXAxis = function getXAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
     var $$ = this.owner,
         config = $$.config,
         axisParams = {
@@ -534,7 +606,7 @@ Axis.prototype.getXAxis = function getXAxis(scale, orient, tickFormat, tickValue
         tickTextRotate: withoutRotateTickText ? 0 : config.axis_x_tick_rotate,
         withoutTransition: withoutTransition
     },
-        axis = c3_axis($$.d3, axisParams).scale(scale).orient(orient);
+        axis = new this.internal(this, axisParams).axis.scale(scale).orient(orient);
     if ($$.isTimeSeries() && tickValues && typeof tickValues !== "function") {
         tickValues = tickValues.map(function (v) {
             return $$.parseDate(v);
@@ -549,7 +621,7 @@ Axis.prototype.getXAxis = function getXAxis(scale, orient, tickFormat, tickValue
     }
     return axis;
 };
-Axis.prototype.updateXAxisTickValues = function updateXAxisTickValues(targets, axis) {
+c3_axis_fn.updateXAxisTickValues = function updateXAxisTickValues(targets, axis) {
     var $$ = this.owner,
         config = $$.config,
         tickValues;
@@ -564,7 +636,7 @@ Axis.prototype.updateXAxisTickValues = function updateXAxisTickValues(targets, a
     }
     return tickValues;
 };
-Axis.prototype.getYAxis = function getYAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
+c3_axis_fn.getYAxis = function getYAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
     var $$ = this.owner,
         config = $$.config,
         axisParams = {
@@ -572,7 +644,7 @@ Axis.prototype.getYAxis = function getYAxis(scale, orient, tickFormat, tickValue
         withoutTransition: withoutTransition,
         tickTextRotate: withoutRotateTickText ? 0 : config.axis_y_tick_rotate
     },
-        axis = c3_axis($$.d3, axisParams).scale(scale).orient(orient).tickFormat(tickFormat);
+        axis = new this.internal(this, axisParams).axis.scale(scale).orient(orient).tickFormat(tickFormat);
     if ($$.isTimeSeriesY()) {
         axis.ticks($$.d3.time[config.axis_y_tick_time_value], config.axis_y_tick_time_interval);
     } else {
@@ -580,11 +652,11 @@ Axis.prototype.getYAxis = function getYAxis(scale, orient, tickFormat, tickValue
     }
     return axis;
 };
-Axis.prototype.getId = function getId(id) {
+c3_axis_fn.getId = function getId(id) {
     var config = this.owner.config;
     return id in config.data_axes ? config.data_axes[id] : 'y';
 };
-Axis.prototype.getXAxisTickFormat = function getXAxisTickFormat() {
+c3_axis_fn.getXAxisTickFormat = function getXAxisTickFormat() {
     var $$ = this.owner,
         config = $$.config,
         format = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) {
@@ -603,19 +675,19 @@ Axis.prototype.getXAxisTickFormat = function getXAxisTickFormat() {
         return format.call($$, v);
     } : format;
 };
-Axis.prototype.getTickValues = function getTickValues(tickValues, axis) {
+c3_axis_fn.getTickValues = function getTickValues(tickValues, axis) {
     return tickValues ? tickValues : axis ? axis.tickValues() : undefined;
 };
-Axis.prototype.getXAxisTickValues = function getXAxisTickValues() {
+c3_axis_fn.getXAxisTickValues = function getXAxisTickValues() {
     return this.getTickValues(this.owner.config.axis_x_tick_values, this.owner.xAxis);
 };
-Axis.prototype.getYAxisTickValues = function getYAxisTickValues() {
+c3_axis_fn.getYAxisTickValues = function getYAxisTickValues() {
     return this.getTickValues(this.owner.config.axis_y_tick_values, this.owner.yAxis);
 };
-Axis.prototype.getY2AxisTickValues = function getY2AxisTickValues() {
+c3_axis_fn.getY2AxisTickValues = function getY2AxisTickValues() {
     return this.getTickValues(this.owner.config.axis_y2_tick_values, this.owner.y2Axis);
 };
-Axis.prototype.getLabelOptionByAxisId = function getLabelOptionByAxisId(axisId) {
+c3_axis_fn.getLabelOptionByAxisId = function getLabelOptionByAxisId(axisId) {
     var $$ = this.owner,
         config = $$.config,
         option;
@@ -628,11 +700,11 @@ Axis.prototype.getLabelOptionByAxisId = function getLabelOptionByAxisId(axisId) 
     }
     return option;
 };
-Axis.prototype.getLabelText = function getLabelText(axisId) {
+c3_axis_fn.getLabelText = function getLabelText(axisId) {
     var option = this.getLabelOptionByAxisId(axisId);
     return isString(option) ? option : option ? option.text : null;
 };
-Axis.prototype.setLabelText = function setLabelText(axisId, text) {
+c3_axis_fn.setLabelText = function setLabelText(axisId, text) {
     var $$ = this.owner,
         config = $$.config,
         option = this.getLabelOptionByAxisId(axisId);
@@ -648,7 +720,7 @@ Axis.prototype.setLabelText = function setLabelText(axisId, text) {
         option.text = text;
     }
 };
-Axis.prototype.getLabelPosition = function getLabelPosition(axisId, defaultPosition) {
+c3_axis_fn.getLabelPosition = function getLabelPosition(axisId, defaultPosition) {
     var option = this.getLabelOptionByAxisId(axisId),
         position = option && (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option.position ? option.position : defaultPosition;
     return {
@@ -662,28 +734,28 @@ Axis.prototype.getLabelPosition = function getLabelPosition(axisId, defaultPosit
         isBottom: position.indexOf('bottom') >= 0
     };
 };
-Axis.prototype.getXAxisLabelPosition = function getXAxisLabelPosition() {
+c3_axis_fn.getXAxisLabelPosition = function getXAxisLabelPosition() {
     return this.getLabelPosition('x', this.owner.config.axis_rotated ? 'inner-top' : 'inner-right');
 };
-Axis.prototype.getYAxisLabelPosition = function getYAxisLabelPosition() {
+c3_axis_fn.getYAxisLabelPosition = function getYAxisLabelPosition() {
     return this.getLabelPosition('y', this.owner.config.axis_rotated ? 'inner-right' : 'inner-top');
 };
-Axis.prototype.getY2AxisLabelPosition = function getY2AxisLabelPosition() {
+c3_axis_fn.getY2AxisLabelPosition = function getY2AxisLabelPosition() {
     return this.getLabelPosition('y2', this.owner.config.axis_rotated ? 'inner-right' : 'inner-top');
 };
-Axis.prototype.getLabelPositionById = function getLabelPositionById(id) {
+c3_axis_fn.getLabelPositionById = function getLabelPositionById(id) {
     return id === 'y2' ? this.getY2AxisLabelPosition() : id === 'y' ? this.getYAxisLabelPosition() : this.getXAxisLabelPosition();
 };
-Axis.prototype.textForXAxisLabel = function textForXAxisLabel() {
+c3_axis_fn.textForXAxisLabel = function textForXAxisLabel() {
     return this.getLabelText('x');
 };
-Axis.prototype.textForYAxisLabel = function textForYAxisLabel() {
+c3_axis_fn.textForYAxisLabel = function textForYAxisLabel() {
     return this.getLabelText('y');
 };
-Axis.prototype.textForY2AxisLabel = function textForY2AxisLabel() {
+c3_axis_fn.textForY2AxisLabel = function textForY2AxisLabel() {
     return this.getLabelText('y2');
 };
-Axis.prototype.xForAxisLabel = function xForAxisLabel(forHorizontal, position) {
+c3_axis_fn.xForAxisLabel = function xForAxisLabel(forHorizontal, position) {
     var $$ = this.owner;
     if (forHorizontal) {
         return position.isLeft ? 0 : position.isCenter ? $$.width / 2 : $$.width;
@@ -691,39 +763,39 @@ Axis.prototype.xForAxisLabel = function xForAxisLabel(forHorizontal, position) {
         return position.isBottom ? -$$.height : position.isMiddle ? -$$.height / 2 : 0;
     }
 };
-Axis.prototype.dxForAxisLabel = function dxForAxisLabel(forHorizontal, position) {
+c3_axis_fn.dxForAxisLabel = function dxForAxisLabel(forHorizontal, position) {
     if (forHorizontal) {
         return position.isLeft ? "0.5em" : position.isRight ? "-0.5em" : "0";
     } else {
         return position.isTop ? "-0.5em" : position.isBottom ? "0.5em" : "0";
     }
 };
-Axis.prototype.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
+c3_axis_fn.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
     if (forHorizontal) {
         return position.isLeft ? 'start' : position.isCenter ? 'middle' : 'end';
     } else {
         return position.isBottom ? 'start' : position.isMiddle ? 'middle' : 'end';
     }
 };
-Axis.prototype.xForXAxisLabel = function xForXAxisLabel() {
+c3_axis_fn.xForXAxisLabel = function xForXAxisLabel() {
     return this.xForAxisLabel(!this.owner.config.axis_rotated, this.getXAxisLabelPosition());
 };
-Axis.prototype.xForYAxisLabel = function xForYAxisLabel() {
+c3_axis_fn.xForYAxisLabel = function xForYAxisLabel() {
     return this.xForAxisLabel(this.owner.config.axis_rotated, this.getYAxisLabelPosition());
 };
-Axis.prototype.xForY2AxisLabel = function xForY2AxisLabel() {
+c3_axis_fn.xForY2AxisLabel = function xForY2AxisLabel() {
     return this.xForAxisLabel(this.owner.config.axis_rotated, this.getY2AxisLabelPosition());
 };
-Axis.prototype.dxForXAxisLabel = function dxForXAxisLabel() {
+c3_axis_fn.dxForXAxisLabel = function dxForXAxisLabel() {
     return this.dxForAxisLabel(!this.owner.config.axis_rotated, this.getXAxisLabelPosition());
 };
-Axis.prototype.dxForYAxisLabel = function dxForYAxisLabel() {
+c3_axis_fn.dxForYAxisLabel = function dxForYAxisLabel() {
     return this.dxForAxisLabel(this.owner.config.axis_rotated, this.getYAxisLabelPosition());
 };
-Axis.prototype.dxForY2AxisLabel = function dxForY2AxisLabel() {
+c3_axis_fn.dxForY2AxisLabel = function dxForY2AxisLabel() {
     return this.dxForAxisLabel(this.owner.config.axis_rotated, this.getY2AxisLabelPosition());
 };
-Axis.prototype.dyForXAxisLabel = function dyForXAxisLabel() {
+c3_axis_fn.dyForXAxisLabel = function dyForXAxisLabel() {
     var $$ = this.owner,
         config = $$.config,
         position = this.getXAxisLabelPosition();
@@ -733,7 +805,7 @@ Axis.prototype.dyForXAxisLabel = function dyForXAxisLabel() {
         return position.isInner ? "-0.5em" : config.axis_x_height ? config.axis_x_height - 10 : "3em";
     }
 };
-Axis.prototype.dyForYAxisLabel = function dyForYAxisLabel() {
+c3_axis_fn.dyForYAxisLabel = function dyForYAxisLabel() {
     var $$ = this.owner,
         position = this.getYAxisLabelPosition();
     if ($$.config.axis_rotated) {
@@ -742,7 +814,7 @@ Axis.prototype.dyForYAxisLabel = function dyForYAxisLabel() {
         return position.isInner ? "1.2em" : -10 - ($$.config.axis_y_inner ? 0 : this.getMaxTickWidth('y') + 10);
     }
 };
-Axis.prototype.dyForY2AxisLabel = function dyForY2AxisLabel() {
+c3_axis_fn.dyForY2AxisLabel = function dyForY2AxisLabel() {
     var $$ = this.owner,
         position = this.getY2AxisLabelPosition();
     if ($$.config.axis_rotated) {
@@ -751,19 +823,19 @@ Axis.prototype.dyForY2AxisLabel = function dyForY2AxisLabel() {
         return position.isInner ? "-0.5em" : 15 + ($$.config.axis_y2_inner ? 0 : this.getMaxTickWidth('y2') + 15);
     }
 };
-Axis.prototype.textAnchorForXAxisLabel = function textAnchorForXAxisLabel() {
+c3_axis_fn.textAnchorForXAxisLabel = function textAnchorForXAxisLabel() {
     var $$ = this.owner;
     return this.textAnchorForAxisLabel(!$$.config.axis_rotated, this.getXAxisLabelPosition());
 };
-Axis.prototype.textAnchorForYAxisLabel = function textAnchorForYAxisLabel() {
+c3_axis_fn.textAnchorForYAxisLabel = function textAnchorForYAxisLabel() {
     var $$ = this.owner;
     return this.textAnchorForAxisLabel($$.config.axis_rotated, this.getYAxisLabelPosition());
 };
-Axis.prototype.textAnchorForY2AxisLabel = function textAnchorForY2AxisLabel() {
+c3_axis_fn.textAnchorForY2AxisLabel = function textAnchorForY2AxisLabel() {
     var $$ = this.owner;
     return this.textAnchorForAxisLabel($$.config.axis_rotated, this.getY2AxisLabelPosition());
 };
-Axis.prototype.getMaxTickWidth = function getMaxTickWidth(id, withoutRecompute) {
+c3_axis_fn.getMaxTickWidth = function getMaxTickWidth(id, withoutRecompute) {
     var $$ = this.owner,
         config = $$.config,
         maxWidth = 0,
@@ -802,7 +874,7 @@ Axis.prototype.getMaxTickWidth = function getMaxTickWidth(id, withoutRecompute) 
     $$.currentMaxTickWidths[id] = maxWidth <= 0 ? $$.currentMaxTickWidths[id] : maxWidth;
     return $$.currentMaxTickWidths[id];
 };
-Axis.prototype.updateLabels = function updateLabels(withTransition) {
+c3_axis_fn.updateLabels = function updateLabels(withTransition) {
     var $$ = this.owner;
     var axisXLabel = $$.main.select('.' + CLASS.axisX + ' .' + CLASS.axisXLabel),
         axisYLabel = $$.main.select('.' + CLASS.axisY + ' .' + CLASS.axisYLabel),
@@ -811,7 +883,7 @@ Axis.prototype.updateLabels = function updateLabels(withTransition) {
     (withTransition ? axisYLabel.transition() : axisYLabel).attr("x", this.xForYAxisLabel.bind(this)).attr("dx", this.dxForYAxisLabel.bind(this)).attr("dy", this.dyForYAxisLabel.bind(this)).text(this.textForYAxisLabel.bind(this));
     (withTransition ? axisY2Label.transition() : axisY2Label).attr("x", this.xForY2AxisLabel.bind(this)).attr("dx", this.dxForY2AxisLabel.bind(this)).attr("dy", this.dyForY2AxisLabel.bind(this)).text(this.textForY2AxisLabel.bind(this));
 };
-Axis.prototype.getPadding = function getPadding(padding, key, defaultValue, domainLength) {
+c3_axis_fn.getPadding = function getPadding(padding, key, defaultValue, domainLength) {
     var p = typeof padding === 'number' ? padding : padding[key];
     if (!isValue(p)) {
         return defaultValue;
@@ -821,12 +893,12 @@ Axis.prototype.getPadding = function getPadding(padding, key, defaultValue, doma
     }
     return this.convertPixelsToAxisPadding(p, domainLength);
 };
-Axis.prototype.convertPixelsToAxisPadding = function convertPixelsToAxisPadding(pixels, domainLength) {
+c3_axis_fn.convertPixelsToAxisPadding = function convertPixelsToAxisPadding(pixels, domainLength) {
     var $$ = this.owner,
         length = $$.config.axis_rotated ? $$.width : $$.height;
     return domainLength * (pixels / length);
 };
-Axis.prototype.generateTickValues = function generateTickValues(values, tickCount, forTimeSeries) {
+c3_axis_fn.generateTickValues = function generateTickValues(values, tickCount, forTimeSeries) {
     var tickValues = values,
         targetCount,
         start,
@@ -861,7 +933,7 @@ Axis.prototype.generateTickValues = function generateTickValues(values, tickCoun
     }
     return tickValues;
 };
-Axis.prototype.generateTransitions = function generateTransitions(duration) {
+c3_axis_fn.generateTransitions = function generateTransitions(duration) {
     var $$ = this.owner,
         axes = $$.axes;
     return {
@@ -871,7 +943,7 @@ Axis.prototype.generateTransitions = function generateTransitions(duration) {
         axisSubX: duration ? axes.subx.transition().duration(duration) : axes.subx
     };
 };
-Axis.prototype.redraw = function redraw(transitions, isHidden) {
+c3_axis_fn.redraw = function redraw(transitions, isHidden) {
     var $$ = this.owner;
     $$.axes.x.style("opacity", isHidden ? 0 : 1);
     $$.axes.y.style("opacity", isHidden ? 0 : 1);
@@ -882,23 +954,12 @@ Axis.prototype.redraw = function redraw(transitions, isHidden) {
     transitions.axisY2.call($$.y2Axis);
     transitions.axisSubX.call($$.subXAxis);
 };
-var c3$1 = { version: "0.4.15" };
+var c3$1 = { version: "0.4.18" };
 var c3_chart_fn;
 var c3_chart_internal_fn;
-var c3_chart_internal_axis_fn;
-function API(owner) {
+function Component(owner, componentKey, fn) {
     this.owner = owner;
-}
-function inherit(base, derived) {
-    if (Object.create) {
-        derived.prototype = Object.create(base.prototype);
-    } else {
-        var f = function f() {};
-        f.prototype = base.prototype;
-        derived.prototype = new f();
-    }
-    derived.prototype.constructor = derived;
-    return derived;
+    c3$1.chart.internal[componentKey] = fn;
 }
 function Chart(config) {
     var $$ = this.internal = new ChartInternal(this);
@@ -930,15 +991,11 @@ c3$1.generate = function (config) {
 c3$1.chart = {
     fn: Chart.prototype,
     internal: {
-        fn: ChartInternal.prototype,
-        axis: {
-            fn: Axis.prototype
-        }
+        fn: ChartInternal.prototype
     }
 };
 c3_chart_fn = c3$1.chart.fn;
 c3_chart_internal_fn = c3$1.chart.internal.fn;
-c3_chart_internal_axis_fn = c3$1.chart.internal.axis.fn;
 c3_chart_internal_fn.beforeInit = function () {
 };
 c3_chart_internal_fn.afterInit = function () {
@@ -3725,16 +3782,13 @@ c3_chart_fn.zoom.range = function (range) {
 };
 c3_chart_internal_fn.initPie = function () {
     var $$ = this,
-        d3 = $$.d3,
-        config = $$.config;
+        d3 = $$.d3;
     $$.pie = d3.layout.pie().value(function (d) {
         return d.values.reduce(function (a, b) {
             return a + b.value;
         }, 0);
     });
-    if (!config.data_order) {
-        $$.pie.sort(null);
-    }
+    $$.pie.sort($$.getOrderFunction() || null);
 };
 c3_chart_internal_fn.updateRadius = function () {
     var $$ = this,
@@ -4510,6 +4564,7 @@ c3_chart_internal_fn.getDefaultConfig = function () {
         bar_width_ratio: 0.6,
         bar_width_max: undefined,
         bar_zerobased: true,
+        bar_space: 0,
         area_zerobased: true,
         area_above: false,
         pie_label_show: true,
@@ -5091,26 +5146,36 @@ c3_chart_internal_fn.isOrderAsc = function () {
     var config = this.config;
     return typeof config.data_order === 'string' && config.data_order.toLowerCase() === 'asc';
 };
-c3_chart_internal_fn.orderTargets = function (targets) {
+c3_chart_internal_fn.getOrderFunction = function () {
     var $$ = this,
         config = $$.config,
         orderAsc = $$.isOrderAsc(),
         orderDesc = $$.isOrderDesc();
     if (orderAsc || orderDesc) {
-        targets.sort(function (t1, t2) {
+        return function (t1, t2) {
             var reducer = function reducer(p, c) {
                 return p + Math.abs(c.value);
             };
             var t1Sum = t1.values.reduce(reducer, 0),
                 t2Sum = t2.values.reduce(reducer, 0);
-            return orderAsc ? t2Sum - t1Sum : t1Sum - t2Sum;
-        });
+            return orderDesc ? t2Sum - t1Sum : t1Sum - t2Sum;
+        };
     } else if (isFunction(config.data_order)) {
-        targets.sort(config.data_order);
+        return config.data_order;
     } else if (isArray(config.data_order)) {
-        targets.sort(function (t1, t2) {
-            return config.data_order.indexOf(t1.id) - config.data_order.indexOf(t2.id);
-        });
+        var order = config.data_order;
+        return function (t1, t2) {
+            return order.indexOf(t1.id) - order.indexOf(t2.id);
+        };
+    }
+};
+c3_chart_internal_fn.orderTargets = function (targets) {
+    var fct = this.getOrderFunction();
+    if (fct) {
+        targets.sort(fct);
+        if (this.isOrderAsc() || this.isOrderDesc()) {
+            targets.reverse();
+        }
     }
     return targets;
 };
@@ -6866,7 +6931,7 @@ c3_chart_internal_fn.updateBar = function (durationForExit) {
     $$.mainBar.exit().transition().duration(durationForExit).remove();
 };
 c3_chart_internal_fn.redrawBar = function (drawBar, withTransition) {
-    return [(withTransition ? this.mainBar.transition(Math.random().toString()) : this.mainBar).attr('d', drawBar).style("fill", this.color).style("opacity", 1)];
+    return [(withTransition ? this.mainBar.transition(Math.random().toString()) : this.mainBar).attr('d', drawBar).style("stroke", this.color).style("fill", this.color).style("opacity", 1)];
 };
 c3_chart_internal_fn.getBarW = function (axis, barTargetsNum) {
     var $$ = this,
@@ -6909,6 +6974,7 @@ c3_chart_internal_fn.generateGetBarPoints = function (barIndices, isSub) {
         barX = $$.getShapeX(barW, barTargetsNum, barIndices, !!isSub),
         barY = $$.getShapeY(!!isSub),
         barOffset = $$.getShapeOffset($$.isBarType, barIndices, !!isSub),
+        barSpaceOffset = barW * ($$.config.bar_space / 2),
         yScale = isSub ? $$.getSubYScale : $$.getYScale;
     return function (d, i) {
         var y0 = yScale.call($$, d.id)(0),
@@ -6920,7 +6986,7 @@ c3_chart_internal_fn.generateGetBarPoints = function (barIndices, isSub) {
                 posY = y0;
             }
         }
-        return [[posX, offset], [posX, posY - (y0 - offset)], [posX + barW, posY - (y0 - offset)], [posX + barW, offset]];
+        return [[posX + barSpaceOffset, offset], [posX + barSpaceOffset, posY - (y0 - offset)], [posX + barW - barSpaceOffset, posY - (y0 - offset)], [posX + barW - barSpaceOffset, offset]];
     };
 };
 c3_chart_internal_fn.isWithinBar = function (that) {
@@ -7379,7 +7445,11 @@ c3_chart_internal_fn.pointR = function (d) {
 c3_chart_internal_fn.pointExpandedR = function (d) {
     var $$ = this,
         config = $$.config;
-    return config.point_focus_expand_enabled ? config.point_focus_expand_r ? config.point_focus_expand_r : $$.pointR(d) * 1.75 : $$.pointR(d);
+    if (config.point_focus_expand_enabled) {
+        return isFunction(config.point_focus_expand_r) ? config.point_focus_expand_r(d) : config.point_focus_expand_r ? config.point_focus_expand_r : $$.pointR(d) * 1.75;
+    } else {
+        return $$.pointR(d);
+    }
 };
 c3_chart_internal_fn.pointSelectR = function (d) {
     var $$ = this,
@@ -23212,7 +23282,7 @@ function parseExtraction(){
     return this;
   };
   Dataviz.prototype.sortIntervals = function(str){
-    if (!arguments.length) return this.view.sortInterval;
+    if (!arguments.length) return this.view.sortIntervals;
     this.view.sortIntervals = (str ? String(str) : null);
     if (this.view.sortIntervals) {
       this.dataset.sortRows(this.view.sortIntervals);
@@ -23899,7 +23969,10 @@ function defineC3(){
         r: 2,
         show: true
       },
-      tooltip: {}
+      tooltip: {},
+      transition: {
+        duration: 0
+      }
     };
     ENFORCED_OPTIONS = {
       bindto: this.el().querySelector('.' + this.theme() + '-rendering'),
@@ -23915,10 +23988,7 @@ function defineC3(){
         height: this.height() ? this.height() - this.el().offsetHeight : 400,
         width: this.width()
       },
-      tooltip: {},
-      transition: {
-        duration: 0
-      }
+      tooltip: {}
     };
     options = extendDeep({}, DEFAULT_OPTIONS, this.chartOptions());
     options = extendDeep(options, ENFORCED_OPTIONS);
@@ -24364,6 +24434,9 @@ function deferEvent(eventCollection, eventBody){
   this.queue.events[eventCollection] = this.queue.events[eventCollection] || [];
   this.queue.events[eventCollection].push(eventBody);
   this.queue.capacity++;
+  if (!this.queue.timer) {
+    this.queue.start();
+  }
   this.emit('deferEvent', eventCollection, eventBody);
   return this;
 }
@@ -24377,6 +24450,9 @@ function deferEvents(eventsHash){
     self.queue.events[eventCollection] = self.queue.events[eventCollection] || [];
     self.queue.events[eventCollection] = self.queue.events[eventCollection].concat(eventList);
     self.queue.capacity = self.queue.capacity + eventList.length;
+    if (!self.queue.timer) {
+      self.queue.start();
+    }
   });
   self.emit('deferEvents', eventsHash);
   return self;
@@ -24398,6 +24474,7 @@ function recordDeferredEvents(){
       clonedQueueConfig,
       clonedQueueEvents;
   if (self.queue.capacity > 0) {
+    self.queue.pause();
     clonedQueueConfig = JSON.parse(JSON.stringify(self.queue.config));
     clonedQueueEvents = JSON.parse(JSON.stringify(self.queue.events));
     self.queue = queue();
@@ -25186,7 +25263,6 @@ function queue() {
   };
   this.interval = 0;
   this.timer = null;
-  this.start();
   return this;
 }
 Emitter(queue.prototype);
@@ -25194,7 +25270,7 @@ queue.prototype.check = function() {
   if (shouldFlushQueue(this)) {
     this.flush();
   }
-  if (this.config.interval === 0) {
+  if (this.config.interval === 0 || this.capacity === 0) {
     this.pause();
   }
   return this;
@@ -25556,4 +25632,71 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 process.umask = function() { return 0; };
+},{}],71:[function(require,module,exports){
+module.exports={
+  "name": "keen-js",
+  "version": "4.1.0",
+  "license": "MIT",
+  "main": "lib/index.js",
+  "style": "style/index.css",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/keen/keen-js.git"
+  },
+  "scripts": {
+    "start": "gulp with-tests",
+    "test": "gulp test:cli"
+  },
+  "bugs": "https://github.com/keen/keen-js/issues",
+  "author": "Dustin Larimer <dustin@keen.io> (https://keen.io/)",
+  "contributors": [
+    "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
+    "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)"
+  ],
+  "dependencies": {
+    "keen-analysis": "1.3.0",
+    "keen-dataviz": "1.2.0",
+    "keen-tracking": "1.2.1"
+  },
+  "devDependencies": {
+    "browserify": "^8.0.3",
+    "chai": "^1.10.0",
+    "chai-spies": "^0.5.1",
+    "del": "^1.1.0",
+    "event-stream": "^3.1.7",
+    "gulp": "^3.8.10",
+    "gulp-awspublish": "0.0.23",
+    "gulp-connect": "^2.2.0",
+    "gulp-minify-css": "^1.2.4",
+    "gulp-mocha": "^2.0.0",
+    "gulp-mocha-phantomjs": "^0.11.0",
+    "gulp-postcss": "^7.0.0",
+    "gulp-remove-empty-lines": "0.0.2",
+    "gulp-rename": "^1.2.0",
+    "gulp-strip-comments": "^1.0.1",
+    "gulp-uglify": "^1.5.4",
+    "gulp-util": "^3.0.1",
+    "karma": "^0.12.28",
+    "karma-chrome-launcher": "^0.1.7",
+    "karma-firefox-launcher": "^0.1.3",
+    "karma-mocha": "^0.2.0",
+    "karma-nyan-reporter": "0.0.50",
+    "karma-requirejs": "^0.2.2",
+    "karma-safari-launcher": "^0.1.1",
+    "karma-sauce-launcher": "^0.2.10",
+    "karma-sinon": "^1.0.4",
+    "lodash.template": "^2.4.1",
+    "mocha": "^2.4.5",
+    "moment": "^2.8.4",
+    "nock": "^0.51.0",
+    "phantomjs": "^1.9.17",
+    "postcss-cssnext": "^3.0.2",
+    "postcss-import": "^10.0.0",
+    "postcss-reporter": "^5.0.0",
+    "pump": "^1.0.1",
+    "requirejs": "^2.2.0",
+    "sinon": "^1.17.3",
+    "vinyl-transform": "^1.0.0"
+  }
+}
 },{}]},{},[1]);

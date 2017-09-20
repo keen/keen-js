@@ -1,7 +1,27 @@
 <!--
-<a name="unreleased"></a>
-# Unreleased
+<a name="{{ version }}"></a>
+# {{ version }} {{ title }}
+
+**Stream: [keen-tracking.js](https://github.com/keen/keen-tracking.js)**
+[Release: {{ title }} ({{ version }})](https://github.com/keen/keen-tracking.js/releases/tag/{{ version }})
+
+**Compute: [keen-analysis.js](https://github.com/keen/keen-analysis.js)**
+[{{ release-title }} ({{ version }})](https://github.com/keen/keen-analysis.js/releases/tag/{{ version }})
+
+**Visualize: [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)**
+[{{ release-title }} ({{ version }})](https://github.com/keen/keen-dataviz.js/releases/tag/{{ version }})
+
 -->
+<a name="4.1.0"></a>
+# 4.1.0 Module Updates
+
+**Stream: [keen-tracking.js](https://github.com/keen/keen-tracking.js)**
+[Release: Fix Queue Polling (v1.2.1)](https://github.com/keen/keen-tracking.js/releases/tag/v1.2.1)
+
+**Visualize: [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)**
+[Release: Bug Fixes and Dependency Updates (v1.2.0)](https://github.com/keen/keen-dataviz.js/releases/tag/v1.2.0)
+
+
 <a name="4.0.1"></a>
 # 4.0.1 Fix Package Dependencies
 

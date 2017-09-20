@@ -4,7 +4,6 @@ var gulp = require('gulp'),
 var aws = require('gulp-awspublish'),
     browserify = require('browserify'),
     connect = require('gulp-connect'),
-    compress = require('gulp-yuicompressor'),
     del = require('del'),
     karma = require('karma').server,
     minifyCss = require('gulp-minify-css'),
@@ -13,7 +12,6 @@ var aws = require('gulp-awspublish'),
     moment = require('moment'),
     pump = require('pump'),
     rename = require('gulp-rename'),
-    replace = require('gulp-replace'),
     squash = require('gulp-remove-empty-lines'),
     strip = require('gulp-strip-comments'),
     transform = require('vinyl-transform'),
@@ -47,7 +45,7 @@ gulp.task('build:browserify', function() {
     .pipe(squash())
     .pipe(rename('keen.js'))
     .pipe(gulp.dest('./dist/'))
-    .pipe(compress({ type: 'js' }))
+    .pipe(uglify())
     .pipe(rename({ suffix: '.min' }))
     .pipe(gulp.dest('./dist/'));
 });
@@ -204,9 +202,27 @@ gulp.task('aws', ['build', 'test:local'], function() {
     'Expires': new Date(Date.now() + cacheLife).toUTCString()
   };
 
-  return gulp.src([
+  var jsHeaders = Object.assign({}, headers, {
+    'Content-Type': 'application/javascript;charset=UTF-8'
+  });
+
+  var cssHeaders = Object.assign({}, headers, {
+    'Content-Type': 'text/css'
+  });
+
+  gulp.src([
       './dist/keen.js',
-      './dist/keen.min.js',
+      './dist/keen.min.js'
+    ])
+    .pipe(rename(function(path) {
+      path.dirname += '/' + pkg['version'];
+    }))
+    .pipe(aws.gzip())
+    .pipe(publisher.publish(jsHeaders, { force: true }))
+    .pipe(publisher.cache())
+    .pipe(aws.reporter());
+
+  return gulp.src([
       './dist/keen.css',
       './dist/keen.min.css'
     ])
@@ -214,7 +230,7 @@ gulp.task('aws', ['build', 'test:local'], function() {
       path.dirname += '/' + pkg['version'];
     }))
     .pipe(aws.gzip())
-    .pipe(publisher.publish(headers, { force: true }))
+    .pipe(publisher.publish(cssHeaders, { force: true }))
     .pipe(publisher.cache())
     .pipe(aws.reporter());
 
