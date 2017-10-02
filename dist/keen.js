@@ -32,7 +32,7 @@ KeenBase.prototype.draw = function(query, el, attributes){
   return chart;
 };
 module.exports = KeenBase;
-},{"../package.json":71,"keen-analysis":7,"keen-dataviz":30,"keen-dataviz/lib/dataset":18,"keen-tracking":45}],3:[function(require,module,exports){
+},{"../package.json":76,"keen-analysis":7,"keen-dataviz":30,"keen-dataviz/lib/dataset":18,"keen-tracking":46}],3:[function(require,module,exports){
 (function (global, factory) {
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
@@ -21835,7 +21835,7 @@ module.exports = ret;
 },{"./es5":10}]},{},[3])(3)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":70}],12:[function(require,module,exports){
+},{"_process":75}],12:[function(require,module,exports){
 (function (global){
 (function(env){
   var previousKeen = env.Keen || undefined;
@@ -24300,35 +24300,191 @@ function prettyNumber(input) {
   }
 }
 },{}],45:[function(require,module,exports){
+var pkg = require('../package.json');
+function initAutoTracking(lib) {
+  return function(obj) {
+    var client = this;
+    var helpers = lib.helpers;
+    var utils = lib.utils;
+    var options = utils.extend({
+      ignoreDisabledFormFields: false,
+      ignoreFormFieldTypes: ['password'],
+      recordClicks: true,
+      recordFormSubmits: true,
+      recordPageViews: true,
+      recordScrollState: true
+    }, obj);
+    var cookie = new utils.cookie('keen');
+    var uuid = cookie.get('uuid');
+    if (!uuid) {
+      uuid = helpers.getUniqueId();
+      cookie.set('uuid', uuid);
+    }
+    var scrollState = {};
+    if (options.recordScrollState) {
+      scrollState = helpers.getScrollState();
+      utils.listener('window').on('scroll', function(){
+        scrollState = helpers.getScrollState(scrollState);
+      });
+    }
+    client.extendEvents(function() {
+      var browserProfile = helpers.getBrowserProfile();
+      return {
+        tracked_by: pkg.name + '-' + pkg.version,
+        local_time_full: new Date(),
+        user: {
+          uuid: uuid
+        },
+        page: {
+          title: document ? document.title : null,
+          description: browserProfile.description
+        },
+        ip_address: '${keen.ip}',
+        geo: { /* Enriched */ },
+        user_agent: '${keen.user_agent}',
+        tech: {
+          profile: browserProfile
+          /* Enriched */
+        },
+        url: {
+          full: window ? window.location.href : '',
+          info: { /* Enriched */ }
+        },
+        referrer: {
+          full: document ? document.referrer : '',
+          info: { /* Enriched */ }
+        },
+        time: {
+          local: { /* Enriched */ },
+          utc: { /* Enriched */ }
+        },
+        keen: {
+          timestamp: new Date().toISOString(),
+          addons: [
+            {
+              name: 'keen:ip_to_geo',
+              input: {
+                ip: 'ip_address'
+              },
+              output : 'geo'
+            },
+            {
+              name: 'keen:ua_parser',
+              input: {
+                ua_string: 'user_agent'
+              },
+              output: 'tech'
+            },
+            {
+              name: 'keen:url_parser',
+              input: {
+                url: 'url.full'
+              },
+              output: 'url.info'
+            },
+            {
+              name: 'keen:url_parser',
+              input: {
+                url: 'referrer.full'
+              },
+              output: 'referrer.info'
+            },
+            {
+              name: 'keen:date_time_parser',
+              input: {
+                date_time: 'keen.timestamp'
+              },
+              output: 'time.utc'
+            },
+            {
+              name: 'keen:date_time_parser',
+              input: {
+                date_time: 'local_time_full'
+              },
+              output: 'time.local'
+            }
+          ],
+        }
+      };
+    });
+    if (options.recordClicks === true) {
+      utils.listener('a, a *').on('click', function(e) {
+        var el = e.target;
+        var props = {
+          element: helpers.getDomNodeProfile(el),
+          local_time_full: new Date(),
+          page: {
+            scroll_state: scrollState
+          }
+        };
+        client.recordEvent('clicks', props);
+      });
+    }
+    if (options.recordFormSubmits === true) {
+      utils.listener('form').on('submit', function(e) {
+        var el = e.target;
+        var serializerOptions = {
+          disabled: options.ignoreDisabledFormFields,
+          ignoreTypes: options.ignoreFormFieldTypes
+        };
+        var props = {
+          form: {
+            action: el.action,
+            fields: utils.serializeForm(el, serializerOptions),
+            method: el.method
+          },
+          element: helpers.getDomNodeProfile(el),
+          local_time_full: new Date(),
+          page: {
+            scroll_state: scrollState
+          }
+        };
+        client.recordEvent('form_submissions', props);
+      });
+    }
+    if (options.recordPageViews === true) {
+      client.recordEvent('pageviews');
+    }
+    return client;
+  };
+}
+module.exports = initAutoTracking;
+},{"../package.json":74}],46:[function(require,module,exports){
 (function (global){
 (function(env) {
   'use strict';
-  var KeenLibrary = require('./');
+  var KeenCore = require('./index');
   var each = require('./utils/each');
   var extend = require('./utils/extend');
-  var listener = require('./utils/listener')(KeenLibrary);
-  extend(KeenLibrary.prototype, require('./record-events-browser'));
-  extend(KeenLibrary.prototype, require('./defer-events'));
-  extend(KeenLibrary.prototype, {
-    'extendEvent': require('./extend-events').extendEvent,
-    'extendEvents': require('./extend-events').extendEvents
+  var listener = require('./utils/listener')(KeenCore);
+  extend(KeenCore.prototype, require('./record-events-browser'));
+  extend(KeenCore.prototype, require('./defer-events'));
+  extend(KeenCore.prototype, {
+    'extendEvent'      : require('./extend-events').extendEvent,
+    'extendEvents'     : require('./extend-events').extendEvents
   });
-  KeenLibrary.prototype.trackExternalLink = trackExternalLink;
-  extend(KeenLibrary.helpers, {
+  extend(KeenCore.prototype, {
+    'initAutoTracking': require('./browser-auto-tracking')(KeenCore)
+  });
+  KeenCore.prototype.trackExternalLink = trackExternalLink;
+  extend(KeenCore.helpers, {
     'getBrowserProfile'  : require('./helpers/getBrowserProfile'),
     'getDatetimeIndex'   : require('./helpers/getDatetimeIndex'),
     'getDomNodePath'     : require('./helpers/getDomNodePath'),
+    'getDomNodeProfile'  : require('./helpers/getDomNodeProfile'),
     'getScreenProfile'   : require('./helpers/getScreenProfile'),
+    'getScrollState'     : require('./helpers/getScrollState'),
     'getUniqueId'        : require('./helpers/getUniqueId'),
     'getWindowProfile'   : require('./helpers/getWindowProfile')
   });
-  extend(KeenLibrary.utils, {
-    'cookie'     : require('./utils/cookie'),
-    'deepExtend' : require('./utils/deepExtend'),
-    'listener'   : listener,
-    'timer'      : require('./utils/timer')
+  extend(KeenCore.utils, {
+    'cookie'        : require('./utils/cookie'),
+    'deepExtend'    : require('./utils/deepExtend'),
+    'listener'      : listener,
+    'serializeForm' : require('./utils/serializeForm'),
+    'timer'         : require('./utils/timer')
   });
-  KeenLibrary.listenTo = function(listenerHash){
+  KeenCore.listenTo = function(listenerHash){
     each(listenerHash, function(callback, key){
       var split = key.split(' ');
       var eventType = split[0],
@@ -24405,17 +24561,17 @@ function prettyNumber(input) {
     };
   }
   if (typeof module !== 'undefined' && module.exports) {
-    module.exports = KeenLibrary;
+    module.exports = KeenCore;
   }
   if (typeof define !== 'undefined' && define.amd) {
     define('keen-tracking', [], function(){
-      return KeenLibrary;
+      return KeenCore;
     });
   }
-  env.Keen = KeenLibrary.extendLibrary(KeenLibrary);
+  env.Keen = KeenCore.extendLibrary(KeenCore);
 }).call(this, typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {});
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./":54,"./defer-events":46,"./extend-events":47,"./helpers/getBrowserProfile":48,"./helpers/getDatetimeIndex":49,"./helpers/getDomNodePath":50,"./helpers/getScreenProfile":51,"./helpers/getUniqueId":52,"./helpers/getWindowProfile":53,"./record-events-browser":55,"./utils/cookie":57,"./utils/deepExtend":58,"./utils/each":59,"./utils/extend":60,"./utils/listener":61,"./utils/timer":63}],46:[function(require,module,exports){
+},{"./browser-auto-tracking":45,"./defer-events":47,"./extend-events":48,"./helpers/getBrowserProfile":49,"./helpers/getDatetimeIndex":50,"./helpers/getDomNodePath":51,"./helpers/getDomNodeProfile":52,"./helpers/getScreenProfile":53,"./helpers/getScrollState":54,"./helpers/getUniqueId":55,"./helpers/getWindowProfile":56,"./index":57,"./record-events-browser":58,"./utils/cookie":60,"./utils/deepExtend":61,"./utils/each":62,"./utils/extend":63,"./utils/listener":64,"./utils/serializeForm":66,"./utils/timer":67}],47:[function(require,module,exports){
 var Keen = require('./index');
 var each = require('./utils/each');
 var queue = require('./utils/queue');
@@ -24495,7 +24651,7 @@ function handleValidationError(message){
   var err = 'Event(s) not deferred: ' + message;
   this.emit('error', err);
 }
-},{"./index":54,"./utils/each":59,"./utils/queue":62}],47:[function(require,module,exports){
+},{"./index":57,"./utils/each":62,"./utils/queue":65}],48:[function(require,module,exports){
 var deepExtend = require('./utils/deepExtend');
 var each = require('./utils/each');
 module.exports = {
@@ -24536,25 +24692,33 @@ function getExtendedEventBody(result, queue){
   }
   return result;
 }
-},{"./utils/deepExtend":58,"./utils/each":59}],48:[function(require,module,exports){
+},{"./utils/deepExtend":61,"./utils/each":62}],49:[function(require,module,exports){
 var getScreenProfile = require('./getScreenProfile'),
     getWindowProfile = require('./getWindowProfile');
-function getBrowserProfile(){
+function getBrowserProfile() {
   return {
-    'cookies'  : ('undefined' !== typeof navigator.cookieEnabled) ? navigator.cookieEnabled : false,
-    'codeName' : navigator.appCodeName,
-    'language' : navigator.language,
-    'name'     : navigator.appName,
-    'online'   : navigator.onLine,
-    'platform' : navigator.platform,
-    'useragent': navigator.userAgent,
-    'version'  : navigator.appVersion,
-    'screen'   : getScreenProfile(),
-    'window'   : getWindowProfile()
+    'cookies'    : ('undefined' !== typeof navigator.cookieEnabled) ? navigator.cookieEnabled : false,
+    'codeName'   : navigator.appCodeName,
+    'description': getDocumentDescription(),
+    'language'   : navigator.language,
+    'name'       : navigator.appName,
+    'online'     : navigator.onLine,
+    'platform'   : navigator.platform,
+    'useragent'  : navigator.userAgent,
+    'version'    : navigator.appVersion,
+    'screen'     : getScreenProfile(),
+    'window'     : getWindowProfile()
   }
 }
+function getDocumentDescription() {
+  var el;
+  if (document && typeof document.querySelector === 'function') {
+    el = document.querySelector('meta[name="description"]');
+  }
+  return el ? el.content : '';
+}
 module.exports = getBrowserProfile;
-},{"./getScreenProfile":51,"./getWindowProfile":53}],49:[function(require,module,exports){
+},{"./getScreenProfile":53,"./getWindowProfile":56}],50:[function(require,module,exports){
 function getDateTimeIndex(input){
   var date = input || new Date();
   return {
@@ -24566,7 +24730,7 @@ function getDateTimeIndex(input){
   };
 }
 module.exports = getDateTimeIndex;
-},{}],50:[function(require,module,exports){
+},{}],51:[function(require,module,exports){
 function getDomNodePath(el){
   if (!el.nodeName) return '';
   var stack = [];
@@ -24594,7 +24758,27 @@ function getDomNodePath(el){
   return stack.slice(1).join(' > ');
 }
 module.exports = getDomNodePath;
-},{}],51:[function(require,module,exports){
+},{}],52:[function(require,module,exports){
+var getDomNodePath = require('./getDomNodePath');
+function getDomNodeProfile(el) {
+  return {
+    action: el.action,
+    class: el.className,
+    href: el.href,
+    id: el.id,
+    method: el.method,
+    name: el.name,
+    node_name: el.nodeName,
+    selector: getDomNodePath(el),
+    text: el.text,
+    title: el.title,
+    type: el.type,
+    x_position: el.offsetLeft || el.clientLeft || null,
+    y_position: el.offsetTop || el.clientTop || null
+  };
+}
+module.exports = getDomNodeProfile;
+},{"./getDomNodePath":51}],53:[function(require,module,exports){
 function getScreenProfile(){
   var keys, output;
   if ('undefined' == typeof window || !window.screen) return {};
@@ -24610,7 +24794,39 @@ function getScreenProfile(){
   return output;
 }
 module.exports = getScreenProfile;
-},{}],52:[function(require,module,exports){
+},{}],54:[function(require,module,exports){
+var extend = require('../utils/extend');
+function getScrollState(obj){
+  var config = typeof obj === 'object' ? obj : {};
+  var state = extend({
+    pixel: 0,
+    pixel_max: 0,
+    ratio: null,
+    ratio_max: null
+  }, config);
+  if (typeof window !== undefined || typeof document !== undefined) {
+    state.pixel = getScrollOffset() + getWindowHeight();
+    if (state.pixel > state.pixel_max) {
+      state.pixel_max = state.pixel;
+    }
+    state.ratio = parseFloat(Number(state.pixel / getScrollableArea()).toFixed(2));
+    state.ratio_max = parseFloat(Number(state.pixel_max / getScrollableArea()).toFixed(2));
+  }
+  return state;
+}
+function getScrollableArea() {
+  var body = document.body;
+  var html = document.documentElement;
+  return Math.max( body.scrollHeight, body.offsetHeight, html.clientHeight, html.scrollHeight, html.offsetHeight ) || null;
+}
+function getScrollOffset() {
+  return (window.pageYOffset !== undefined) ? window.pageYOffset : (document.documentElement || document.body.parentNode || document.body).scrollTop;
+}
+function getWindowHeight() {
+  return window.innerHeight || document.documentElement.clientHeight;
+}
+module.exports = getScrollState;
+},{"../utils/extend":63}],55:[function(require,module,exports){
 function getUniqueId(){
   var str = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx';
   return str.replace(/[xy]/g, function(c) {
@@ -24619,7 +24835,7 @@ function getUniqueId(){
   });
 }
 module.exports = getUniqueId;
-},{}],53:[function(require,module,exports){
+},{}],56:[function(require,module,exports){
 function getWindowProfile(){
   var body, html, output;
   if ('undefined' == typeof document) return {};
@@ -24643,7 +24859,7 @@ module.exports = getWindowProfile;
   Notes:
     document.documentElement.offsetHeight/Width is a workaround for IE8 and below, where window.innerHeight/Width is undefined
 */
-},{}],54:[function(require,module,exports){
+},{}],57:[function(require,module,exports){
 var KeenCore = require('keen-core');
 var each = require('./utils/each'),
     extend = require('./utils/extend'),
@@ -24674,7 +24890,7 @@ KeenCore.prototype.setGlobalProperties = function(props){
   return this;
 };
 module.exports = KeenCore;
-},{"./utils/each":59,"./utils/extend":60,"./utils/queue":62,"keen-core":64}],55:[function(require,module,exports){
+},{"./utils/each":62,"./utils/extend":63,"./utils/queue":65,"keen-core":68}],58:[function(require,module,exports){
 var Keen = require('./index');
 var base64 = require('./utils/base64');
 var each = require('./utils/each');
@@ -24985,9 +25201,9 @@ function sendBeacon(url, callback){
   };
   img.src = url + '&c=clv1';
 }
-},{"./extend-events":47,"./index":54,"./utils/base64":56,"./utils/each":59,"./utils/extend":60}],56:[function(require,module,exports){
+},{"./extend-events":48,"./index":57,"./utils/base64":59,"./utils/each":62,"./utils/extend":63}],59:[function(require,module,exports){
 module.exports = require('keen-core/lib/utils/base64');
-},{"keen-core/lib/utils/base64":65}],57:[function(require,module,exports){
+},{"keen-core/lib/utils/base64":69}],60:[function(require,module,exports){
 var Cookies = require('js-cookie');
 var extend = require('./extend');
 module.exports = cookie;
@@ -25045,7 +25261,7 @@ cookie.prototype.options = function(obj){
 cookie.prototype.enabled = function(){
   return navigator.cookieEnabled;
 };
-},{"./extend":60,"js-cookie":6}],58:[function(require,module,exports){
+},{"./extend":63,"js-cookie":6}],61:[function(require,module,exports){
 module.exports = deepExtend;
 function deepExtend(target){
   for (var i = 1; i < arguments.length; i++) {
@@ -25072,11 +25288,11 @@ function deepExtend(target){
 function clone(input){
   return JSON.parse( JSON.stringify(input) );
 }
-},{}],59:[function(require,module,exports){
+},{}],62:[function(require,module,exports){
 module.exports = require('keen-core/lib/utils/each');
-},{"keen-core/lib/utils/each":66}],60:[function(require,module,exports){
+},{"keen-core/lib/utils/each":70}],63:[function(require,module,exports){
 module.exports = require('keen-core/lib/utils/extend');
-},{"keen-core/lib/utils/extend":67}],61:[function(require,module,exports){
+},{"keen-core/lib/utils/extend":71}],64:[function(require,module,exports){
 var Emitter = require('component-emitter');
 var each = require('./each');
 /*
@@ -25248,7 +25464,7 @@ function deferFormSubmit(evt, form, callback){
   }
   return false;
 }
-},{"./each":59,"component-emitter":4}],62:[function(require,module,exports){
+},{"./each":62,"component-emitter":4}],65:[function(require,module,exports){
 var Emitter = require('component-emitter');
 function queue() {
   if (this instanceof queue === false) {
@@ -25306,7 +25522,174 @@ function shouldFlushQueue(props) {
   return false;
 }
 module.exports = queue;
-},{"component-emitter":4}],63:[function(require,module,exports){
+},{"component-emitter":4}],66:[function(require,module,exports){
+/*
+  This is a modified copy of https://github.com/defunctzombie/form-serialize/ v0.7.1
+  Includes a new configuration option:
+    * ignoreTypes - Array, Default: [], Example: [ 'password' ]
+*/
+var k_r_submitter = /^(?:submit|button|image|reset|file)$/i;
+var k_r_success_contrls = /^(?:input|select|textarea|keygen)/i;
+var brackets = /(\[[^\[\]]*\])/g;
+function serialize(form, options) {
+  if (typeof options != 'object') {
+    options = { hash: !!options };
+  }
+  else if (options.hash === undefined) {
+    options.hash = true;
+  }
+  var result = (options.hash) ? {} : '';
+  var serializer = options.serializer || ((options.hash) ? hash_serializer : str_serialize);
+  var elements = form && form.elements ? form.elements : [];
+  var radio_store = Object.create(null);
+  for (var i=0 ; i<elements.length ; ++i) {
+    var element = elements[i];
+    if (options.ignoreTypes && options.ignoreTypes.indexOf(element.type) > -1) {
+      continue;
+    }
+    if ((!options.disabled && element.disabled) || !element.name) {
+      continue;
+    }
+    if (!k_r_success_contrls.test(element.nodeName) ||
+      k_r_submitter.test(element.type)) {
+      continue;
+    }
+    var key = element.name;
+    var val = element.value;
+    if ((element.type === 'checkbox' || element.type === 'radio') && !element.checked) {
+      val = undefined;
+    }
+    if (options.empty) {
+      if (element.type === 'checkbox' && !element.checked) {
+        val = '';
+      }
+      if (element.type === 'radio') {
+        if (!radio_store[element.name] && !element.checked) {
+          radio_store[element.name] = false;
+        }
+        else if (element.checked) {
+          radio_store[element.name] = true;
+        }
+      }
+      if (val == undefined && element.type == 'radio') {
+        continue;
+      }
+    }
+    else {
+      if (!val) {
+        continue;
+      }
+    }
+    if (element.type === 'select-multiple') {
+      val = [];
+      var selectOptions = element.options;
+      var isSelectedOptions = false;
+      for (var j=0 ; j<selectOptions.length ; ++j) {
+        var option = selectOptions[j];
+        var allowedEmpty = options.empty && !option.value;
+        var hasValue = (option.value || allowedEmpty);
+        if (option.selected && hasValue) {
+          isSelectedOptions = true;
+          if (options.hash && key.slice(key.length - 2) !== '[]') {
+            result = serializer(result, key + '[]', option.value);
+          }
+          else {
+            result = serializer(result, key, option.value);
+          }
+        }
+      }
+      if (!isSelectedOptions && options.empty) {
+        result = serializer(result, key, '');
+      }
+      continue;
+    }
+    result = serializer(result, key, val);
+  }
+  if (options.empty) {
+    for (var key in radio_store) {
+      if (!radio_store[key]) {
+        result = serializer(result, key, '');
+      }
+    }
+  }
+  return result;
+}
+function parse_keys(string) {
+  var keys = [];
+  var prefix = /^([^\[\]]*)/;
+  var children = new RegExp(brackets);
+  var match = prefix.exec(string);
+  if (match[1]) {
+      keys.push(match[1]);
+  }
+  while ((match = children.exec(string)) !== null) {
+      keys.push(match[1]);
+  }
+  return keys;
+}
+function hash_assign(result, keys, value) {
+  if (keys.length === 0) {
+    result = value;
+    return result;
+  }
+  var key = keys.shift();
+  var between = key.match(/^\[(.+?)\]$/);
+  if (key === '[]') {
+    result = result || [];
+    if (Array.isArray(result)) {
+      result.push(hash_assign(null, keys, value));
+    }
+    else {
+      result._values = result._values || [];
+      result._values.push(hash_assign(null, keys, value));
+    }
+    return result;
+  }
+  if (!between) {
+    result[key] = hash_assign(result[key], keys, value);
+  }
+  else {
+    var string = between[1];
+    var index = +string;
+    if (isNaN(index)) {
+      result = result || {};
+      result[string] = hash_assign(result[string], keys, value);
+    }
+    else {
+      result = result || [];
+      result[index] = hash_assign(result[index], keys, value);
+    }
+  }
+  return result;
+}
+function hash_serializer(result, key, value) {
+  var matches = key.match(brackets);
+  if (matches) {
+    var keys = parse_keys(key);
+    hash_assign(result, keys, value);
+  }
+  else {
+    var existing = result[key];
+    if (existing) {
+      if (!Array.isArray(existing)) {
+        result[key] = [ existing ];
+      }
+      result[key].push(value);
+    }
+    else {
+      result[key] = value;
+    }
+  }
+  return result;
+}
+function str_serialize(result, key, value) {
+  value = value.replace(/(\r)?\n/g, '\r\n');
+  value = encodeURIComponent(value);
+  value = value.replace(/%20/g, '+');
+  return result + (result ? '&' : '') + encodeURIComponent(key) + '=' + value;
+}
+module.exports = serialize;
+},{}],67:[function(require,module,exports){
 module.exports = timer;
 function timer(num){
   if (this instanceof timer === false) {
@@ -25334,7 +25717,7 @@ timer.prototype.clear = function(){
   this.count = 0;
   return this;
 };
-},{}],64:[function(require,module,exports){
+},{}],68:[function(require,module,exports){
 (function (global){
 (function(env){
   var previousKeen = env.Keen || undefined;
@@ -25527,7 +25910,7 @@ timer.prototype.clear = function(){
   module.exports = Client;
 }).call(this, typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {});
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./utils/each":66,"./utils/extend":67,"./utils/parse-params":68,"./utils/serialize":69,"component-emitter":4}],65:[function(require,module,exports){
+},{"./utils/each":70,"./utils/extend":71,"./utils/parse-params":72,"./utils/serialize":73,"component-emitter":4}],69:[function(require,module,exports){
 module.exports = {
   map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
   encode: function (n) {
@@ -25574,15 +25957,170 @@ module.exports = {
     }
   }
 };
-},{}],66:[function(require,module,exports){
+},{}],70:[function(require,module,exports){
 arguments[4][13][0].apply(exports,arguments)
-},{"dup":13}],67:[function(require,module,exports){
+},{"dup":13}],71:[function(require,module,exports){
 arguments[4][14][0].apply(exports,arguments)
-},{"dup":14}],68:[function(require,module,exports){
+},{"dup":14}],72:[function(require,module,exports){
 arguments[4][15][0].apply(exports,arguments)
-},{"dup":15}],69:[function(require,module,exports){
+},{"dup":15}],73:[function(require,module,exports){
 arguments[4][16][0].apply(exports,arguments)
-},{"./each":66,"./extend":67,"dup":16}],70:[function(require,module,exports){
+},{"./each":70,"./extend":71,"dup":16}],74:[function(require,module,exports){
+module.exports={
+  "_args": [
+    [
+      {
+        "raw": "keen-tracking@1.3.0",
+        "scope": null,
+        "escapedName": "keen-tracking",
+        "name": "keen-tracking",
+        "rawSpec": "1.3.0",
+        "spec": "1.3.0",
+        "type": "version"
+      },
+      "/Users/dustinlarimer/dev/keen/keen-js"
+    ]
+  ],
+  "_from": "keen-tracking@1.3.0",
+  "_id": "keen-tracking@1.3.0",
+  "_inCache": true,
+  "_location": "/keen-tracking",
+  "_nodeVersion": "6.11.2",
+  "_npmOperationalInternal": {
+    "host": "s3://npm-registry-packages",
+    "tmp": "tmp/keen-tracking-1.3.0.tgz_1506964108637_0.31351561448536813"
+  },
+  "_npmUser": {
+    "name": "dustinlarimer",
+    "email": "dustin@keen.io"
+  },
+  "_npmVersion": "3.10.10",
+  "_phantomChildren": {
+    "component-emitter": "1.2.0"
+  },
+  "_requested": {
+    "raw": "keen-tracking@1.3.0",
+    "scope": null,
+    "escapedName": "keen-tracking",
+    "name": "keen-tracking",
+    "rawSpec": "1.3.0",
+    "spec": "1.3.0",
+    "type": "version"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.3.0.tgz",
+  "_shasum": "71eaa4e6a55bbfe28770a63bbd7eae1a36cd7bac",
+  "_shrinkwrap": null,
+  "_spec": "keen-tracking@1.3.0",
+  "_where": "/Users/dustinlarimer/dev/keen/keen-js",
+  "author": {
+    "name": "Dustin Larimer",
+    "email": "dustin@keen.io",
+    "url": "https://keen.io/"
+  },
+  "browser": "lib/browser.js",
+  "bugs": {
+    "url": "https://github.com/keen/keen-tracking.js/issues"
+  },
+  "contributors": [
+    {
+      "name": "Dustin Larimer",
+      "email": "dustin@keen.io",
+      "url": "https://github.com/dustinlarimer"
+    },
+    {
+      "name": "Eric Anderson",
+      "email": "eric@keen.io",
+      "url": "https://github.com/aroc"
+    },
+    {
+      "name": "Joe Wegner",
+      "email": "joe@keen.io",
+      "url": "http://www.wegnerdesign.com"
+    },
+    {
+      "name": "Alex Kleissner",
+      "email": "alex@keen.io",
+      "url": "https://github.com/hex337"
+    }
+  ],
+  "dependencies": {
+    "component-emitter": "^1.2.0",
+    "js-cookie": "2.1.0",
+    "keen-core": "^0.1.3"
+  },
+  "description": "Data Collection SDK for Keen IO",
+  "devDependencies": {
+    "browserify": "^9.0.8",
+    "chai": "^2.3.0",
+    "chai-spies": "^0.6.0",
+    "del": "^1.1.1",
+    "gulp": "^3.8.11",
+    "gulp-awspublish": "0.0.23",
+    "gulp-connect": "^2.2.0",
+    "gulp-derequire": "^2.1.0",
+    "gulp-mocha": "^2.0.1",
+    "gulp-mocha-phantomjs": "^0.6.1",
+    "gulp-remove-empty-lines": "0.0.2",
+    "gulp-rename": "^1.2.2",
+    "gulp-replace": "^0.5.3",
+    "gulp-sourcemaps": "^1.5.2",
+    "gulp-strip-comments": "^1.0.1",
+    "gulp-uglify": "^1.5.2",
+    "gulp-util": "^3.0.4",
+    "gulp-yuicompressor": "0.0.3",
+    "karma": "^0.12.32",
+    "karma-chrome-launcher": "^0.1.12",
+    "karma-firefox-launcher": "^0.1.6",
+    "karma-mocha": "^0.2.0",
+    "karma-nyan-reporter": "0.0.60",
+    "karma-requirejs": "^0.2.2",
+    "karma-safari-launcher": "^0.1.1",
+    "karma-sauce-launcher": "^0.2.11",
+    "mocha": "^2.2.5",
+    "moment": "^2.10.3",
+    "phantomjs": "^1.9.7-15",
+    "proclaim": "^3.3.0",
+    "requirejs": "^2.3.5",
+    "vinyl-buffer": "^1.0.0",
+    "vinyl-source-stream": "^1.1.0"
+  },
+  "directories": {},
+  "dist": {
+    "shasum": "71eaa4e6a55bbfe28770a63bbd7eae1a36cd7bac",
+    "tarball": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.3.0.tgz"
+  },
+  "gitHead": "9bbc71e8b2a0e301aab51ab677877172e8cc0dd2",
+  "homepage": "https://github.com/keen/keen-tracking.js#readme",
+  "license": "MIT",
+  "main": "lib/server.js",
+  "maintainers": [
+    {
+      "name": "aroc",
+      "email": "eric@ericanderson.ca"
+    },
+    {
+      "name": "dustinlarimer",
+      "email": "dustin@keen.io"
+    }
+  ],
+  "name": "keen-tracking",
+  "optionalDependencies": {},
+  "readme": "ERROR: No README data found!",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/keen/keen-tracking.js.git"
+  },
+  "scripts": {
+    "start": "gulp with-tests",
+    "test": "gulp test:cli"
+  },
+  "version": "1.3.0"
+}
+},{}],75:[function(require,module,exports){
 var process = module.exports = {};
 var queue = [];
 var draining = false;
@@ -25632,10 +26170,10 @@ process.chdir = function (dir) {
     throw new Error('process.chdir is not supported');
 };
 process.umask = function() { return 0; };
-},{}],71:[function(require,module,exports){
+},{}],76:[function(require,module,exports){
 module.exports={
   "name": "keen-js",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "license": "MIT",
   "main": "lib/index.js",
   "style": "style/index.css",
@@ -25656,7 +26194,7 @@ module.exports={
   "dependencies": {
     "keen-analysis": "1.3.0",
     "keen-dataviz": "1.2.0",
-    "keen-tracking": "1.2.1"
+    "keen-tracking": "1.3.0"
   },
   "devDependencies": {
     "browserify": "^8.0.3",
