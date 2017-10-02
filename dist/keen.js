@@ -26173,7 +26173,7 @@ process.umask = function() { return 0; };
 },{}],76:[function(require,module,exports){
 module.exports={
   "name": "keen-js",
-  "version": "4.1.0",
+  "version": "4.2.0",
   "license": "MIT",
   "main": "lib/index.js",
   "style": "style/index.css",
@@ -26194,7 +26194,7 @@ module.exports={
   "dependencies": {
     "keen-analysis": "1.3.0",
     "keen-dataviz": "1.2.0",
-    "keen-tracking": "^1.3.0"
+    "keen-tracking": "1.3.0"
   },
   "devDependencies": {
     "browserify": "^8.0.3",
