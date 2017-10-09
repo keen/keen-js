@@ -12,6 +12,17 @@
 [{{ release-title }} ({{ version }})](https://github.com/keen/keen-dataviz.js/releases/tag/{{ version }})
 
 -->
+<a name="4.3.0"></a>
+# 4.3.0 Module Updates
+
+**Stream: [keen-tracking.js](https://github.com/keen/keen-tracking.js)**
+[Release: Protocol Handling and Dev Setup (v1.4.0)](https://github.com/keen/keen-tracking.js/releases/tag/v1.4.0)
+
+**Visualize: [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)**
+[Release: Bug Fix and PR Template  (v1.2.1)](https://github.com/keen/keen-dataviz.js/releases/tag/v1.2.1)
+
+
+
 <a name="4.2.0"></a>
 # 4.2.0 Automated Event Tracking (browser-only)
 

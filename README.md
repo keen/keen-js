@@ -18,8 +18,8 @@ Or load it synchronously from the CDN:
 
 ```html
 <meta charset="utf-8">
-<link href="https://d26b395fwzu5fz.cloudfront.net/4.2.0/keen.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/4.2.0/keen.min.js"></script>
+<link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
+<script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
 ```
 
 Under the hood, this is simply a bundled release of the following packages:
@@ -56,8 +56,8 @@ This package contains [keen-tracking.js](https://github.com/keen/keen-tracking.j
 Automatically record `pageviews`, `clicks`, and `form_submissions` events with robust data models:
 
 ```html
-<link href="https://d26b395fwzu5fz.cloudfront.net/4.2.0/keen.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/4.2.0/keen.min.js"></script>
+<link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
+<script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
 <script>
 Keen.ready(function(){
   var client = new Keen({
@@ -244,8 +244,8 @@ This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js
 <html>
   <head>
     <meta charset="utf-8">
-    <link href="https://d26b395fwzu5fz.cloudfront.net/4.2.0/keen.min.css" rel="stylesheet" />
-    <script src="https://d26b395fwzu5fz.cloudfront.net/4.2.0/keen.min.js"></script>
+    <link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
+    <script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
   </head>
   <body>
     <!-- DOM Element -->
