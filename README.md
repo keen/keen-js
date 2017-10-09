@@ -17,7 +17,6 @@ npm install keen-js --save
 Or load it synchronously from the CDN:
 
 ```html
-<meta charset="utf-8">
 <link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
 <script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
 ```
@@ -243,7 +242,6 @@ This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js
 ```html
 <html>
   <head>
-    <meta charset="utf-8">
     <link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
     <script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
   </head>
@@ -284,8 +282,6 @@ This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js
   </body>
 </html>
 ```
-
-**Important:** the `<meta charset="utf-8">` charset encoding meta tag is required for this library to function properly.
 
 ---
 
