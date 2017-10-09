@@ -23251,7 +23251,7 @@ function parseExtraction(){
       }
       else {
         if (typeof Dataviz.libraries[library][type] === 'undefined') {
-          this.message('Incorrect chart type');
+          self.message('Incorrect chart type');
           throw 'Incorrect chart type';
           return;
         }
@@ -24314,6 +24314,7 @@ function initAutoTracking(lib) {
       recordPageViews: true,
       recordScrollState: true
     }, obj);
+    var now = new Date();
     var cookie = new utils.cookie('keen');
     var uuid = cookie.get('uuid');
     if (!uuid) {
@@ -24337,7 +24338,8 @@ function initAutoTracking(lib) {
         },
         page: {
           title: document ? document.title : null,
-          description: browserProfile.description
+          description: browserProfile.description,
+          time_on_page: getSecondsSinceDate(now)
         },
         ip_address: '${keen.ip}',
         geo: { /* Enriched */ },
@@ -24447,6 +24449,10 @@ function initAutoTracking(lib) {
     }
     return client;
   };
+}
+function getSecondsSinceDate(date) {
+  var diff = new Date().getTime() - date.getTime();
+  return Math.round(diff / 1000);
 }
 module.exports = initAutoTracking;
 },{"../package.json":74}],46:[function(require,module,exports){
@@ -25970,25 +25976,25 @@ module.exports={
   "_args": [
     [
       {
-        "raw": "keen-tracking@1.3.0",
+        "raw": "keen-tracking@1.4.0",
         "scope": null,
         "escapedName": "keen-tracking",
         "name": "keen-tracking",
-        "rawSpec": "1.3.0",
-        "spec": "1.3.0",
+        "rawSpec": "1.4.0",
+        "spec": "1.4.0",
         "type": "version"
       },
       "/Users/dustinlarimer/dev/keen/keen-js"
     ]
   ],
-  "_from": "keen-tracking@1.3.0",
-  "_id": "keen-tracking@1.3.0",
+  "_from": "keen-tracking@1.4.0",
+  "_id": "keen-tracking@1.4.0",
   "_inCache": true,
   "_location": "/keen-tracking",
   "_nodeVersion": "6.11.2",
   "_npmOperationalInternal": {
     "host": "s3://npm-registry-packages",
-    "tmp": "tmp/keen-tracking-1.3.0.tgz_1506964108637_0.31351561448536813"
+    "tmp": "tmp/keen-tracking-1.4.0.tgz_1507234385258_0.13838722207583487"
   },
   "_npmUser": {
     "name": "dustinlarimer",
@@ -25999,22 +26005,22 @@ module.exports={
     "component-emitter": "1.2.0"
   },
   "_requested": {
-    "raw": "keen-tracking@1.3.0",
+    "raw": "keen-tracking@1.4.0",
     "scope": null,
     "escapedName": "keen-tracking",
     "name": "keen-tracking",
-    "rawSpec": "1.3.0",
-    "spec": "1.3.0",
+    "rawSpec": "1.4.0",
+    "spec": "1.4.0",
     "type": "version"
   },
   "_requiredBy": [
     "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.3.0.tgz",
-  "_shasum": "71eaa4e6a55bbfe28770a63bbd7eae1a36cd7bac",
+  "_resolved": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.4.0.tgz",
+  "_shasum": "7951cc2da2ea68c4aa8c04a4bb3c411d0c03cf99",
   "_shrinkwrap": null,
-  "_spec": "keen-tracking@1.3.0",
+  "_spec": "keen-tracking@1.4.0",
   "_where": "/Users/dustinlarimer/dev/keen/keen-js",
   "author": {
     "name": "Dustin Larimer",
@@ -26072,7 +26078,7 @@ module.exports={
     "gulp-uglify": "^1.5.2",
     "gulp-util": "^3.0.4",
     "gulp-yuicompressor": "0.0.3",
-    "karma": "^0.12.32",
+    "karma": "^1.7.1",
     "karma-chrome-launcher": "^0.1.12",
     "karma-firefox-launcher": "^0.1.6",
     "karma-mocha": "^0.2.0",
@@ -26090,10 +26096,10 @@ module.exports={
   },
   "directories": {},
   "dist": {
-    "shasum": "71eaa4e6a55bbfe28770a63bbd7eae1a36cd7bac",
-    "tarball": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.3.0.tgz"
+    "shasum": "7951cc2da2ea68c4aa8c04a4bb3c411d0c03cf99",
+    "tarball": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.4.0.tgz"
   },
-  "gitHead": "9bbc71e8b2a0e301aab51ab677877172e8cc0dd2",
+  "gitHead": "a643eb349546695d1b42a46e5818f6fd1f719463",
   "homepage": "https://github.com/keen/keen-tracking.js#readme",
   "license": "MIT",
   "main": "lib/server.js",
@@ -26118,7 +26124,7 @@ module.exports={
     "start": "gulp with-tests",
     "test": "gulp test:cli"
   },
-  "version": "1.3.0"
+  "version": "1.4.0"
 }
 },{}],75:[function(require,module,exports){
 var process = module.exports = {};
@@ -26173,7 +26179,7 @@ process.umask = function() { return 0; };
 },{}],76:[function(require,module,exports){
 module.exports={
   "name": "keen-js",
-  "version": "4.2.0",
+  "version": "4.3.0",
   "license": "MIT",
   "main": "lib/index.js",
   "style": "style/index.css",
@@ -26193,8 +26199,8 @@ module.exports={
   ],
   "dependencies": {
     "keen-analysis": "1.3.0",
-    "keen-dataviz": "1.2.0",
-    "keen-tracking": "1.3.0"
+    "keen-dataviz": "1.2.1",
+    "keen-tracking": "1.4.0"
   },
   "devDependencies": {
     "browserify": "^8.0.3",
