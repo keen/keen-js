@@ -107,7 +107,7 @@ client.extendEvents(() => {
       url: document.referrer
     },
     tech: {
-      browser: getBrowserProfile(),
+      browser: helpers.getBrowserProfile(),
       info: { /* Enriched */ },
       user_agent: '${keen.user_agent}'
     },
