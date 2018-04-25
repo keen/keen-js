@@ -13,10 +13,11 @@
     "test": "gulp test:cli"
   },
   "bugs": "https://github.com/keen/keen-js/issues",
-  "author": "Dustin Larimer <dustin@keen.io> (https://keen.io/)",
+  "author": "Keen IO <team@keen.io> (https://keen.io/)",
   "contributors": [
     "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
-    "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)"
+    "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)",
+    "Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"
   ],
   "dependencies": {
     "keen-analysis": "1.3.0",
