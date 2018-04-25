@@ -50,7 +50,7 @@ This package contains [keen-tracking.js](https://github.com/keen/keen-tracking.j
 [Full documentation is available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js/blob/master/docs/README.md).
 
 
-### Automated Event Tracking (browser-only)
+### Automated Event Tracking (Browser-only)
 
 Automatically record `pageviews`, `clicks`, and `form_submissions` events with robust data models:
 
@@ -71,7 +71,7 @@ Keen.ready(function(){
 [Learn how to configure and customize this functionality here](https://github.com/keen/keen-tracking.js/blob/master/docs/auto-tracking.md)
 
 
-### Pageview Tracking
+### Pageview Tracking (Browser/Front-end)
 
 First, let's create a new `client` instance with your Project ID and Write Key, and use the `.extendEvents()` method to define a solid baseline data model that will be applied to every single event that is recorded. Consistent data models and property names make life much easier later on, when analyzing and managing several event streams. This setup also includes our [data enrichment add-ons](https://keen.io/docs/streams/data-enrichment-overview/), which will populate additional information when an event is received on our end.
 
@@ -152,12 +152,33 @@ client.extendEvents(() => {
   }
 });
 
-client.recordEvent('pageview', {});
+client.recordEvent('pageviews', {});
 ```
 
 Every event that is recorded will inherit this baseline data model. Additional properties defined in `client.recordEvent()` will be applied before the event is finally recorded.
 
 Want to get up and running faster? This can also be achieved in the browser with [automated event tracking](https://github.com/keen/keen-tracking.js/blob/master/docs/auto-tracking.md).
+
+---
+
+### API Node.js Server Side Tracking (Back-end)
+
+```javascript
+const Keen = require('keen-js');
+// const Keen = require('keen-tracking');
+
+const client = new Keen({
+  projectId: 'PROJECT_ID',
+  writeKey: 'WRITE_KEY'
+});
+
+client.recordEvent('purchases', {
+  item: 'Avocado',
+  price: 12
+});
+```
+
+---
 
 **More examples:**
 
