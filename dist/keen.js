@@ -32,8339 +32,11671 @@ KeenBase.prototype.draw = function(query, el, attributes){
   return chart;
 };
 module.exports = KeenBase;
-},{"../package.json":76,"keen-analysis":7,"keen-dataviz":30,"keen-dataviz/lib/dataset":18,"keen-tracking":46}],3:[function(require,module,exports){
-(function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.c3 = factory());
-}(this, (function () { 'use strict';
-var CLASS = {
-    target: 'c3-target',
-    chart: 'c3-chart',
-    chartLine: 'c3-chart-line',
-    chartLines: 'c3-chart-lines',
-    chartBar: 'c3-chart-bar',
-    chartBars: 'c3-chart-bars',
-    chartText: 'c3-chart-text',
-    chartTexts: 'c3-chart-texts',
-    chartArc: 'c3-chart-arc',
-    chartArcs: 'c3-chart-arcs',
-    chartArcsTitle: 'c3-chart-arcs-title',
-    chartArcsBackground: 'c3-chart-arcs-background',
-    chartArcsGaugeUnit: 'c3-chart-arcs-gauge-unit',
-    chartArcsGaugeMax: 'c3-chart-arcs-gauge-max',
-    chartArcsGaugeMin: 'c3-chart-arcs-gauge-min',
-    selectedCircle: 'c3-selected-circle',
-    selectedCircles: 'c3-selected-circles',
-    eventRect: 'c3-event-rect',
-    eventRects: 'c3-event-rects',
-    eventRectsSingle: 'c3-event-rects-single',
-    eventRectsMultiple: 'c3-event-rects-multiple',
-    zoomRect: 'c3-zoom-rect',
-    brush: 'c3-brush',
-    focused: 'c3-focused',
-    defocused: 'c3-defocused',
-    region: 'c3-region',
-    regions: 'c3-regions',
-    title: 'c3-title',
-    tooltipContainer: 'c3-tooltip-container',
-    tooltip: 'c3-tooltip',
-    tooltipName: 'c3-tooltip-name',
-    shape: 'c3-shape',
-    shapes: 'c3-shapes',
-    line: 'c3-line',
-    lines: 'c3-lines',
-    bar: 'c3-bar',
-    bars: 'c3-bars',
-    circle: 'c3-circle',
-    circles: 'c3-circles',
-    arc: 'c3-arc',
-    arcs: 'c3-arcs',
-    area: 'c3-area',
-    areas: 'c3-areas',
-    empty: 'c3-empty',
-    text: 'c3-text',
-    texts: 'c3-texts',
-    gaugeValue: 'c3-gauge-value',
-    grid: 'c3-grid',
-    gridLines: 'c3-grid-lines',
-    xgrid: 'c3-xgrid',
-    xgrids: 'c3-xgrids',
-    xgridLine: 'c3-xgrid-line',
-    xgridLines: 'c3-xgrid-lines',
-    xgridFocus: 'c3-xgrid-focus',
-    ygrid: 'c3-ygrid',
-    ygrids: 'c3-ygrids',
-    ygridLine: 'c3-ygrid-line',
-    ygridLines: 'c3-ygrid-lines',
-    axis: 'c3-axis',
-    axisX: 'c3-axis-x',
-    axisXLabel: 'c3-axis-x-label',
-    axisY: 'c3-axis-y',
-    axisYLabel: 'c3-axis-y-label',
-    axisY2: 'c3-axis-y2',
-    axisY2Label: 'c3-axis-y2-label',
-    legendBackground: 'c3-legend-background',
-    legendItem: 'c3-legend-item',
-    legendItemEvent: 'c3-legend-item-event',
-    legendItemTile: 'c3-legend-item-tile',
-    legendItemHidden: 'c3-legend-item-hidden',
-    legendItemFocused: 'c3-legend-item-focused',
-    dragarea: 'c3-dragarea',
-    EXPANDED: '_expanded_',
-    SELECTED: '_selected_',
-    INCLUDED: '_included_'
-};
-var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
-  return typeof obj;
-} : function (obj) {
-  return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
-};
-var classCallCheck = function (instance, Constructor) {
-  if (!(instance instanceof Constructor)) {
-    throw new TypeError("Cannot call a class as a function");
-  }
-};
-var inherits = function (subClass, superClass) {
-  if (typeof superClass !== "function" && superClass !== null) {
-    throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
-  }
-  subClass.prototype = Object.create(superClass && superClass.prototype, {
-    constructor: {
-      value: subClass,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
-};
-var possibleConstructorReturn = function (self, call) {
-  if (!self) {
-    throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
-  }
-  return call && (typeof call === "object" || typeof call === "function") ? call : self;
-};
-var isValue = function isValue(v) {
-    return v || v === 0;
-};
-var isFunction = function isFunction(o) {
-    return typeof o === 'function';
-};
-var isArray = function isArray(o) {
-    return Array.isArray(o);
-};
-var isString = function isString(o) {
-    return typeof o === 'string';
-};
-var isUndefined = function isUndefined(v) {
-    return typeof v === 'undefined';
-};
-var isDefined = function isDefined(v) {
-    return typeof v !== 'undefined';
-};
-var ceil10 = function ceil10(v) {
-    return Math.ceil(v / 10) * 10;
-};
-var asHalfPixel = function asHalfPixel(n) {
-    return Math.ceil(n) + 0.5;
-};
-var diffDomain = function diffDomain(d) {
-    return d[1] - d[0];
-};
-var isEmpty = function isEmpty(o) {
-    return typeof o === 'undefined' || o === null || isString(o) && o.length === 0 || (typeof o === 'undefined' ? 'undefined' : _typeof(o)) === 'object' && Object.keys(o).length === 0;
-};
-var notEmpty = function notEmpty(o) {
-    return !c3_chart_internal_fn.isEmpty(o);
-};
-var getOption = function getOption(options, key, defaultValue) {
-    return isDefined(options[key]) ? options[key] : defaultValue;
-};
-var hasValue = function hasValue(dict, value) {
-    var found = false;
-    Object.keys(dict).forEach(function (key) {
-        if (dict[key] === value) {
-            found = true;
-        }
-    });
-    return found;
-};
-var sanitise = function sanitise(str) {
-    return typeof str === 'string' ? str.replace(/</g, '&lt;').replace(/>/g, '&gt;') : str;
-};
-var getPathBox = function getPathBox(path) {
-    var box = path.getBoundingClientRect(),
-        items = [path.pathSegList.getItem(0), path.pathSegList.getItem(1)],
-        minX = items[0].x,
-        minY = Math.min(items[0].y, items[1].y);
-    return { x: minX, y: minY, width: box.width, height: box.height };
-};
-var c3_axis_fn;
-var c3_axis_internal_fn;
-function AxisInternal(component, params) {
-    var internal = this;
-    internal.component = component;
-    internal.params = params || {};
-    internal.d3 = component.d3;
-    internal.scale = internal.d3.scale.linear();
-    internal.range;
-    internal.orient = "bottom";
-    internal.innerTickSize = 6;
-    internal.outerTickSize = this.params.withOuterTick ? 6 : 0;
-    internal.tickPadding = 3;
-    internal.tickValues = null;
-    internal.tickFormat;
-    internal.tickArguments;
-    internal.tickOffset = 0;
-    internal.tickCulling = true;
-    internal.tickCentered;
-    internal.tickTextCharSize;
-    internal.tickTextRotate = internal.params.tickTextRotate;
-    internal.tickLength;
-    internal.axis = internal.generateAxis();
+},{"../package.json":76,"keen-analysis":8,"keen-dataviz":30,"keen-dataviz/lib/dataset":18,"keen-tracking":46}],3:[function(require,module,exports){
+(function (process,global){
+/* @preserve
+ * The MIT License (MIT)
+ * 
+ * Copyright (c) 2013-2017 Petka Antonov
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * 
+ */
+/**
+ * bluebird build version 3.5.1
+ * Features enabled: core
+ * Features disabled: race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, using, timers, filter, any, each
+*/
+!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Promise=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
+"use strict";
+var firstLineError;
+try {throw new Error(); } catch (e) {firstLineError = e;}
+var schedule = _dereq_("./schedule");
+var Queue = _dereq_("./queue");
+var util = _dereq_("./util");
+function Async() {
+    this._customScheduler = false;
+    this._isTickUsed = false;
+    this._lateQueue = new Queue(16);
+    this._normalQueue = new Queue(16);
+    this._haveDrainedQueues = false;
+    this._trampolineEnabled = true;
+    var self = this;
+    this.drainQueues = function () {
+        self._drainQueues();
+    };
+    this._schedule = schedule;
 }
-c3_axis_internal_fn = AxisInternal.prototype;
-c3_axis_internal_fn.axisX = function (selection, x, tickOffset) {
-    selection.attr("transform", function (d) {
-        return "translate(" + Math.ceil(x(d) + tickOffset) + ", 0)";
-    });
+Async.prototype.setScheduler = function(fn) {
+    var prev = this._schedule;
+    this._schedule = fn;
+    this._customScheduler = true;
+    return prev;
 };
-c3_axis_internal_fn.axisY = function (selection, y) {
-    selection.attr("transform", function (d) {
-        return "translate(0," + Math.ceil(y(d)) + ")";
-    });
+Async.prototype.hasCustomScheduler = function() {
+    return this._customScheduler;
 };
-c3_axis_internal_fn.scaleExtent = function (domain) {
-    var start = domain[0],
-        stop = domain[domain.length - 1];
-    return start < stop ? [start, stop] : [stop, start];
+Async.prototype.enableTrampoline = function() {
+    this._trampolineEnabled = true;
 };
-c3_axis_internal_fn.generateTicks = function (scale) {
-    var internal = this;
-    var i,
-        domain,
-        ticks = [];
-    if (scale.ticks) {
-        return scale.ticks.apply(scale, internal.tickArguments);
+Async.prototype.disableTrampolineIfNecessary = function() {
+    if (util.hasDevTools) {
+        this._trampolineEnabled = false;
     }
-    domain = scale.domain();
-    for (i = Math.ceil(domain[0]); i < domain[1]; i++) {
-        ticks.push(i);
+};
+Async.prototype.haveItemsQueued = function () {
+    return this._isTickUsed || this._haveDrainedQueues;
+};
+Async.prototype.fatalError = function(e, isNode) {
+    if (isNode) {
+        process.stderr.write("Fatal " + (e instanceof Error ? e.stack : e) +
+            "\n");
+        process.exit(2);
+    } else {
+        this.throwLater(e);
     }
-    if (ticks.length > 0 && ticks[0] > 0) {
-        ticks.unshift(ticks[0] - (ticks[1] - ticks[0]));
+};
+Async.prototype.throwLater = function(fn, arg) {
+    if (arguments.length === 1) {
+        arg = fn;
+        fn = function () { throw arg; };
     }
-    return ticks;
-};
-c3_axis_internal_fn.copyScale = function () {
-    var internal = this;
-    var newScale = internal.scale.copy(),
-        domain;
-    if (internal.params.isCategory) {
-        domain = internal.scale.domain();
-        newScale.domain([domain[0], domain[1] - 1]);
-    }
-    return newScale;
-};
-c3_axis_internal_fn.textFormatted = function (v) {
-    var internal = this,
-        formatted = internal.tickFormat ? internal.tickFormat(v) : v;
-    return typeof formatted !== 'undefined' ? formatted : '';
-};
-c3_axis_internal_fn.updateRange = function () {
-    var internal = this;
-    internal.range = internal.scale.rangeExtent ? internal.scale.rangeExtent() : internal.scaleExtent(internal.scale.range());
-    return internal.range;
-};
-c3_axis_internal_fn.updateTickTextCharSize = function (tick) {
-    var internal = this;
-    if (internal.tickTextCharSize) {
-        return internal.tickTextCharSize;
-    }
-    var size = {
-        h: 11.5,
-        w: 5.5
-    };
-    tick.select('text').text(function (d) {
-        return internal.textFormatted(d);
-    }).each(function (d) {
-        var box = this.getBoundingClientRect(),
-            text = internal.textFormatted(d),
-            h = box.height,
-            w = text ? box.width / text.length : undefined;
-        if (h && w) {
-            size.h = h;
-            size.w = w;
-        }
-    }).text('');
-    internal.tickTextCharSize = size;
-    return size;
-};
-c3_axis_internal_fn.transitionise = function (selection) {
-    return this.params.withoutTransition ? selection : this.d3.transition(selection);
-};
-c3_axis_internal_fn.isVertical = function () {
-    return this.orient === 'left' || this.orient === 'right';
-};
-c3_axis_internal_fn.tspanData = function (d, i, ticks, scale) {
-    var internal = this;
-    var splitted = internal.params.tickMultiline ? internal.splitTickText(d, ticks, scale) : [].concat(internal.textFormatted(d));
-    return splitted.map(function (s) {
-        return { index: i, splitted: s, length: splitted.length };
-    });
-};
-c3_axis_internal_fn.splitTickText = function (d, ticks, scale) {
-    var internal = this,
-        tickText = internal.textFormatted(d),
-        maxWidth = internal.params.tickWidth,
-        subtext,
-        spaceIndex,
-        textWidth,
-        splitted = [];
-    if (Object.prototype.toString.call(tickText) === "[object Array]") {
-        return tickText;
-    }
-    if (!maxWidth || maxWidth <= 0) {
-        maxWidth = internal.isVertical() ? 95 : internal.params.isCategory ? Math.ceil(scale(ticks[1]) - scale(ticks[0])) - 12 : 110;
-    }
-    function split(splitted, text) {
-        spaceIndex = undefined;
-        for (var i = 1; i < text.length; i++) {
-            if (text.charAt(i) === ' ') {
-                spaceIndex = i;
-            }
-            subtext = text.substr(0, i + 1);
-            textWidth = internal.tickTextCharSize.w * subtext.length;
-            if (maxWidth < textWidth) {
-                return split(splitted.concat(text.substr(0, spaceIndex ? spaceIndex : i)), text.slice(spaceIndex ? spaceIndex + 1 : i));
-            }
-        }
-        return splitted.concat(text);
-    }
-    return split(splitted, tickText + "");
-};
-c3_axis_internal_fn.updateTickLength = function () {
-    var internal = this;
-    internal.tickLength = Math.max(internal.innerTickSize, 0) + internal.tickPadding;
-};
-c3_axis_internal_fn.lineY2 = function (d) {
-    var internal = this,
-        tickPosition = internal.scale(d) + (internal.tickCentered ? 0 : internal.tickOffset);
-    return internal.range[0] < tickPosition && tickPosition < internal.range[1] ? internal.innerTickSize : 0;
-};
-c3_axis_internal_fn.textY = function () {
-    var internal = this,
-        rotate = internal.tickTextRotate;
-    return rotate ? 11.5 - 2.5 * (rotate / 15) * (rotate > 0 ? 1 : -1) : internal.tickLength;
-};
-c3_axis_internal_fn.textTransform = function () {
-    var internal = this,
-        rotate = internal.tickTextRotate;
-    return rotate ? "rotate(" + rotate + ")" : "";
-};
-c3_axis_internal_fn.textTextAnchor = function () {
-    var internal = this,
-        rotate = internal.tickTextRotate;
-    return rotate ? rotate > 0 ? "start" : "end" : "middle";
-};
-c3_axis_internal_fn.tspanDx = function () {
-    var internal = this,
-        rotate = internal.tickTextRotate;
-    return rotate ? 8 * Math.sin(Math.PI * (rotate / 180)) : 0;
-};
-c3_axis_internal_fn.tspanDy = function (d, i) {
-    var internal = this,
-        dy = internal.tickTextCharSize.h;
-    if (i === 0) {
-        if (internal.isVertical()) {
-            dy = -((d.length - 1) * (internal.tickTextCharSize.h / 2) - 3);
-        } else {
-            dy = ".71em";
-        }
-    }
-    return dy;
-};
-c3_axis_internal_fn.generateAxis = function () {
-    var internal = this,
-        d3 = internal.d3,
-        params = internal.params;
-    function axis(g) {
-        g.each(function () {
-            var g = axis.g = d3.select(this);
-            var scale0 = this.__chart__ || internal.scale,
-                scale1 = this.__chart__ = internal.copyScale();
-            var ticks = internal.tickValues ? internal.tickValues : internal.generateTicks(scale1),
-                tick = g.selectAll(".tick").data(ticks, scale1),
-                tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick").style("opacity", 1e-6),
-            tickExit = tick.exit().remove(),
-                tickUpdate = internal.transitionise(tick).style("opacity", 1),
-                tickTransform,
-                tickX,
-                tickY;
-            if (params.isCategory) {
-                internal.tickOffset = Math.ceil((scale1(1) - scale1(0)) / 2);
-                tickX = internal.tickCentered ? 0 : internal.tickOffset;
-                tickY = internal.tickCentered ? internal.tickOffset : 0;
-            } else {
-                internal.tickOffset = tickX = 0;
-            }
-            tickEnter.append("line");
-            tickEnter.append("text");
-            internal.updateRange();
-            internal.updateTickLength();
-            internal.updateTickTextCharSize(g.select('.tick'));
-            var lineUpdate = tickUpdate.select("line"),
-                textUpdate = tickUpdate.select("text"),
-                tspanUpdate = tick.select("text").selectAll('tspan').data(function (d, i) {
-                return internal.tspanData(d, i, ticks, scale1);
-            });
-            tspanUpdate.enter().append('tspan');
-            tspanUpdate.exit().remove();
-            tspanUpdate.text(function (d) {
-                return d.splitted;
-            });
-            var path = g.selectAll(".domain").data([0]),
-                pathUpdate = (path.enter().append("path").attr("class", "domain"), internal.transitionise(path));
-            switch (internal.orient) {
-                case "bottom":
-                    {
-                        tickTransform = internal.axisX;
-                        lineUpdate.attr("x1", tickX).attr("x2", tickX).attr("y2", function (d, i) {
-                            return internal.lineY2(d, i);
-                        });
-                        textUpdate.attr("x", 0).attr("y", function (d, i) {
-                            return internal.textY(d, i);
-                        }).attr("transform", function (d, i) {
-                            return internal.textTransform(d, i);
-                        }).style("text-anchor", function (d, i) {
-                            return internal.textTextAnchor(d, i);
-                        });
-                        tspanUpdate.attr('x', 0).attr("dy", function (d, i) {
-                            return internal.tspanDy(d, i);
-                        }).attr('dx', function (d, i) {
-                            return internal.tspanDx(d, i);
-                        });
-                        pathUpdate.attr("d", "M" + internal.range[0] + "," + internal.outerTickSize + "V0H" + internal.range[1] + "V" + internal.outerTickSize);
-                        break;
-                    }
-                case "top":
-                    {
-                        tickTransform = internal.axisX;
-                        lineUpdate.attr("x2", 0).attr("y2", -internal.innerTickSize);
-                        textUpdate.attr("x", 0).attr("y", -internal.tickLength).style("text-anchor", "middle");
-                        tspanUpdate.attr('x', 0).attr("dy", "0em");
-                        pathUpdate.attr("d", "M" + internal.range[0] + "," + -internal.outerTickSize + "V0H" + internal.range[1] + "V" + -internal.outerTickSize);
-                        break;
-                    }
-                case "left":
-                    {
-                        tickTransform = internal.axisY;
-                        lineUpdate.attr("x2", -internal.innerTickSize).attr("y1", tickY).attr("y2", tickY);
-                        textUpdate.attr("x", -internal.tickLength).attr("y", internal.tickOffset).style("text-anchor", "end");
-                        tspanUpdate.attr('x', -internal.tickLength).attr("dy", function (d, i) {
-                            return internal.tspanDy(d, i);
-                        });
-                        pathUpdate.attr("d", "M" + -internal.outerTickSize + "," + internal.range[0] + "H0V" + internal.range[1] + "H" + -internal.outerTickSize);
-                        break;
-                    }
-                case "right":
-                    {
-                        tickTransform = internal.axisY;
-                        lineUpdate.attr("x2", internal.innerTickSize).attr("y2", 0);
-                        textUpdate.attr("x", internal.tickLength).attr("y", 0).style("text-anchor", "start");
-                        tspanUpdate.attr('x', internal.tickLength).attr("dy", function (d, i) {
-                            return internal.tspanDy(d, i);
-                        });
-                        pathUpdate.attr("d", "M" + internal.outerTickSize + "," + internal.range[0] + "H0V" + internal.range[1] + "H" + internal.outerTickSize);
-                        break;
-                    }
-            }
-            if (scale1.rangeBand) {
-                var x = scale1,
-                    dx = x.rangeBand() / 2;
-                scale0 = scale1 = function scale1(d) {
-                    return x(d) + dx;
-                };
-            } else if (scale0.rangeBand) {
-                scale0 = scale1;
-            } else {
-                tickExit.call(tickTransform, scale1, internal.tickOffset);
-            }
-            tickEnter.call(tickTransform, scale0, internal.tickOffset);
-            tickUpdate.call(tickTransform, scale1, internal.tickOffset);
+    if (typeof setTimeout !== "undefined") {
+        setTimeout(function() {
+            fn(arg);
+        }, 0);
+    } else try {
+        this._schedule(function() {
+            fn(arg);
         });
+    } catch (e) {
+        throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
     }
-    axis.scale = function (x) {
-        if (!arguments.length) {
-            return internal.scale;
-        }
-        internal.scale = x;
-        return axis;
-    };
-    axis.orient = function (x) {
-        if (!arguments.length) {
-            return internal.orient;
-        }
-        internal.orient = x in { top: 1, right: 1, bottom: 1, left: 1 } ? x + "" : "bottom";
-        return axis;
-    };
-    axis.tickFormat = function (format) {
-        if (!arguments.length) {
-            return internal.tickFormat;
-        }
-        internal.tickFormat = format;
-        return axis;
-    };
-    axis.tickCentered = function (isCentered) {
-        if (!arguments.length) {
-            return internal.tickCentered;
-        }
-        internal.tickCentered = isCentered;
-        return axis;
-    };
-    axis.tickOffset = function () {
-        return internal.tickOffset;
-    };
-    axis.tickInterval = function () {
-        var interval, length;
-        if (params.isCategory) {
-            interval = internal.tickOffset * 2;
-        } else {
-            length = axis.g.select('path.domain').node().getTotalLength() - internal.outerTickSize * 2;
-            interval = length / axis.g.selectAll('line').size();
-        }
-        return interval === Infinity ? 0 : interval;
-    };
-    axis.ticks = function () {
-        if (!arguments.length) {
-            return internal.tickArguments;
-        }
-        internal.tickArguments = arguments;
-        return axis;
-    };
-    axis.tickCulling = function (culling) {
-        if (!arguments.length) {
-            return internal.tickCulling;
-        }
-        internal.tickCulling = culling;
-        return axis;
-    };
-    axis.tickValues = function (x) {
-        if (typeof x === 'function') {
-            internal.tickValues = function () {
-                return x(internal.scale.domain());
-            };
-        } else {
-            if (!arguments.length) {
-                return internal.tickValues;
-            }
-            internal.tickValues = x;
-        }
-        return axis;
-    };
-    return axis;
 };
-var Axis = function (_Component) {
-    inherits(Axis, _Component);
-    function Axis(owner) {
-        classCallCheck(this, Axis);
-        var fn = {
-            fn: c3_axis_fn,
-            internal: {
-                fn: c3_axis_internal_fn
-            }
+function AsyncInvokeLater(fn, receiver, arg) {
+    this._lateQueue.push(fn, receiver, arg);
+    this._queueTick();
+}
+function AsyncInvoke(fn, receiver, arg) {
+    this._normalQueue.push(fn, receiver, arg);
+    this._queueTick();
+}
+function AsyncSettlePromises(promise) {
+    this._normalQueue._pushOne(promise);
+    this._queueTick();
+}
+if (!util.hasDevTools) {
+    Async.prototype.invokeLater = AsyncInvokeLater;
+    Async.prototype.invoke = AsyncInvoke;
+    Async.prototype.settlePromises = AsyncSettlePromises;
+} else {
+    Async.prototype.invokeLater = function (fn, receiver, arg) {
+        if (this._trampolineEnabled) {
+            AsyncInvokeLater.call(this, fn, receiver, arg);
+        } else {
+            this._schedule(function() {
+                setTimeout(function() {
+                    fn.call(receiver, arg);
+                }, 100);
+            });
+        }
+    };
+    Async.prototype.invoke = function (fn, receiver, arg) {
+        if (this._trampolineEnabled) {
+            AsyncInvoke.call(this, fn, receiver, arg);
+        } else {
+            this._schedule(function() {
+                fn.call(receiver, arg);
+            });
+        }
+    };
+    Async.prototype.settlePromises = function(promise) {
+        if (this._trampolineEnabled) {
+            AsyncSettlePromises.call(this, promise);
+        } else {
+            this._schedule(function() {
+                promise._settlePromises();
+            });
+        }
+    };
+}
+Async.prototype._drainQueue = function(queue) {
+    while (queue.length() > 0) {
+        var fn = queue.shift();
+        if (typeof fn !== "function") {
+            fn._settlePromises();
+            continue;
+        }
+        var receiver = queue.shift();
+        var arg = queue.shift();
+        fn.call(receiver, arg);
+    }
+};
+Async.prototype._drainQueues = function () {
+    this._drainQueue(this._normalQueue);
+    this._reset();
+    this._haveDrainedQueues = true;
+    this._drainQueue(this._lateQueue);
+};
+Async.prototype._queueTick = function () {
+    if (!this._isTickUsed) {
+        this._isTickUsed = true;
+        this._schedule(this.drainQueues);
+    }
+};
+Async.prototype._reset = function () {
+    this._isTickUsed = false;
+};
+module.exports = Async;
+module.exports.firstLineError = firstLineError;
+},{"./queue":17,"./schedule":18,"./util":21}],2:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL, tryConvertToPromise, debug) {
+var calledBind = false;
+var rejectThis = function(_, e) {
+    this._reject(e);
+};
+var targetRejected = function(e, context) {
+    context.promiseRejectionQueued = true;
+    context.bindingPromise._then(rejectThis, rejectThis, null, this, e);
+};
+var bindingResolved = function(thisArg, context) {
+    if (((this._bitField & 50397184) === 0)) {
+        this._resolveCallback(context.target);
+    }
+};
+var bindingRejected = function(e, context) {
+    if (!context.promiseRejectionQueued) this._reject(e);
+};
+Promise.prototype.bind = function (thisArg) {
+    if (!calledBind) {
+        calledBind = true;
+        Promise.prototype._propagateFrom = debug.propagateFromFunction();
+        Promise.prototype._boundValue = debug.boundValueFunction();
+    }
+    var maybePromise = tryConvertToPromise(thisArg);
+    var ret = new Promise(INTERNAL);
+    ret._propagateFrom(this, 1);
+    var target = this._target();
+    ret._setBoundTo(maybePromise);
+    if (maybePromise instanceof Promise) {
+        var context = {
+            promiseRejectionQueued: false,
+            promise: ret,
+            target: target,
+            bindingPromise: maybePromise
         };
-        var _this = possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this, owner, 'axis', fn));
-        _this.d3 = owner.d3;
-        _this.internal = AxisInternal;
-        return _this;
+        target._then(INTERNAL, targetRejected, undefined, ret, context);
+        maybePromise._then(
+            bindingResolved, bindingRejected, undefined, ret, context);
+        ret._setOnCancel(maybePromise);
+    } else {
+        ret._resolveCallback(target);
     }
-    return Axis;
-}(Component);
-c3_axis_fn = Axis.prototype;
-c3_axis_fn.init = function init() {
-    var $$ = this.owner,
-        config = $$.config,
-        main = $$.main;
-    $$.axes.x = main.append("g").attr("class", CLASS.axis + ' ' + CLASS.axisX).attr("clip-path", $$.clipPathForXAxis).attr("transform", $$.getTranslate('x')).style("visibility", config.axis_x_show ? 'visible' : 'hidden');
-    $$.axes.x.append("text").attr("class", CLASS.axisXLabel).attr("transform", config.axis_rotated ? "rotate(-90)" : "").style("text-anchor", this.textAnchorForXAxisLabel.bind(this));
-    $$.axes.y = main.append("g").attr("class", CLASS.axis + ' ' + CLASS.axisY).attr("clip-path", config.axis_y_inner ? "" : $$.clipPathForYAxis).attr("transform", $$.getTranslate('y')).style("visibility", config.axis_y_show ? 'visible' : 'hidden');
-    $$.axes.y.append("text").attr("class", CLASS.axisYLabel).attr("transform", config.axis_rotated ? "" : "rotate(-90)").style("text-anchor", this.textAnchorForYAxisLabel.bind(this));
-    $$.axes.y2 = main.append("g").attr("class", CLASS.axis + ' ' + CLASS.axisY2
-    ).attr("transform", $$.getTranslate('y2')).style("visibility", config.axis_y2_show ? 'visible' : 'hidden');
-    $$.axes.y2.append("text").attr("class", CLASS.axisY2Label).attr("transform", config.axis_rotated ? "" : "rotate(-90)").style("text-anchor", this.textAnchorForY2AxisLabel.bind(this));
+    return ret;
 };
-c3_axis_fn.getXAxis = function getXAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
-    var $$ = this.owner,
-        config = $$.config,
-        axisParams = {
-        isCategory: $$.isCategorized(),
-        withOuterTick: withOuterTick,
-        tickMultiline: config.axis_x_tick_multiline,
-        tickWidth: config.axis_x_tick_width,
-        tickTextRotate: withoutRotateTickText ? 0 : config.axis_x_tick_rotate,
-        withoutTransition: withoutTransition
-    },
-        axis = new this.internal(this, axisParams).axis.scale(scale).orient(orient);
-    if ($$.isTimeSeries() && tickValues && typeof tickValues !== "function") {
-        tickValues = tickValues.map(function (v) {
-            return $$.parseDate(v);
-        });
+Promise.prototype._setBoundTo = function (obj) {
+    if (obj !== undefined) {
+        this._bitField = this._bitField | 2097152;
+        this._boundTo = obj;
+    } else {
+        this._bitField = this._bitField & (~2097152);
     }
-    axis.tickFormat(tickFormat).tickValues(tickValues);
-    if ($$.isCategorized()) {
-        axis.tickCentered(config.axis_x_tick_centered);
-        if (isEmpty(config.axis_x_tick_culling)) {
-            config.axis_x_tick_culling = false;
+};
+Promise.prototype._isBound = function () {
+    return (this._bitField & 2097152) === 2097152;
+};
+Promise.bind = function (thisArg, value) {
+    return Promise.resolve(value).bind(thisArg);
+};
+};
+},{}],3:[function(_dereq_,module,exports){
+"use strict";
+var old;
+if (typeof Promise !== "undefined") old = Promise;
+function noConflict() {
+    try { if (Promise === bluebird) Promise = old; }
+    catch (e) {}
+    return bluebird;
+}
+var bluebird = _dereq_("./promise")();
+bluebird.noConflict = noConflict;
+module.exports = bluebird;
+},{"./promise":15}],4:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise, PromiseArray, apiRejection, debug) {
+var util = _dereq_("./util");
+var tryCatch = util.tryCatch;
+var errorObj = util.errorObj;
+var async = Promise._async;
+Promise.prototype["break"] = Promise.prototype.cancel = function() {
+    if (!debug.cancellation()) return this._warn("cancellation is disabled");
+    var promise = this;
+    var child = promise;
+    while (promise._isCancellable()) {
+        if (!promise._cancelBy(child)) {
+            if (child._isFollowing()) {
+                child._followee().cancel();
+            } else {
+                child._cancelBranched();
+            }
+            break;
         }
-    }
-    return axis;
-};
-c3_axis_fn.updateXAxisTickValues = function updateXAxisTickValues(targets, axis) {
-    var $$ = this.owner,
-        config = $$.config,
-        tickValues;
-    if (config.axis_x_tick_fit || config.axis_x_tick_count) {
-        tickValues = this.generateTickValues($$.mapTargetsToUniqueXs(targets), config.axis_x_tick_count, $$.isTimeSeries());
-    }
-    if (axis) {
-        axis.tickValues(tickValues);
-    } else {
-        $$.xAxis.tickValues(tickValues);
-        $$.subXAxis.tickValues(tickValues);
-    }
-    return tickValues;
-};
-c3_axis_fn.getYAxis = function getYAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
-    var $$ = this.owner,
-        config = $$.config,
-        axisParams = {
-        withOuterTick: withOuterTick,
-        withoutTransition: withoutTransition,
-        tickTextRotate: withoutRotateTickText ? 0 : config.axis_y_tick_rotate
-    },
-        axis = new this.internal(this, axisParams).axis.scale(scale).orient(orient).tickFormat(tickFormat);
-    if ($$.isTimeSeriesY()) {
-        axis.ticks($$.d3.time[config.axis_y_tick_time_value], config.axis_y_tick_time_interval);
-    } else {
-        axis.tickValues(tickValues);
-    }
-    return axis;
-};
-c3_axis_fn.getId = function getId(id) {
-    var config = this.owner.config;
-    return id in config.data_axes ? config.data_axes[id] : 'y';
-};
-c3_axis_fn.getXAxisTickFormat = function getXAxisTickFormat() {
-    var $$ = this.owner,
-        config = $$.config,
-        format = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) {
-        return v < 0 ? v.toFixed(0) : v;
-    };
-    if (config.axis_x_tick_format) {
-        if (isFunction(config.axis_x_tick_format)) {
-            format = config.axis_x_tick_format;
-        } else if ($$.isTimeSeries()) {
-            format = function format(date) {
-                return date ? $$.axisTimeFormat(config.axis_x_tick_format)(date) : "";
-            };
-        }
-    }
-    return isFunction(format) ? function (v) {
-        return format.call($$, v);
-    } : format;
-};
-c3_axis_fn.getTickValues = function getTickValues(tickValues, axis) {
-    return tickValues ? tickValues : axis ? axis.tickValues() : undefined;
-};
-c3_axis_fn.getXAxisTickValues = function getXAxisTickValues() {
-    return this.getTickValues(this.owner.config.axis_x_tick_values, this.owner.xAxis);
-};
-c3_axis_fn.getYAxisTickValues = function getYAxisTickValues() {
-    return this.getTickValues(this.owner.config.axis_y_tick_values, this.owner.yAxis);
-};
-c3_axis_fn.getY2AxisTickValues = function getY2AxisTickValues() {
-    return this.getTickValues(this.owner.config.axis_y2_tick_values, this.owner.y2Axis);
-};
-c3_axis_fn.getLabelOptionByAxisId = function getLabelOptionByAxisId(axisId) {
-    var $$ = this.owner,
-        config = $$.config,
-        option;
-    if (axisId === 'y') {
-        option = config.axis_y_label;
-    } else if (axisId === 'y2') {
-        option = config.axis_y2_label;
-    } else if (axisId === 'x') {
-        option = config.axis_x_label;
-    }
-    return option;
-};
-c3_axis_fn.getLabelText = function getLabelText(axisId) {
-    var option = this.getLabelOptionByAxisId(axisId);
-    return isString(option) ? option : option ? option.text : null;
-};
-c3_axis_fn.setLabelText = function setLabelText(axisId, text) {
-    var $$ = this.owner,
-        config = $$.config,
-        option = this.getLabelOptionByAxisId(axisId);
-    if (isString(option)) {
-        if (axisId === 'y') {
-            config.axis_y_label = text;
-        } else if (axisId === 'y2') {
-            config.axis_y2_label = text;
-        } else if (axisId === 'x') {
-            config.axis_x_label = text;
-        }
-    } else if (option) {
-        option.text = text;
-    }
-};
-c3_axis_fn.getLabelPosition = function getLabelPosition(axisId, defaultPosition) {
-    var option = this.getLabelOptionByAxisId(axisId),
-        position = option && (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option.position ? option.position : defaultPosition;
-    return {
-        isInner: position.indexOf('inner') >= 0,
-        isOuter: position.indexOf('outer') >= 0,
-        isLeft: position.indexOf('left') >= 0,
-        isCenter: position.indexOf('center') >= 0,
-        isRight: position.indexOf('right') >= 0,
-        isTop: position.indexOf('top') >= 0,
-        isMiddle: position.indexOf('middle') >= 0,
-        isBottom: position.indexOf('bottom') >= 0
-    };
-};
-c3_axis_fn.getXAxisLabelPosition = function getXAxisLabelPosition() {
-    return this.getLabelPosition('x', this.owner.config.axis_rotated ? 'inner-top' : 'inner-right');
-};
-c3_axis_fn.getYAxisLabelPosition = function getYAxisLabelPosition() {
-    return this.getLabelPosition('y', this.owner.config.axis_rotated ? 'inner-right' : 'inner-top');
-};
-c3_axis_fn.getY2AxisLabelPosition = function getY2AxisLabelPosition() {
-    return this.getLabelPosition('y2', this.owner.config.axis_rotated ? 'inner-right' : 'inner-top');
-};
-c3_axis_fn.getLabelPositionById = function getLabelPositionById(id) {
-    return id === 'y2' ? this.getY2AxisLabelPosition() : id === 'y' ? this.getYAxisLabelPosition() : this.getXAxisLabelPosition();
-};
-c3_axis_fn.textForXAxisLabel = function textForXAxisLabel() {
-    return this.getLabelText('x');
-};
-c3_axis_fn.textForYAxisLabel = function textForYAxisLabel() {
-    return this.getLabelText('y');
-};
-c3_axis_fn.textForY2AxisLabel = function textForY2AxisLabel() {
-    return this.getLabelText('y2');
-};
-c3_axis_fn.xForAxisLabel = function xForAxisLabel(forHorizontal, position) {
-    var $$ = this.owner;
-    if (forHorizontal) {
-        return position.isLeft ? 0 : position.isCenter ? $$.width / 2 : $$.width;
-    } else {
-        return position.isBottom ? -$$.height : position.isMiddle ? -$$.height / 2 : 0;
-    }
-};
-c3_axis_fn.dxForAxisLabel = function dxForAxisLabel(forHorizontal, position) {
-    if (forHorizontal) {
-        return position.isLeft ? "0.5em" : position.isRight ? "-0.5em" : "0";
-    } else {
-        return position.isTop ? "-0.5em" : position.isBottom ? "0.5em" : "0";
-    }
-};
-c3_axis_fn.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
-    if (forHorizontal) {
-        return position.isLeft ? 'start' : position.isCenter ? 'middle' : 'end';
-    } else {
-        return position.isBottom ? 'start' : position.isMiddle ? 'middle' : 'end';
-    }
-};
-c3_axis_fn.xForXAxisLabel = function xForXAxisLabel() {
-    return this.xForAxisLabel(!this.owner.config.axis_rotated, this.getXAxisLabelPosition());
-};
-c3_axis_fn.xForYAxisLabel = function xForYAxisLabel() {
-    return this.xForAxisLabel(this.owner.config.axis_rotated, this.getYAxisLabelPosition());
-};
-c3_axis_fn.xForY2AxisLabel = function xForY2AxisLabel() {
-    return this.xForAxisLabel(this.owner.config.axis_rotated, this.getY2AxisLabelPosition());
-};
-c3_axis_fn.dxForXAxisLabel = function dxForXAxisLabel() {
-    return this.dxForAxisLabel(!this.owner.config.axis_rotated, this.getXAxisLabelPosition());
-};
-c3_axis_fn.dxForYAxisLabel = function dxForYAxisLabel() {
-    return this.dxForAxisLabel(this.owner.config.axis_rotated, this.getYAxisLabelPosition());
-};
-c3_axis_fn.dxForY2AxisLabel = function dxForY2AxisLabel() {
-    return this.dxForAxisLabel(this.owner.config.axis_rotated, this.getY2AxisLabelPosition());
-};
-c3_axis_fn.dyForXAxisLabel = function dyForXAxisLabel() {
-    var $$ = this.owner,
-        config = $$.config,
-        position = this.getXAxisLabelPosition();
-    if (config.axis_rotated) {
-        return position.isInner ? "1.2em" : -25 - this.getMaxTickWidth('x');
-    } else {
-        return position.isInner ? "-0.5em" : config.axis_x_height ? config.axis_x_height - 10 : "3em";
-    }
-};
-c3_axis_fn.dyForYAxisLabel = function dyForYAxisLabel() {
-    var $$ = this.owner,
-        position = this.getYAxisLabelPosition();
-    if ($$.config.axis_rotated) {
-        return position.isInner ? "-0.5em" : "3em";
-    } else {
-        return position.isInner ? "1.2em" : -10 - ($$.config.axis_y_inner ? 0 : this.getMaxTickWidth('y') + 10);
-    }
-};
-c3_axis_fn.dyForY2AxisLabel = function dyForY2AxisLabel() {
-    var $$ = this.owner,
-        position = this.getY2AxisLabelPosition();
-    if ($$.config.axis_rotated) {
-        return position.isInner ? "1.2em" : "-2.2em";
-    } else {
-        return position.isInner ? "-0.5em" : 15 + ($$.config.axis_y2_inner ? 0 : this.getMaxTickWidth('y2') + 15);
-    }
-};
-c3_axis_fn.textAnchorForXAxisLabel = function textAnchorForXAxisLabel() {
-    var $$ = this.owner;
-    return this.textAnchorForAxisLabel(!$$.config.axis_rotated, this.getXAxisLabelPosition());
-};
-c3_axis_fn.textAnchorForYAxisLabel = function textAnchorForYAxisLabel() {
-    var $$ = this.owner;
-    return this.textAnchorForAxisLabel($$.config.axis_rotated, this.getYAxisLabelPosition());
-};
-c3_axis_fn.textAnchorForY2AxisLabel = function textAnchorForY2AxisLabel() {
-    var $$ = this.owner;
-    return this.textAnchorForAxisLabel($$.config.axis_rotated, this.getY2AxisLabelPosition());
-};
-c3_axis_fn.getMaxTickWidth = function getMaxTickWidth(id, withoutRecompute) {
-    var $$ = this.owner,
-        config = $$.config,
-        maxWidth = 0,
-        targetsToShow,
-        scale,
-        axis,
-        dummy,
-        svg;
-    if (withoutRecompute && $$.currentMaxTickWidths[id]) {
-        return $$.currentMaxTickWidths[id];
-    }
-    if ($$.svg) {
-        targetsToShow = $$.filterTargetsToShow($$.data.targets);
-        if (id === 'y') {
-            scale = $$.y.copy().domain($$.getYDomain(targetsToShow, 'y'));
-            axis = this.getYAxis(scale, $$.yOrient, config.axis_y_tick_format, $$.yAxisTickValues, false, true, true);
-        } else if (id === 'y2') {
-            scale = $$.y2.copy().domain($$.getYDomain(targetsToShow, 'y2'));
-            axis = this.getYAxis(scale, $$.y2Orient, config.axis_y2_tick_format, $$.y2AxisTickValues, false, true, true);
+        var parent = promise._cancellationParent;
+        if (parent == null || !parent._isCancellable()) {
+            if (promise._isFollowing()) {
+                promise._followee().cancel();
+            } else {
+                promise._cancelBranched();
+            }
+            break;
         } else {
-            scale = $$.x.copy().domain($$.getXDomain(targetsToShow));
-            axis = this.getXAxis(scale, $$.xOrient, $$.xAxisTickFormat, $$.xAxisTickValues, false, true, true);
-            this.updateXAxisTickValues(targetsToShow, axis);
-        }
-        dummy = $$.d3.select('body').append('div').classed('c3', true);
-        svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0), svg.append('g').call(axis).each(function () {
-            $$.d3.select(this).selectAll('text').each(function () {
-                var box = this.getBoundingClientRect();
-                if (maxWidth < box.width) {
-                    maxWidth = box.width;
-                }
-            });
-            dummy.remove();
-        });
-    }
-    $$.currentMaxTickWidths[id] = maxWidth <= 0 ? $$.currentMaxTickWidths[id] : maxWidth;
-    return $$.currentMaxTickWidths[id];
-};
-c3_axis_fn.updateLabels = function updateLabels(withTransition) {
-    var $$ = this.owner;
-    var axisXLabel = $$.main.select('.' + CLASS.axisX + ' .' + CLASS.axisXLabel),
-        axisYLabel = $$.main.select('.' + CLASS.axisY + ' .' + CLASS.axisYLabel),
-        axisY2Label = $$.main.select('.' + CLASS.axisY2 + ' .' + CLASS.axisY2Label);
-    (withTransition ? axisXLabel.transition() : axisXLabel).attr("x", this.xForXAxisLabel.bind(this)).attr("dx", this.dxForXAxisLabel.bind(this)).attr("dy", this.dyForXAxisLabel.bind(this)).text(this.textForXAxisLabel.bind(this));
-    (withTransition ? axisYLabel.transition() : axisYLabel).attr("x", this.xForYAxisLabel.bind(this)).attr("dx", this.dxForYAxisLabel.bind(this)).attr("dy", this.dyForYAxisLabel.bind(this)).text(this.textForYAxisLabel.bind(this));
-    (withTransition ? axisY2Label.transition() : axisY2Label).attr("x", this.xForY2AxisLabel.bind(this)).attr("dx", this.dxForY2AxisLabel.bind(this)).attr("dy", this.dyForY2AxisLabel.bind(this)).text(this.textForY2AxisLabel.bind(this));
-};
-c3_axis_fn.getPadding = function getPadding(padding, key, defaultValue, domainLength) {
-    var p = typeof padding === 'number' ? padding : padding[key];
-    if (!isValue(p)) {
-        return defaultValue;
-    }
-    if (padding.unit === 'ratio') {
-        return padding[key] * domainLength;
-    }
-    return this.convertPixelsToAxisPadding(p, domainLength);
-};
-c3_axis_fn.convertPixelsToAxisPadding = function convertPixelsToAxisPadding(pixels, domainLength) {
-    var $$ = this.owner,
-        length = $$.config.axis_rotated ? $$.width : $$.height;
-    return domainLength * (pixels / length);
-};
-c3_axis_fn.generateTickValues = function generateTickValues(values, tickCount, forTimeSeries) {
-    var tickValues = values,
-        targetCount,
-        start,
-        end,
-        count,
-        interval,
-        i,
-        tickValue;
-    if (tickCount) {
-        targetCount = isFunction(tickCount) ? tickCount() : tickCount;
-        if (targetCount === 1) {
-            tickValues = [values[0]];
-        } else if (targetCount === 2) {
-            tickValues = [values[0], values[values.length - 1]];
-        } else if (targetCount > 2) {
-            count = targetCount - 2;
-            start = values[0];
-            end = values[values.length - 1];
-            interval = (end - start) / (count + 1);
-            tickValues = [start];
-            for (i = 0; i < count; i++) {
-                tickValue = +start + interval * (i + 1);
-                tickValues.push(forTimeSeries ? new Date(tickValue) : tickValue);
-            }
-            tickValues.push(end);
+            if (promise._isFollowing()) promise._followee().cancel();
+            promise._setWillBeCancelled();
+            child = promise;
+            promise = parent;
         }
     }
-    if (!forTimeSeries) {
-        tickValues = tickValues.sort(function (a, b) {
-            return a - b;
-        });
-    }
-    return tickValues;
 };
-c3_axis_fn.generateTransitions = function generateTransitions(duration) {
-    var $$ = this.owner,
-        axes = $$.axes;
-    return {
-        axisX: duration ? axes.x.transition().duration(duration) : axes.x,
-        axisY: duration ? axes.y.transition().duration(duration) : axes.y,
-        axisY2: duration ? axes.y2.transition().duration(duration) : axes.y2,
-        axisSubX: duration ? axes.subx.transition().duration(duration) : axes.subx
-    };
+Promise.prototype._branchHasCancelled = function() {
+    this._branchesRemainingToCancel--;
 };
-c3_axis_fn.redraw = function redraw(transitions, isHidden) {
-    var $$ = this.owner;
-    $$.axes.x.style("opacity", isHidden ? 0 : 1);
-    $$.axes.y.style("opacity", isHidden ? 0 : 1);
-    $$.axes.y2.style("opacity", isHidden ? 0 : 1);
-    $$.axes.subx.style("opacity", isHidden ? 0 : 1);
-    transitions.axisX.call($$.xAxis);
-    transitions.axisY.call($$.yAxis);
-    transitions.axisY2.call($$.y2Axis);
-    transitions.axisSubX.call($$.subXAxis);
+Promise.prototype._enoughBranchesHaveCancelled = function() {
+    return this._branchesRemainingToCancel === undefined ||
+           this._branchesRemainingToCancel <= 0;
 };
-var c3$1 = { version: "0.4.18" };
-var c3_chart_fn;
-var c3_chart_internal_fn;
-function Component(owner, componentKey, fn) {
-    this.owner = owner;
-    c3$1.chart.internal[componentKey] = fn;
-}
-function Chart(config) {
-    var $$ = this.internal = new ChartInternal(this);
-    $$.loadConfig(config);
-    $$.beforeInit(config);
-    $$.init();
-    $$.afterInit(config);
-    (function bindThis(fn, target, argThis) {
-        Object.keys(fn).forEach(function (key) {
-            target[key] = fn[key].bind(argThis);
-            if (Object.keys(fn[key]).length > 0) {
-                bindThis(fn[key], target[key], argThis);
-            }
-        });
-    })(c3_chart_fn, this, this);
-}
-function ChartInternal(api) {
-    var $$ = this;
-    $$.d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
-    $$.api = api;
-    $$.config = $$.getDefaultConfig();
-    $$.data = {};
-    $$.cache = {};
-    $$.axes = {};
-}
-c3$1.generate = function (config) {
-    return new Chart(config);
-};
-c3$1.chart = {
-    fn: Chart.prototype,
-    internal: {
-        fn: ChartInternal.prototype
-    }
-};
-c3_chart_fn = c3$1.chart.fn;
-c3_chart_internal_fn = c3$1.chart.internal.fn;
-c3_chart_internal_fn.beforeInit = function () {
-};
-c3_chart_internal_fn.afterInit = function () {
-};
-c3_chart_internal_fn.init = function () {
-    var $$ = this,
-        config = $$.config;
-    $$.initParams();
-    if (config.data_url) {
-        $$.convertUrlToData(config.data_url, config.data_mimeType, config.data_headers, config.data_keys, $$.initWithData);
-    } else if (config.data_json) {
-        $$.initWithData($$.convertJsonToData(config.data_json, config.data_keys));
-    } else if (config.data_rows) {
-        $$.initWithData($$.convertRowsToData(config.data_rows));
-    } else if (config.data_columns) {
-        $$.initWithData($$.convertColumnsToData(config.data_columns));
-    } else {
-        throw Error('url or json or rows or columns is required.');
-    }
-};
-c3_chart_internal_fn.initParams = function () {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config;
-    $$.clipId = "c3-" + +new Date() + '-clip', $$.clipIdForXAxis = $$.clipId + '-xaxis', $$.clipIdForYAxis = $$.clipId + '-yaxis', $$.clipIdForGrid = $$.clipId + '-grid', $$.clipIdForSubchart = $$.clipId + '-subchart', $$.clipPath = $$.getClipPath($$.clipId), $$.clipPathForXAxis = $$.getClipPath($$.clipIdForXAxis), $$.clipPathForYAxis = $$.getClipPath($$.clipIdForYAxis);
-    $$.clipPathForGrid = $$.getClipPath($$.clipIdForGrid), $$.clipPathForSubchart = $$.getClipPath($$.clipIdForSubchart), $$.dragStart = null;
-    $$.dragging = false;
-    $$.flowing = false;
-    $$.cancelClick = false;
-    $$.mouseover = false;
-    $$.transiting = false;
-    $$.color = $$.generateColor();
-    $$.levelColor = $$.generateLevelColor();
-    $$.dataTimeFormat = config.data_xLocaltime ? d3.time.format : d3.time.format.utc;
-    $$.axisTimeFormat = config.axis_x_localtime ? d3.time.format : d3.time.format.utc;
-    $$.defaultAxisTimeFormat = $$.axisTimeFormat.multi([[".%L", function (d) {
-        return d.getMilliseconds();
-    }], [":%S", function (d) {
-        return d.getSeconds();
-    }], ["%I:%M", function (d) {
-        return d.getMinutes();
-    }], ["%I %p", function (d) {
-        return d.getHours();
-    }], ["%-m/%-d", function (d) {
-        return d.getDay() && d.getDate() !== 1;
-    }], ["%-m/%-d", function (d) {
-        return d.getDate() !== 1;
-    }], ["%-m/%-d", function (d) {
-        return d.getMonth();
-    }], ["%Y/%-m/%-d", function () {
+Promise.prototype._cancelBy = function(canceller) {
+    if (canceller === this) {
+        this._branchesRemainingToCancel = 0;
+        this._invokeOnCancel();
         return true;
-    }]]);
-    $$.hiddenTargetIds = [];
-    $$.hiddenLegendIds = [];
-    $$.focusedTargetIds = [];
-    $$.defocusedTargetIds = [];
-    $$.xOrient = config.axis_rotated ? "left" : "bottom";
-    $$.yOrient = config.axis_rotated ? config.axis_y_inner ? "top" : "bottom" : config.axis_y_inner ? "right" : "left";
-    $$.y2Orient = config.axis_rotated ? config.axis_y2_inner ? "bottom" : "top" : config.axis_y2_inner ? "left" : "right";
-    $$.subXOrient = config.axis_rotated ? "left" : "bottom";
-    $$.isLegendRight = config.legend_position === 'right';
-    $$.isLegendInset = config.legend_position === 'inset';
-    $$.isLegendTop = config.legend_inset_anchor === 'top-left' || config.legend_inset_anchor === 'top-right';
-    $$.isLegendLeft = config.legend_inset_anchor === 'top-left' || config.legend_inset_anchor === 'bottom-left';
-    $$.legendStep = 0;
-    $$.legendItemWidth = 0;
-    $$.legendItemHeight = 0;
-    $$.currentMaxTickWidths = {
-        x: 0,
-        y: 0,
-        y2: 0
-    };
-    $$.rotated_padding_left = 30;
-    $$.rotated_padding_right = config.axis_rotated && !config.axis_x_show ? 0 : 30;
-    $$.rotated_padding_top = 5;
-    $$.withoutFadeIn = {};
-    $$.intervalForObserveInserted = undefined;
-    $$.axes.subx = d3.selectAll([]);
-};
-c3_chart_internal_fn.initChartElements = function () {
-    if (this.initBar) {
-        this.initBar();
-    }
-    if (this.initLine) {
-        this.initLine();
-    }
-    if (this.initArc) {
-        this.initArc();
-    }
-    if (this.initGauge) {
-        this.initGauge();
-    }
-    if (this.initText) {
-        this.initText();
-    }
-};
-c3_chart_internal_fn.initWithData = function (data) {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config;
-    var defs,
-        main,
-        binding = true;
-    $$.axis = new Axis($$);
-    if ($$.initPie) {
-        $$.initPie();
-    }
-    if ($$.initBrush) {
-        $$.initBrush();
-    }
-    if ($$.initZoom) {
-        $$.initZoom();
-    }
-    if (!config.bindto) {
-        $$.selectChart = d3.selectAll([]);
-    } else if (typeof config.bindto.node === 'function') {
-        $$.selectChart = config.bindto;
     } else {
-        $$.selectChart = d3.select(config.bindto);
-    }
-    if ($$.selectChart.empty()) {
-        $$.selectChart = d3.select(document.createElement('div')).style('opacity', 0);
-        $$.observeInserted($$.selectChart);
-        binding = false;
-    }
-    $$.selectChart.html("").classed("c3", true);
-    $$.data.xs = {};
-    $$.data.targets = $$.convertDataToTargets(data);
-    if (config.data_filter) {
-        $$.data.targets = $$.data.targets.filter(config.data_filter);
-    }
-    if (config.data_hide) {
-        $$.addHiddenTargetIds(config.data_hide === true ? $$.mapToIds($$.data.targets) : config.data_hide);
-    }
-    if (config.legend_hide) {
-        $$.addHiddenLegendIds(config.legend_hide === true ? $$.mapToIds($$.data.targets) : config.legend_hide);
-    }
-    if ($$.hasType('gauge')) {
-        config.legend_show = false;
-    }
-    $$.updateSizes();
-    $$.updateScales();
-    $$.x.domain(d3.extent($$.getXDomain($$.data.targets)));
-    $$.y.domain($$.getYDomain($$.data.targets, 'y'));
-    $$.y2.domain($$.getYDomain($$.data.targets, 'y2'));
-    $$.subX.domain($$.x.domain());
-    $$.subY.domain($$.y.domain());
-    $$.subY2.domain($$.y2.domain());
-    $$.orgXDomain = $$.x.domain();
-    if ($$.brush) {
-        $$.brush.scale($$.subX);
-    }
-    if (config.zoom_enabled) {
-        $$.zoom.scale($$.x);
-    }
-    /*-- Basic Elements --*/
-    $$.svg = $$.selectChart.append("svg").style("overflow", "hidden").on('mouseenter', function () {
-        return config.onmouseover.call($$);
-    }).on('mouseleave', function () {
-        return config.onmouseout.call($$);
-    });
-    if ($$.config.svg_classname) {
-        $$.svg.attr('class', $$.config.svg_classname);
-    }
-    defs = $$.svg.append("defs");
-    $$.clipChart = $$.appendClip(defs, $$.clipId);
-    $$.clipXAxis = $$.appendClip(defs, $$.clipIdForXAxis);
-    $$.clipYAxis = $$.appendClip(defs, $$.clipIdForYAxis);
-    $$.clipGrid = $$.appendClip(defs, $$.clipIdForGrid);
-    $$.clipSubchart = $$.appendClip(defs, $$.clipIdForSubchart);
-    $$.updateSvgSize();
-    main = $$.main = $$.svg.append("g").attr("transform", $$.getTranslate('main'));
-    if ($$.initSubchart) {
-        $$.initSubchart();
-    }
-    if ($$.initTooltip) {
-        $$.initTooltip();
-    }
-    if ($$.initLegend) {
-        $$.initLegend();
-    }
-    if ($$.initTitle) {
-        $$.initTitle();
-    }
-    /*-- Main Region --*/
-    main.append("text").attr("class", CLASS.text + ' ' + CLASS.empty).attr("text-anchor", "middle"
-    ).attr("dominant-baseline", "middle");
-    $$.initRegion();
-    $$.initGrid();
-    main.append('g').attr("clip-path", $$.clipPath).attr('class', CLASS.chart);
-    if (config.grid_lines_front) {
-        $$.initGridLines();
-    }
-    $$.initEventRect();
-    $$.initChartElements();
-    main.insert('rect', config.zoom_privileged ? null : 'g.' + CLASS.regions).attr('class', CLASS.zoomRect).attr('width', $$.width).attr('height', $$.height).style('opacity', 0).on("dblclick.zoom", null);
-    if (config.axis_x_extent) {
-        $$.brush.extent($$.getDefaultExtent());
-    }
-    $$.axis.init();
-    $$.updateTargets($$.data.targets);
-    if (binding) {
-        $$.updateDimension();
-        $$.config.oninit.call($$);
-        $$.redraw({
-            withTransition: false,
-            withTransform: true,
-            withUpdateXDomain: true,
-            withUpdateOrgXDomain: true,
-            withTransitionForAxis: false
-        });
-    }
-    $$.bindResize();
-    $$.api.element = $$.selectChart.node();
-};
-c3_chart_internal_fn.smoothLines = function (el, type) {
-    var $$ = this;
-    if (type === 'grid') {
-        el.each(function () {
-            var g = $$.d3.select(this),
-                x1 = g.attr('x1'),
-                x2 = g.attr('x2'),
-                y1 = g.attr('y1'),
-                y2 = g.attr('y2');
-            g.attr({
-                'x1': Math.ceil(x1),
-                'x2': Math.ceil(x2),
-                'y1': Math.ceil(y1),
-                'y2': Math.ceil(y2)
-            });
-        });
-    }
-};
-c3_chart_internal_fn.updateSizes = function () {
-    var $$ = this,
-        config = $$.config;
-    var legendHeight = $$.legend ? $$.getLegendHeight() : 0,
-        legendWidth = $$.legend ? $$.getLegendWidth() : 0,
-        legendHeightForBottom = $$.isLegendRight || $$.isLegendInset ? 0 : legendHeight,
-        hasArc = $$.hasArcType(),
-        xAxisHeight = config.axis_rotated || hasArc ? 0 : $$.getHorizontalAxisHeight('x'),
-        subchartHeight = config.subchart_show && !hasArc ? config.subchart_size_height + xAxisHeight : 0;
-    $$.currentWidth = $$.getCurrentWidth();
-    $$.currentHeight = $$.getCurrentHeight();
-    $$.margin = config.axis_rotated ? {
-        top: $$.getHorizontalAxisHeight('y2') + $$.getCurrentPaddingTop(),
-        right: hasArc ? 0 : $$.getCurrentPaddingRight(),
-        bottom: $$.getHorizontalAxisHeight('y') + legendHeightForBottom + $$.getCurrentPaddingBottom(),
-        left: subchartHeight + (hasArc ? 0 : $$.getCurrentPaddingLeft())
-    } : {
-        top: 4 + $$.getCurrentPaddingTop(),
-        right: hasArc ? 0 : $$.getCurrentPaddingRight(),
-        bottom: xAxisHeight + subchartHeight + legendHeightForBottom + $$.getCurrentPaddingBottom(),
-        left: hasArc ? 0 : $$.getCurrentPaddingLeft()
-    };
-    $$.margin2 = config.axis_rotated ? {
-        top: $$.margin.top,
-        right: NaN,
-        bottom: 20 + legendHeightForBottom,
-        left: $$.rotated_padding_left
-    } : {
-        top: $$.currentHeight - subchartHeight - legendHeightForBottom,
-        right: NaN,
-        bottom: xAxisHeight + legendHeightForBottom,
-        left: $$.margin.left
-    };
-    $$.margin3 = {
-        top: 0,
-        right: NaN,
-        bottom: 0,
-        left: 0
-    };
-    if ($$.updateSizeForLegend) {
-        $$.updateSizeForLegend(legendHeight, legendWidth);
-    }
-    $$.width = $$.currentWidth - $$.margin.left - $$.margin.right;
-    $$.height = $$.currentHeight - $$.margin.top - $$.margin.bottom;
-    if ($$.width < 0) {
-        $$.width = 0;
-    }
-    if ($$.height < 0) {
-        $$.height = 0;
-    }
-    $$.width2 = config.axis_rotated ? $$.margin.left - $$.rotated_padding_left - $$.rotated_padding_right : $$.width;
-    $$.height2 = config.axis_rotated ? $$.height : $$.currentHeight - $$.margin2.top - $$.margin2.bottom;
-    if ($$.width2 < 0) {
-        $$.width2 = 0;
-    }
-    if ($$.height2 < 0) {
-        $$.height2 = 0;
-    }
-    $$.arcWidth = $$.width - ($$.isLegendRight ? legendWidth + 10 : 0);
-    $$.arcHeight = $$.height - ($$.isLegendRight ? 0 : 10);
-    if ($$.hasType('gauge') && !config.gauge_fullCircle) {
-        $$.arcHeight += $$.height - $$.getGaugeLabelHeight();
-    }
-    if ($$.updateRadius) {
-        $$.updateRadius();
-    }
-    if ($$.isLegendRight && hasArc) {
-        $$.margin3.left = $$.arcWidth / 2 + $$.radiusExpanded * 1.1;
-    }
-};
-c3_chart_internal_fn.updateTargets = function (targets) {
-    var $$ = this;
-    /*-- Main --*/
-    $$.updateTargetsForText(targets);
-    $$.updateTargetsForBar(targets);
-    $$.updateTargetsForLine(targets);
-    if ($$.hasArcType() && $$.updateTargetsForArc) {
-        $$.updateTargetsForArc(targets);
-    }
-    /*-- Sub --*/
-    if ($$.updateTargetsForSubchart) {
-        $$.updateTargetsForSubchart(targets);
-    }
-    $$.showTargets();
-};
-c3_chart_internal_fn.showTargets = function () {
-    var $$ = this;
-    $$.svg.selectAll('.' + CLASS.target).filter(function (d) {
-        return $$.isTargetToShow(d.id);
-    }).transition().duration($$.config.transition_duration).style("opacity", 1);
-};
-c3_chart_internal_fn.redraw = function (options, transitions) {
-    var $$ = this,
-        main = $$.main,
-        d3 = $$.d3,
-        config = $$.config;
-    var areaIndices = $$.getShapeIndices($$.isAreaType),
-        barIndices = $$.getShapeIndices($$.isBarType),
-        lineIndices = $$.getShapeIndices($$.isLineType);
-    var withY, withSubchart, withTransition, withTransitionForExit, withTransitionForAxis, withTransform, withUpdateXDomain, withUpdateOrgXDomain, withTrimXDomain, withLegend, withEventRect, withDimension, withUpdateXAxis;
-    var hideAxis = $$.hasArcType();
-    var drawArea, drawBar, drawLine, xForText, yForText;
-    var duration, durationForExit, durationForAxis;
-    var waitForDraw, flow;
-    var targetsToShow = $$.filterTargetsToShow($$.data.targets),
-        tickValues,
-        i,
-        intervalForCulling,
-        xDomainForZoom;
-    var xv = $$.xv.bind($$),
-        cx,
-        cy;
-    options = options || {};
-    withY = getOption(options, "withY", true);
-    withSubchart = getOption(options, "withSubchart", true);
-    withTransition = getOption(options, "withTransition", true);
-    withTransform = getOption(options, "withTransform", false);
-    withUpdateXDomain = getOption(options, "withUpdateXDomain", false);
-    withUpdateOrgXDomain = getOption(options, "withUpdateOrgXDomain", false);
-    withTrimXDomain = getOption(options, "withTrimXDomain", true);
-    withUpdateXAxis = getOption(options, "withUpdateXAxis", withUpdateXDomain);
-    withLegend = getOption(options, "withLegend", false);
-    withEventRect = getOption(options, "withEventRect", true);
-    withDimension = getOption(options, "withDimension", true);
-    withTransitionForExit = getOption(options, "withTransitionForExit", withTransition);
-    withTransitionForAxis = getOption(options, "withTransitionForAxis", withTransition);
-    duration = withTransition ? config.transition_duration : 0;
-    durationForExit = withTransitionForExit ? duration : 0;
-    durationForAxis = withTransitionForAxis ? duration : 0;
-    transitions = transitions || $$.axis.generateTransitions(durationForAxis);
-    if (withLegend && config.legend_show) {
-        $$.updateLegend($$.mapToIds($$.data.targets), options, transitions);
-    } else if (withDimension) {
-        $$.updateDimension(true);
-    }
-    if ($$.isCategorized() && targetsToShow.length === 0) {
-        $$.x.domain([0, $$.axes.x.selectAll('.tick').size()]);
-    }
-    if (targetsToShow.length) {
-        $$.updateXDomain(targetsToShow, withUpdateXDomain, withUpdateOrgXDomain, withTrimXDomain);
-        if (!config.axis_x_tick_values) {
-            tickValues = $$.axis.updateXAxisTickValues(targetsToShow);
+        this._branchHasCancelled();
+        if (this._enoughBranchesHaveCancelled()) {
+            this._invokeOnCancel();
+            return true;
         }
-    } else {
-        $$.xAxis.tickValues([]);
-        $$.subXAxis.tickValues([]);
     }
-    if (config.zoom_rescale && !options.flow) {
-        xDomainForZoom = $$.x.orgDomain();
+    return false;
+};
+Promise.prototype._cancelBranched = function() {
+    if (this._enoughBranchesHaveCancelled()) {
+        this._cancel();
     }
-    $$.y.domain($$.getYDomain(targetsToShow, 'y', xDomainForZoom));
-    $$.y2.domain($$.getYDomain(targetsToShow, 'y2', xDomainForZoom));
-    if (!config.axis_y_tick_values && config.axis_y_tick_count) {
-        $$.yAxis.tickValues($$.axis.generateTickValues($$.y.domain(), config.axis_y_tick_count));
-    }
-    if (!config.axis_y2_tick_values && config.axis_y2_tick_count) {
-        $$.y2Axis.tickValues($$.axis.generateTickValues($$.y2.domain(), config.axis_y2_tick_count));
-    }
-    $$.axis.redraw(transitions, hideAxis);
-    $$.axis.updateLabels(withTransition);
-    if ((withUpdateXDomain || withUpdateXAxis) && targetsToShow.length) {
-        if (config.axis_x_tick_culling && tickValues) {
-            for (i = 1; i < tickValues.length; i++) {
-                if (tickValues.length / i < config.axis_x_tick_culling_max) {
-                    intervalForCulling = i;
-                    break;
+};
+Promise.prototype._cancel = function() {
+    if (!this._isCancellable()) return;
+    this._setCancelled();
+    async.invoke(this._cancelPromises, this, undefined);
+};
+Promise.prototype._cancelPromises = function() {
+    if (this._length() > 0) this._settlePromises();
+};
+Promise.prototype._unsetOnCancel = function() {
+    this._onCancelField = undefined;
+};
+Promise.prototype._isCancellable = function() {
+    return this.isPending() && !this._isCancelled();
+};
+Promise.prototype.isCancellable = function() {
+    return this.isPending() && !this.isCancelled();
+};
+Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
+    if (util.isArray(onCancelCallback)) {
+        for (var i = 0; i < onCancelCallback.length; ++i) {
+            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
+        }
+    } else if (onCancelCallback !== undefined) {
+        if (typeof onCancelCallback === "function") {
+            if (!internalOnly) {
+                var e = tryCatch(onCancelCallback).call(this._boundValue());
+                if (e === errorObj) {
+                    this._attachExtraTrace(e.e);
+                    async.throwLater(e.e);
                 }
             }
-            $$.svg.selectAll('.' + CLASS.axisX + ' .tick text').each(function (e) {
-                var index = tickValues.indexOf(e);
-                if (index >= 0) {
-                    d3.select(this).style('display', index % intervalForCulling ? 'none' : 'block');
+        } else {
+            onCancelCallback._resultCancelled(this);
+        }
+    }
+};
+Promise.prototype._invokeOnCancel = function() {
+    var onCancelCallback = this._onCancel();
+    this._unsetOnCancel();
+    async.invoke(this._doInvokeOnCancel, this, onCancelCallback);
+};
+Promise.prototype._invokeInternalOnCancel = function() {
+    if (this._isCancellable()) {
+        this._doInvokeOnCancel(this._onCancel(), true);
+        this._unsetOnCancel();
+    }
+};
+Promise.prototype._resultCancelled = function() {
+    this.cancel();
+};
+};
+},{"./util":21}],5:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(NEXT_FILTER) {
+var util = _dereq_("./util");
+var getKeys = _dereq_("./es5").keys;
+var tryCatch = util.tryCatch;
+var errorObj = util.errorObj;
+function catchFilter(instances, cb, promise) {
+    return function(e) {
+        var boundTo = promise._boundValue();
+        predicateLoop: for (var i = 0; i < instances.length; ++i) {
+            var item = instances[i];
+            if (item === Error ||
+                (item != null && item.prototype instanceof Error)) {
+                if (e instanceof item) {
+                    return tryCatch(cb).call(boundTo, e);
                 }
-            });
-        } else {
-            $$.svg.selectAll('.' + CLASS.axisX + ' .tick text').style('display', 'block');
-        }
-    }
-    drawArea = $$.generateDrawArea ? $$.generateDrawArea(areaIndices, false) : undefined;
-    drawBar = $$.generateDrawBar ? $$.generateDrawBar(barIndices) : undefined;
-    drawLine = $$.generateDrawLine ? $$.generateDrawLine(lineIndices, false) : undefined;
-    xForText = $$.generateXYForText(areaIndices, barIndices, lineIndices, true);
-    yForText = $$.generateXYForText(areaIndices, barIndices, lineIndices, false);
-    if (withY) {
-        $$.subY.domain($$.getYDomain(targetsToShow, 'y'));
-        $$.subY2.domain($$.getYDomain(targetsToShow, 'y2'));
-    }
-    $$.updateXgridFocus();
-    main.select("text." + CLASS.text + '.' + CLASS.empty).attr("x", $$.width / 2).attr("y", $$.height / 2).text(config.data_empty_label_text).transition().style('opacity', targetsToShow.length ? 0 : 1);
-    $$.updateGrid(duration);
-    $$.updateRegion(duration);
-    $$.updateBar(durationForExit);
-    $$.updateLine(durationForExit);
-    $$.updateArea(durationForExit);
-    $$.updateCircle();
-    if ($$.hasDataLabel()) {
-        $$.updateText(durationForExit);
-    }
-    if ($$.redrawTitle) {
-        $$.redrawTitle();
-    }
-    if ($$.redrawArc) {
-        $$.redrawArc(duration, durationForExit, withTransform);
-    }
-    if ($$.redrawSubchart) {
-        $$.redrawSubchart(withSubchart, transitions, duration, durationForExit, areaIndices, barIndices, lineIndices);
-    }
-    main.selectAll('.' + CLASS.selectedCircles).filter($$.isBarType.bind($$)).selectAll('circle').remove();
-    if (config.interaction_enabled && !options.flow && withEventRect) {
-        $$.redrawEventRect();
-        if ($$.updateZoom) {
-            $$.updateZoom();
-        }
-    }
-    $$.updateCircleY();
-    cx = ($$.config.axis_rotated ? $$.circleY : $$.circleX).bind($$);
-    cy = ($$.config.axis_rotated ? $$.circleX : $$.circleY).bind($$);
-    if (options.flow) {
-        flow = $$.generateFlow({
-            targets: targetsToShow,
-            flow: options.flow,
-            duration: options.flow.duration,
-            drawBar: drawBar,
-            drawLine: drawLine,
-            drawArea: drawArea,
-            cx: cx,
-            cy: cy,
-            xv: xv,
-            xForText: xForText,
-            yForText: yForText
-        });
-    }
-    if ((duration || flow) && $$.isTabVisible()) {
-        d3.transition().duration(duration).each(function () {
-            var transitionsToWait = [];
-            [$$.redrawBar(drawBar, true), $$.redrawLine(drawLine, true), $$.redrawArea(drawArea, true), $$.redrawCircle(cx, cy, true), $$.redrawText(xForText, yForText, options.flow, true), $$.redrawRegion(true), $$.redrawGrid(true)].forEach(function (transitions) {
-                transitions.forEach(function (transition) {
-                    transitionsToWait.push(transition);
-                });
-            });
-            waitForDraw = $$.generateWait();
-            transitionsToWait.forEach(function (t) {
-                waitForDraw.add(t);
-            });
-        }).call(waitForDraw, function () {
-            if (flow) {
-                flow();
-            }
-            if (config.onrendered) {
-                config.onrendered.call($$);
-            }
-        });
-    } else {
-        $$.redrawBar(drawBar);
-        $$.redrawLine(drawLine);
-        $$.redrawArea(drawArea);
-        $$.redrawCircle(cx, cy);
-        $$.redrawText(xForText, yForText, options.flow);
-        $$.redrawRegion();
-        $$.redrawGrid();
-        if (config.onrendered) {
-            config.onrendered.call($$);
-        }
-    }
-    $$.mapToIds($$.data.targets).forEach(function (id) {
-        $$.withoutFadeIn[id] = true;
-    });
-};
-c3_chart_internal_fn.updateAndRedraw = function (options) {
-    var $$ = this,
-        config = $$.config,
-        transitions;
-    options = options || {};
-    options.withTransition = getOption(options, "withTransition", true);
-    options.withTransform = getOption(options, "withTransform", false);
-    options.withLegend = getOption(options, "withLegend", false);
-    options.withUpdateXDomain = true;
-    options.withUpdateOrgXDomain = true;
-    options.withTransitionForExit = false;
-    options.withTransitionForTransform = getOption(options, "withTransitionForTransform", options.withTransition);
-    $$.updateSizes();
-    if (!(options.withLegend && config.legend_show)) {
-        transitions = $$.axis.generateTransitions(options.withTransitionForAxis ? config.transition_duration : 0);
-        $$.updateScales();
-        $$.updateSvgSize();
-        $$.transformAll(options.withTransitionForTransform, transitions);
-    }
-    $$.redraw(options, transitions);
-};
-c3_chart_internal_fn.redrawWithoutRescale = function () {
-    this.redraw({
-        withY: false,
-        withSubchart: false,
-        withEventRect: false,
-        withTransitionForAxis: false
-    });
-};
-c3_chart_internal_fn.isTimeSeries = function () {
-    return this.config.axis_x_type === 'timeseries';
-};
-c3_chart_internal_fn.isCategorized = function () {
-    return this.config.axis_x_type.indexOf('categor') >= 0;
-};
-c3_chart_internal_fn.isCustomX = function () {
-    var $$ = this,
-        config = $$.config;
-    return !$$.isTimeSeries() && (config.data_x || notEmpty(config.data_xs));
-};
-c3_chart_internal_fn.isTimeSeriesY = function () {
-    return this.config.axis_y_type === 'timeseries';
-};
-c3_chart_internal_fn.getTranslate = function (target) {
-    var $$ = this,
-        config = $$.config,
-        x,
-        y;
-    if (target === 'main') {
-        x = asHalfPixel($$.margin.left);
-        y = asHalfPixel($$.margin.top);
-    } else if (target === 'context') {
-        x = asHalfPixel($$.margin2.left);
-        y = asHalfPixel($$.margin2.top);
-    } else if (target === 'legend') {
-        x = $$.margin3.left;
-        y = $$.margin3.top;
-    } else if (target === 'x') {
-        x = 0;
-        y = config.axis_rotated ? 0 : $$.height;
-    } else if (target === 'y') {
-        x = 0;
-        y = config.axis_rotated ? $$.height : 0;
-    } else if (target === 'y2') {
-        x = config.axis_rotated ? 0 : $$.width;
-        y = config.axis_rotated ? 1 : 0;
-    } else if (target === 'subx') {
-        x = 0;
-        y = config.axis_rotated ? 0 : $$.height2;
-    } else if (target === 'arc') {
-        x = $$.arcWidth / 2;
-        y = $$.arcHeight / 2;
-    }
-    return "translate(" + x + "," + y + ")";
-};
-c3_chart_internal_fn.initialOpacity = function (d) {
-    return d.value !== null && this.withoutFadeIn[d.id] ? 1 : 0;
-};
-c3_chart_internal_fn.initialOpacityForCircle = function (d) {
-    return d.value !== null && this.withoutFadeIn[d.id] ? this.opacityForCircle(d) : 0;
-};
-c3_chart_internal_fn.opacityForCircle = function (d) {
-    var isPointShouldBeShown = isFunction(this.config.point_show) ? this.config.point_show(d) : this.config.point_show;
-    var opacity = isPointShouldBeShown ? 1 : 0;
-    return isValue(d.value) ? this.isScatterType(d) ? 0.5 : opacity : 0;
-};
-c3_chart_internal_fn.opacityForText = function () {
-    return this.hasDataLabel() ? 1 : 0;
-};
-c3_chart_internal_fn.xx = function (d) {
-    return d ? this.x(d.x) : null;
-};
-c3_chart_internal_fn.xv = function (d) {
-    var $$ = this,
-        value = d.value;
-    if ($$.isTimeSeries()) {
-        value = $$.parseDate(d.value);
-    } else if ($$.isCategorized() && typeof d.value === 'string') {
-        value = $$.config.axis_x_categories.indexOf(d.value);
-    }
-    return Math.ceil($$.x(value));
-};
-c3_chart_internal_fn.yv = function (d) {
-    var $$ = this,
-        yScale = d.axis && d.axis === 'y2' ? $$.y2 : $$.y;
-    return Math.ceil(yScale(d.value));
-};
-c3_chart_internal_fn.subxx = function (d) {
-    return d ? this.subX(d.x) : null;
-};
-c3_chart_internal_fn.transformMain = function (withTransition, transitions) {
-    var $$ = this,
-        xAxis,
-        yAxis,
-        y2Axis;
-    if (transitions && transitions.axisX) {
-        xAxis = transitions.axisX;
-    } else {
-        xAxis = $$.main.select('.' + CLASS.axisX);
-        if (withTransition) {
-            xAxis = xAxis.transition();
-        }
-    }
-    if (transitions && transitions.axisY) {
-        yAxis = transitions.axisY;
-    } else {
-        yAxis = $$.main.select('.' + CLASS.axisY);
-        if (withTransition) {
-            yAxis = yAxis.transition();
-        }
-    }
-    if (transitions && transitions.axisY2) {
-        y2Axis = transitions.axisY2;
-    } else {
-        y2Axis = $$.main.select('.' + CLASS.axisY2);
-        if (withTransition) {
-            y2Axis = y2Axis.transition();
-        }
-    }
-    (withTransition ? $$.main.transition() : $$.main).attr("transform", $$.getTranslate('main'));
-    xAxis.attr("transform", $$.getTranslate('x'));
-    yAxis.attr("transform", $$.getTranslate('y'));
-    y2Axis.attr("transform", $$.getTranslate('y2'));
-    $$.main.select('.' + CLASS.chartArcs).attr("transform", $$.getTranslate('arc'));
-};
-c3_chart_internal_fn.transformAll = function (withTransition, transitions) {
-    var $$ = this;
-    $$.transformMain(withTransition, transitions);
-    if ($$.config.subchart_show) {
-        $$.transformContext(withTransition, transitions);
-    }
-    if ($$.legend) {
-        $$.transformLegend(withTransition);
-    }
-};
-c3_chart_internal_fn.updateSvgSize = function () {
-    var $$ = this,
-        brush = $$.svg.select(".c3-brush .background");
-    $$.svg.attr('width', $$.currentWidth).attr('height', $$.currentHeight);
-    $$.svg.selectAll(['#' + $$.clipId, '#' + $$.clipIdForGrid]).select('rect').attr('width', $$.width).attr('height', $$.height);
-    $$.svg.select('#' + $$.clipIdForXAxis).select('rect').attr('x', $$.getXAxisClipX.bind($$)).attr('y', $$.getXAxisClipY.bind($$)).attr('width', $$.getXAxisClipWidth.bind($$)).attr('height', $$.getXAxisClipHeight.bind($$));
-    $$.svg.select('#' + $$.clipIdForYAxis).select('rect').attr('x', $$.getYAxisClipX.bind($$)).attr('y', $$.getYAxisClipY.bind($$)).attr('width', $$.getYAxisClipWidth.bind($$)).attr('height', $$.getYAxisClipHeight.bind($$));
-    $$.svg.select('#' + $$.clipIdForSubchart).select('rect').attr('width', $$.width).attr('height', brush.size() ? brush.attr('height') : 0);
-    $$.svg.select('.' + CLASS.zoomRect).attr('width', $$.width).attr('height', $$.height);
-    $$.selectChart.style('max-height', $$.currentHeight + "px");
-};
-c3_chart_internal_fn.updateDimension = function (withoutAxis) {
-    var $$ = this;
-    if (!withoutAxis) {
-        if ($$.config.axis_rotated) {
-            $$.axes.x.call($$.xAxis);
-            $$.axes.subx.call($$.subXAxis);
-        } else {
-            $$.axes.y.call($$.yAxis);
-            $$.axes.y2.call($$.y2Axis);
-        }
-    }
-    $$.updateSizes();
-    $$.updateScales();
-    $$.updateSvgSize();
-    $$.transformAll(false);
-};
-c3_chart_internal_fn.observeInserted = function (selection) {
-    var $$ = this,
-        observer;
-    if (typeof MutationObserver === 'undefined') {
-        window.console.error("MutationObserver not defined.");
-        return;
-    }
-    observer = new MutationObserver(function (mutations) {
-        mutations.forEach(function (mutation) {
-            if (mutation.type === 'childList' && mutation.previousSibling) {
-                observer.disconnect();
-                $$.intervalForObserveInserted = window.setInterval(function () {
-                    if (selection.node().parentNode) {
-                        window.clearInterval($$.intervalForObserveInserted);
-                        $$.updateDimension();
-                        if ($$.brush) {
-                            $$.brush.update();
-                        }
-                        $$.config.oninit.call($$);
-                        $$.redraw({
-                            withTransform: true,
-                            withUpdateXDomain: true,
-                            withUpdateOrgXDomain: true,
-                            withTransition: false,
-                            withTransitionForTransform: false,
-                            withLegend: true
-                        });
-                        selection.transition().style('opacity', 1);
+            } else if (typeof item === "function") {
+                var matchesPredicate = tryCatch(item).call(boundTo, e);
+                if (matchesPredicate === errorObj) {
+                    return matchesPredicate;
+                } else if (matchesPredicate) {
+                    return tryCatch(cb).call(boundTo, e);
+                }
+            } else if (util.isObject(e)) {
+                var keys = getKeys(item);
+                for (var j = 0; j < keys.length; ++j) {
+                    var key = keys[j];
+                    if (item[key] != e[key]) {
+                        continue predicateLoop;
                     }
-                }, 10);
-            }
-        });
-    });
-    observer.observe(selection.node(), { attributes: true, childList: true, characterData: true });
-};
-c3_chart_internal_fn.bindResize = function () {
-    var $$ = this,
-        config = $$.config;
-    $$.resizeFunction = $$.generateResize();
-    $$.resizeFunction.add(function () {
-        config.onresize.call($$);
-    });
-    if (config.resize_auto) {
-        $$.resizeFunction.add(function () {
-            if ($$.resizeTimeout !== undefined) {
-                window.clearTimeout($$.resizeTimeout);
-            }
-            $$.resizeTimeout = window.setTimeout(function () {
-                delete $$.resizeTimeout;
-                $$.api.flush();
-            }, 100);
-        });
-    }
-    $$.resizeFunction.add(function () {
-        config.onresized.call($$);
-    });
-    if (window.attachEvent) {
-        window.attachEvent('onresize', $$.resizeFunction);
-    } else if (window.addEventListener) {
-        window.addEventListener('resize', $$.resizeFunction, false);
-    } else {
-        var wrapper = window.onresize;
-        if (!wrapper) {
-            wrapper = $$.generateResize();
-        } else if (!wrapper.add || !wrapper.remove) {
-            wrapper = $$.generateResize();
-            wrapper.add(window.onresize);
-        }
-        wrapper.add($$.resizeFunction);
-        window.onresize = wrapper;
-    }
-};
-c3_chart_internal_fn.generateResize = function () {
-    var resizeFunctions = [];
-    function callResizeFunctions() {
-        resizeFunctions.forEach(function (f) {
-            f();
-        });
-    }
-    callResizeFunctions.add = function (f) {
-        resizeFunctions.push(f);
-    };
-    callResizeFunctions.remove = function (f) {
-        for (var i = 0; i < resizeFunctions.length; i++) {
-            if (resizeFunctions[i] === f) {
-                resizeFunctions.splice(i, 1);
-                break;
-            }
-        }
-    };
-    return callResizeFunctions;
-};
-c3_chart_internal_fn.endall = function (transition, callback) {
-    var n = 0;
-    transition.each(function () {
-        ++n;
-    }).each("end", function () {
-        if (! --n) {
-            callback.apply(this, arguments);
-        }
-    });
-};
-c3_chart_internal_fn.generateWait = function () {
-    var transitionsToWait = [],
-        f = function f(transition, callback) {
-        var timer = setInterval(function () {
-            var done = 0;
-            transitionsToWait.forEach(function (t) {
-                if (t.empty()) {
-                    done += 1;
-                    return;
                 }
-                try {
-                    t.transition();
-                } catch (e) {
-                    done += 1;
-                }
-            });
-            if (done === transitionsToWait.length) {
-                clearInterval(timer);
-                if (callback) {
-                    callback();
-                }
+                return tryCatch(cb).call(boundTo, e);
             }
-        }, 10);
-    };
-    f.add = function (transition) {
-        transitionsToWait.push(transition);
-    };
-    return f;
-};
-c3_chart_internal_fn.parseDate = function (date) {
-    var $$ = this,
-        parsedDate;
-    if (date instanceof Date) {
-        parsedDate = date;
-    } else if (typeof date === 'string') {
-        parsedDate = $$.dataTimeFormat($$.config.data_xFormat).parse(date);
-    } else if ((typeof date === 'undefined' ? 'undefined' : _typeof(date)) === 'object') {
-        parsedDate = new Date(+date);
-    } else if (typeof date === 'number' && !isNaN(date)) {
-        parsedDate = new Date(+date);
-    }
-    if (!parsedDate || isNaN(+parsedDate)) {
-        window.console.error("Failed to parse x '" + date + "' to Date object");
-    }
-    return parsedDate;
-};
-c3_chart_internal_fn.isTabVisible = function () {
-    var hidden;
-    if (typeof document.hidden !== "undefined") {
-        hidden = "hidden";
-    } else if (typeof document.mozHidden !== "undefined") {
-        hidden = "mozHidden";
-    } else if (typeof document.msHidden !== "undefined") {
-        hidden = "msHidden";
-    } else if (typeof document.webkitHidden !== "undefined") {
-        hidden = "webkitHidden";
-    }
-    return document[hidden] ? false : true;
-};
-c3_chart_internal_fn.isValue = isValue;
-c3_chart_internal_fn.isFunction = isFunction;
-c3_chart_internal_fn.isString = isString;
-c3_chart_internal_fn.isUndefined = isUndefined;
-c3_chart_internal_fn.isDefined = isDefined;
-c3_chart_internal_fn.ceil10 = ceil10;
-c3_chart_internal_fn.asHalfPixel = asHalfPixel;
-c3_chart_internal_fn.diffDomain = diffDomain;
-c3_chart_internal_fn.isEmpty = isEmpty;
-c3_chart_internal_fn.notEmpty = notEmpty;
-c3_chart_internal_fn.notEmpty = notEmpty;
-c3_chart_internal_fn.getOption = getOption;
-c3_chart_internal_fn.hasValue = hasValue;
-c3_chart_internal_fn.sanitise = sanitise;
-c3_chart_internal_fn.getPathBox = getPathBox;
-c3_chart_internal_fn.CLASS = CLASS;
-/* jshint ignore:start */
-if (!Function.prototype.bind) {
-    Function.prototype.bind = function (oThis) {
-        if (typeof this !== 'function') {
-            throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
         }
-        var aArgs = Array.prototype.slice.call(arguments, 1),
-            fToBind = this,
-            fNOP = function fNOP() {},
-            fBound = function fBound() {
-            return fToBind.apply(this instanceof fNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
-        };
-        fNOP.prototype = this.prototype;
-        fBound.prototype = new fNOP();
-        return fBound;
+        return NEXT_FILTER;
     };
 }
-(function () {
-    "use strict";
-    if (!("SVGPathSeg" in window)) {
-        window.SVGPathSeg = function (type, typeAsLetter, owningPathSegList) {
-            this.pathSegType = type;
-            this.pathSegTypeAsLetter = typeAsLetter;
-            this._owningPathSegList = owningPathSegList;
-        };
-        window.SVGPathSeg.prototype.classname = "SVGPathSeg";
-        window.SVGPathSeg.PATHSEG_UNKNOWN = 0;
-        window.SVGPathSeg.PATHSEG_CLOSEPATH = 1;
-        window.SVGPathSeg.PATHSEG_MOVETO_ABS = 2;
-        window.SVGPathSeg.PATHSEG_MOVETO_REL = 3;
-        window.SVGPathSeg.PATHSEG_LINETO_ABS = 4;
-        window.SVGPathSeg.PATHSEG_LINETO_REL = 5;
-        window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS = 6;
-        window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL = 7;
-        window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS = 8;
-        window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL = 9;
-        window.SVGPathSeg.PATHSEG_ARC_ABS = 10;
-        window.SVGPathSeg.PATHSEG_ARC_REL = 11;
-        window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS = 12;
-        window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL = 13;
-        window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS = 14;
-        window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL = 15;
-        window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS = 16;
-        window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL = 17;
-        window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS = 18;
-        window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL = 19;
-        window.SVGPathSeg.prototype._segmentChanged = function () {
-            if (this._owningPathSegList) this._owningPathSegList.segmentChanged(this);
-        };
-        window.SVGPathSegClosePath = function (owningPathSegList) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CLOSEPATH, "z", owningPathSegList);
-        };
-        window.SVGPathSegClosePath.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegClosePath.prototype.toString = function () {
-            return "[object SVGPathSegClosePath]";
-        };
-        window.SVGPathSegClosePath.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter;
-        };
-        window.SVGPathSegClosePath.prototype.clone = function () {
-            return new window.SVGPathSegClosePath(undefined);
-        };
-        window.SVGPathSegMovetoAbs = function (owningPathSegList, x, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_MOVETO_ABS, "M", owningPathSegList);
-            this._x = x;
-            this._y = y;
-        };
-        window.SVGPathSegMovetoAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegMovetoAbs.prototype.toString = function () {
-            return "[object SVGPathSegMovetoAbs]";
-        };
-        window.SVGPathSegMovetoAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegMovetoAbs.prototype.clone = function () {
-            return new window.SVGPathSegMovetoAbs(undefined, this._x, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegMovetoAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegMovetoAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegMovetoRel = function (owningPathSegList, x, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_MOVETO_REL, "m", owningPathSegList);
-            this._x = x;
-            this._y = y;
-        };
-        window.SVGPathSegMovetoRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegMovetoRel.prototype.toString = function () {
-            return "[object SVGPathSegMovetoRel]";
-        };
-        window.SVGPathSegMovetoRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegMovetoRel.prototype.clone = function () {
-            return new window.SVGPathSegMovetoRel(undefined, this._x, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegMovetoRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegMovetoRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegLinetoAbs = function (owningPathSegList, x, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_ABS, "L", owningPathSegList);
-            this._x = x;
-            this._y = y;
-        };
-        window.SVGPathSegLinetoAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegLinetoAbs.prototype.toString = function () {
-            return "[object SVGPathSegLinetoAbs]";
-        };
-        window.SVGPathSegLinetoAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegLinetoAbs.prototype.clone = function () {
-            return new window.SVGPathSegLinetoAbs(undefined, this._x, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegLinetoAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegLinetoAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegLinetoRel = function (owningPathSegList, x, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_REL, "l", owningPathSegList);
-            this._x = x;
-            this._y = y;
-        };
-        window.SVGPathSegLinetoRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegLinetoRel.prototype.toString = function () {
-            return "[object SVGPathSegLinetoRel]";
-        };
-        window.SVGPathSegLinetoRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegLinetoRel.prototype.clone = function () {
-            return new window.SVGPathSegLinetoRel(undefined, this._x, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegLinetoRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegLinetoRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoCubicAbs = function (owningPathSegList, x, y, x1, y1, x2, y2) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS, "C", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._x1 = x1;
-            this._y1 = y1;
-            this._x2 = x2;
-            this._y2 = y2;
-        };
-        window.SVGPathSegCurvetoCubicAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoCubicAbs.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoCubicAbs]";
-        };
-        window.SVGPathSegCurvetoCubicAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoCubicAbs.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoCubicAbs(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "x1", { get: function get() {
-                return this._x1;
-            }, set: function set(x1) {
-                this._x1 = x1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "y1", { get: function get() {
-                return this._y1;
-            }, set: function set(y1) {
-                this._y1 = y1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "x2", { get: function get() {
-                return this._x2;
-            }, set: function set(x2) {
-                this._x2 = x2;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "y2", { get: function get() {
-                return this._y2;
-            }, set: function set(y2) {
-                this._y2 = y2;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoCubicRel = function (owningPathSegList, x, y, x1, y1, x2, y2) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL, "c", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._x1 = x1;
-            this._y1 = y1;
-            this._x2 = x2;
-            this._y2 = y2;
-        };
-        window.SVGPathSegCurvetoCubicRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoCubicRel.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoCubicRel]";
-        };
-        window.SVGPathSegCurvetoCubicRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoCubicRel.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoCubicRel(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "x1", { get: function get() {
-                return this._x1;
-            }, set: function set(x1) {
-                this._x1 = x1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "y1", { get: function get() {
-                return this._y1;
-            }, set: function set(y1) {
-                this._y1 = y1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "x2", { get: function get() {
-                return this._x2;
-            }, set: function set(x2) {
-                this._x2 = x2;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "y2", { get: function get() {
-                return this._y2;
-            }, set: function set(y2) {
-                this._y2 = y2;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoQuadraticAbs = function (owningPathSegList, x, y, x1, y1) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS, "Q", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._x1 = x1;
-            this._y1 = y1;
-        };
-        window.SVGPathSegCurvetoQuadraticAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoQuadraticAbs.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoQuadraticAbs]";
-        };
-        window.SVGPathSegCurvetoQuadraticAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoQuadraticAbs.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoQuadraticAbs(undefined, this._x, this._y, this._x1, this._y1);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "x1", { get: function get() {
-                return this._x1;
-            }, set: function set(x1) {
-                this._x1 = x1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "y1", { get: function get() {
-                return this._y1;
-            }, set: function set(y1) {
-                this._y1 = y1;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoQuadraticRel = function (owningPathSegList, x, y, x1, y1) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL, "q", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._x1 = x1;
-            this._y1 = y1;
-        };
-        window.SVGPathSegCurvetoQuadraticRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoQuadraticRel.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoQuadraticRel]";
-        };
-        window.SVGPathSegCurvetoQuadraticRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoQuadraticRel.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoQuadraticRel(undefined, this._x, this._y, this._x1, this._y1);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "x1", { get: function get() {
-                return this._x1;
-            }, set: function set(x1) {
-                this._x1 = x1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "y1", { get: function get() {
-                return this._y1;
-            }, set: function set(y1) {
-                this._y1 = y1;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegArcAbs = function (owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_ARC_ABS, "A", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._r1 = r1;
-            this._r2 = r2;
-            this._angle = angle;
-            this._largeArcFlag = largeArcFlag;
-            this._sweepFlag = sweepFlag;
-        };
-        window.SVGPathSegArcAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegArcAbs.prototype.toString = function () {
-            return "[object SVGPathSegArcAbs]";
-        };
-        window.SVGPathSegArcAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegArcAbs.prototype.clone = function () {
-            return new window.SVGPathSegArcAbs(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag);
-        };
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "r1", { get: function get() {
-                return this._r1;
-            }, set: function set(r1) {
-                this._r1 = r1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "r2", { get: function get() {
-                return this._r2;
-            }, set: function set(r2) {
-                this._r2 = r2;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "angle", { get: function get() {
-                return this._angle;
-            }, set: function set(angle) {
-                this._angle = angle;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "largeArcFlag", { get: function get() {
-                return this._largeArcFlag;
-            }, set: function set(largeArcFlag) {
-                this._largeArcFlag = largeArcFlag;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcAbs.prototype, "sweepFlag", { get: function get() {
-                return this._sweepFlag;
-            }, set: function set(sweepFlag) {
-                this._sweepFlag = sweepFlag;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegArcRel = function (owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_ARC_REL, "a", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._r1 = r1;
-            this._r2 = r2;
-            this._angle = angle;
-            this._largeArcFlag = largeArcFlag;
-            this._sweepFlag = sweepFlag;
-        };
-        window.SVGPathSegArcRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegArcRel.prototype.toString = function () {
-            return "[object SVGPathSegArcRel]";
-        };
-        window.SVGPathSegArcRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegArcRel.prototype.clone = function () {
-            return new window.SVGPathSegArcRel(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag);
-        };
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "r1", { get: function get() {
-                return this._r1;
-            }, set: function set(r1) {
-                this._r1 = r1;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "r2", { get: function get() {
-                return this._r2;
-            }, set: function set(r2) {
-                this._r2 = r2;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "angle", { get: function get() {
-                return this._angle;
-            }, set: function set(angle) {
-                this._angle = angle;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "largeArcFlag", { get: function get() {
-                return this._largeArcFlag;
-            }, set: function set(largeArcFlag) {
-                this._largeArcFlag = largeArcFlag;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegArcRel.prototype, "sweepFlag", { get: function get() {
-                return this._sweepFlag;
-            }, set: function set(sweepFlag) {
-                this._sweepFlag = sweepFlag;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegLinetoHorizontalAbs = function (owningPathSegList, x) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS, "H", owningPathSegList);
-            this._x = x;
-        };
-        window.SVGPathSegLinetoHorizontalAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegLinetoHorizontalAbs.prototype.toString = function () {
-            return "[object SVGPathSegLinetoHorizontalAbs]";
-        };
-        window.SVGPathSegLinetoHorizontalAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x;
-        };
-        window.SVGPathSegLinetoHorizontalAbs.prototype.clone = function () {
-            return new window.SVGPathSegLinetoHorizontalAbs(undefined, this._x);
-        };
-        Object.defineProperty(window.SVGPathSegLinetoHorizontalAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegLinetoHorizontalRel = function (owningPathSegList, x) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL, "h", owningPathSegList);
-            this._x = x;
-        };
-        window.SVGPathSegLinetoHorizontalRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegLinetoHorizontalRel.prototype.toString = function () {
-            return "[object SVGPathSegLinetoHorizontalRel]";
-        };
-        window.SVGPathSegLinetoHorizontalRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x;
-        };
-        window.SVGPathSegLinetoHorizontalRel.prototype.clone = function () {
-            return new window.SVGPathSegLinetoHorizontalRel(undefined, this._x);
-        };
-        Object.defineProperty(window.SVGPathSegLinetoHorizontalRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegLinetoVerticalAbs = function (owningPathSegList, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS, "V", owningPathSegList);
-            this._y = y;
-        };
-        window.SVGPathSegLinetoVerticalAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegLinetoVerticalAbs.prototype.toString = function () {
-            return "[object SVGPathSegLinetoVerticalAbs]";
-        };
-        window.SVGPathSegLinetoVerticalAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._y;
-        };
-        window.SVGPathSegLinetoVerticalAbs.prototype.clone = function () {
-            return new window.SVGPathSegLinetoVerticalAbs(undefined, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegLinetoVerticalAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegLinetoVerticalRel = function (owningPathSegList, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL, "v", owningPathSegList);
-            this._y = y;
-        };
-        window.SVGPathSegLinetoVerticalRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegLinetoVerticalRel.prototype.toString = function () {
-            return "[object SVGPathSegLinetoVerticalRel]";
-        };
-        window.SVGPathSegLinetoVerticalRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._y;
-        };
-        window.SVGPathSegLinetoVerticalRel.prototype.clone = function () {
-            return new window.SVGPathSegLinetoVerticalRel(undefined, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegLinetoVerticalRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoCubicSmoothAbs = function (owningPathSegList, x, y, x2, y2) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS, "S", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._x2 = x2;
-            this._y2 = y2;
-        };
-        window.SVGPathSegCurvetoCubicSmoothAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoCubicSmoothAbs.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoCubicSmoothAbs]";
-        };
-        window.SVGPathSegCurvetoCubicSmoothAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoCubicSmoothAbs.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoCubicSmoothAbs(undefined, this._x, this._y, this._x2, this._y2);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "x2", { get: function get() {
-                return this._x2;
-            }, set: function set(x2) {
-                this._x2 = x2;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "y2", { get: function get() {
-                return this._y2;
-            }, set: function set(y2) {
-                this._y2 = y2;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoCubicSmoothRel = function (owningPathSegList, x, y, x2, y2) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL, "s", owningPathSegList);
-            this._x = x;
-            this._y = y;
-            this._x2 = x2;
-            this._y2 = y2;
-        };
-        window.SVGPathSegCurvetoCubicSmoothRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoCubicSmoothRel.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoCubicSmoothRel]";
-        };
-        window.SVGPathSegCurvetoCubicSmoothRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoCubicSmoothRel.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoCubicSmoothRel(undefined, this._x, this._y, this._x2, this._y2);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "x2", { get: function get() {
-                return this._x2;
-            }, set: function set(x2) {
-                this._x2 = x2;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "y2", { get: function get() {
-                return this._y2;
-            }, set: function set(y2) {
-                this._y2 = y2;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoQuadraticSmoothAbs = function (owningPathSegList, x, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS, "T", owningPathSegList);
-            this._x = x;
-            this._y = y;
-        };
-        window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoQuadraticSmoothAbs]";
-        };
-        window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoQuadraticSmoothAbs(undefined, this._x, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathSegCurvetoQuadraticSmoothRel = function (owningPathSegList, x, y) {
-            window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL, "t", owningPathSegList);
-            this._x = x;
-            this._y = y;
-        };
-        window.SVGPathSegCurvetoQuadraticSmoothRel.prototype = Object.create(window.SVGPathSeg.prototype);
-        window.SVGPathSegCurvetoQuadraticSmoothRel.prototype.toString = function () {
-            return "[object SVGPathSegCurvetoQuadraticSmoothRel]";
-        };
-        window.SVGPathSegCurvetoQuadraticSmoothRel.prototype._asPathString = function () {
-            return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
-        };
-        window.SVGPathSegCurvetoQuadraticSmoothRel.prototype.clone = function () {
-            return new window.SVGPathSegCurvetoQuadraticSmoothRel(undefined, this._x, this._y);
-        };
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothRel.prototype, "x", { get: function get() {
-                return this._x;
-            }, set: function set(x) {
-                this._x = x;this._segmentChanged();
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothRel.prototype, "y", { get: function get() {
-                return this._y;
-            }, set: function set(y) {
-                this._y = y;this._segmentChanged();
-            }, enumerable: true });
-        window.SVGPathElement.prototype.createSVGPathSegClosePath = function () {
-            return new window.SVGPathSegClosePath(undefined);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegMovetoAbs = function (x, y) {
-            return new window.SVGPathSegMovetoAbs(undefined, x, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegMovetoRel = function (x, y) {
-            return new window.SVGPathSegMovetoRel(undefined, x, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegLinetoAbs = function (x, y) {
-            return new window.SVGPathSegLinetoAbs(undefined, x, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegLinetoRel = function (x, y) {
-            return new window.SVGPathSegLinetoRel(undefined, x, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicAbs = function (x, y, x1, y1, x2, y2) {
-            return new window.SVGPathSegCurvetoCubicAbs(undefined, x, y, x1, y1, x2, y2);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicRel = function (x, y, x1, y1, x2, y2) {
-            return new window.SVGPathSegCurvetoCubicRel(undefined, x, y, x1, y1, x2, y2);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticAbs = function (x, y, x1, y1) {
-            return new window.SVGPathSegCurvetoQuadraticAbs(undefined, x, y, x1, y1);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticRel = function (x, y, x1, y1) {
-            return new window.SVGPathSegCurvetoQuadraticRel(undefined, x, y, x1, y1);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegArcAbs = function (x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
-            return new window.SVGPathSegArcAbs(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegArcRel = function (x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
-            return new window.SVGPathSegArcRel(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegLinetoHorizontalAbs = function (x) {
-            return new window.SVGPathSegLinetoHorizontalAbs(undefined, x);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegLinetoHorizontalRel = function (x) {
-            return new window.SVGPathSegLinetoHorizontalRel(undefined, x);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegLinetoVerticalAbs = function (y) {
-            return new window.SVGPathSegLinetoVerticalAbs(undefined, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegLinetoVerticalRel = function (y) {
-            return new window.SVGPathSegLinetoVerticalRel(undefined, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothAbs = function (x, y, x2, y2) {
-            return new window.SVGPathSegCurvetoCubicSmoothAbs(undefined, x, y, x2, y2);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothRel = function (x, y, x2, y2) {
-            return new window.SVGPathSegCurvetoCubicSmoothRel(undefined, x, y, x2, y2);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothAbs = function (x, y) {
-            return new window.SVGPathSegCurvetoQuadraticSmoothAbs(undefined, x, y);
-        };
-        window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothRel = function (x, y) {
-            return new window.SVGPathSegCurvetoQuadraticSmoothRel(undefined, x, y);
-        };
-        if (!("getPathSegAtLength" in window.SVGPathElement.prototype)) {
-            window.SVGPathElement.prototype.getPathSegAtLength = function (distance) {
-                if (distance === undefined || !isFinite(distance)) throw "Invalid arguments.";
-                var measurementElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
-                measurementElement.setAttribute("d", this.getAttribute("d"));
-                var lastPathSegment = measurementElement.pathSegList.numberOfItems - 1;
-                if (lastPathSegment <= 0) return 0;
-                do {
-                    measurementElement.pathSegList.removeItem(lastPathSegment);
-                    if (distance > measurementElement.getTotalLength()) break;
-                    lastPathSegment--;
-                } while (lastPathSegment > 0);
-                return lastPathSegment;
+return catchFilter;
+};
+},{"./es5":10,"./util":21}],6:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise) {
+var longStackTraces = false;
+var contextStack = [];
+Promise.prototype._promiseCreated = function() {};
+Promise.prototype._pushContext = function() {};
+Promise.prototype._popContext = function() {return null;};
+Promise._peekContext = Promise.prototype._peekContext = function() {};
+function Context() {
+    this._trace = new Context.CapturedTrace(peekContext());
+}
+Context.prototype._pushContext = function () {
+    if (this._trace !== undefined) {
+        this._trace._promiseCreated = null;
+        contextStack.push(this._trace);
+    }
+};
+Context.prototype._popContext = function () {
+    if (this._trace !== undefined) {
+        var trace = contextStack.pop();
+        var ret = trace._promiseCreated;
+        trace._promiseCreated = null;
+        return ret;
+    }
+    return null;
+};
+function createContext() {
+    if (longStackTraces) return new Context();
+}
+function peekContext() {
+    var lastIndex = contextStack.length - 1;
+    if (lastIndex >= 0) {
+        return contextStack[lastIndex];
+    }
+    return undefined;
+}
+Context.CapturedTrace = null;
+Context.create = createContext;
+Context.deactivateLongStackTraces = function() {};
+Context.activateLongStackTraces = function() {
+    var Promise_pushContext = Promise.prototype._pushContext;
+    var Promise_popContext = Promise.prototype._popContext;
+    var Promise_PeekContext = Promise._peekContext;
+    var Promise_peekContext = Promise.prototype._peekContext;
+    var Promise_promiseCreated = Promise.prototype._promiseCreated;
+    Context.deactivateLongStackTraces = function() {
+        Promise.prototype._pushContext = Promise_pushContext;
+        Promise.prototype._popContext = Promise_popContext;
+        Promise._peekContext = Promise_PeekContext;
+        Promise.prototype._peekContext = Promise_peekContext;
+        Promise.prototype._promiseCreated = Promise_promiseCreated;
+        longStackTraces = false;
+    };
+    longStackTraces = true;
+    Promise.prototype._pushContext = Context.prototype._pushContext;
+    Promise.prototype._popContext = Context.prototype._popContext;
+    Promise._peekContext = Promise.prototype._peekContext = peekContext;
+    Promise.prototype._promiseCreated = function() {
+        var ctx = this._peekContext();
+        if (ctx && ctx._promiseCreated == null) ctx._promiseCreated = this;
+    };
+};
+return Context;
+};
+},{}],7:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise, Context) {
+var getDomain = Promise._getDomain;
+var async = Promise._async;
+var Warning = _dereq_("./errors").Warning;
+var util = _dereq_("./util");
+var canAttachTrace = util.canAttachTrace;
+var unhandledRejectionHandled;
+var possiblyUnhandledRejection;
+var bluebirdFramePattern =
+    /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/;
+var nodeFramePattern = /\((?:timers\.js):\d+:\d+\)/;
+var parseLinePattern = /[\/<\(](.+?):(\d+):(\d+)\)?\s*$/;
+var stackFramePattern = null;
+var formatStack = null;
+var indentStackFrames = false;
+var printWarning;
+var debugging = !!(util.env("BLUEBIRD_DEBUG") != 0 &&
+                        (true ||
+                         util.env("BLUEBIRD_DEBUG") ||
+                         util.env("NODE_ENV") === "development"));
+var warnings = !!(util.env("BLUEBIRD_WARNINGS") != 0 &&
+    (debugging || util.env("BLUEBIRD_WARNINGS")));
+var longStackTraces = !!(util.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
+    (debugging || util.env("BLUEBIRD_LONG_STACK_TRACES")));
+var wForgottenReturn = util.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
+    (warnings || !!util.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
+Promise.prototype.suppressUnhandledRejections = function() {
+    var target = this._target();
+    target._bitField = ((target._bitField & (~1048576)) |
+                      524288);
+};
+Promise.prototype._ensurePossibleRejectionHandled = function () {
+    if ((this._bitField & 524288) !== 0) return;
+    this._setRejectionIsUnhandled();
+    var self = this;
+    setTimeout(function() {
+        self._notifyUnhandledRejection();
+    }, 1);
+};
+Promise.prototype._notifyUnhandledRejectionIsHandled = function () {
+    fireRejectionEvent("rejectionHandled",
+                                  unhandledRejectionHandled, undefined, this);
+};
+Promise.prototype._setReturnedNonUndefined = function() {
+    this._bitField = this._bitField | 268435456;
+};
+Promise.prototype._returnedNonUndefined = function() {
+    return (this._bitField & 268435456) !== 0;
+};
+Promise.prototype._notifyUnhandledRejection = function () {
+    if (this._isRejectionUnhandled()) {
+        var reason = this._settledValue();
+        this._setUnhandledRejectionIsNotified();
+        fireRejectionEvent("unhandledRejection",
+                                      possiblyUnhandledRejection, reason, this);
+    }
+};
+Promise.prototype._setUnhandledRejectionIsNotified = function () {
+    this._bitField = this._bitField | 262144;
+};
+Promise.prototype._unsetUnhandledRejectionIsNotified = function () {
+    this._bitField = this._bitField & (~262144);
+};
+Promise.prototype._isUnhandledRejectionNotified = function () {
+    return (this._bitField & 262144) > 0;
+};
+Promise.prototype._setRejectionIsUnhandled = function () {
+    this._bitField = this._bitField | 1048576;
+};
+Promise.prototype._unsetRejectionIsUnhandled = function () {
+    this._bitField = this._bitField & (~1048576);
+    if (this._isUnhandledRejectionNotified()) {
+        this._unsetUnhandledRejectionIsNotified();
+        this._notifyUnhandledRejectionIsHandled();
+    }
+};
+Promise.prototype._isRejectionUnhandled = function () {
+    return (this._bitField & 1048576) > 0;
+};
+Promise.prototype._warn = function(message, shouldUseOwnTrace, promise) {
+    return warn(message, shouldUseOwnTrace, promise || this);
+};
+Promise.onPossiblyUnhandledRejection = function (fn) {
+    var domain = getDomain();
+    possiblyUnhandledRejection =
+        typeof fn === "function" ? (domain === null ?
+                                            fn : util.domainBind(domain, fn))
+                                 : undefined;
+};
+Promise.onUnhandledRejectionHandled = function (fn) {
+    var domain = getDomain();
+    unhandledRejectionHandled =
+        typeof fn === "function" ? (domain === null ?
+                                            fn : util.domainBind(domain, fn))
+                                 : undefined;
+};
+var disableLongStackTraces = function() {};
+Promise.longStackTraces = function () {
+    if (async.haveItemsQueued() && !config.longStackTraces) {
+        throw new Error("cannot enable long stack traces after promises have been created\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+    }
+    if (!config.longStackTraces && longStackTracesIsSupported()) {
+        var Promise_captureStackTrace = Promise.prototype._captureStackTrace;
+        var Promise_attachExtraTrace = Promise.prototype._attachExtraTrace;
+        config.longStackTraces = true;
+        disableLongStackTraces = function() {
+            if (async.haveItemsQueued() && !config.longStackTraces) {
+                throw new Error("cannot enable long stack traces after promises have been created\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+            }
+            Promise.prototype._captureStackTrace = Promise_captureStackTrace;
+            Promise.prototype._attachExtraTrace = Promise_attachExtraTrace;
+            Context.deactivateLongStackTraces();
+            async.enableTrampoline();
+            config.longStackTraces = false;
+        };
+        Promise.prototype._captureStackTrace = longStackTracesCaptureStackTrace;
+        Promise.prototype._attachExtraTrace = longStackTracesAttachExtraTrace;
+        Context.activateLongStackTraces();
+        async.disableTrampolineIfNecessary();
+    }
+};
+Promise.hasLongStackTraces = function () {
+    return config.longStackTraces && longStackTracesIsSupported();
+};
+var fireDomEvent = (function() {
+    try {
+        if (typeof CustomEvent === "function") {
+            var event = new CustomEvent("CustomEvent");
+            util.global.dispatchEvent(event);
+            return function(name, event) {
+                var domEvent = new CustomEvent(name.toLowerCase(), {
+                    detail: event,
+                    cancelable: true
+                });
+                return !util.global.dispatchEvent(domEvent);
+            };
+        } else if (typeof Event === "function") {
+            var event = new Event("CustomEvent");
+            util.global.dispatchEvent(event);
+            return function(name, event) {
+                var domEvent = new Event(name.toLowerCase(), {
+                    cancelable: true
+                });
+                domEvent.detail = event;
+                return !util.global.dispatchEvent(domEvent);
+            };
+        } else {
+            var event = document.createEvent("CustomEvent");
+            event.initCustomEvent("testingtheevent", false, true, {});
+            util.global.dispatchEvent(event);
+            return function(name, event) {
+                var domEvent = document.createEvent("CustomEvent");
+                domEvent.initCustomEvent(name.toLowerCase(), false, true,
+                    event);
+                return !util.global.dispatchEvent(domEvent);
             };
         }
-    }
-    if (!("SVGPathSegList" in window)) {
-        window.SVGPathSegList = function (pathElement) {
-            this._pathElement = pathElement;
-            this._list = this._parsePath(this._pathElement.getAttribute("d"));
-            this._mutationObserverConfig = { "attributes": true, "attributeFilter": ["d"] };
-            this._pathElementMutationObserver = new MutationObserver(this._updateListFromPathMutations.bind(this));
-            this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
+    } catch (e) {}
+    return function() {
+        return false;
+    };
+})();
+var fireGlobalEvent = (function() {
+    if (util.isNode) {
+        return function() {
+            return process.emit.apply(process, arguments);
         };
-        window.SVGPathSegList.prototype.classname = "SVGPathSegList";
-        Object.defineProperty(window.SVGPathSegList.prototype, "numberOfItems", {
-            get: function get() {
-                this._checkPathSynchronizedToList();
-                return this._list.length;
-            },
-            enumerable: true
-        });
-        Object.defineProperty(window.SVGPathElement.prototype, "pathSegList", {
-            get: function get() {
-                if (!this._pathSegList) this._pathSegList = new window.SVGPathSegList(this);
-                return this._pathSegList;
-            },
-            enumerable: true
-        });
-        Object.defineProperty(window.SVGPathElement.prototype, "normalizedPathSegList", { get: function get() {
-                return this.pathSegList;
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathElement.prototype, "animatedPathSegList", { get: function get() {
-                return this.pathSegList;
-            }, enumerable: true });
-        Object.defineProperty(window.SVGPathElement.prototype, "animatedNormalizedPathSegList", { get: function get() {
-                return this.pathSegList;
-            }, enumerable: true });
-        window.SVGPathSegList.prototype._checkPathSynchronizedToList = function () {
-            this._updateListFromPathMutations(this._pathElementMutationObserver.takeRecords());
-        };
-        window.SVGPathSegList.prototype._updateListFromPathMutations = function (mutationRecords) {
-            if (!this._pathElement) return;
-            var hasPathMutations = false;
-            mutationRecords.forEach(function (record) {
-                if (record.attributeName == "d") hasPathMutations = true;
-            });
-            if (hasPathMutations) this._list = this._parsePath(this._pathElement.getAttribute("d"));
-        };
-        window.SVGPathSegList.prototype._writeListToPath = function () {
-            this._pathElementMutationObserver.disconnect();
-            this._pathElement.setAttribute("d", window.SVGPathSegList._pathSegArrayAsString(this._list));
-            this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
-        };
-        window.SVGPathSegList.prototype.segmentChanged = function (pathSeg) {
-            this._writeListToPath();
-        };
-        window.SVGPathSegList.prototype.clear = function () {
-            this._checkPathSynchronizedToList();
-            this._list.forEach(function (pathSeg) {
-                pathSeg._owningPathSegList = null;
-            });
-            this._list = [];
-            this._writeListToPath();
-        };
-        window.SVGPathSegList.prototype.initialize = function (newItem) {
-            this._checkPathSynchronizedToList();
-            this._list = [newItem];
-            newItem._owningPathSegList = this;
-            this._writeListToPath();
-            return newItem;
-        };
-        window.SVGPathSegList.prototype._checkValidIndex = function (index) {
-            if (isNaN(index) || index < 0 || index >= this.numberOfItems) throw "INDEX_SIZE_ERR";
-        };
-        window.SVGPathSegList.prototype.getItem = function (index) {
-            this._checkPathSynchronizedToList();
-            this._checkValidIndex(index);
-            return this._list[index];
-        };
-        window.SVGPathSegList.prototype.insertItemBefore = function (newItem, index) {
-            this._checkPathSynchronizedToList();
-            if (index > this.numberOfItems) index = this.numberOfItems;
-            if (newItem._owningPathSegList) {
-                newItem = newItem.clone();
-            }
-            this._list.splice(index, 0, newItem);
-            newItem._owningPathSegList = this;
-            this._writeListToPath();
-            return newItem;
-        };
-        window.SVGPathSegList.prototype.replaceItem = function (newItem, index) {
-            this._checkPathSynchronizedToList();
-            if (newItem._owningPathSegList) {
-                newItem = newItem.clone();
-            }
-            this._checkValidIndex(index);
-            this._list[index] = newItem;
-            newItem._owningPathSegList = this;
-            this._writeListToPath();
-            return newItem;
-        };
-        window.SVGPathSegList.prototype.removeItem = function (index) {
-            this._checkPathSynchronizedToList();
-            this._checkValidIndex(index);
-            var item = this._list[index];
-            this._list.splice(index, 1);
-            this._writeListToPath();
-            return item;
-        };
-        window.SVGPathSegList.prototype.appendItem = function (newItem) {
-            this._checkPathSynchronizedToList();
-            if (newItem._owningPathSegList) {
-                newItem = newItem.clone();
-            }
-            this._list.push(newItem);
-            newItem._owningPathSegList = this;
-            this._writeListToPath();
-            return newItem;
-        };
-        window.SVGPathSegList._pathSegArrayAsString = function (pathSegArray) {
-            var string = "";
-            var first = true;
-            pathSegArray.forEach(function (pathSeg) {
-                if (first) {
-                    first = false;
-                    string += pathSeg._asPathString();
-                } else {
-                    string += " " + pathSeg._asPathString();
-                }
-            });
-            return string;
-        };
-        window.SVGPathSegList.prototype._parsePath = function (string) {
-            if (!string || string.length == 0) return [];
-            var owningPathSegList = this;
-            var Builder = function Builder() {
-                this.pathSegList = [];
+    } else {
+        if (!util.global) {
+            return function() {
+                return false;
             };
-            Builder.prototype.appendSegment = function (pathSeg) {
-                this.pathSegList.push(pathSeg);
-            };
-            var Source = function Source(string) {
-                this._string = string;
-                this._currentIndex = 0;
-                this._endIndex = this._string.length;
-                this._previousCommand = window.SVGPathSeg.PATHSEG_UNKNOWN;
-                this._skipOptionalSpaces();
-            };
-            Source.prototype._isCurrentSpace = function () {
-                var character = this._string[this._currentIndex];
-                return character <= " " && (character == " " || character == "\n" || character == "\t" || character == "\r" || character == "\f");
-            };
-            Source.prototype._skipOptionalSpaces = function () {
-                while (this._currentIndex < this._endIndex && this._isCurrentSpace()) {
-                    this._currentIndex++;
-                }return this._currentIndex < this._endIndex;
-            };
-            Source.prototype._skipOptionalSpacesOrDelimiter = function () {
-                if (this._currentIndex < this._endIndex && !this._isCurrentSpace() && this._string.charAt(this._currentIndex) != ",") return false;
-                if (this._skipOptionalSpaces()) {
-                    if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ",") {
-                        this._currentIndex++;
-                        this._skipOptionalSpaces();
-                    }
-                }
-                return this._currentIndex < this._endIndex;
-            };
-            Source.prototype.hasMoreData = function () {
-                return this._currentIndex < this._endIndex;
-            };
-            Source.prototype.peekSegmentType = function () {
-                var lookahead = this._string[this._currentIndex];
-                return this._pathSegTypeFromChar(lookahead);
-            };
-            Source.prototype._pathSegTypeFromChar = function (lookahead) {
-                switch (lookahead) {
-                    case "Z":
-                    case "z":
-                        return window.SVGPathSeg.PATHSEG_CLOSEPATH;
-                    case "M":
-                        return window.SVGPathSeg.PATHSEG_MOVETO_ABS;
-                    case "m":
-                        return window.SVGPathSeg.PATHSEG_MOVETO_REL;
-                    case "L":
-                        return window.SVGPathSeg.PATHSEG_LINETO_ABS;
-                    case "l":
-                        return window.SVGPathSeg.PATHSEG_LINETO_REL;
-                    case "C":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS;
-                    case "c":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL;
-                    case "Q":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS;
-                    case "q":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL;
-                    case "A":
-                        return window.SVGPathSeg.PATHSEG_ARC_ABS;
-                    case "a":
-                        return window.SVGPathSeg.PATHSEG_ARC_REL;
-                    case "H":
-                        return window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS;
-                    case "h":
-                        return window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL;
-                    case "V":
-                        return window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS;
-                    case "v":
-                        return window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL;
-                    case "S":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS;
-                    case "s":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL;
-                    case "T":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS;
-                    case "t":
-                        return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL;
-                    default:
-                        return window.SVGPathSeg.PATHSEG_UNKNOWN;
-                }
-            };
-            Source.prototype._nextCommandHelper = function (lookahead, previousCommand) {
-                if ((lookahead == "+" || lookahead == "-" || lookahead == "." || lookahead >= "0" && lookahead <= "9") && previousCommand != window.SVGPathSeg.PATHSEG_CLOSEPATH) {
-                    if (previousCommand == window.SVGPathSeg.PATHSEG_MOVETO_ABS) return window.SVGPathSeg.PATHSEG_LINETO_ABS;
-                    if (previousCommand == window.SVGPathSeg.PATHSEG_MOVETO_REL) return window.SVGPathSeg.PATHSEG_LINETO_REL;
-                    return previousCommand;
-                }
-                return window.SVGPathSeg.PATHSEG_UNKNOWN;
-            };
-            Source.prototype.initialCommandIsMoveTo = function () {
-                if (!this.hasMoreData()) return true;
-                var command = this.peekSegmentType();
-                return command == window.SVGPathSeg.PATHSEG_MOVETO_ABS || command == window.SVGPathSeg.PATHSEG_MOVETO_REL;
-            };
-            Source.prototype._parseNumber = function () {
-                var exponent = 0;
-                var integer = 0;
-                var frac = 1;
-                var decimal = 0;
-                var sign = 1;
-                var expsign = 1;
-                var startIndex = this._currentIndex;
-                this._skipOptionalSpaces();
-                if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "+") this._currentIndex++;else if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "-") {
-                    this._currentIndex++;
-                    sign = -1;
-                }
-                if (this._currentIndex == this._endIndex || (this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") && this._string.charAt(this._currentIndex) != ".")
-                    return undefined;
-                var startIntPartIndex = this._currentIndex;
-                while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
-                    this._currentIndex++;
-                }
-                if (this._currentIndex != startIntPartIndex) {
-                    var scanIntPartIndex = this._currentIndex - 1;
-                    var multiplier = 1;
-                    while (scanIntPartIndex >= startIntPartIndex) {
-                        integer += multiplier * (this._string.charAt(scanIntPartIndex--) - "0");
-                        multiplier *= 10;
-                    }
-                }
-                if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ".") {
-                    this._currentIndex++;
-                    if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") return undefined;
-                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
-                        frac *= 10;
-                        decimal += (this._string.charAt(this._currentIndex) - "0") / frac;
-                        this._currentIndex += 1;
-                    }
-                }
-                if (this._currentIndex != startIndex && this._currentIndex + 1 < this._endIndex && (this._string.charAt(this._currentIndex) == "e" || this._string.charAt(this._currentIndex) == "E") && this._string.charAt(this._currentIndex + 1) != "x" && this._string.charAt(this._currentIndex + 1) != "m") {
-                    this._currentIndex++;
-                    if (this._string.charAt(this._currentIndex) == "+") {
-                        this._currentIndex++;
-                    } else if (this._string.charAt(this._currentIndex) == "-") {
-                        this._currentIndex++;
-                        expsign = -1;
-                    }
-                    if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") return undefined;
-                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
-                        exponent *= 10;
-                        exponent += this._string.charAt(this._currentIndex) - "0";
-                        this._currentIndex++;
-                    }
-                }
-                var number = integer + decimal;
-                number *= sign;
-                if (exponent) number *= Math.pow(10, expsign * exponent);
-                if (startIndex == this._currentIndex) return undefined;
-                this._skipOptionalSpacesOrDelimiter();
-                return number;
-            };
-            Source.prototype._parseArcFlag = function () {
-                if (this._currentIndex >= this._endIndex) return undefined;
-                var flag = false;
-                var flagChar = this._string.charAt(this._currentIndex++);
-                if (flagChar == "0") flag = false;else if (flagChar == "1") flag = true;else return undefined;
-                this._skipOptionalSpacesOrDelimiter();
-                return flag;
-            };
-            Source.prototype.parseSegment = function () {
-                var lookahead = this._string[this._currentIndex];
-                var command = this._pathSegTypeFromChar(lookahead);
-                if (command == window.SVGPathSeg.PATHSEG_UNKNOWN) {
-                    if (this._previousCommand == window.SVGPathSeg.PATHSEG_UNKNOWN) return null;
-                    command = this._nextCommandHelper(lookahead, this._previousCommand);
-                    if (command == window.SVGPathSeg.PATHSEG_UNKNOWN) return null;
-                } else {
-                    this._currentIndex++;
-                }
-                this._previousCommand = command;
-                switch (command) {
-                    case window.SVGPathSeg.PATHSEG_MOVETO_REL:
-                        return new window.SVGPathSegMovetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_MOVETO_ABS:
-                        return new window.SVGPathSegMovetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_LINETO_REL:
-                        return new window.SVGPathSegLinetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_LINETO_ABS:
-                        return new window.SVGPathSegLinetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL:
-                        return new window.SVGPathSegLinetoHorizontalRel(owningPathSegList, this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS:
-                        return new window.SVGPathSegLinetoHorizontalAbs(owningPathSegList, this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL:
-                        return new window.SVGPathSegLinetoVerticalRel(owningPathSegList, this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS:
-                        return new window.SVGPathSegLinetoVerticalAbs(owningPathSegList, this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_CLOSEPATH:
-                        this._skipOptionalSpaces();
-                        return new window.SVGPathSegClosePath(owningPathSegList);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL:
-                        var points = { x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegCurvetoCubicRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS:
-                        var points = { x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegCurvetoCubicAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL:
-                        var points = { x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegCurvetoCubicSmoothRel(owningPathSegList, points.x, points.y, points.x2, points.y2);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS:
-                        var points = { x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegCurvetoCubicSmoothAbs(owningPathSegList, points.x, points.y, points.x2, points.y2);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL:
-                        var points = { x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegCurvetoQuadraticRel(owningPathSegList, points.x, points.y, points.x1, points.y1);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS:
-                        var points = { x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegCurvetoQuadraticAbs(owningPathSegList, points.x, points.y, points.x1, points.y1);
-                    case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL:
-                        return new window.SVGPathSegCurvetoQuadraticSmoothRel(owningPathSegList, this._parseNumber(), this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS:
-                        return new window.SVGPathSegCurvetoQuadraticSmoothAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
-                    case window.SVGPathSeg.PATHSEG_ARC_REL:
-                        var points = { x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegArcRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
-                    case window.SVGPathSeg.PATHSEG_ARC_ABS:
-                        var points = { x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber() };
-                        return new window.SVGPathSegArcAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
-                    default:
-                        throw "Unknown path seg type.";
-                }
-            };
-            var builder = new Builder();
-            var source = new Source(string);
-            if (!source.initialCommandIsMoveTo()) return [];
-            while (source.hasMoreData()) {
-                var pathSeg = source.parseSegment();
-                if (!pathSeg) return [];
-                builder.appendSegment(pathSeg);
-            }
-            return builder.pathSegList;
+        }
+        return function(name) {
+            var methodName = "on" + name.toLowerCase();
+            var method = util.global[methodName];
+            if (!method) return false;
+            method.apply(util.global, [].slice.call(arguments, 1));
+            return true;
         };
     }
 })();
-/* jshint ignore:end */
-c3_chart_fn.axis = function () {};
-c3_chart_fn.axis.labels = function (labels) {
-    var $$ = this.internal;
-    if (arguments.length) {
-        Object.keys(labels).forEach(function (axisId) {
-            $$.axis.setLabelText(axisId, labels[axisId]);
-        });
-        $$.axis.updateLabels();
+function generatePromiseLifecycleEventObject(name, promise) {
+    return {promise: promise};
+}
+var eventToObjectGenerator = {
+    promiseCreated: generatePromiseLifecycleEventObject,
+    promiseFulfilled: generatePromiseLifecycleEventObject,
+    promiseRejected: generatePromiseLifecycleEventObject,
+    promiseResolved: generatePromiseLifecycleEventObject,
+    promiseCancelled: generatePromiseLifecycleEventObject,
+    promiseChained: function(name, promise, child) {
+        return {promise: promise, child: child};
+    },
+    warning: function(name, warning) {
+        return {warning: warning};
+    },
+    unhandledRejection: function (name, reason, promise) {
+        return {reason: reason, promise: promise};
+    },
+    rejectionHandled: generatePromiseLifecycleEventObject
+};
+var activeFireEvent = function (name) {
+    var globalEventFired = false;
+    try {
+        globalEventFired = fireGlobalEvent.apply(null, arguments);
+    } catch (e) {
+        async.throwLater(e);
+        globalEventFired = true;
+    }
+    var domEventFired = false;
+    try {
+        domEventFired = fireDomEvent(name,
+                    eventToObjectGenerator[name].apply(null, arguments));
+    } catch (e) {
+        async.throwLater(e);
+        domEventFired = true;
+    }
+    return domEventFired || globalEventFired;
+};
+Promise.config = function(opts) {
+    opts = Object(opts);
+    if ("longStackTraces" in opts) {
+        if (opts.longStackTraces) {
+            Promise.longStackTraces();
+        } else if (!opts.longStackTraces && Promise.hasLongStackTraces()) {
+            disableLongStackTraces();
+        }
+    }
+    if ("warnings" in opts) {
+        var warningsOption = opts.warnings;
+        config.warnings = !!warningsOption;
+        wForgottenReturn = config.warnings;
+        if (util.isObject(warningsOption)) {
+            if ("wForgottenReturn" in warningsOption) {
+                wForgottenReturn = !!warningsOption.wForgottenReturn;
+            }
+        }
+    }
+    if ("cancellation" in opts && opts.cancellation && !config.cancellation) {
+        if (async.haveItemsQueued()) {
+            throw new Error(
+                "cannot enable cancellation after promises are in use");
+        }
+        Promise.prototype._clearCancellationData =
+            cancellationClearCancellationData;
+        Promise.prototype._propagateFrom = cancellationPropagateFrom;
+        Promise.prototype._onCancel = cancellationOnCancel;
+        Promise.prototype._setOnCancel = cancellationSetOnCancel;
+        Promise.prototype._attachCancellationCallback =
+            cancellationAttachCancellationCallback;
+        Promise.prototype._execute = cancellationExecute;
+        propagateFromFunction = cancellationPropagateFrom;
+        config.cancellation = true;
+    }
+    if ("monitoring" in opts) {
+        if (opts.monitoring && !config.monitoring) {
+            config.monitoring = true;
+            Promise.prototype._fireEvent = activeFireEvent;
+        } else if (!opts.monitoring && config.monitoring) {
+            config.monitoring = false;
+            Promise.prototype._fireEvent = defaultFireEvent;
+        }
+    }
+    return Promise;
+};
+function defaultFireEvent() { return false; }
+Promise.prototype._fireEvent = defaultFireEvent;
+Promise.prototype._execute = function(executor, resolve, reject) {
+    try {
+        executor(resolve, reject);
+    } catch (e) {
+        return e;
     }
 };
-c3_chart_fn.axis.max = function (max) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (arguments.length) {
-        if ((typeof max === 'undefined' ? 'undefined' : _typeof(max)) === 'object') {
-            if (isValue(max.x)) {
-                config.axis_x_max = max.x;
+Promise.prototype._onCancel = function () {};
+Promise.prototype._setOnCancel = function (handler) { ; };
+Promise.prototype._attachCancellationCallback = function(onCancel) {
+    ;
+};
+Promise.prototype._captureStackTrace = function () {};
+Promise.prototype._attachExtraTrace = function () {};
+Promise.prototype._clearCancellationData = function() {};
+Promise.prototype._propagateFrom = function (parent, flags) {
+    ;
+    ;
+};
+function cancellationExecute(executor, resolve, reject) {
+    var promise = this;
+    try {
+        executor(resolve, reject, function(onCancel) {
+            if (typeof onCancel !== "function") {
+                throw new TypeError("onCancel must be a function, got: " +
+                                    util.toString(onCancel));
             }
-            if (isValue(max.y)) {
-                config.axis_y_max = max.y;
-            }
-            if (isValue(max.y2)) {
-                config.axis_y2_max = max.y2;
-            }
+            promise._attachCancellationCallback(onCancel);
+        });
+    } catch (e) {
+        return e;
+    }
+}
+function cancellationAttachCancellationCallback(onCancel) {
+    if (!this._isCancellable()) return this;
+    var previousOnCancel = this._onCancel();
+    if (previousOnCancel !== undefined) {
+        if (util.isArray(previousOnCancel)) {
+            previousOnCancel.push(onCancel);
         } else {
-            config.axis_y_max = config.axis_y2_max = max;
-        }
-        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
-    } else {
-        return {
-            x: config.axis_x_max,
-            y: config.axis_y_max,
-            y2: config.axis_y2_max
-        };
-    }
-};
-c3_chart_fn.axis.min = function (min) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (arguments.length) {
-        if ((typeof min === 'undefined' ? 'undefined' : _typeof(min)) === 'object') {
-            if (isValue(min.x)) {
-                config.axis_x_min = min.x;
-            }
-            if (isValue(min.y)) {
-                config.axis_y_min = min.y;
-            }
-            if (isValue(min.y2)) {
-                config.axis_y2_min = min.y2;
-            }
-        } else {
-            config.axis_y_min = config.axis_y2_min = min;
-        }
-        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
-    } else {
-        return {
-            x: config.axis_x_min,
-            y: config.axis_y_min,
-            y2: config.axis_y2_min
-        };
-    }
-};
-c3_chart_fn.axis.range = function (range) {
-    if (arguments.length) {
-        if (isDefined(range.max)) {
-            this.axis.max(range.max);
-        }
-        if (isDefined(range.min)) {
-            this.axis.min(range.min);
+            this._setOnCancel([previousOnCancel, onCancel]);
         }
     } else {
-        return {
-            max: this.axis.max(),
-            min: this.axis.min()
-        };
+        this._setOnCancel(onCancel);
     }
-};
-c3_chart_fn.category = function (i, category) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (arguments.length > 1) {
-        config.axis_x_categories[i] = category;
-        $$.redraw();
-    }
-    return config.axis_x_categories[i];
-};
-c3_chart_fn.categories = function (categories) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (!arguments.length) {
-        return config.axis_x_categories;
-    }
-    config.axis_x_categories = categories;
-    $$.redraw();
-    return config.axis_x_categories;
-};
-c3_chart_fn.resize = function (size) {
-    var $$ = this.internal,
-        config = $$.config;
-    config.size_width = size ? size.width : null;
-    config.size_height = size ? size.height : null;
-    this.flush();
-};
-c3_chart_fn.flush = function () {
-    var $$ = this.internal;
-    $$.updateAndRedraw({ withLegend: true, withTransition: false, withTransitionForTransform: false });
-};
-c3_chart_fn.destroy = function () {
-    var $$ = this.internal;
-    window.clearInterval($$.intervalForObserveInserted);
-    if ($$.resizeTimeout !== undefined) {
-        window.clearTimeout($$.resizeTimeout);
-    }
-    if (window.detachEvent) {
-        window.detachEvent('onresize', $$.resizeFunction);
-    } else if (window.removeEventListener) {
-        window.removeEventListener('resize', $$.resizeFunction);
-    } else {
-        var wrapper = window.onresize;
-        if (wrapper && wrapper.add && wrapper.remove) {
-            wrapper.remove($$.resizeFunction);
+}
+function cancellationOnCancel() {
+    return this._onCancelField;
+}
+function cancellationSetOnCancel(onCancel) {
+    this._onCancelField = onCancel;
+}
+function cancellationClearCancellationData() {
+    this._cancellationParent = undefined;
+    this._onCancelField = undefined;
+}
+function cancellationPropagateFrom(parent, flags) {
+    if ((flags & 1) !== 0) {
+        this._cancellationParent = parent;
+        var branchesRemainingToCancel = parent._branchesRemainingToCancel;
+        if (branchesRemainingToCancel === undefined) {
+            branchesRemainingToCancel = 0;
         }
+        parent._branchesRemainingToCancel = branchesRemainingToCancel + 1;
     }
-    $$.selectChart.classed('c3', false).html("");
-    Object.keys($$).forEach(function (key) {
-        $$[key] = null;
-    });
-    return null;
-};
-c3_chart_fn.color = function (id) {
-    var $$ = this.internal;
-    return $$.color(id);
-};
-c3_chart_fn.data = function (targetIds) {
-    var targets = this.internal.data.targets;
-    return typeof targetIds === 'undefined' ? targets : targets.filter(function (t) {
-        return [].concat(targetIds).indexOf(t.id) >= 0;
-    });
-};
-c3_chart_fn.data.shown = function (targetIds) {
-    return this.internal.filterTargetsToShow(this.data(targetIds));
-};
-c3_chart_fn.data.values = function (targetId) {
-    var targets,
-        values = null;
-    if (targetId) {
-        targets = this.data(targetId);
-        values = targets[0] ? targets[0].values.map(function (d) {
-            return d.value;
-        }) : null;
+    if ((flags & 2) !== 0 && parent._isBound()) {
+        this._setBoundTo(parent._boundTo);
     }
-    return values;
-};
-c3_chart_fn.data.names = function (names) {
-    this.internal.clearLegendItemTextBoxCache();
-    return this.internal.updateDataAttributes('names', names);
-};
-c3_chart_fn.data.colors = function (colors) {
-    return this.internal.updateDataAttributes('colors', colors);
-};
-c3_chart_fn.data.axes = function (axes) {
-    return this.internal.updateDataAttributes('axes', axes);
-};
-c3_chart_fn.flow = function (args) {
-    var $$ = this.internal,
-        targets,
-        data,
-        notfoundIds = [],
-        orgDataCount = $$.getMaxDataCount(),
-        dataCount,
-        domain,
-        baseTarget,
-        baseValue,
-        length = 0,
-        tail = 0,
-        diff,
-        to;
-    if (args.json) {
-        data = $$.convertJsonToData(args.json, args.keys);
-    } else if (args.rows) {
-        data = $$.convertRowsToData(args.rows);
-    } else if (args.columns) {
-        data = $$.convertColumnsToData(args.columns);
-    } else {
-        return;
+}
+function bindingPropagateFrom(parent, flags) {
+    if ((flags & 2) !== 0 && parent._isBound()) {
+        this._setBoundTo(parent._boundTo);
     }
-    targets = $$.convertDataToTargets(data, true);
-    $$.data.targets.forEach(function (t) {
-        var found = false,
-            i,
-            j;
-        for (i = 0; i < targets.length; i++) {
-            if (t.id === targets[i].id) {
-                found = true;
-                if (t.values[t.values.length - 1]) {
-                    tail = t.values[t.values.length - 1].index + 1;
-                }
-                length = targets[i].values.length;
-                for (j = 0; j < length; j++) {
-                    targets[i].values[j].index = tail + j;
-                    if (!$$.isTimeSeries()) {
-                        targets[i].values[j].x = tail + j;
-                    }
-                }
-                t.values = t.values.concat(targets[i].values);
-                targets.splice(i, 1);
-                break;
-            }
-        }
-        if (!found) {
-            notfoundIds.push(t.id);
-        }
-    });
-    $$.data.targets.forEach(function (t) {
-        var i, j;
-        for (i = 0; i < notfoundIds.length; i++) {
-            if (t.id === notfoundIds[i]) {
-                tail = t.values[t.values.length - 1].index + 1;
-                for (j = 0; j < length; j++) {
-                    t.values.push({
-                        id: t.id,
-                        index: tail + j,
-                        x: $$.isTimeSeries() ? $$.getOtherTargetX(tail + j) : tail + j,
-                        value: null
-                    });
-                }
-            }
-        }
-    });
-    if ($$.data.targets.length) {
-        targets.forEach(function (t) {
-            var i,
-                missing = [];
-            for (i = $$.data.targets[0].values[0].index; i < tail; i++) {
-                missing.push({
-                    id: t.id,
-                    index: i,
-                    x: $$.isTimeSeries() ? $$.getOtherTargetX(i) : i,
-                    value: null
-                });
-            }
-            t.values.forEach(function (v) {
-                v.index += tail;
-                if (!$$.isTimeSeries()) {
-                    v.x += tail;
-                }
-            });
-            t.values = missing.concat(t.values);
-        });
-    }
-    $$.data.targets = $$.data.targets.concat(targets);
-    dataCount = $$.getMaxDataCount();
-    baseTarget = $$.data.targets[0];
-    baseValue = baseTarget.values[0];
-    if (isDefined(args.to)) {
-        length = 0;
-        to = $$.isTimeSeries() ? $$.parseDate(args.to) : args.to;
-        baseTarget.values.forEach(function (v) {
-            if (v.x < to) {
-                length++;
-            }
-        });
-    } else if (isDefined(args.length)) {
-        length = args.length;
-    }
-    if (!orgDataCount) {
-        if ($$.isTimeSeries()) {
-            if (baseTarget.values.length > 1) {
-                diff = baseTarget.values[baseTarget.values.length - 1].x - baseValue.x;
+}
+var propagateFromFunction = bindingPropagateFrom;
+function boundValueFunction() {
+    var ret = this._boundTo;
+    if (ret !== undefined) {
+        if (ret instanceof Promise) {
+            if (ret.isFulfilled()) {
+                return ret.value();
             } else {
-                diff = baseValue.x - $$.getXDomain($$.data.targets)[0];
-            }
-        } else {
-            diff = 1;
-        }
-        domain = [baseValue.x - diff, baseValue.x];
-        $$.updateXDomain(null, true, true, false, domain);
-    } else if (orgDataCount === 1) {
-        if ($$.isTimeSeries()) {
-            diff = (baseTarget.values[baseTarget.values.length - 1].x - baseValue.x) / 2;
-            domain = [new Date(+baseValue.x - diff), new Date(+baseValue.x + diff)];
-            $$.updateXDomain(null, true, true, false, domain);
-        }
-    }
-    $$.updateTargets($$.data.targets);
-    $$.redraw({
-        flow: {
-            index: baseValue.index,
-            length: length,
-            duration: isValue(args.duration) ? args.duration : $$.config.transition_duration,
-            done: args.done,
-            orgDataCount: orgDataCount
-        },
-        withLegend: true,
-        withTransition: orgDataCount > 1,
-        withTrimXDomain: false,
-        withUpdateXAxis: true
-    });
-};
-c3_chart_internal_fn.generateFlow = function (args) {
-    var $$ = this,
-        config = $$.config,
-        d3 = $$.d3;
-    return function () {
-        var targets = args.targets,
-            flow = args.flow,
-            drawBar = args.drawBar,
-            drawLine = args.drawLine,
-            drawArea = args.drawArea,
-            cx = args.cx,
-            cy = args.cy,
-            xv = args.xv,
-            xForText = args.xForText,
-            yForText = args.yForText,
-            duration = args.duration;
-        var translateX,
-            scaleX = 1,
-            transform,
-            flowIndex = flow.index,
-            flowLength = flow.length,
-            flowStart = $$.getValueOnIndex($$.data.targets[0].values, flowIndex),
-            flowEnd = $$.getValueOnIndex($$.data.targets[0].values, flowIndex + flowLength),
-            orgDomain = $$.x.domain(),
-            domain,
-            durationForFlow = flow.duration || duration,
-            done = flow.done || function () {},
-            wait = $$.generateWait();
-        var xgrid = $$.xgrid || d3.selectAll([]),
-            xgridLines = $$.xgridLines || d3.selectAll([]),
-            mainRegion = $$.mainRegion || d3.selectAll([]),
-            mainText = $$.mainText || d3.selectAll([]),
-            mainBar = $$.mainBar || d3.selectAll([]),
-            mainLine = $$.mainLine || d3.selectAll([]),
-            mainArea = $$.mainArea || d3.selectAll([]),
-            mainCircle = $$.mainCircle || d3.selectAll([]);
-        $$.flowing = true;
-        $$.data.targets.forEach(function (d) {
-            d.values.splice(0, flowLength);
-        });
-        domain = $$.updateXDomain(targets, true, true);
-        if ($$.updateXGrid) {
-            $$.updateXGrid(true);
-        }
-        if (!flow.orgDataCount) {
-            if ($$.data.targets[0].values.length !== 1) {
-                translateX = $$.x(orgDomain[0]) - $$.x(domain[0]);
-            } else {
-                if ($$.isTimeSeries()) {
-                    flowStart = $$.getValueOnIndex($$.data.targets[0].values, 0);
-                    flowEnd = $$.getValueOnIndex($$.data.targets[0].values, $$.data.targets[0].values.length - 1);
-                    translateX = $$.x(flowStart.x) - $$.x(flowEnd.x);
-                } else {
-                    translateX = diffDomain(domain) / 2;
-                }
-            }
-        } else if (flow.orgDataCount === 1 || (flowStart && flowStart.x) === (flowEnd && flowEnd.x)) {
-            translateX = $$.x(orgDomain[0]) - $$.x(domain[0]);
-        } else {
-            if ($$.isTimeSeries()) {
-                translateX = $$.x(orgDomain[0]) - $$.x(domain[0]);
-            } else {
-                translateX = $$.x(flowStart.x) - $$.x(flowEnd.x);
+                return undefined;
             }
         }
-        scaleX = diffDomain(orgDomain) / diffDomain(domain);
-        transform = 'translate(' + translateX + ',0) scale(' + scaleX + ',1)';
-        $$.hideXGridFocus();
-        d3.transition().ease('linear').duration(durationForFlow).each(function () {
-            wait.add($$.axes.x.transition().call($$.xAxis));
-            wait.add(mainBar.transition().attr('transform', transform));
-            wait.add(mainLine.transition().attr('transform', transform));
-            wait.add(mainArea.transition().attr('transform', transform));
-            wait.add(mainCircle.transition().attr('transform', transform));
-            wait.add(mainText.transition().attr('transform', transform));
-            wait.add(mainRegion.filter($$.isRegionOnX).transition().attr('transform', transform));
-            wait.add(xgrid.transition().attr('transform', transform));
-            wait.add(xgridLines.transition().attr('transform', transform));
-        }).call(wait, function () {
-            var i,
-                shapes = [],
-                texts = [],
-                eventRects = [];
-            if (flowLength) {
-                for (i = 0; i < flowLength; i++) {
-                    shapes.push('.' + CLASS.shape + '-' + (flowIndex + i));
-                    texts.push('.' + CLASS.text + '-' + (flowIndex + i));
-                    eventRects.push('.' + CLASS.eventRect + '-' + (flowIndex + i));
-                }
-                $$.svg.selectAll('.' + CLASS.shapes).selectAll(shapes).remove();
-                $$.svg.selectAll('.' + CLASS.texts).selectAll(texts).remove();
-                $$.svg.selectAll('.' + CLASS.eventRects).selectAll(eventRects).remove();
-                $$.svg.select('.' + CLASS.xgrid).remove();
-            }
-            xgrid.attr('transform', null).attr($$.xgridAttr);
-            xgridLines.attr('transform', null);
-            xgridLines.select('line').attr("x1", config.axis_rotated ? 0 : xv).attr("x2", config.axis_rotated ? $$.width : xv);
-            xgridLines.select('text').attr("x", config.axis_rotated ? $$.width : 0).attr("y", xv);
-            mainBar.attr('transform', null).attr("d", drawBar);
-            mainLine.attr('transform', null).attr("d", drawLine);
-            mainArea.attr('transform', null).attr("d", drawArea);
-            mainCircle.attr('transform', null).attr("cx", cx).attr("cy", cy);
-            mainText.attr('transform', null).attr('x', xForText).attr('y', yForText).style('fill-opacity', $$.opacityForText.bind($$));
-            mainRegion.attr('transform', null);
-            mainRegion.select('rect').filter($$.isRegionOnX).attr("x", $$.regionX.bind($$)).attr("width", $$.regionWidth.bind($$));
-            if (config.interaction_enabled) {
-                $$.redrawEventRect();
-            }
-            done();
-            $$.flowing = false;
-        });
-    };
-};
-c3_chart_fn.focus = function (targetIds) {
-    var $$ = this.internal,
-        candidates;
-    targetIds = $$.mapToTargetIds(targetIds);
-    candidates = $$.svg.selectAll($$.selectorTargets(targetIds.filter($$.isTargetToShow, $$))), this.revert();
-    this.defocus();
-    candidates.classed(CLASS.focused, true).classed(CLASS.defocused, false);
-    if ($$.hasArcType()) {
-        $$.expandArc(targetIds);
     }
-    $$.toggleFocusLegend(targetIds, true);
-    $$.focusedTargetIds = targetIds;
-    $$.defocusedTargetIds = $$.defocusedTargetIds.filter(function (id) {
-        return targetIds.indexOf(id) < 0;
-    });
-};
-c3_chart_fn.defocus = function (targetIds) {
-    var $$ = this.internal,
-        candidates;
-    targetIds = $$.mapToTargetIds(targetIds);
-    candidates = $$.svg.selectAll($$.selectorTargets(targetIds.filter($$.isTargetToShow, $$))), candidates.classed(CLASS.focused, false).classed(CLASS.defocused, true);
-    if ($$.hasArcType()) {
-        $$.unexpandArc(targetIds);
-    }
-    $$.toggleFocusLegend(targetIds, false);
-    $$.focusedTargetIds = $$.focusedTargetIds.filter(function (id) {
-        return targetIds.indexOf(id) < 0;
-    });
-    $$.defocusedTargetIds = targetIds;
-};
-c3_chart_fn.revert = function (targetIds) {
-    var $$ = this.internal,
-        candidates;
-    targetIds = $$.mapToTargetIds(targetIds);
-    candidates = $$.svg.selectAll($$.selectorTargets(targetIds));
-    candidates.classed(CLASS.focused, false).classed(CLASS.defocused, false);
-    if ($$.hasArcType()) {
-        $$.unexpandArc(targetIds);
-    }
-    if ($$.config.legend_show) {
-        $$.showLegend(targetIds.filter($$.isLegendToShow.bind($$)));
-        $$.legend.selectAll($$.selectorLegends(targetIds)).filter(function () {
-            return $$.d3.select(this).classed(CLASS.legendItemFocused);
-        }).classed(CLASS.legendItemFocused, false);
-    }
-    $$.focusedTargetIds = [];
-    $$.defocusedTargetIds = [];
-};
-c3_chart_fn.xgrids = function (grids) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (!grids) {
-        return config.grid_x_lines;
-    }
-    config.grid_x_lines = grids;
-    $$.redrawWithoutRescale();
-    return config.grid_x_lines;
-};
-c3_chart_fn.xgrids.add = function (grids) {
-    var $$ = this.internal;
-    return this.xgrids($$.config.grid_x_lines.concat(grids ? grids : []));
-};
-c3_chart_fn.xgrids.remove = function (params) {
-    var $$ = this.internal;
-    $$.removeGridLines(params, true);
-};
-c3_chart_fn.ygrids = function (grids) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (!grids) {
-        return config.grid_y_lines;
-    }
-    config.grid_y_lines = grids;
-    $$.redrawWithoutRescale();
-    return config.grid_y_lines;
-};
-c3_chart_fn.ygrids.add = function (grids) {
-    var $$ = this.internal;
-    return this.ygrids($$.config.grid_y_lines.concat(grids ? grids : []));
-};
-c3_chart_fn.ygrids.remove = function (params) {
-    var $$ = this.internal;
-    $$.removeGridLines(params, false);
-};
-c3_chart_fn.groups = function (groups) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (isUndefined(groups)) {
-        return config.data_groups;
-    }
-    config.data_groups = groups;
-    $$.redraw();
-    return config.data_groups;
-};
-c3_chart_fn.legend = function () {};
-c3_chart_fn.legend.show = function (targetIds) {
-    var $$ = this.internal;
-    $$.showLegend($$.mapToTargetIds(targetIds));
-    $$.updateAndRedraw({ withLegend: true });
-};
-c3_chart_fn.legend.hide = function (targetIds) {
-    var $$ = this.internal;
-    $$.hideLegend($$.mapToTargetIds(targetIds));
-    $$.updateAndRedraw({ withLegend: true });
-};
-c3_chart_fn.load = function (args) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (args.xs) {
-        $$.addXs(args.xs);
-    }
-    if ('names' in args) {
-        c3_chart_fn.data.names.bind(this)(args.names);
-    }
-    if ('classes' in args) {
-        Object.keys(args.classes).forEach(function (id) {
-            config.data_classes[id] = args.classes[id];
-        });
-    }
-    if ('categories' in args && $$.isCategorized()) {
-        config.axis_x_categories = args.categories;
-    }
-    if ('axes' in args) {
-        Object.keys(args.axes).forEach(function (id) {
-            config.data_axes[id] = args.axes[id];
-        });
-    }
-    if ('colors' in args) {
-        Object.keys(args.colors).forEach(function (id) {
-            config.data_colors[id] = args.colors[id];
-        });
-    }
-    if ('cacheIds' in args && $$.hasCaches(args.cacheIds)) {
-        $$.load($$.getCaches(args.cacheIds), args.done);
-        return;
-    }
-    if ('unload' in args) {
-        $$.unload($$.mapToTargetIds(typeof args.unload === 'boolean' && args.unload ? null : args.unload), function () {
-            $$.loadFromArgs(args);
-        });
-    } else {
-        $$.loadFromArgs(args);
-    }
-};
-c3_chart_fn.unload = function (args) {
-    var $$ = this.internal;
-    args = args || {};
-    if (args instanceof Array) {
-        args = { ids: args };
-    } else if (typeof args === 'string') {
-        args = { ids: [args] };
-    }
-    $$.unload($$.mapToTargetIds(args.ids), function () {
-        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
-        if (args.done) {
-            args.done();
+    return ret;
+}
+function longStackTracesCaptureStackTrace() {
+    this._trace = new CapturedTrace(this._peekContext());
+}
+function longStackTracesAttachExtraTrace(error, ignoreSelf) {
+    if (canAttachTrace(error)) {
+        var trace = this._trace;
+        if (trace !== undefined) {
+            if (ignoreSelf) trace = trace._parent;
         }
-    });
-};
-c3_chart_fn.regions = function (regions) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (!regions) {
-        return config.regions;
-    }
-    config.regions = regions;
-    $$.redrawWithoutRescale();
-    return config.regions;
-};
-c3_chart_fn.regions.add = function (regions) {
-    var $$ = this.internal,
-        config = $$.config;
-    if (!regions) {
-        return config.regions;
-    }
-    config.regions = config.regions.concat(regions);
-    $$.redrawWithoutRescale();
-    return config.regions;
-};
-c3_chart_fn.regions.remove = function (options) {
-    var $$ = this.internal,
-        config = $$.config,
-        duration,
-        classes,
-        regions;
-    options = options || {};
-    duration = $$.getOption(options, "duration", config.transition_duration);
-    classes = $$.getOption(options, "classes", [CLASS.region]);
-    regions = $$.main.select('.' + CLASS.regions).selectAll(classes.map(function (c) {
-        return '.' + c;
-    }));
-    (duration ? regions.transition().duration(duration) : regions).style('opacity', 0).remove();
-    config.regions = config.regions.filter(function (region) {
-        var found = false;
-        if (!region['class']) {
-            return true;
-        }
-        region['class'].split(' ').forEach(function (c) {
-            if (classes.indexOf(c) >= 0) {
-                found = true;
-            }
-        });
-        return !found;
-    });
-    return config.regions;
-};
-c3_chart_fn.selected = function (targetId) {
-    var $$ = this.internal,
-        d3 = $$.d3;
-    return d3.merge($$.main.selectAll('.' + CLASS.shapes + $$.getTargetSelectorSuffix(targetId)).selectAll('.' + CLASS.shape).filter(function () {
-        return d3.select(this).classed(CLASS.SELECTED);
-    }).map(function (d) {
-        return d.map(function (d) {
-            var data = d.__data__;return data.data ? data.data : data;
-        });
-    }));
-};
-c3_chart_fn.select = function (ids, indices, resetOther) {
-    var $$ = this.internal,
-        d3 = $$.d3,
-        config = $$.config;
-    if (!config.data_selection_enabled) {
-        return;
-    }
-    $$.main.selectAll('.' + CLASS.shapes).selectAll('.' + CLASS.shape).each(function (d, i) {
-        var shape = d3.select(this),
-            id = d.data ? d.data.id : d.id,
-            toggle = $$.getToggle(this, d).bind($$),
-            isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0,
-            isTargetIndex = !indices || indices.indexOf(i) >= 0,
-            isSelected = shape.classed(CLASS.SELECTED);
-        if (shape.classed(CLASS.line) || shape.classed(CLASS.area)) {
-            return;
-        }
-        if (isTargetId && isTargetIndex) {
-            if (config.data_selection_isselectable(d) && !isSelected) {
-                toggle(true, shape.classed(CLASS.SELECTED, true), d, i);
-            }
-        } else if (isDefined(resetOther) && resetOther) {
-            if (isSelected) {
-                toggle(false, shape.classed(CLASS.SELECTED, false), d, i);
-            }
-        }
-    });
-};
-c3_chart_fn.unselect = function (ids, indices) {
-    var $$ = this.internal,
-        d3 = $$.d3,
-        config = $$.config;
-    if (!config.data_selection_enabled) {
-        return;
-    }
-    $$.main.selectAll('.' + CLASS.shapes).selectAll('.' + CLASS.shape).each(function (d, i) {
-        var shape = d3.select(this),
-            id = d.data ? d.data.id : d.id,
-            toggle = $$.getToggle(this, d).bind($$),
-            isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0,
-            isTargetIndex = !indices || indices.indexOf(i) >= 0,
-            isSelected = shape.classed(CLASS.SELECTED);
-        if (shape.classed(CLASS.line) || shape.classed(CLASS.area)) {
-            return;
-        }
-        if (isTargetId && isTargetIndex) {
-            if (config.data_selection_isselectable(d)) {
-                if (isSelected) {
-                    toggle(false, shape.classed(CLASS.SELECTED, false), d, i);
-                }
-            }
-        }
-    });
-};
-c3_chart_fn.show = function (targetIds, options) {
-    var $$ = this.internal,
-        targets;
-    targetIds = $$.mapToTargetIds(targetIds);
-    options = options || {};
-    $$.removeHiddenTargetIds(targetIds);
-    targets = $$.svg.selectAll($$.selectorTargets(targetIds));
-    targets.transition().style('opacity', 1, 'important').call($$.endall, function () {
-        targets.style('opacity', null).style('opacity', 1);
-    });
-    if (options.withLegend) {
-        $$.showLegend(targetIds);
-    }
-    $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
-};
-c3_chart_fn.hide = function (targetIds, options) {
-    var $$ = this.internal,
-        targets;
-    targetIds = $$.mapToTargetIds(targetIds);
-    options = options || {};
-    $$.addHiddenTargetIds(targetIds);
-    targets = $$.svg.selectAll($$.selectorTargets(targetIds));
-    targets.transition().style('opacity', 0, 'important').call($$.endall, function () {
-        targets.style('opacity', null).style('opacity', 0);
-    });
-    if (options.withLegend) {
-        $$.hideLegend(targetIds);
-    }
-    $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
-};
-c3_chart_fn.toggle = function (targetIds, options) {
-    var that = this,
-        $$ = this.internal;
-    $$.mapToTargetIds(targetIds).forEach(function (targetId) {
-        $$.isTargetToShow(targetId) ? that.hide(targetId, options) : that.show(targetId, options);
-    });
-};
-c3_chart_fn.tooltip = function () {};
-c3_chart_fn.tooltip.show = function (args) {
-    var $$ = this.internal,
-        index,
-        mouse;
-    if (args.mouse) {
-        mouse = args.mouse;
-    }
-    if (args.data) {
-        if ($$.isMultipleX()) {
-            mouse = [$$.x(args.data.x), $$.getYScale(args.data.id)(args.data.value)];
-            index = null;
-        } else {
-            index = isValue(args.data.index) ? args.data.index : $$.getIndexByX(args.data.x);
-        }
-    } else if (typeof args.x !== 'undefined') {
-        index = $$.getIndexByX(args.x);
-    } else if (typeof args.index !== 'undefined') {
-        index = args.index;
-    }
-    $$.dispatchEvent('mouseover', index, mouse);
-    $$.dispatchEvent('mousemove', index, mouse);
-    $$.config.tooltip_onshow.call($$, args.data);
-};
-c3_chart_fn.tooltip.hide = function () {
-    this.internal.dispatchEvent('mouseout', 0);
-    this.internal.config.tooltip_onhide.call(this);
-};
-c3_chart_fn.transform = function (type, targetIds) {
-    var $$ = this.internal,
-        options = ['pie', 'donut'].indexOf(type) >= 0 ? { withTransform: true } : null;
-    $$.transformTo(targetIds, type, options);
-};
-c3_chart_internal_fn.transformTo = function (targetIds, type, optionsForRedraw) {
-    var $$ = this,
-        withTransitionForAxis = !$$.hasArcType(),
-        options = optionsForRedraw || { withTransitionForAxis: withTransitionForAxis };
-    options.withTransitionForTransform = false;
-    $$.transiting = false;
-    $$.setTargetType(targetIds, type);
-    $$.updateTargets($$.data.targets);
-    $$.updateAndRedraw(options);
-};
-c3_chart_fn.x = function (x) {
-    var $$ = this.internal;
-    if (arguments.length) {
-        $$.updateTargetX($$.data.targets, x);
-        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
-    }
-    return $$.data.xs;
-};
-c3_chart_fn.xs = function (xs) {
-    var $$ = this.internal;
-    if (arguments.length) {
-        $$.updateTargetXs($$.data.targets, xs);
-        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
-    }
-    return $$.data.xs;
-};
-c3_chart_fn.zoom = function (domain) {
-    var $$ = this.internal;
-    if (domain) {
-        if ($$.isTimeSeries()) {
-            domain = domain.map(function (x) {
-                return $$.parseDate(x);
-            });
-        }
-        $$.brush.extent(domain);
-        $$.redraw({ withUpdateXDomain: true, withY: $$.config.zoom_rescale });
-        $$.config.zoom_onzoom.call(this, $$.x.orgDomain());
-    }
-    return $$.brush.extent();
-};
-c3_chart_fn.zoom.enable = function (enabled) {
-    var $$ = this.internal;
-    $$.config.zoom_enabled = enabled;
-    $$.updateAndRedraw();
-};
-c3_chart_fn.unzoom = function () {
-    var $$ = this.internal;
-    $$.brush.clear().update();
-    $$.redraw({ withUpdateXDomain: true });
-};
-c3_chart_fn.zoom.max = function (max) {
-    var $$ = this.internal,
-        config = $$.config,
-        d3 = $$.d3;
-    if (max === 0 || max) {
-        config.zoom_x_max = d3.max([$$.orgXDomain[1], max]);
-    } else {
-        return config.zoom_x_max;
-    }
-};
-c3_chart_fn.zoom.min = function (min) {
-    var $$ = this.internal,
-        config = $$.config,
-        d3 = $$.d3;
-    if (min === 0 || min) {
-        config.zoom_x_min = d3.min([$$.orgXDomain[0], min]);
-    } else {
-        return config.zoom_x_min;
-    }
-};
-c3_chart_fn.zoom.range = function (range) {
-    if (arguments.length) {
-        if (isDefined(range.max)) {
-            this.domain.max(range.max);
-        }
-        if (isDefined(range.min)) {
-            this.domain.min(range.min);
-        }
-    } else {
-        return {
-            max: this.domain.max(),
-            min: this.domain.min()
-        };
-    }
-};
-c3_chart_internal_fn.initPie = function () {
-    var $$ = this,
-        d3 = $$.d3;
-    $$.pie = d3.layout.pie().value(function (d) {
-        return d.values.reduce(function (a, b) {
-            return a + b.value;
-        }, 0);
-    });
-    $$.pie.sort($$.getOrderFunction() || null);
-};
-c3_chart_internal_fn.updateRadius = function () {
-    var $$ = this,
-        config = $$.config,
-        w = config.gauge_width || config.donut_width;
-    $$.radiusExpanded = Math.min($$.arcWidth, $$.arcHeight) / 2;
-    $$.radius = $$.radiusExpanded * 0.95;
-    $$.innerRadiusRatio = w ? ($$.radius - w) / $$.radius : 0.6;
-    $$.innerRadius = $$.hasType('donut') || $$.hasType('gauge') ? $$.radius * $$.innerRadiusRatio : 0;
-};
-c3_chart_internal_fn.updateArc = function () {
-    var $$ = this;
-    $$.svgArc = $$.getSvgArc();
-    $$.svgArcExpanded = $$.getSvgArcExpanded();
-    $$.svgArcExpandedSub = $$.getSvgArcExpanded(0.98);
-};
-c3_chart_internal_fn.updateAngle = function (d) {
-    var $$ = this,
-        config = $$.config,
-        found = false,
-        index = 0,
-        gMin,
-        gMax,
-        gTic,
-        gValue;
-    if (!config) {
-        return null;
-    }
-    $$.pie($$.filterTargetsToShow($$.data.targets)).forEach(function (t) {
-        if (!found && t.data.id === d.data.id) {
-            found = true;
-            d = t;
-            d.index = index;
-        }
-        index++;
-    });
-    if (isNaN(d.startAngle)) {
-        d.startAngle = 0;
-    }
-    if (isNaN(d.endAngle)) {
-        d.endAngle = d.startAngle;
-    }
-    if ($$.isGaugeType(d.data)) {
-        gMin = config.gauge_min;
-        gMax = config.gauge_max;
-        gTic = Math.PI * (config.gauge_fullCircle ? 2 : 1) / (gMax - gMin);
-        gValue = d.value < gMin ? 0 : d.value < gMax ? d.value - gMin : gMax - gMin;
-        d.startAngle = config.gauge_startingAngle;
-        d.endAngle = d.startAngle + gTic * gValue;
-    }
-    return found ? d : null;
-};
-c3_chart_internal_fn.getSvgArc = function () {
-    var $$ = this,
-        arc = $$.d3.svg.arc().outerRadius($$.radius).innerRadius($$.innerRadius),
-        newArc = function newArc(d, withoutUpdate) {
-        var updated;
-        if (withoutUpdate) {
-            return arc(d);
-        }
-        updated = $$.updateAngle(d);
-        return updated ? arc(updated) : "M 0 0";
-    };
-    newArc.centroid = arc.centroid;
-    return newArc;
-};
-c3_chart_internal_fn.getSvgArcExpanded = function (rate) {
-    var $$ = this,
-        arc = $$.d3.svg.arc().outerRadius($$.radiusExpanded * (rate ? rate : 1)).innerRadius($$.innerRadius);
-    return function (d) {
-        var updated = $$.updateAngle(d);
-        return updated ? arc(updated) : "M 0 0";
-    };
-};
-c3_chart_internal_fn.getArc = function (d, withoutUpdate, force) {
-    return force || this.isArcType(d.data) ? this.svgArc(d, withoutUpdate) : "M 0 0";
-};
-c3_chart_internal_fn.transformForArcLabel = function (d) {
-    var $$ = this,
-        config = $$.config,
-        updated = $$.updateAngle(d),
-        c,
-        x,
-        y,
-        h,
-        ratio,
-        translate = "";
-    if (updated && !$$.hasType('gauge')) {
-        c = this.svgArc.centroid(updated);
-        x = isNaN(c[0]) ? 0 : c[0];
-        y = isNaN(c[1]) ? 0 : c[1];
-        h = Math.sqrt(x * x + y * y);
-        if ($$.hasType('donut') && config.donut_label_ratio) {
-            ratio = isFunction(config.donut_label_ratio) ? config.donut_label_ratio(d, $$.radius, h) : config.donut_label_ratio;
-        } else if ($$.hasType('pie') && config.pie_label_ratio) {
-            ratio = isFunction(config.pie_label_ratio) ? config.pie_label_ratio(d, $$.radius, h) : config.pie_label_ratio;
-        } else {
-            ratio = $$.radius && h ? (36 / $$.radius > 0.375 ? 1.175 - 36 / $$.radius : 0.8) * $$.radius / h : 0;
-        }
-        translate = "translate(" + x * ratio + ',' + y * ratio + ")";
-    }
-    return translate;
-};
-c3_chart_internal_fn.getArcRatio = function (d) {
-    var $$ = this,
-        config = $$.config,
-        whole = Math.PI * ($$.hasType('gauge') && !config.gauge_fullCircle ? 1 : 2);
-    return d ? (d.endAngle - d.startAngle) / whole : null;
-};
-c3_chart_internal_fn.convertToArcData = function (d) {
-    return this.addName({
-        id: d.data.id,
-        value: d.value,
-        ratio: this.getArcRatio(d),
-        index: d.index
-    });
-};
-c3_chart_internal_fn.textForArcLabel = function (d) {
-    var $$ = this,
-        updated,
-        value,
-        ratio,
-        id,
-        format;
-    if (!$$.shouldShowArcLabel()) {
-        return "";
-    }
-    updated = $$.updateAngle(d);
-    value = updated ? updated.value : null;
-    ratio = $$.getArcRatio(updated);
-    id = d.data.id;
-    if (!$$.hasType('gauge') && !$$.meetsArcLabelThreshold(ratio)) {
-        return "";
-    }
-    format = $$.getArcLabelFormat();
-    return format ? format(value, ratio, id) : $$.defaultArcValueFormat(value, ratio);
-};
-c3_chart_internal_fn.textForGaugeMinMax = function (value, isMax) {
-    var $$ = this,
-        format = $$.getGaugeLabelExtents();
-    return format ? format(value, isMax) : value;
-};
-c3_chart_internal_fn.expandArc = function (targetIds) {
-    var $$ = this,
-        interval;
-    if ($$.transiting) {
-        interval = window.setInterval(function () {
-            if (!$$.transiting) {
-                window.clearInterval(interval);
-                if ($$.legend.selectAll('.c3-legend-item-focused').size() > 0) {
-                    $$.expandArc(targetIds);
-                }
-            }
-        }, 10);
-        return;
-    }
-    targetIds = $$.mapToTargetIds(targetIds);
-    $$.svg.selectAll($$.selectorTargets(targetIds, '.' + CLASS.chartArc)).each(function (d) {
-        if (!$$.shouldExpand(d.data.id)) {
-            return;
-        }
-        $$.d3.select(this).selectAll('path').transition().duration($$.expandDuration(d.data.id)).attr("d", $$.svgArcExpanded).transition().duration($$.expandDuration(d.data.id) * 2).attr("d", $$.svgArcExpandedSub).each(function (d) {
-            if ($$.isDonutType(d.data)) {
-            }
-        });
-    });
-};
-c3_chart_internal_fn.unexpandArc = function (targetIds) {
-    var $$ = this;
-    if ($$.transiting) {
-        return;
-    }
-    targetIds = $$.mapToTargetIds(targetIds);
-    $$.svg.selectAll($$.selectorTargets(targetIds, '.' + CLASS.chartArc)).selectAll('path').transition().duration(function (d) {
-        return $$.expandDuration(d.data.id);
-    }).attr("d", $$.svgArc);
-    $$.svg.selectAll('.' + CLASS.arc);
-};
-c3_chart_internal_fn.expandDuration = function (id) {
-    var $$ = this,
-        config = $$.config;
-    if ($$.isDonutType(id)) {
-        return config.donut_expand_duration;
-    } else if ($$.isGaugeType(id)) {
-        return config.gauge_expand_duration;
-    } else if ($$.isPieType(id)) {
-        return config.pie_expand_duration;
-    } else {
-        return 50;
-    }
-};
-c3_chart_internal_fn.shouldExpand = function (id) {
-    var $$ = this,
-        config = $$.config;
-    return $$.isDonutType(id) && config.donut_expand || $$.isGaugeType(id) && config.gauge_expand || $$.isPieType(id) && config.pie_expand;
-};
-c3_chart_internal_fn.shouldShowArcLabel = function () {
-    var $$ = this,
-        config = $$.config,
-        shouldShow = true;
-    if ($$.hasType('donut')) {
-        shouldShow = config.donut_label_show;
-    } else if ($$.hasType('pie')) {
-        shouldShow = config.pie_label_show;
-    }
-    return shouldShow;
-};
-c3_chart_internal_fn.meetsArcLabelThreshold = function (ratio) {
-    var $$ = this,
-        config = $$.config,
-        threshold = $$.hasType('donut') ? config.donut_label_threshold : config.pie_label_threshold;
-    return ratio >= threshold;
-};
-c3_chart_internal_fn.getArcLabelFormat = function () {
-    var $$ = this,
-        config = $$.config,
-        format = config.pie_label_format;
-    if ($$.hasType('gauge')) {
-        format = config.gauge_label_format;
-    } else if ($$.hasType('donut')) {
-        format = config.donut_label_format;
-    }
-    return format;
-};
-c3_chart_internal_fn.getGaugeLabelExtents = function () {
-    var $$ = this,
-        config = $$.config;
-    return config.gauge_label_extents;
-};
-c3_chart_internal_fn.getArcTitle = function () {
-    var $$ = this;
-    return $$.hasType('donut') ? $$.config.donut_title : "";
-};
-c3_chart_internal_fn.updateTargetsForArc = function (targets) {
-    var $$ = this,
-        main = $$.main,
-        mainPieUpdate,
-        mainPieEnter,
-        classChartArc = $$.classChartArc.bind($$),
-        classArcs = $$.classArcs.bind($$),
-        classFocus = $$.classFocus.bind($$);
-    mainPieUpdate = main.select('.' + CLASS.chartArcs).selectAll('.' + CLASS.chartArc).data($$.pie(targets)).attr("class", function (d) {
-        return classChartArc(d) + classFocus(d.data);
-    });
-    mainPieEnter = mainPieUpdate.enter().append("g").attr("class", classChartArc);
-    mainPieEnter.append('g').attr('class', classArcs);
-    mainPieEnter.append("text").attr("dy", $$.hasType('gauge') ? "-.1em" : ".35em").style("opacity", 0).style("text-anchor", "middle").style("pointer-events", "none");
-};
-c3_chart_internal_fn.initArc = function () {
-    var $$ = this;
-    $$.arcs = $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartArcs).attr("transform", $$.getTranslate('arc'));
-    $$.arcs.append('text').attr('class', CLASS.chartArcsTitle).style("text-anchor", "middle").text($$.getArcTitle());
-};
-c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransform) {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config,
-        main = $$.main,
-        mainArc;
-    mainArc = main.selectAll('.' + CLASS.arcs).selectAll('.' + CLASS.arc).data($$.arcData.bind($$));
-    mainArc.enter().append('path').attr("class", $$.classArc.bind($$)).style("fill", function (d) {
-        return $$.color(d.data);
-    }).style("cursor", function (d) {
-        return config.interaction_enabled && config.data_selection_isselectable(d) ? "pointer" : null;
-    }).each(function (d) {
-        if ($$.isGaugeType(d.data)) {
-            d.startAngle = d.endAngle = config.gauge_startingAngle;
-        }
-        this._current = d;
-    });
-    mainArc.attr("transform", function (d) {
-        return !$$.isGaugeType(d.data) && withTransform ? "scale(0)" : "";
-    }).on('mouseover', config.interaction_enabled ? function (d) {
-        var updated, arcData;
-        if ($$.transiting) {
-            return;
-        }
-        updated = $$.updateAngle(d);
-        if (updated) {
-            arcData = $$.convertToArcData(updated);
-            $$.expandArc(updated.data.id);
-            $$.api.focus(updated.data.id);
-            $$.toggleFocusLegend(updated.data.id, true);
-            $$.config.data_onmouseover(arcData, this);
-        }
-    } : null).on('mousemove', config.interaction_enabled ? function (d) {
-        var updated = $$.updateAngle(d),
-            arcData,
-            selectedData;
-        if (updated) {
-            arcData = $$.convertToArcData(updated), selectedData = [arcData];
-            $$.showTooltip(selectedData, this);
-        }
-    } : null).on('mouseout', config.interaction_enabled ? function (d) {
-        var updated, arcData;
-        if ($$.transiting) {
-            return;
-        }
-        updated = $$.updateAngle(d);
-        if (updated) {
-            arcData = $$.convertToArcData(updated);
-            $$.unexpandArc(updated.data.id);
-            $$.api.revert();
-            $$.revertLegend();
-            $$.hideTooltip();
-            $$.config.data_onmouseout(arcData, this);
-        }
-    } : null).on('click', config.interaction_enabled ? function (d, i) {
-        var updated = $$.updateAngle(d),
-            arcData;
-        if (updated) {
-            arcData = $$.convertToArcData(updated);
-            if ($$.toggleShape) {
-                $$.toggleShape(this, arcData, i);
-            }
-            $$.config.data_onclick.call($$.api, arcData, this);
-        }
-    } : null).each(function () {
-        $$.transiting = true;
-    }).transition().duration(duration).attrTween("d", function (d) {
-        var updated = $$.updateAngle(d),
-            interpolate;
-        if (!updated) {
-            return function () {
-                return "M 0 0";
-            };
-        }
-        if (isNaN(this._current.startAngle)) {
-            this._current.startAngle = 0;
-        }
-        if (isNaN(this._current.endAngle)) {
-            this._current.endAngle = this._current.startAngle;
-        }
-        interpolate = d3.interpolate(this._current, updated);
-        this._current = interpolate(0);
-        return function (t) {
-            var interpolated = interpolate(t);
-            interpolated.data = d.data;
-            return $$.getArc(interpolated, true);
-        };
-    }).attr("transform", withTransform ? "scale(1)" : "").style("fill", function (d) {
-        return $$.levelColor ? $$.levelColor(d.data.values[0].value) : $$.color(d.data.id);
-    }
-    ).call($$.endall, function () {
-        $$.transiting = false;
-    });
-    mainArc.exit().transition().duration(durationForExit).style('opacity', 0).remove();
-    main.selectAll('.' + CLASS.chartArc).select('text').style("opacity", 0).attr('class', function (d) {
-        return $$.isGaugeType(d.data) ? CLASS.gaugeValue : '';
-    }).text($$.textForArcLabel.bind($$)).attr("transform", $$.transformForArcLabel.bind($$)).style('font-size', function (d) {
-        return $$.isGaugeType(d.data) ? Math.round($$.radius / 5) + 'px' : '';
-    }).transition().duration(duration).style("opacity", function (d) {
-        return $$.isTargetToShow(d.data.id) && $$.isArcType(d.data) ? 1 : 0;
-    });
-    main.select('.' + CLASS.chartArcsTitle).style("opacity", $$.hasType('donut') || $$.hasType('gauge') ? 1 : 0);
-    if ($$.hasType('gauge')) {
-        $$.arcs.select('.' + CLASS.chartArcsBackground).attr("d", function () {
-            var d = {
-                data: [{ value: config.gauge_max }],
-                startAngle: config.gauge_startingAngle,
-                endAngle: -1 * config.gauge_startingAngle
-            };
-            return $$.getArc(d, true, true);
-        });
-        $$.arcs.select('.' + CLASS.chartArcsGaugeUnit).attr("dy", ".75em").text(config.gauge_label_show ? config.gauge_units : '');
-        $$.arcs.select('.' + CLASS.chartArcsGaugeMin).attr("dx", -1 * ($$.innerRadius + ($$.radius - $$.innerRadius) / (config.gauge_fullCircle ? 1 : 2)) + "px").attr("dy", "1.2em").text(config.gauge_label_show ? $$.textForGaugeMinMax(config.gauge_min, false) : '');
-        $$.arcs.select('.' + CLASS.chartArcsGaugeMax).attr("dx", $$.innerRadius + ($$.radius - $$.innerRadius) / (config.gauge_fullCircle ? 1 : 2) + "px").attr("dy", "1.2em").text(config.gauge_label_show ? $$.textForGaugeMinMax(config.gauge_max, true) : '');
-    }
-};
-c3_chart_internal_fn.initGauge = function () {
-    var arcs = this.arcs;
-    if (this.hasType('gauge')) {
-        arcs.append('path').attr("class", CLASS.chartArcsBackground);
-        arcs.append("text").attr("class", CLASS.chartArcsGaugeUnit).style("text-anchor", "middle").style("pointer-events", "none");
-        arcs.append("text").attr("class", CLASS.chartArcsGaugeMin).style("text-anchor", "middle").style("pointer-events", "none");
-        arcs.append("text").attr("class", CLASS.chartArcsGaugeMax).style("text-anchor", "middle").style("pointer-events", "none");
-    }
-};
-c3_chart_internal_fn.getGaugeLabelHeight = function () {
-    return this.config.gauge_label_show ? 20 : 0;
-};
-c3_chart_internal_fn.hasCaches = function (ids) {
-    for (var i = 0; i < ids.length; i++) {
-        if (!(ids[i] in this.cache)) {
-            return false;
+        if (trace !== undefined) {
+            trace.attachExtraTrace(error);
+        } else if (!error.__stackCleaned__) {
+            var parsed = parseStackAndMessage(error);
+            util.notEnumerableProp(error, "stack",
+                parsed.message + "\n" + parsed.stack.join("\n"));
+            util.notEnumerableProp(error, "__stackCleaned__", true);
         }
     }
-    return true;
-};
-c3_chart_internal_fn.addCache = function (id, target) {
-    this.cache[id] = this.cloneTarget(target);
-};
-c3_chart_internal_fn.getCaches = function (ids) {
-    var targets = [],
-        i;
-    for (i = 0; i < ids.length; i++) {
-        if (ids[i] in this.cache) {
-            targets.push(this.cloneTarget(this.cache[ids[i]]));
-        }
-    }
-    return targets;
-};
-c3_chart_internal_fn.categoryName = function (i) {
-    var config = this.config;
-    return i < config.axis_x_categories.length ? config.axis_x_categories[i] : i;
-};
-c3_chart_internal_fn.generateClass = function (prefix, targetId) {
-    return " " + prefix + " " + prefix + this.getTargetSelectorSuffix(targetId);
-};
-c3_chart_internal_fn.classText = function (d) {
-    return this.generateClass(CLASS.text, d.index);
-};
-c3_chart_internal_fn.classTexts = function (d) {
-    return this.generateClass(CLASS.texts, d.id);
-};
-c3_chart_internal_fn.classShape = function (d) {
-    return this.generateClass(CLASS.shape, d.index);
-};
-c3_chart_internal_fn.classShapes = function (d) {
-    return this.generateClass(CLASS.shapes, d.id);
-};
-c3_chart_internal_fn.classLine = function (d) {
-    return this.classShape(d) + this.generateClass(CLASS.line, d.id);
-};
-c3_chart_internal_fn.classLines = function (d) {
-    return this.classShapes(d) + this.generateClass(CLASS.lines, d.id);
-};
-c3_chart_internal_fn.classCircle = function (d) {
-    return this.classShape(d) + this.generateClass(CLASS.circle, d.index);
-};
-c3_chart_internal_fn.classCircles = function (d) {
-    return this.classShapes(d) + this.generateClass(CLASS.circles, d.id);
-};
-c3_chart_internal_fn.classBar = function (d) {
-    return this.classShape(d) + this.generateClass(CLASS.bar, d.index);
-};
-c3_chart_internal_fn.classBars = function (d) {
-    return this.classShapes(d) + this.generateClass(CLASS.bars, d.id);
-};
-c3_chart_internal_fn.classArc = function (d) {
-    return this.classShape(d.data) + this.generateClass(CLASS.arc, d.data.id);
-};
-c3_chart_internal_fn.classArcs = function (d) {
-    return this.classShapes(d.data) + this.generateClass(CLASS.arcs, d.data.id);
-};
-c3_chart_internal_fn.classArea = function (d) {
-    return this.classShape(d) + this.generateClass(CLASS.area, d.id);
-};
-c3_chart_internal_fn.classAreas = function (d) {
-    return this.classShapes(d) + this.generateClass(CLASS.areas, d.id);
-};
-c3_chart_internal_fn.classRegion = function (d, i) {
-    return this.generateClass(CLASS.region, i) + ' ' + ('class' in d ? d['class'] : '');
-};
-c3_chart_internal_fn.classEvent = function (d) {
-    return this.generateClass(CLASS.eventRect, d.index);
-};
-c3_chart_internal_fn.classTarget = function (id) {
-    var $$ = this;
-    var additionalClassSuffix = $$.config.data_classes[id],
-        additionalClass = '';
-    if (additionalClassSuffix) {
-        additionalClass = ' ' + CLASS.target + '-' + additionalClassSuffix;
-    }
-    return $$.generateClass(CLASS.target, id) + additionalClass;
-};
-c3_chart_internal_fn.classFocus = function (d) {
-    return this.classFocused(d) + this.classDefocused(d);
-};
-c3_chart_internal_fn.classFocused = function (d) {
-    return ' ' + (this.focusedTargetIds.indexOf(d.id) >= 0 ? CLASS.focused : '');
-};
-c3_chart_internal_fn.classDefocused = function (d) {
-    return ' ' + (this.defocusedTargetIds.indexOf(d.id) >= 0 ? CLASS.defocused : '');
-};
-c3_chart_internal_fn.classChartText = function (d) {
-    return CLASS.chartText + this.classTarget(d.id);
-};
-c3_chart_internal_fn.classChartLine = function (d) {
-    return CLASS.chartLine + this.classTarget(d.id);
-};
-c3_chart_internal_fn.classChartBar = function (d) {
-    return CLASS.chartBar + this.classTarget(d.id);
-};
-c3_chart_internal_fn.classChartArc = function (d) {
-    return CLASS.chartArc + this.classTarget(d.data.id);
-};
-c3_chart_internal_fn.getTargetSelectorSuffix = function (targetId) {
-    return targetId || targetId === 0 ? ('-' + targetId).replace(/[\s?!@#$%^&*()_=+,.<>'":;\[\]\/|~`{}\\]/g, '-') : '';
-};
-c3_chart_internal_fn.selectorTarget = function (id, prefix) {
-    return (prefix || '') + '.' + CLASS.target + this.getTargetSelectorSuffix(id);
-};
-c3_chart_internal_fn.selectorTargets = function (ids, prefix) {
-    var $$ = this;
-    ids = ids || [];
-    return ids.length ? ids.map(function (id) {
-        return $$.selectorTarget(id, prefix);
-    }) : null;
-};
-c3_chart_internal_fn.selectorLegend = function (id) {
-    return '.' + CLASS.legendItem + this.getTargetSelectorSuffix(id);
-};
-c3_chart_internal_fn.selectorLegends = function (ids) {
-    var $$ = this;
-    return ids && ids.length ? ids.map(function (id) {
-        return $$.selectorLegend(id);
-    }) : null;
-};
-c3_chart_internal_fn.getClipPath = function (id) {
-    var isIE9 = window.navigator.appVersion.toLowerCase().indexOf("msie 9.") >= 0;
-    return "url(" + (isIE9 ? "" : document.URL.split('#')[0]) + "#" + id + ")";
-};
-c3_chart_internal_fn.appendClip = function (parent, id) {
-    return parent.append("clipPath").attr("id", id).append("rect");
-};
-c3_chart_internal_fn.getAxisClipX = function (forHorizontal) {
-    var left = Math.max(30, this.margin.left);
-    return forHorizontal ? -(1 + left) : -(left - 1);
-};
-c3_chart_internal_fn.getAxisClipY = function (forHorizontal) {
-    return forHorizontal ? -20 : -this.margin.top;
-};
-c3_chart_internal_fn.getXAxisClipX = function () {
-    var $$ = this;
-    return $$.getAxisClipX(!$$.config.axis_rotated);
-};
-c3_chart_internal_fn.getXAxisClipY = function () {
-    var $$ = this;
-    return $$.getAxisClipY(!$$.config.axis_rotated);
-};
-c3_chart_internal_fn.getYAxisClipX = function () {
-    var $$ = this;
-    return $$.config.axis_y_inner ? -1 : $$.getAxisClipX($$.config.axis_rotated);
-};
-c3_chart_internal_fn.getYAxisClipY = function () {
-    var $$ = this;
-    return $$.getAxisClipY($$.config.axis_rotated);
-};
-c3_chart_internal_fn.getAxisClipWidth = function (forHorizontal) {
-    var $$ = this,
-        left = Math.max(30, $$.margin.left),
-        right = Math.max(30, $$.margin.right);
-    return forHorizontal ? $$.width + 2 + left + right : $$.margin.left + 20;
-};
-c3_chart_internal_fn.getAxisClipHeight = function (forHorizontal) {
-    return (forHorizontal ? this.margin.bottom : this.margin.top + this.height) + 20;
-};
-c3_chart_internal_fn.getXAxisClipWidth = function () {
-    var $$ = this;
-    return $$.getAxisClipWidth(!$$.config.axis_rotated);
-};
-c3_chart_internal_fn.getXAxisClipHeight = function () {
-    var $$ = this;
-    return $$.getAxisClipHeight(!$$.config.axis_rotated);
-};
-c3_chart_internal_fn.getYAxisClipWidth = function () {
-    var $$ = this;
-    return $$.getAxisClipWidth($$.config.axis_rotated) + ($$.config.axis_y_inner ? 20 : 0);
-};
-c3_chart_internal_fn.getYAxisClipHeight = function () {
-    var $$ = this;
-    return $$.getAxisClipHeight($$.config.axis_rotated);
-};
-c3_chart_internal_fn.generateColor = function () {
-    var $$ = this,
-        config = $$.config,
-        d3 = $$.d3,
-        colors = config.data_colors,
-        pattern = notEmpty(config.color_pattern) ? config.color_pattern : d3.scale.category10().range(),
-        callback = config.data_color,
-        ids = [];
-    return function (d) {
-        var id = d.id || d.data && d.data.id || d,
-            color;
-        if (colors[id] instanceof Function) {
-            color = colors[id](d);
-        }
-        else if (colors[id]) {
-                color = colors[id];
-            }
-            else {
-                    if (ids.indexOf(id) < 0) {
-                        ids.push(id);
+}
+function checkForgottenReturns(returnValue, promiseCreated, name, promise,
+                               parent) {
+    if (returnValue === undefined && promiseCreated !== null &&
+        wForgottenReturn) {
+        if (parent !== undefined && parent._returnedNonUndefined()) return;
+        if ((promise._bitField & 65535) === 0) return;
+        if (name) name = name + " ";
+        var handlerLine = "";
+        var creatorLine = "";
+        if (promiseCreated._trace) {
+            var traceLines = promiseCreated._trace.stack.split("\n");
+            var stack = cleanStack(traceLines);
+            for (var i = stack.length - 1; i >= 0; --i) {
+                var line = stack[i];
+                if (!nodeFramePattern.test(line)) {
+                    var lineMatches = line.match(parseLinePattern);
+                    if (lineMatches) {
+                        handlerLine  = "at " + lineMatches[1] +
+                            ":" + lineMatches[2] + ":" + lineMatches[3] + " ";
                     }
-                    color = pattern[ids.indexOf(id) % pattern.length];
-                    colors[id] = color;
-                }
-        return callback instanceof Function ? callback(color, d) : color;
-    };
-};
-c3_chart_internal_fn.generateLevelColor = function () {
-    var $$ = this,
-        config = $$.config,
-        colors = config.color_pattern,
-        threshold = config.color_threshold,
-        asValue = threshold.unit === 'value',
-        values = threshold.values && threshold.values.length ? threshold.values : [],
-        max = threshold.max || 100;
-    return notEmpty(config.color_threshold) ? function (value) {
-        var i,
-            v,
-            color = colors[colors.length - 1];
-        for (i = 0; i < values.length; i++) {
-            v = asValue ? value : value * 100 / max;
-            if (v < values[i]) {
-                color = colors[i];
-                break;
-            }
-        }
-        return color;
-    } : null;
-};
-c3_chart_internal_fn.getDefaultConfig = function () {
-    var config = {
-        bindto: '#chart',
-        svg_classname: undefined,
-        size_width: undefined,
-        size_height: undefined,
-        padding_left: undefined,
-        padding_right: undefined,
-        padding_top: undefined,
-        padding_bottom: undefined,
-        resize_auto: true,
-        zoom_enabled: false,
-        zoom_extent: undefined,
-        zoom_privileged: false,
-        zoom_rescale: false,
-        zoom_onzoom: function zoom_onzoom() {},
-        zoom_onzoomstart: function zoom_onzoomstart() {},
-        zoom_onzoomend: function zoom_onzoomend() {},
-        zoom_x_min: undefined,
-        zoom_x_max: undefined,
-        interaction_brighten: true,
-        interaction_enabled: true,
-        onmouseover: function onmouseover() {},
-        onmouseout: function onmouseout() {},
-        onresize: function onresize() {},
-        onresized: function onresized() {},
-        oninit: function oninit() {},
-        onrendered: function onrendered() {},
-        transition_duration: 350,
-        data_x: undefined,
-        data_xs: {},
-        data_xFormat: '%Y-%m-%d',
-        data_xLocaltime: true,
-        data_xSort: true,
-        data_idConverter: function data_idConverter(id) {
-            return id;
-        },
-        data_names: {},
-        data_classes: {},
-        data_groups: [],
-        data_axes: {},
-        data_type: undefined,
-        data_types: {},
-        data_labels: {},
-        data_order: 'desc',
-        data_regions: {},
-        data_color: undefined,
-        data_colors: {},
-        data_hide: false,
-        data_filter: undefined,
-        data_selection_enabled: false,
-        data_selection_grouped: false,
-        data_selection_isselectable: function data_selection_isselectable() {
-            return true;
-        },
-        data_selection_multiple: true,
-        data_selection_draggable: false,
-        data_onclick: function data_onclick() {},
-        data_onmouseover: function data_onmouseover() {},
-        data_onmouseout: function data_onmouseout() {},
-        data_onselected: function data_onselected() {},
-        data_onunselected: function data_onunselected() {},
-        data_url: undefined,
-        data_headers: undefined,
-        data_json: undefined,
-        data_rows: undefined,
-        data_columns: undefined,
-        data_mimeType: undefined,
-        data_keys: undefined,
-        data_empty_label_text: "",
-        subchart_show: false,
-        subchart_size_height: 60,
-        subchart_axis_x_show: true,
-        subchart_onbrush: function subchart_onbrush() {},
-        color_pattern: [],
-        color_threshold: {},
-        legend_show: true,
-        legend_hide: false,
-        legend_position: 'bottom',
-        legend_inset_anchor: 'top-left',
-        legend_inset_x: 10,
-        legend_inset_y: 0,
-        legend_inset_step: undefined,
-        legend_item_onclick: undefined,
-        legend_item_onmouseover: undefined,
-        legend_item_onmouseout: undefined,
-        legend_equally: false,
-        legend_padding: 0,
-        legend_item_tile_width: 10,
-        legend_item_tile_height: 10,
-        axis_rotated: false,
-        axis_x_show: true,
-        axis_x_type: 'indexed',
-        axis_x_localtime: true,
-        axis_x_categories: [],
-        axis_x_tick_centered: false,
-        axis_x_tick_format: undefined,
-        axis_x_tick_culling: {},
-        axis_x_tick_culling_max: 10,
-        axis_x_tick_count: undefined,
-        axis_x_tick_fit: true,
-        axis_x_tick_values: null,
-        axis_x_tick_rotate: 0,
-        axis_x_tick_outer: true,
-        axis_x_tick_multiline: true,
-        axis_x_tick_width: null,
-        axis_x_max: undefined,
-        axis_x_min: undefined,
-        axis_x_padding: {},
-        axis_x_height: undefined,
-        axis_x_extent: undefined,
-        axis_x_label: {},
-        axis_y_show: true,
-        axis_y_type: undefined,
-        axis_y_max: undefined,
-        axis_y_min: undefined,
-        axis_y_inverted: false,
-        axis_y_center: undefined,
-        axis_y_inner: undefined,
-        axis_y_label: {},
-        axis_y_tick_format: undefined,
-        axis_y_tick_outer: true,
-        axis_y_tick_values: null,
-        axis_y_tick_rotate: 0,
-        axis_y_tick_count: undefined,
-        axis_y_tick_time_value: undefined,
-        axis_y_tick_time_interval: undefined,
-        axis_y_padding: {},
-        axis_y_default: undefined,
-        axis_y2_show: false,
-        axis_y2_max: undefined,
-        axis_y2_min: undefined,
-        axis_y2_inverted: false,
-        axis_y2_center: undefined,
-        axis_y2_inner: undefined,
-        axis_y2_label: {},
-        axis_y2_tick_format: undefined,
-        axis_y2_tick_outer: true,
-        axis_y2_tick_values: null,
-        axis_y2_tick_count: undefined,
-        axis_y2_padding: {},
-        axis_y2_default: undefined,
-        grid_x_show: false,
-        grid_x_type: 'tick',
-        grid_x_lines: [],
-        grid_y_show: false,
-        grid_y_lines: [],
-        grid_y_ticks: 10,
-        grid_focus_show: true,
-        grid_lines_front: true,
-        point_show: true,
-        point_r: 2.5,
-        point_sensitivity: 10,
-        point_focus_expand_enabled: true,
-        point_focus_expand_r: undefined,
-        point_select_r: undefined,
-        line_connectNull: false,
-        line_step_type: 'step',
-        bar_width: undefined,
-        bar_width_ratio: 0.6,
-        bar_width_max: undefined,
-        bar_zerobased: true,
-        bar_space: 0,
-        area_zerobased: true,
-        area_above: false,
-        pie_label_show: true,
-        pie_label_format: undefined,
-        pie_label_threshold: 0.05,
-        pie_label_ratio: undefined,
-        pie_expand: {},
-        pie_expand_duration: 50,
-        gauge_fullCircle: false,
-        gauge_label_show: true,
-        gauge_label_format: undefined,
-        gauge_min: 0,
-        gauge_max: 100,
-        gauge_startingAngle: -1 * Math.PI / 2,
-        gauge_label_extents: undefined,
-        gauge_units: undefined,
-        gauge_width: undefined,
-        gauge_expand: {},
-        gauge_expand_duration: 50,
-        donut_label_show: true,
-        donut_label_format: undefined,
-        donut_label_threshold: 0.05,
-        donut_label_ratio: undefined,
-        donut_width: undefined,
-        donut_title: "",
-        donut_expand: {},
-        donut_expand_duration: 50,
-        spline_interpolation_type: 'cardinal',
-        regions: [],
-        tooltip_show: true,
-        tooltip_grouped: true,
-        tooltip_order: undefined,
-        tooltip_format_title: undefined,
-        tooltip_format_name: undefined,
-        tooltip_format_value: undefined,
-        tooltip_position: undefined,
-        tooltip_contents: function tooltip_contents(d, defaultTitleFormat, defaultValueFormat, color) {
-            return this.getTooltipContent ? this.getTooltipContent(d, defaultTitleFormat, defaultValueFormat, color) : '';
-        },
-        tooltip_init_show: false,
-        tooltip_init_x: 0,
-        tooltip_init_position: { top: '0px', left: '50px' },
-        tooltip_onshow: function tooltip_onshow() {},
-        tooltip_onhide: function tooltip_onhide() {},
-        title_text: undefined,
-        title_padding: {
-            top: 0,
-            right: 0,
-            bottom: 0,
-            left: 0
-        },
-        title_position: 'top-center'
-    };
-    Object.keys(this.additionalConfig).forEach(function (key) {
-        config[key] = this.additionalConfig[key];
-    }, this);
-    return config;
-};
-c3_chart_internal_fn.additionalConfig = {};
-c3_chart_internal_fn.loadConfig = function (config) {
-    var this_config = this.config,
-        target,
-        keys,
-        read;
-    function find() {
-        var key = keys.shift();
-        if (key && target && (typeof target === 'undefined' ? 'undefined' : _typeof(target)) === 'object' && key in target) {
-            target = target[key];
-            return find();
-        } else if (!key) {
-            return target;
-        } else {
-            return undefined;
-        }
-    }
-    Object.keys(this_config).forEach(function (key) {
-        target = config;
-        keys = key.split('_');
-        read = find();
-        if (isDefined(read)) {
-            this_config[key] = read;
-        }
-    });
-};
-c3_chart_internal_fn.convertUrlToData = function (url, mimeType, headers, keys, done) {
-    var $$ = this,
-        type = mimeType ? mimeType : 'csv';
-    var req = $$.d3.xhr(url);
-    if (headers) {
-        Object.keys(headers).forEach(function (header) {
-            req.header(header, headers[header]);
-        });
-    }
-    req.get(function (error, data) {
-        var d;
-        var dataResponse = data.response || data.responseText;
-        if (!data) {
-            throw new Error(error.responseURL + ' ' + error.status + ' (' + error.statusText + ')');
-        }
-        if (type === 'json') {
-            d = $$.convertJsonToData(JSON.parse(dataResponse), keys);
-        } else if (type === 'tsv') {
-            d = $$.convertTsvToData(dataResponse);
-        } else {
-            d = $$.convertCsvToData(dataResponse);
-        }
-        done.call($$, d);
-    });
-};
-c3_chart_internal_fn.convertXsvToData = function (xsv, parser) {
-    var rows = parser.parseRows(xsv),
-        d;
-    if (rows.length === 1) {
-        d = [{}];
-        rows[0].forEach(function (id) {
-            d[0][id] = null;
-        });
-    } else {
-        d = parser.parse(xsv);
-    }
-    return d;
-};
-c3_chart_internal_fn.convertCsvToData = function (csv) {
-    return this.convertXsvToData(csv, this.d3.csv);
-};
-c3_chart_internal_fn.convertTsvToData = function (tsv) {
-    return this.convertXsvToData(tsv, this.d3.tsv);
-};
-c3_chart_internal_fn.convertJsonToData = function (json, keys) {
-    var $$ = this,
-        new_rows = [],
-        targetKeys,
-        data;
-    if (keys) {
-        if (keys.x) {
-            targetKeys = keys.value.concat(keys.x);
-            $$.config.data_x = keys.x;
-        } else {
-            targetKeys = keys.value;
-        }
-        new_rows.push(targetKeys);
-        json.forEach(function (o) {
-            var new_row = [];
-            targetKeys.forEach(function (key) {
-                var v = $$.findValueInJson(o, key);
-                if (isUndefined(v)) {
-                    v = null;
-                }
-                new_row.push(v);
-            });
-            new_rows.push(new_row);
-        });
-        data = $$.convertRowsToData(new_rows);
-    } else {
-        Object.keys(json).forEach(function (key) {
-            new_rows.push([key].concat(json[key]));
-        });
-        data = $$.convertColumnsToData(new_rows);
-    }
-    return data;
-};
-c3_chart_internal_fn.findValueInJson = function (object, path) {
-    path = path.replace(/\[(\w+)\]/g, '.$1');
-    path = path.replace(/^\./, '');
-    var pathArray = path.split('.');
-    for (var i = 0; i < pathArray.length; ++i) {
-        var k = pathArray[i];
-        if (k in object) {
-            object = object[k];
-        } else {
-            return;
-        }
-    }
-    return object;
-};
-/**
- * Converts the rows to normalized data.
- * @param {any[][]} rows The row data
- * @return {Object[]}
- */
-c3_chart_internal_fn.convertRowsToData = function (rows) {
-    var newRows = [];
-    var keys = rows[0];
-    for (var i = 1; i < rows.length; i++) {
-        var newRow = {};
-        for (var j = 0; j < rows[i].length; j++) {
-            if (isUndefined(rows[i][j])) {
-                throw new Error("Source data is missing a component at (" + i + "," + j + ")!");
-            }
-            newRow[keys[j]] = rows[i][j];
-        }
-        newRows.push(newRow);
-    }
-    return newRows;
-};
-/**
- * Converts the columns to normalized data.
- * @param {any[][]} columns The column data
- * @return {Object[]}
- */
-c3_chart_internal_fn.convertColumnsToData = function (columns) {
-    var newRows = [];
-    for (var i = 0; i < columns.length; i++) {
-        var key = columns[i][0];
-        for (var j = 1; j < columns[i].length; j++) {
-            if (isUndefined(newRows[j - 1])) {
-                newRows[j - 1] = {};
-            }
-            if (isUndefined(columns[i][j])) {
-                throw new Error("Source data is missing a component at (" + i + "," + j + ")!");
-            }
-            newRows[j - 1][key] = columns[i][j];
-        }
-    }
-    return newRows;
-};
-c3_chart_internal_fn.convertDataToTargets = function (data, appendXs) {
-    var $$ = this,
-        config = $$.config,
-        ids = $$.d3.keys(data[0]).filter($$.isNotX, $$),
-        xs = $$.d3.keys(data[0]).filter($$.isX, $$),
-        targets;
-    ids.forEach(function (id) {
-        var xKey = $$.getXKey(id);
-        if ($$.isCustomX() || $$.isTimeSeries()) {
-            if (xs.indexOf(xKey) >= 0) {
-                $$.data.xs[id] = (appendXs && $$.data.xs[id] ? $$.data.xs[id] : []).concat(data.map(function (d) {
-                    return d[xKey];
-                }).filter(isValue).map(function (rawX, i) {
-                    return $$.generateTargetX(rawX, id, i);
-                }));
-            }
-            else if (config.data_x) {
-                    $$.data.xs[id] = $$.getOtherTargetXs();
-                }
-                else if (notEmpty(config.data_xs)) {
-                        $$.data.xs[id] = $$.getXValuesOfXKey(xKey, $$.data.targets);
-                    }
-        } else {
-            $$.data.xs[id] = data.map(function (d, i) {
-                return i;
-            });
-        }
-    });
-    ids.forEach(function (id) {
-        if (!$$.data.xs[id]) {
-            throw new Error('x is not defined for id = "' + id + '".');
-        }
-    });
-    targets = ids.map(function (id, index) {
-        var convertedId = config.data_idConverter(id);
-        return {
-            id: convertedId,
-            id_org: id,
-            values: data.map(function (d, i) {
-                var xKey = $$.getXKey(id),
-                    rawX = d[xKey],
-                    value = d[id] !== null && !isNaN(d[id]) ? +d[id] : null,
-                    x;
-                if ($$.isCustomX() && $$.isCategorized() && !isUndefined(rawX)) {
-                    if (index === 0 && i === 0) {
-                        config.axis_x_categories = [];
-                    }
-                    x = config.axis_x_categories.indexOf(rawX);
-                    if (x === -1) {
-                        x = config.axis_x_categories.length;
-                        config.axis_x_categories.push(rawX);
-                    }
-                } else {
-                    x = $$.generateTargetX(rawX, id, i);
-                }
-                if (isUndefined(d[id]) || $$.data.xs[id].length <= i) {
-                    x = undefined;
-                }
-                return { x: x, value: value, id: convertedId };
-            }).filter(function (v) {
-                return isDefined(v.x);
-            })
-        };
-    });
-    targets.forEach(function (t) {
-        var i;
-        if (config.data_xSort) {
-            t.values = t.values.sort(function (v1, v2) {
-                var x1 = v1.x || v1.x === 0 ? v1.x : Infinity,
-                    x2 = v2.x || v2.x === 0 ? v2.x : Infinity;
-                return x1 - x2;
-            });
-        }
-        i = 0;
-        t.values.forEach(function (v) {
-            v.index = i++;
-        });
-        $$.data.xs[t.id].sort(function (v1, v2) {
-            return v1 - v2;
-        });
-    });
-    $$.hasNegativeValue = $$.hasNegativeValueInTargets(targets);
-    $$.hasPositiveValue = $$.hasPositiveValueInTargets(targets);
-    if (config.data_type) {
-        $$.setTargetType($$.mapToIds(targets).filter(function (id) {
-            return !(id in config.data_types);
-        }), config.data_type);
-    }
-    targets.forEach(function (d) {
-        $$.addCache(d.id_org, d);
-    });
-    return targets;
-};
-c3_chart_internal_fn.isX = function (key) {
-    var $$ = this,
-        config = $$.config;
-    return config.data_x && key === config.data_x || notEmpty(config.data_xs) && hasValue(config.data_xs, key);
-};
-c3_chart_internal_fn.isNotX = function (key) {
-    return !this.isX(key);
-};
-c3_chart_internal_fn.getXKey = function (id) {
-    var $$ = this,
-        config = $$.config;
-    return config.data_x ? config.data_x : notEmpty(config.data_xs) ? config.data_xs[id] : null;
-};
-c3_chart_internal_fn.getXValuesOfXKey = function (key, targets) {
-    var $$ = this,
-        xValues,
-        ids = targets && notEmpty(targets) ? $$.mapToIds(targets) : [];
-    ids.forEach(function (id) {
-        if ($$.getXKey(id) === key) {
-            xValues = $$.data.xs[id];
-        }
-    });
-    return xValues;
-};
-c3_chart_internal_fn.getIndexByX = function (x) {
-    var $$ = this,
-        data = $$.filterByX($$.data.targets, x);
-    return data.length ? data[0].index : null;
-};
-c3_chart_internal_fn.getXValue = function (id, i) {
-    var $$ = this;
-    return id in $$.data.xs && $$.data.xs[id] && isValue($$.data.xs[id][i]) ? $$.data.xs[id][i] : i;
-};
-c3_chart_internal_fn.getOtherTargetXs = function () {
-    var $$ = this,
-        idsForX = Object.keys($$.data.xs);
-    return idsForX.length ? $$.data.xs[idsForX[0]] : null;
-};
-c3_chart_internal_fn.getOtherTargetX = function (index) {
-    var xs = this.getOtherTargetXs();
-    return xs && index < xs.length ? xs[index] : null;
-};
-c3_chart_internal_fn.addXs = function (xs) {
-    var $$ = this;
-    Object.keys(xs).forEach(function (id) {
-        $$.config.data_xs[id] = xs[id];
-    });
-};
-c3_chart_internal_fn.hasMultipleX = function (xs) {
-    return this.d3.set(Object.keys(xs).map(function (id) {
-        return xs[id];
-    })).size() > 1;
-};
-c3_chart_internal_fn.isMultipleX = function () {
-    return notEmpty(this.config.data_xs) || !this.config.data_xSort || this.hasType('scatter');
-};
-c3_chart_internal_fn.addName = function (data) {
-    var $$ = this,
-        name;
-    if (data) {
-        name = $$.config.data_names[data.id];
-        data.name = name !== undefined ? name : data.id;
-    }
-    return data;
-};
-c3_chart_internal_fn.getValueOnIndex = function (values, index) {
-    var valueOnIndex = values.filter(function (v) {
-        return v.index === index;
-    });
-    return valueOnIndex.length ? valueOnIndex[0] : null;
-};
-c3_chart_internal_fn.updateTargetX = function (targets, x) {
-    var $$ = this;
-    targets.forEach(function (t) {
-        t.values.forEach(function (v, i) {
-            v.x = $$.generateTargetX(x[i], t.id, i);
-        });
-        $$.data.xs[t.id] = x;
-    });
-};
-c3_chart_internal_fn.updateTargetXs = function (targets, xs) {
-    var $$ = this;
-    targets.forEach(function (t) {
-        if (xs[t.id]) {
-            $$.updateTargetX([t], xs[t.id]);
-        }
-    });
-};
-c3_chart_internal_fn.generateTargetX = function (rawX, id, index) {
-    var $$ = this,
-        x;
-    if ($$.isTimeSeries()) {
-        x = rawX ? $$.parseDate(rawX) : $$.parseDate($$.getXValue(id, index));
-    } else if ($$.isCustomX() && !$$.isCategorized()) {
-        x = isValue(rawX) ? +rawX : $$.getXValue(id, index);
-    } else {
-        x = index;
-    }
-    return x;
-};
-c3_chart_internal_fn.cloneTarget = function (target) {
-    return {
-        id: target.id,
-        id_org: target.id_org,
-        values: target.values.map(function (d) {
-            return { x: d.x, value: d.value, id: d.id };
-        })
-    };
-};
-c3_chart_internal_fn.updateXs = function () {
-    var $$ = this;
-    if ($$.data.targets.length) {
-        $$.xs = [];
-        $$.data.targets[0].values.forEach(function (v) {
-            $$.xs[v.index] = v.x;
-        });
-    }
-};
-c3_chart_internal_fn.getPrevX = function (i) {
-    var x = this.xs[i - 1];
-    return typeof x !== 'undefined' ? x : null;
-};
-c3_chart_internal_fn.getNextX = function (i) {
-    var x = this.xs[i + 1];
-    return typeof x !== 'undefined' ? x : null;
-};
-c3_chart_internal_fn.getMaxDataCount = function () {
-    var $$ = this;
-    return $$.d3.max($$.data.targets, function (t) {
-        return t.values.length;
-    });
-};
-c3_chart_internal_fn.getMaxDataCountTarget = function (targets) {
-    var length = targets.length,
-        max = 0,
-        maxTarget;
-    if (length > 1) {
-        targets.forEach(function (t) {
-            if (t.values.length > max) {
-                maxTarget = t;
-                max = t.values.length;
-            }
-        });
-    } else {
-        maxTarget = length ? targets[0] : null;
-    }
-    return maxTarget;
-};
-c3_chart_internal_fn.getEdgeX = function (targets) {
-    var $$ = this;
-    return !targets.length ? [0, 0] : [$$.d3.min(targets, function (t) {
-        return t.values[0].x;
-    }), $$.d3.max(targets, function (t) {
-        return t.values[t.values.length - 1].x;
-    })];
-};
-c3_chart_internal_fn.mapToIds = function (targets) {
-    return targets.map(function (d) {
-        return d.id;
-    });
-};
-c3_chart_internal_fn.mapToTargetIds = function (ids) {
-    var $$ = this;
-    return ids ? [].concat(ids) : $$.mapToIds($$.data.targets);
-};
-c3_chart_internal_fn.hasTarget = function (targets, id) {
-    var ids = this.mapToIds(targets),
-        i;
-    for (i = 0; i < ids.length; i++) {
-        if (ids[i] === id) {
-            return true;
-        }
-    }
-    return false;
-};
-c3_chart_internal_fn.isTargetToShow = function (targetId) {
-    return this.hiddenTargetIds.indexOf(targetId) < 0;
-};
-c3_chart_internal_fn.isLegendToShow = function (targetId) {
-    return this.hiddenLegendIds.indexOf(targetId) < 0;
-};
-c3_chart_internal_fn.filterTargetsToShow = function (targets) {
-    var $$ = this;
-    return targets.filter(function (t) {
-        return $$.isTargetToShow(t.id);
-    });
-};
-c3_chart_internal_fn.mapTargetsToUniqueXs = function (targets) {
-    var $$ = this;
-    var xs = $$.d3.set($$.d3.merge(targets.map(function (t) {
-        return t.values.map(function (v) {
-            return +v.x;
-        });
-    }))).values();
-    xs = $$.isTimeSeries() ? xs.map(function (x) {
-        return new Date(+x);
-    }) : xs.map(function (x) {
-        return +x;
-    });
-    return xs.sort(function (a, b) {
-        return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
-    });
-};
-c3_chart_internal_fn.addHiddenTargetIds = function (targetIds) {
-    targetIds = targetIds instanceof Array ? targetIds : new Array(targetIds);
-    for (var i = 0; i < targetIds.length; i++) {
-        if (this.hiddenTargetIds.indexOf(targetIds[i]) < 0) {
-            this.hiddenTargetIds = this.hiddenTargetIds.concat(targetIds[i]);
-        }
-    }
-};
-c3_chart_internal_fn.removeHiddenTargetIds = function (targetIds) {
-    this.hiddenTargetIds = this.hiddenTargetIds.filter(function (id) {
-        return targetIds.indexOf(id) < 0;
-    });
-};
-c3_chart_internal_fn.addHiddenLegendIds = function (targetIds) {
-    targetIds = targetIds instanceof Array ? targetIds : new Array(targetIds);
-    for (var i = 0; i < targetIds.length; i++) {
-        if (this.hiddenLegendIds.indexOf(targetIds[i]) < 0) {
-            this.hiddenLegendIds = this.hiddenLegendIds.concat(targetIds[i]);
-        }
-    }
-};
-c3_chart_internal_fn.removeHiddenLegendIds = function (targetIds) {
-    this.hiddenLegendIds = this.hiddenLegendIds.filter(function (id) {
-        return targetIds.indexOf(id) < 0;
-    });
-};
-c3_chart_internal_fn.getValuesAsIdKeyed = function (targets) {
-    var ys = {};
-    targets.forEach(function (t) {
-        ys[t.id] = [];
-        t.values.forEach(function (v) {
-            ys[t.id].push(v.value);
-        });
-    });
-    return ys;
-};
-c3_chart_internal_fn.checkValueInTargets = function (targets, checker) {
-    var ids = Object.keys(targets),
-        i,
-        j,
-        values;
-    for (i = 0; i < ids.length; i++) {
-        values = targets[ids[i]].values;
-        for (j = 0; j < values.length; j++) {
-            if (checker(values[j].value)) {
-                return true;
-            }
-        }
-    }
-    return false;
-};
-c3_chart_internal_fn.hasNegativeValueInTargets = function (targets) {
-    return this.checkValueInTargets(targets, function (v) {
-        return v < 0;
-    });
-};
-c3_chart_internal_fn.hasPositiveValueInTargets = function (targets) {
-    return this.checkValueInTargets(targets, function (v) {
-        return v > 0;
-    });
-};
-c3_chart_internal_fn.isOrderDesc = function () {
-    var config = this.config;
-    return typeof config.data_order === 'string' && config.data_order.toLowerCase() === 'desc';
-};
-c3_chart_internal_fn.isOrderAsc = function () {
-    var config = this.config;
-    return typeof config.data_order === 'string' && config.data_order.toLowerCase() === 'asc';
-};
-c3_chart_internal_fn.getOrderFunction = function () {
-    var $$ = this,
-        config = $$.config,
-        orderAsc = $$.isOrderAsc(),
-        orderDesc = $$.isOrderDesc();
-    if (orderAsc || orderDesc) {
-        return function (t1, t2) {
-            var reducer = function reducer(p, c) {
-                return p + Math.abs(c.value);
-            };
-            var t1Sum = t1.values.reduce(reducer, 0),
-                t2Sum = t2.values.reduce(reducer, 0);
-            return orderDesc ? t2Sum - t1Sum : t1Sum - t2Sum;
-        };
-    } else if (isFunction(config.data_order)) {
-        return config.data_order;
-    } else if (isArray(config.data_order)) {
-        var order = config.data_order;
-        return function (t1, t2) {
-            return order.indexOf(t1.id) - order.indexOf(t2.id);
-        };
-    }
-};
-c3_chart_internal_fn.orderTargets = function (targets) {
-    var fct = this.getOrderFunction();
-    if (fct) {
-        targets.sort(fct);
-        if (this.isOrderAsc() || this.isOrderDesc()) {
-            targets.reverse();
-        }
-    }
-    return targets;
-};
-c3_chart_internal_fn.filterByX = function (targets, x) {
-    return this.d3.merge(targets.map(function (t) {
-        return t.values;
-    })).filter(function (v) {
-        return v.x - x === 0;
-    });
-};
-c3_chart_internal_fn.filterRemoveNull = function (data) {
-    return data.filter(function (d) {
-        return isValue(d.value);
-    });
-};
-c3_chart_internal_fn.filterByXDomain = function (targets, xDomain) {
-    return targets.map(function (t) {
-        return {
-            id: t.id,
-            id_org: t.id_org,
-            values: t.values.filter(function (v) {
-                return xDomain[0] <= v.x && v.x <= xDomain[1];
-            })
-        };
-    });
-};
-c3_chart_internal_fn.hasDataLabel = function () {
-    var config = this.config;
-    if (typeof config.data_labels === 'boolean' && config.data_labels) {
-        return true;
-    } else if (_typeof(config.data_labels) === 'object' && notEmpty(config.data_labels)) {
-        return true;
-    }
-    return false;
-};
-c3_chart_internal_fn.getDataLabelLength = function (min, max, key) {
-    var $$ = this,
-        lengths = [0, 0],
-        paddingCoef = 1.3;
-    $$.selectChart.select('svg').selectAll('.dummy').data([min, max]).enter().append('text').text(function (d) {
-        return $$.dataLabelFormat(d.id)(d);
-    }).each(function (d, i) {
-        lengths[i] = this.getBoundingClientRect()[key] * paddingCoef;
-    }).remove();
-    return lengths;
-};
-c3_chart_internal_fn.isNoneArc = function (d) {
-    return this.hasTarget(this.data.targets, d.id);
-}, c3_chart_internal_fn.isArc = function (d) {
-    return 'data' in d && this.hasTarget(this.data.targets, d.data.id);
-};
-c3_chart_internal_fn.findSameXOfValues = function (values, index) {
-    var i,
-        targetX = values[index].x,
-        sames = [];
-    for (i = index - 1; i >= 0; i--) {
-        if (targetX !== values[i].x) {
-            break;
-        }
-        sames.push(values[i]);
-    }
-    for (i = index; i < values.length; i++) {
-        if (targetX !== values[i].x) {
-            break;
-        }
-        sames.push(values[i]);
-    }
-    return sames;
-};
-c3_chart_internal_fn.findClosestFromTargets = function (targets, pos) {
-    var $$ = this,
-        candidates;
-    candidates = targets.map(function (target) {
-        return $$.findClosest(target.values, pos);
-    });
-    return $$.findClosest(candidates, pos);
-};
-c3_chart_internal_fn.findClosest = function (values, pos) {
-    var $$ = this,
-        minDist = $$.config.point_sensitivity,
-        closest;
-    values.filter(function (v) {
-        return v && $$.isBarType(v.id);
-    }).forEach(function (v) {
-        var shape = $$.main.select('.' + CLASS.bars + $$.getTargetSelectorSuffix(v.id) + ' .' + CLASS.bar + '-' + v.index).node();
-        if (!closest && $$.isWithinBar(shape)) {
-            closest = v;
-        }
-    });
-    values.filter(function (v) {
-        return v && !$$.isBarType(v.id);
-    }).forEach(function (v) {
-        var d = $$.dist(v, pos);
-        if (d < minDist) {
-            minDist = d;
-            closest = v;
-        }
-    });
-    return closest;
-};
-c3_chart_internal_fn.dist = function (data, pos) {
-    var $$ = this,
-        config = $$.config,
-        xIndex = config.axis_rotated ? 1 : 0,
-        yIndex = config.axis_rotated ? 0 : 1,
-        y = $$.circleY(data, data.index),
-        x = $$.x(data.x);
-    return Math.sqrt(Math.pow(x - pos[xIndex], 2) + Math.pow(y - pos[yIndex], 2));
-};
-c3_chart_internal_fn.convertValuesToStep = function (values) {
-    var converted = [].concat(values),
-        i;
-    if (!this.isCategorized()) {
-        return values;
-    }
-    for (i = values.length + 1; 0 < i; i--) {
-        converted[i] = converted[i - 1];
-    }
-    converted[0] = {
-        x: converted[0].x - 1,
-        value: converted[0].value,
-        id: converted[0].id
-    };
-    converted[values.length + 1] = {
-        x: converted[values.length].x + 1,
-        value: converted[values.length].value,
-        id: converted[values.length].id
-    };
-    return converted;
-};
-c3_chart_internal_fn.updateDataAttributes = function (name, attrs) {
-    var $$ = this,
-        config = $$.config,
-        current = config['data_' + name];
-    if (typeof attrs === 'undefined') {
-        return current;
-    }
-    Object.keys(attrs).forEach(function (id) {
-        current[id] = attrs[id];
-    });
-    $$.redraw({ withLegend: true });
-    return current;
-};
-c3_chart_internal_fn.load = function (targets, args) {
-    var $$ = this;
-    if (targets) {
-        if (args.filter) {
-            targets = targets.filter(args.filter);
-        }
-        if (args.type || args.types) {
-            targets.forEach(function (t) {
-                var type = args.types && args.types[t.id] ? args.types[t.id] : args.type;
-                $$.setTargetType(t.id, type);
-            });
-        }
-        $$.data.targets.forEach(function (d) {
-            for (var i = 0; i < targets.length; i++) {
-                if (d.id === targets[i].id) {
-                    d.values = targets[i].values;
-                    targets.splice(i, 1);
                     break;
                 }
             }
-        });
-        $$.data.targets = $$.data.targets.concat(targets);
-    }
-    $$.updateTargets($$.data.targets);
-    $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
-    if (args.done) {
-        args.done();
-    }
-};
-c3_chart_internal_fn.loadFromArgs = function (args) {
-    var $$ = this;
-    if (args.data) {
-        $$.load($$.convertDataToTargets(args.data), args);
-    } else if (args.url) {
-        $$.convertUrlToData(args.url, args.mimeType, args.headers, args.keys, function (data) {
-            $$.load($$.convertDataToTargets(data), args);
-        });
-    } else if (args.json) {
-        $$.load($$.convertDataToTargets($$.convertJsonToData(args.json, args.keys)), args);
-    } else if (args.rows) {
-        $$.load($$.convertDataToTargets($$.convertRowsToData(args.rows)), args);
-    } else if (args.columns) {
-        $$.load($$.convertDataToTargets($$.convertColumnsToData(args.columns)), args);
-    } else {
-        $$.load(null, args);
-    }
-};
-c3_chart_internal_fn.unload = function (targetIds, done) {
-    var $$ = this;
-    if (!done) {
-        done = function done() {};
-    }
-    targetIds = targetIds.filter(function (id) {
-        return $$.hasTarget($$.data.targets, id);
-    });
-    if (!targetIds || targetIds.length === 0) {
-        done();
-        return;
-    }
-    $$.svg.selectAll(targetIds.map(function (id) {
-        return $$.selectorTarget(id);
-    })).transition().style('opacity', 0).remove().call($$.endall, done);
-    targetIds.forEach(function (id) {
-        $$.withoutFadeIn[id] = false;
-        if ($$.legend) {
-            $$.legend.selectAll('.' + CLASS.legendItem + $$.getTargetSelectorSuffix(id)).remove();
-        }
-        $$.data.targets = $$.data.targets.filter(function (t) {
-            return t.id !== id;
-        });
-    });
-};
-c3_chart_internal_fn.getYDomainMin = function (targets) {
-    var $$ = this,
-        config = $$.config,
-        ids = $$.mapToIds(targets),
-        ys = $$.getValuesAsIdKeyed(targets),
-        j,
-        k,
-        baseId,
-        idsInGroup,
-        id,
-        hasNegativeValue;
-    if (config.data_groups.length > 0) {
-        hasNegativeValue = $$.hasNegativeValueInTargets(targets);
-        for (j = 0; j < config.data_groups.length; j++) {
-            idsInGroup = config.data_groups[j].filter(function (id) {
-                return ids.indexOf(id) >= 0;
-            });
-            if (idsInGroup.length === 0) {
-                continue;
-            }
-            baseId = idsInGroup[0];
-            if (hasNegativeValue && ys[baseId]) {
-                ys[baseId].forEach(function (v, i) {
-                    ys[baseId][i] = v < 0 ? v : 0;
-                });
-            }
-            for (k = 1; k < idsInGroup.length; k++) {
-                id = idsInGroup[k];
-                if (!ys[id]) {
-                    continue;
-                }
-                ys[id].forEach(function (v, i) {
-                    if ($$.axis.getId(id) === $$.axis.getId(baseId) && ys[baseId] && !(hasNegativeValue && +v > 0)) {
-                        ys[baseId][i] += +v;
+            if (stack.length > 0) {
+                var firstUserLine = stack[0];
+                for (var i = 0; i < traceLines.length; ++i) {
+                    if (traceLines[i] === firstUserLine) {
+                        if (i > 0) {
+                            creatorLine = "\n" + traceLines[i - 1];
+                        }
+                        break;
                     }
-                });
-            }
-        }
-    }
-    return $$.d3.min(Object.keys(ys).map(function (key) {
-        return $$.d3.min(ys[key]);
-    }));
-};
-c3_chart_internal_fn.getYDomainMax = function (targets) {
-    var $$ = this,
-        config = $$.config,
-        ids = $$.mapToIds(targets),
-        ys = $$.getValuesAsIdKeyed(targets),
-        j,
-        k,
-        baseId,
-        idsInGroup,
-        id,
-        hasPositiveValue;
-    if (config.data_groups.length > 0) {
-        hasPositiveValue = $$.hasPositiveValueInTargets(targets);
-        for (j = 0; j < config.data_groups.length; j++) {
-            idsInGroup = config.data_groups[j].filter(function (id) {
-                return ids.indexOf(id) >= 0;
-            });
-            if (idsInGroup.length === 0) {
-                continue;
-            }
-            baseId = idsInGroup[0];
-            if (hasPositiveValue && ys[baseId]) {
-                ys[baseId].forEach(function (v, i) {
-                    ys[baseId][i] = v > 0 ? v : 0;
-                });
-            }
-            for (k = 1; k < idsInGroup.length; k++) {
-                id = idsInGroup[k];
-                if (!ys[id]) {
-                    continue;
                 }
-                ys[id].forEach(function (v, i) {
-                    if ($$.axis.getId(id) === $$.axis.getId(baseId) && ys[baseId] && !(hasPositiveValue && +v < 0)) {
-                        ys[baseId][i] += +v;
-                    }
-                });
             }
         }
+        var msg = "a promise was created in a " + name +
+            "handler " + handlerLine + "but was not returned from it, " +
+            "see http://goo.gl/rRqMUw" +
+            creatorLine;
+        promise._warn(msg, true, promiseCreated);
     }
-    return $$.d3.max(Object.keys(ys).map(function (key) {
-        return $$.d3.max(ys[key]);
-    }));
-};
-c3_chart_internal_fn.getYDomain = function (targets, axisId, xDomain) {
-    var $$ = this,
-        config = $$.config,
-        targetsByAxisId = targets.filter(function (t) {
-        return $$.axis.getId(t.id) === axisId;
-    }),
-        yTargets = xDomain ? $$.filterByXDomain(targetsByAxisId, xDomain) : targetsByAxisId,
-        yMin = axisId === 'y2' ? config.axis_y2_min : config.axis_y_min,
-        yMax = axisId === 'y2' ? config.axis_y2_max : config.axis_y_max,
-        yDomainMin = $$.getYDomainMin(yTargets),
-        yDomainMax = $$.getYDomainMax(yTargets),
-        domain,
-        domainLength,
-        padding,
-        padding_top,
-        padding_bottom,
-        center = axisId === 'y2' ? config.axis_y2_center : config.axis_y_center,
-        yDomainAbs,
-        lengths,
-        diff,
-        ratio,
-        isAllPositive,
-        isAllNegative,
-        isZeroBased = $$.hasType('bar', yTargets) && config.bar_zerobased || $$.hasType('area', yTargets) && config.area_zerobased,
-        isInverted = axisId === 'y2' ? config.axis_y2_inverted : config.axis_y_inverted,
-        showHorizontalDataLabel = $$.hasDataLabel() && config.axis_rotated,
-        showVerticalDataLabel = $$.hasDataLabel() && !config.axis_rotated;
-    yDomainMin = isValue(yMin) ? yMin : isValue(yMax) ? yDomainMin < yMax ? yDomainMin : yMax - 10 : yDomainMin;
-    yDomainMax = isValue(yMax) ? yMax : isValue(yMin) ? yMin < yDomainMax ? yDomainMax : yMin + 10 : yDomainMax;
-    if (yTargets.length === 0) {
-        return axisId === 'y2' ? $$.y2.domain() : $$.y.domain();
-    }
-    if (isNaN(yDomainMin)) {
-        yDomainMin = 0;
-    }
-    if (isNaN(yDomainMax)) {
-        yDomainMax = yDomainMin;
-    }
-    if (yDomainMin === yDomainMax) {
-        yDomainMin < 0 ? yDomainMax = 0 : yDomainMin = 0;
-    }
-    isAllPositive = yDomainMin >= 0 && yDomainMax >= 0;
-    isAllNegative = yDomainMin <= 0 && yDomainMax <= 0;
-    if (isValue(yMin) && isAllPositive || isValue(yMax) && isAllNegative) {
-        isZeroBased = false;
-    }
-    if (isZeroBased) {
-        if (isAllPositive) {
-            yDomainMin = 0;
-        }
-        if (isAllNegative) {
-            yDomainMax = 0;
-        }
-    }
-    domainLength = Math.abs(yDomainMax - yDomainMin);
-    padding = padding_top = padding_bottom = domainLength * 0.1;
-    if (typeof center !== 'undefined') {
-        yDomainAbs = Math.max(Math.abs(yDomainMin), Math.abs(yDomainMax));
-        yDomainMax = center + yDomainAbs;
-        yDomainMin = center - yDomainAbs;
-    }
-    if (showHorizontalDataLabel) {
-        lengths = $$.getDataLabelLength(yDomainMin, yDomainMax, 'width');
-        diff = diffDomain($$.y.range());
-        ratio = [lengths[0] / diff, lengths[1] / diff];
-        padding_top += domainLength * (ratio[1] / (1 - ratio[0] - ratio[1]));
-        padding_bottom += domainLength * (ratio[0] / (1 - ratio[0] - ratio[1]));
-    } else if (showVerticalDataLabel) {
-        lengths = $$.getDataLabelLength(yDomainMin, yDomainMax, 'height');
-        padding_top += $$.axis.convertPixelsToAxisPadding(lengths[1], domainLength);
-        padding_bottom += $$.axis.convertPixelsToAxisPadding(lengths[0], domainLength);
-    }
-    if (axisId === 'y' && notEmpty(config.axis_y_padding)) {
-        padding_top = $$.axis.getPadding(config.axis_y_padding, 'top', padding_top, domainLength);
-        padding_bottom = $$.axis.getPadding(config.axis_y_padding, 'bottom', padding_bottom, domainLength);
-    }
-    if (axisId === 'y2' && notEmpty(config.axis_y2_padding)) {
-        padding_top = $$.axis.getPadding(config.axis_y2_padding, 'top', padding_top, domainLength);
-        padding_bottom = $$.axis.getPadding(config.axis_y2_padding, 'bottom', padding_bottom, domainLength);
-    }
-    if (isZeroBased) {
-        if (isAllPositive) {
-            padding_bottom = yDomainMin;
-        }
-        if (isAllNegative) {
-            padding_top = -yDomainMax;
-        }
-    }
-    domain = [yDomainMin - padding_bottom, yDomainMax + padding_top];
-    return isInverted ? domain.reverse() : domain;
-};
-c3_chart_internal_fn.getXDomainMin = function (targets) {
-    var $$ = this,
-        config = $$.config;
-    return isDefined(config.axis_x_min) ? $$.isTimeSeries() ? this.parseDate(config.axis_x_min) : config.axis_x_min : $$.d3.min(targets, function (t) {
-        return $$.d3.min(t.values, function (v) {
-            return v.x;
-        });
-    });
-};
-c3_chart_internal_fn.getXDomainMax = function (targets) {
-    var $$ = this,
-        config = $$.config;
-    return isDefined(config.axis_x_max) ? $$.isTimeSeries() ? this.parseDate(config.axis_x_max) : config.axis_x_max : $$.d3.max(targets, function (t) {
-        return $$.d3.max(t.values, function (v) {
-            return v.x;
-        });
-    });
-};
-c3_chart_internal_fn.getXDomainPadding = function (domain) {
-    var $$ = this,
-        config = $$.config,
-        diff = domain[1] - domain[0],
-        maxDataCount,
-        padding,
-        paddingLeft,
-        paddingRight;
-    if ($$.isCategorized()) {
-        padding = 0;
-    } else if ($$.hasType('bar')) {
-        maxDataCount = $$.getMaxDataCount();
-        padding = maxDataCount > 1 ? diff / (maxDataCount - 1) / 2 : 0.5;
+}
+function deprecated(name, replacement) {
+    var message = name +
+        " is deprecated and will be removed in a future version.";
+    if (replacement) message += " Use " + replacement + " instead.";
+    return warn(message);
+}
+function warn(message, shouldUseOwnTrace, promise) {
+    if (!config.warnings) return;
+    var warning = new Warning(message);
+    var ctx;
+    if (shouldUseOwnTrace) {
+        promise._attachExtraTrace(warning);
+    } else if (config.longStackTraces && (ctx = Promise._peekContext())) {
+        ctx.attachExtraTrace(warning);
     } else {
-        padding = diff * 0.01;
+        var parsed = parseStackAndMessage(warning);
+        warning.stack = parsed.message + "\n" + parsed.stack.join("\n");
     }
-    if (_typeof(config.axis_x_padding) === 'object' && notEmpty(config.axis_x_padding)) {
-        paddingLeft = isValue(config.axis_x_padding.left) ? config.axis_x_padding.left : padding;
-        paddingRight = isValue(config.axis_x_padding.right) ? config.axis_x_padding.right : padding;
-    } else if (typeof config.axis_x_padding === 'number') {
-        paddingLeft = paddingRight = config.axis_x_padding;
+    if (!activeFireEvent("warning", warning)) {
+        formatAndLogError(warning, "", true);
+    }
+}
+function reconstructStack(message, stacks) {
+    for (var i = 0; i < stacks.length - 1; ++i) {
+        stacks[i].push("From previous event:");
+        stacks[i] = stacks[i].join("\n");
+    }
+    if (i < stacks.length) {
+        stacks[i] = stacks[i].join("\n");
+    }
+    return message + "\n" + stacks.join("\n");
+}
+function removeDuplicateOrEmptyJumps(stacks) {
+    for (var i = 0; i < stacks.length; ++i) {
+        if (stacks[i].length === 0 ||
+            ((i + 1 < stacks.length) && stacks[i][0] === stacks[i+1][0])) {
+            stacks.splice(i, 1);
+            i--;
+        }
+    }
+}
+function removeCommonRoots(stacks) {
+    var current = stacks[0];
+    for (var i = 1; i < stacks.length; ++i) {
+        var prev = stacks[i];
+        var currentLastIndex = current.length - 1;
+        var currentLastLine = current[currentLastIndex];
+        var commonRootMeetPoint = -1;
+        for (var j = prev.length - 1; j >= 0; --j) {
+            if (prev[j] === currentLastLine) {
+                commonRootMeetPoint = j;
+                break;
+            }
+        }
+        for (var j = commonRootMeetPoint; j >= 0; --j) {
+            var line = prev[j];
+            if (current[currentLastIndex] === line) {
+                current.pop();
+                currentLastIndex--;
+            } else {
+                break;
+            }
+        }
+        current = prev;
+    }
+}
+function cleanStack(stack) {
+    var ret = [];
+    for (var i = 0; i < stack.length; ++i) {
+        var line = stack[i];
+        var isTraceLine = "    (No stack trace)" === line ||
+            stackFramePattern.test(line);
+        var isInternalFrame = isTraceLine && shouldIgnore(line);
+        if (isTraceLine && !isInternalFrame) {
+            if (indentStackFrames && line.charAt(0) !== " ") {
+                line = "    " + line;
+            }
+            ret.push(line);
+        }
+    }
+    return ret;
+}
+function stackFramesAsArray(error) {
+    var stack = error.stack.replace(/\s+$/g, "").split("\n");
+    for (var i = 0; i < stack.length; ++i) {
+        var line = stack[i];
+        if ("    (No stack trace)" === line || stackFramePattern.test(line)) {
+            break;
+        }
+    }
+    if (i > 0 && error.name != "SyntaxError") {
+        stack = stack.slice(i);
+    }
+    return stack;
+}
+function parseStackAndMessage(error) {
+    var stack = error.stack;
+    var message = error.toString();
+    stack = typeof stack === "string" && stack.length > 0
+                ? stackFramesAsArray(error) : ["    (No stack trace)"];
+    return {
+        message: message,
+        stack: error.name == "SyntaxError" ? stack : cleanStack(stack)
+    };
+}
+function formatAndLogError(error, title, isSoft) {
+    if (typeof console !== "undefined") {
+        var message;
+        if (util.isObject(error)) {
+            var stack = error.stack;
+            message = title + formatStack(stack, error);
+        } else {
+            message = title + String(error);
+        }
+        if (typeof printWarning === "function") {
+            printWarning(message, isSoft);
+        } else if (typeof console.log === "function" ||
+            typeof console.log === "object") {
+            console.log(message);
+        }
+    }
+}
+function fireRejectionEvent(name, localHandler, reason, promise) {
+    var localEventFired = false;
+    try {
+        if (typeof localHandler === "function") {
+            localEventFired = true;
+            if (name === "rejectionHandled") {
+                localHandler(promise);
+            } else {
+                localHandler(reason, promise);
+            }
+        }
+    } catch (e) {
+        async.throwLater(e);
+    }
+    if (name === "unhandledRejection") {
+        if (!activeFireEvent(name, reason, promise) && !localEventFired) {
+            formatAndLogError(reason, "Unhandled rejection ");
+        }
     } else {
-        paddingLeft = paddingRight = padding;
+        activeFireEvent(name, promise);
     }
-    return { left: paddingLeft, right: paddingRight };
-};
-c3_chart_internal_fn.getXDomain = function (targets) {
-    var $$ = this,
-        xDomain = [$$.getXDomainMin(targets), $$.getXDomainMax(targets)],
-        firstX = xDomain[0],
-        lastX = xDomain[1],
-        padding = $$.getXDomainPadding(xDomain),
-        min = 0,
-        max = 0;
-    if (firstX - lastX === 0 && !$$.isCategorized()) {
-        if ($$.isTimeSeries()) {
-            firstX = new Date(firstX.getTime() * 0.5);
-            lastX = new Date(lastX.getTime() * 1.5);
-        } else {
-            firstX = firstX === 0 ? 1 : firstX * 0.5;
-            lastX = lastX === 0 ? -1 : lastX * 1.5;
+}
+function formatNonError(obj) {
+    var str;
+    if (typeof obj === "function") {
+        str = "[function " +
+            (obj.name || "anonymous") +
+            "]";
+    } else {
+        str = obj && typeof obj.toString === "function"
+            ? obj.toString() : util.toString(obj);
+        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
+        if (ruselessToString.test(str)) {
+            try {
+                var newStr = JSON.stringify(obj);
+                str = newStr;
+            }
+            catch(e) {
+            }
+        }
+        if (str.length === 0) {
+            str = "(empty array)";
         }
     }
-    if (firstX || firstX === 0) {
-        min = $$.isTimeSeries() ? new Date(firstX.getTime() - padding.left) : firstX - padding.left;
+    return ("(<" + snip(str) + ">, no stack trace)");
+}
+function snip(str) {
+    var maxChars = 41;
+    if (str.length < maxChars) {
+        return str;
     }
-    if (lastX || lastX === 0) {
-        max = $$.isTimeSeries() ? new Date(lastX.getTime() + padding.right) : lastX + padding.right;
+    return str.substr(0, maxChars - 3) + "...";
+}
+function longStackTracesIsSupported() {
+    return typeof captureStackTrace === "function";
+}
+var shouldIgnore = function() { return false; };
+var parseLineInfoRegex = /[\/<\(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
+function parseLineInfo(line) {
+    var matches = line.match(parseLineInfoRegex);
+    if (matches) {
+        return {
+            fileName: matches[1],
+            line: parseInt(matches[2], 10)
+        };
     }
-    return [min, max];
-};
-c3_chart_internal_fn.updateXDomain = function (targets, withUpdateXDomain, withUpdateOrgXDomain, withTrim, domain) {
-    var $$ = this,
-        config = $$.config;
-    if (withUpdateOrgXDomain) {
-        $$.x.domain(domain ? domain : $$.d3.extent($$.getXDomain(targets)));
-        $$.orgXDomain = $$.x.domain();
-        if (config.zoom_enabled) {
-            $$.zoom.scale($$.x).updateScaleExtent();
+}
+function setBounds(firstLineError, lastLineError) {
+    if (!longStackTracesIsSupported()) return;
+    var firstStackLines = firstLineError.stack.split("\n");
+    var lastStackLines = lastLineError.stack.split("\n");
+    var firstIndex = -1;
+    var lastIndex = -1;
+    var firstFileName;
+    var lastFileName;
+    for (var i = 0; i < firstStackLines.length; ++i) {
+        var result = parseLineInfo(firstStackLines[i]);
+        if (result) {
+            firstFileName = result.fileName;
+            firstIndex = result.line;
+            break;
         }
-        $$.subX.domain($$.x.domain());
-        if ($$.brush) {
-            $$.brush.scale($$.subX);
+    }
+    for (var i = 0; i < lastStackLines.length; ++i) {
+        var result = parseLineInfo(lastStackLines[i]);
+        if (result) {
+            lastFileName = result.fileName;
+            lastIndex = result.line;
+            break;
         }
     }
-    if (withUpdateXDomain) {
-        $$.x.domain(domain ? domain : !$$.brush || $$.brush.empty() ? $$.orgXDomain : $$.brush.extent());
-        if (config.zoom_enabled) {
-            $$.zoom.scale($$.x).updateScaleExtent();
+    if (firstIndex < 0 || lastIndex < 0 || !firstFileName || !lastFileName ||
+        firstFileName !== lastFileName || firstIndex >= lastIndex) {
+        return;
+    }
+    shouldIgnore = function(line) {
+        if (bluebirdFramePattern.test(line)) return true;
+        var info = parseLineInfo(line);
+        if (info) {
+            if (info.fileName === firstFileName &&
+                (firstIndex <= info.line && info.line <= lastIndex)) {
+                return true;
+            }
+        }
+        return false;
+    };
+}
+function CapturedTrace(parent) {
+    this._parent = parent;
+    this._promisesCreated = 0;
+    var length = this._length = 1 + (parent === undefined ? 0 : parent._length);
+    captureStackTrace(this, CapturedTrace);
+    if (length > 32) this.uncycle();
+}
+util.inherits(CapturedTrace, Error);
+Context.CapturedTrace = CapturedTrace;
+CapturedTrace.prototype.uncycle = function() {
+    var length = this._length;
+    if (length < 2) return;
+    var nodes = [];
+    var stackToIndex = {};
+    for (var i = 0, node = this; node !== undefined; ++i) {
+        nodes.push(node);
+        node = node._parent;
+    }
+    length = this._length = i;
+    for (var i = length - 1; i >= 0; --i) {
+        var stack = nodes[i].stack;
+        if (stackToIndex[stack] === undefined) {
+            stackToIndex[stack] = i;
         }
     }
-    if (withTrim) {
-        $$.x.domain($$.trimXDomain($$.x.orgDomain()));
-    }
-    return $$.x.domain();
-};
-c3_chart_internal_fn.trimXDomain = function (domain) {
-    var zoomDomain = this.getZoomDomain(),
-        min = zoomDomain[0],
-        max = zoomDomain[1];
-    if (domain[0] <= min) {
-        domain[1] = +domain[1] + (min - domain[0]);
-        domain[0] = min;
-    }
-    if (max <= domain[1]) {
-        domain[0] = +domain[0] - (domain[1] - max);
-        domain[1] = max;
-    }
-    return domain;
-};
-c3_chart_internal_fn.drag = function (mouse) {
-    var $$ = this,
-        config = $$.config,
-        main = $$.main,
-        d3 = $$.d3;
-    var sx, sy, mx, my, minX, maxX, minY, maxY;
-    if ($$.hasArcType()) {
-        return;
-    }
-    if (!config.data_selection_enabled) {
-        return;
-    }
-    if (config.zoom_enabled && !$$.zoom.altDomain) {
-        return;
-    }
-    if (!config.data_selection_multiple) {
-        return;
-    }
-    sx = $$.dragStart[0];
-    sy = $$.dragStart[1];
-    mx = mouse[0];
-    my = mouse[1];
-    minX = Math.min(sx, mx);
-    maxX = Math.max(sx, mx);
-    minY = config.data_selection_grouped ? $$.margin.top : Math.min(sy, my);
-    maxY = config.data_selection_grouped ? $$.height : Math.max(sy, my);
-    main.select('.' + CLASS.dragarea).attr('x', minX).attr('y', minY).attr('width', maxX - minX).attr('height', maxY - minY);
-    main.selectAll('.' + CLASS.shapes).selectAll('.' + CLASS.shape).filter(function (d) {
-        return config.data_selection_isselectable(d);
-    }).each(function (d, i) {
-        var shape = d3.select(this),
-            isSelected = shape.classed(CLASS.SELECTED),
-            isIncluded = shape.classed(CLASS.INCLUDED),
-            _x,
-            _y,
-            _w,
-            _h,
-            toggle,
-            isWithin = false,
-            box;
-        if (shape.classed(CLASS.circle)) {
-            _x = shape.attr("cx") * 1;
-            _y = shape.attr("cy") * 1;
-            toggle = $$.togglePoint;
-            isWithin = minX < _x && _x < maxX && minY < _y && _y < maxY;
-        } else if (shape.classed(CLASS.bar)) {
-            box = getPathBox(this);
-            _x = box.x;
-            _y = box.y;
-            _w = box.width;
-            _h = box.height;
-            toggle = $$.togglePath;
-            isWithin = !(maxX < _x || _x + _w < minX) && !(maxY < _y || _y + _h < minY);
-        } else {
+    for (var i = 0; i < length; ++i) {
+        var currentStack = nodes[i].stack;
+        var index = stackToIndex[currentStack];
+        if (index !== undefined && index !== i) {
+            if (index > 0) {
+                nodes[index - 1]._parent = undefined;
+                nodes[index - 1]._length = 1;
+            }
+            nodes[i]._parent = undefined;
+            nodes[i]._length = 1;
+            var cycleEdgeNode = i > 0 ? nodes[i - 1] : this;
+            if (index < length - 1) {
+                cycleEdgeNode._parent = nodes[index + 1];
+                cycleEdgeNode._parent.uncycle();
+                cycleEdgeNode._length =
+                    cycleEdgeNode._parent._length + 1;
+            } else {
+                cycleEdgeNode._parent = undefined;
+                cycleEdgeNode._length = 1;
+            }
+            var currentChildLength = cycleEdgeNode._length + 1;
+            for (var j = i - 2; j >= 0; --j) {
+                nodes[j]._length = currentChildLength;
+                currentChildLength++;
+            }
             return;
         }
-        if (isWithin ^ isIncluded) {
-            shape.classed(CLASS.INCLUDED, !isIncluded);
-            shape.classed(CLASS.SELECTED, !isSelected);
-            toggle.call($$, !isSelected, shape, d, i);
+    }
+};
+CapturedTrace.prototype.attachExtraTrace = function(error) {
+    if (error.__stackCleaned__) return;
+    this.uncycle();
+    var parsed = parseStackAndMessage(error);
+    var message = parsed.message;
+    var stacks = [parsed.stack];
+    var trace = this;
+    while (trace !== undefined) {
+        stacks.push(cleanStack(trace.stack.split("\n")));
+        trace = trace._parent;
+    }
+    removeCommonRoots(stacks);
+    removeDuplicateOrEmptyJumps(stacks);
+    util.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
+    util.notEnumerableProp(error, "__stackCleaned__", true);
+};
+var captureStackTrace = (function stackDetection() {
+    var v8stackFramePattern = /^\s*at\s*/;
+    var v8stackFormatter = function(stack, error) {
+        if (typeof stack === "string") return stack;
+        if (error.name !== undefined &&
+            error.message !== undefined) {
+            return error.toString();
         }
-    });
-};
-c3_chart_internal_fn.dragstart = function (mouse) {
-    var $$ = this,
-        config = $$.config;
-    if ($$.hasArcType()) {
-        return;
-    }
-    if (!config.data_selection_enabled) {
-        return;
-    }
-    $$.dragStart = mouse;
-    $$.main.select('.' + CLASS.chart).append('rect').attr('class', CLASS.dragarea).style('opacity', 0.1);
-    $$.dragging = true;
-};
-c3_chart_internal_fn.dragend = function () {
-    var $$ = this,
-        config = $$.config;
-    if ($$.hasArcType()) {
-        return;
-    }
-    if (!config.data_selection_enabled) {
-        return;
-    }
-    $$.main.select('.' + CLASS.dragarea).transition().duration(100).style('opacity', 0).remove();
-    $$.main.selectAll('.' + CLASS.shape).classed(CLASS.INCLUDED, false);
-    $$.dragging = false;
-};
-c3_chart_internal_fn.getYFormat = function (forArc) {
-    var $$ = this,
-        formatForY = forArc && !$$.hasType('gauge') ? $$.defaultArcValueFormat : $$.yFormat,
-        formatForY2 = forArc && !$$.hasType('gauge') ? $$.defaultArcValueFormat : $$.y2Format;
-    return function (v, ratio, id) {
-        var format = $$.axis.getId(id) === 'y2' ? formatForY2 : formatForY;
-        return format.call($$, v, ratio);
+        return formatNonError(error);
     };
-};
-c3_chart_internal_fn.yFormat = function (v) {
-    var $$ = this,
-        config = $$.config,
-        format = config.axis_y_tick_format ? config.axis_y_tick_format : $$.defaultValueFormat;
-    return format(v);
-};
-c3_chart_internal_fn.y2Format = function (v) {
-    var $$ = this,
-        config = $$.config,
-        format = config.axis_y2_tick_format ? config.axis_y2_tick_format : $$.defaultValueFormat;
-    return format(v);
-};
-c3_chart_internal_fn.defaultValueFormat = function (v) {
-    return isValue(v) ? +v : "";
-};
-c3_chart_internal_fn.defaultArcValueFormat = function (v, ratio) {
-    return (ratio * 100).toFixed(1) + '%';
-};
-c3_chart_internal_fn.dataLabelFormat = function (targetId) {
-    var $$ = this,
-        data_labels = $$.config.data_labels,
-        format,
-        defaultFormat = function defaultFormat(v) {
-        return isValue(v) ? +v : "";
+    if (typeof Error.stackTraceLimit === "number" &&
+        typeof Error.captureStackTrace === "function") {
+        Error.stackTraceLimit += 6;
+        stackFramePattern = v8stackFramePattern;
+        formatStack = v8stackFormatter;
+        var captureStackTrace = Error.captureStackTrace;
+        shouldIgnore = function(line) {
+            return bluebirdFramePattern.test(line);
+        };
+        return function(receiver, ignoreUntil) {
+            Error.stackTraceLimit += 6;
+            captureStackTrace(receiver, ignoreUntil);
+            Error.stackTraceLimit -= 6;
+        };
+    }
+    var err = new Error();
+    if (typeof err.stack === "string" &&
+        err.stack.split("\n")[0].indexOf("stackDetection@") >= 0) {
+        stackFramePattern = /@/;
+        formatStack = v8stackFormatter;
+        indentStackFrames = true;
+        return function captureStackTrace(o) {
+            o.stack = new Error().stack;
+        };
+    }
+    var hasStackAfterThrow;
+    try { throw new Error(); }
+    catch(e) {
+        hasStackAfterThrow = ("stack" in e);
+    }
+    if (!("stack" in err) && hasStackAfterThrow &&
+        typeof Error.stackTraceLimit === "number") {
+        stackFramePattern = v8stackFramePattern;
+        formatStack = v8stackFormatter;
+        return function captureStackTrace(o) {
+            Error.stackTraceLimit += 6;
+            try { throw new Error(); }
+            catch(e) { o.stack = e.stack; }
+            Error.stackTraceLimit -= 6;
+        };
+    }
+    formatStack = function(stack, error) {
+        if (typeof stack === "string") return stack;
+        if ((typeof error === "object" ||
+            typeof error === "function") &&
+            error.name !== undefined &&
+            error.message !== undefined) {
+            return error.toString();
+        }
+        return formatNonError(error);
     };
-    if (typeof data_labels.format === 'function') {
-        format = data_labels.format;
-    } else if (_typeof(data_labels.format) === 'object') {
-        if (data_labels.format[targetId]) {
-            format = data_labels.format[targetId] === true ? defaultFormat : data_labels.format[targetId];
+    return null;
+})([]);
+if (typeof console !== "undefined" && typeof console.warn !== "undefined") {
+    printWarning = function (message) {
+        console.warn(message);
+    };
+    if (util.isNode && process.stderr.isTTY) {
+        printWarning = function(message, isSoft) {
+            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
+            console.warn(color + message + "\u001b[0m\n");
+        };
+    } else if (!util.isNode && typeof (new Error().stack) === "string") {
+        printWarning = function(message, isSoft) {
+            console.warn("%c" + message,
+                        isSoft ? "color: darkorange" : "color: red");
+        };
+    }
+}
+var config = {
+    warnings: warnings,
+    longStackTraces: false,
+    cancellation: false,
+    monitoring: false
+};
+if (longStackTraces) Promise.longStackTraces();
+return {
+    longStackTraces: function() {
+        return config.longStackTraces;
+    },
+    warnings: function() {
+        return config.warnings;
+    },
+    cancellation: function() {
+        return config.cancellation;
+    },
+    monitoring: function() {
+        return config.monitoring;
+    },
+    propagateFromFunction: function() {
+        return propagateFromFunction;
+    },
+    boundValueFunction: function() {
+        return boundValueFunction;
+    },
+    checkForgottenReturns: checkForgottenReturns,
+    setBounds: setBounds,
+    warn: warn,
+    deprecated: deprecated,
+    CapturedTrace: CapturedTrace,
+    fireDomEvent: fireDomEvent,
+    fireGlobalEvent: fireGlobalEvent
+};
+};
+},{"./errors":9,"./util":21}],8:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise) {
+function returner() {
+    return this.value;
+}
+function thrower() {
+    throw this.reason;
+}
+Promise.prototype["return"] =
+Promise.prototype.thenReturn = function (value) {
+    if (value instanceof Promise) value.suppressUnhandledRejections();
+    return this._then(
+        returner, undefined, undefined, {value: value}, undefined);
+};
+Promise.prototype["throw"] =
+Promise.prototype.thenThrow = function (reason) {
+    return this._then(
+        thrower, undefined, undefined, {reason: reason}, undefined);
+};
+Promise.prototype.catchThrow = function (reason) {
+    if (arguments.length <= 1) {
+        return this._then(
+            undefined, thrower, undefined, {reason: reason}, undefined);
+    } else {
+        var _reason = arguments[1];
+        var handler = function() {throw _reason;};
+        return this.caught(reason, handler);
+    }
+};
+Promise.prototype.catchReturn = function (value) {
+    if (arguments.length <= 1) {
+        if (value instanceof Promise) value.suppressUnhandledRejections();
+        return this._then(
+            undefined, returner, undefined, {value: value}, undefined);
+    } else {
+        var _value = arguments[1];
+        if (_value instanceof Promise) _value.suppressUnhandledRejections();
+        var handler = function() {return _value;};
+        return this.caught(value, handler);
+    }
+};
+};
+},{}],9:[function(_dereq_,module,exports){
+"use strict";
+var es5 = _dereq_("./es5");
+var Objectfreeze = es5.freeze;
+var util = _dereq_("./util");
+var inherits = util.inherits;
+var notEnumerableProp = util.notEnumerableProp;
+function subError(nameProperty, defaultMessage) {
+    function SubError(message) {
+        if (!(this instanceof SubError)) return new SubError(message);
+        notEnumerableProp(this, "message",
+            typeof message === "string" ? message : defaultMessage);
+        notEnumerableProp(this, "name", nameProperty);
+        if (Error.captureStackTrace) {
+            Error.captureStackTrace(this, this.constructor);
         } else {
-            format = function format() {
-                return '';
-            };
+            Error.call(this);
         }
-    } else {
-        format = defaultFormat;
     }
-    return format;
-};
-c3_chart_internal_fn.initGrid = function () {
-    var $$ = this,
-        config = $$.config,
-        d3 = $$.d3;
-    $$.grid = $$.main.append('g').attr("clip-path", $$.clipPathForGrid).attr('class', CLASS.grid);
-    if (config.grid_x_show) {
-        $$.grid.append("g").attr("class", CLASS.xgrids);
+    inherits(SubError, Error);
+    return SubError;
+}
+var _TypeError, _RangeError;
+var Warning = subError("Warning", "warning");
+var CancellationError = subError("CancellationError", "cancellation error");
+var TimeoutError = subError("TimeoutError", "timeout error");
+var AggregateError = subError("AggregateError", "aggregate error");
+try {
+    _TypeError = TypeError;
+    _RangeError = RangeError;
+} catch(e) {
+    _TypeError = subError("TypeError", "type error");
+    _RangeError = subError("RangeError", "range error");
+}
+var methods = ("join pop push shift unshift slice filter forEach some " +
+    "every map indexOf lastIndexOf reduce reduceRight sort reverse").split(" ");
+for (var i = 0; i < methods.length; ++i) {
+    if (typeof Array.prototype[methods[i]] === "function") {
+        AggregateError.prototype[methods[i]] = Array.prototype[methods[i]];
     }
-    if (config.grid_y_show) {
-        $$.grid.append('g').attr('class', CLASS.ygrids);
-    }
-    if (config.grid_focus_show) {
-        $$.grid.append('g').attr("class", CLASS.xgridFocus).append('line').attr('class', CLASS.xgridFocus);
-    }
-    $$.xgrid = d3.selectAll([]);
-    if (!config.grid_lines_front) {
-        $$.initGridLines();
-    }
-};
-c3_chart_internal_fn.initGridLines = function () {
-    var $$ = this,
-        d3 = $$.d3;
-    $$.gridLines = $$.main.append('g').attr("clip-path", $$.clipPathForGrid).attr('class', CLASS.grid + ' ' + CLASS.gridLines);
-    $$.gridLines.append('g').attr("class", CLASS.xgridLines);
-    $$.gridLines.append('g').attr('class', CLASS.ygridLines);
-    $$.xgridLines = d3.selectAll([]);
-};
-c3_chart_internal_fn.updateXGrid = function (withoutUpdate) {
-    var $$ = this,
-        config = $$.config,
-        d3 = $$.d3,
-        xgridData = $$.generateGridData(config.grid_x_type, $$.x),
-        tickOffset = $$.isCategorized() ? $$.xAxis.tickOffset() : 0;
-    $$.xgridAttr = config.axis_rotated ? {
-        'x1': 0,
-        'x2': $$.width,
-        'y1': function y1(d) {
-            return $$.x(d) - tickOffset;
-        },
-        'y2': function y2(d) {
-            return $$.x(d) - tickOffset;
+}
+es5.defineProperty(AggregateError.prototype, "length", {
+    value: 0,
+    configurable: false,
+    writable: true,
+    enumerable: true
+});
+AggregateError.prototype["isOperational"] = true;
+var level = 0;
+AggregateError.prototype.toString = function() {
+    var indent = Array(level * 4 + 1).join(" ");
+    var ret = "\n" + indent + "AggregateError of:" + "\n";
+    level++;
+    indent = Array(level * 4 + 1).join(" ");
+    for (var i = 0; i < this.length; ++i) {
+        var str = this[i] === this ? "[Circular AggregateError]" : this[i] + "";
+        var lines = str.split("\n");
+        for (var j = 0; j < lines.length; ++j) {
+            lines[j] = indent + lines[j];
         }
-    } : {
-        'x1': function x1(d) {
-            return $$.x(d) + tickOffset;
-        },
-        'x2': function x2(d) {
-            return $$.x(d) + tickOffset;
-        },
-        'y1': 0,
-        'y2': $$.height
+        str = lines.join("\n");
+        ret += str + "\n";
+    }
+    level--;
+    return ret;
+};
+function OperationalError(message) {
+    if (!(this instanceof OperationalError))
+        return new OperationalError(message);
+    notEnumerableProp(this, "name", "OperationalError");
+    notEnumerableProp(this, "message", message);
+    this.cause = message;
+    this["isOperational"] = true;
+    if (message instanceof Error) {
+        notEnumerableProp(this, "message", message.message);
+        notEnumerableProp(this, "stack", message.stack);
+    } else if (Error.captureStackTrace) {
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
+inherits(OperationalError, Error);
+var errorTypes = Error["__BluebirdErrorTypes__"];
+if (!errorTypes) {
+    errorTypes = Objectfreeze({
+        CancellationError: CancellationError,
+        TimeoutError: TimeoutError,
+        OperationalError: OperationalError,
+        RejectionError: OperationalError,
+        AggregateError: AggregateError
+    });
+    es5.defineProperty(Error, "__BluebirdErrorTypes__", {
+        value: errorTypes,
+        writable: false,
+        enumerable: false,
+        configurable: false
+    });
+}
+module.exports = {
+    Error: Error,
+    TypeError: _TypeError,
+    RangeError: _RangeError,
+    CancellationError: errorTypes.CancellationError,
+    OperationalError: errorTypes.OperationalError,
+    TimeoutError: errorTypes.TimeoutError,
+    AggregateError: errorTypes.AggregateError,
+    Warning: Warning
+};
+},{"./es5":10,"./util":21}],10:[function(_dereq_,module,exports){
+var isES5 = (function(){
+    "use strict";
+    return this === undefined;
+})();
+if (isES5) {
+    module.exports = {
+        freeze: Object.freeze,
+        defineProperty: Object.defineProperty,
+        getDescriptor: Object.getOwnPropertyDescriptor,
+        keys: Object.keys,
+        names: Object.getOwnPropertyNames,
+        getPrototypeOf: Object.getPrototypeOf,
+        isArray: Array.isArray,
+        isES5: isES5,
+        propertyIsWritable: function(obj, prop) {
+            var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
+            return !!(!descriptor || descriptor.writable || descriptor.set);
+        }
     };
-    $$.xgrid = $$.main.select('.' + CLASS.xgrids).selectAll('.' + CLASS.xgrid).data(xgridData);
-    $$.xgrid.enter().append('line').attr("class", CLASS.xgrid);
-    if (!withoutUpdate) {
-        $$.xgrid.attr($$.xgridAttr).style("opacity", function () {
-            return +d3.select(this).attr(config.axis_rotated ? 'y1' : 'x1') === (config.axis_rotated ? $$.height : 0) ? 0 : 1;
+} else {
+    var has = {}.hasOwnProperty;
+    var str = {}.toString;
+    var proto = {}.constructor.prototype;
+    var ObjectKeys = function (o) {
+        var ret = [];
+        for (var key in o) {
+            if (has.call(o, key)) {
+                ret.push(key);
+            }
+        }
+        return ret;
+    };
+    var ObjectGetDescriptor = function(o, key) {
+        return {value: o[key]};
+    };
+    var ObjectDefineProperty = function (o, key, desc) {
+        o[key] = desc.value;
+        return o;
+    };
+    var ObjectFreeze = function (obj) {
+        return obj;
+    };
+    var ObjectGetPrototypeOf = function (obj) {
+        try {
+            return Object(obj).constructor.prototype;
+        }
+        catch (e) {
+            return proto;
+        }
+    };
+    var ArrayIsArray = function (obj) {
+        try {
+            return str.call(obj) === "[object Array]";
+        }
+        catch(e) {
+            return false;
+        }
+    };
+    module.exports = {
+        isArray: ArrayIsArray,
+        keys: ObjectKeys,
+        names: ObjectKeys,
+        defineProperty: ObjectDefineProperty,
+        getDescriptor: ObjectGetDescriptor,
+        freeze: ObjectFreeze,
+        getPrototypeOf: ObjectGetPrototypeOf,
+        isES5: isES5,
+        propertyIsWritable: function() {
+            return true;
+        }
+    };
+}
+},{}],11:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise, tryConvertToPromise, NEXT_FILTER) {
+var util = _dereq_("./util");
+var CancellationError = Promise.CancellationError;
+var errorObj = util.errorObj;
+var catchFilter = _dereq_("./catch_filter")(NEXT_FILTER);
+function PassThroughHandlerContext(promise, type, handler) {
+    this.promise = promise;
+    this.type = type;
+    this.handler = handler;
+    this.called = false;
+    this.cancelPromise = null;
+}
+PassThroughHandlerContext.prototype.isFinallyHandler = function() {
+    return this.type === 0;
+};
+function FinallyHandlerCancelReaction(finallyHandler) {
+    this.finallyHandler = finallyHandler;
+}
+FinallyHandlerCancelReaction.prototype._resultCancelled = function() {
+    checkCancel(this.finallyHandler);
+};
+function checkCancel(ctx, reason) {
+    if (ctx.cancelPromise != null) {
+        if (arguments.length > 1) {
+            ctx.cancelPromise._reject(reason);
+        } else {
+            ctx.cancelPromise._cancel();
+        }
+        ctx.cancelPromise = null;
+        return true;
+    }
+    return false;
+}
+function succeed() {
+    return finallyHandler.call(this, this.promise._target()._settledValue());
+}
+function fail(reason) {
+    if (checkCancel(this, reason)) return;
+    errorObj.e = reason;
+    return errorObj;
+}
+function finallyHandler(reasonOrValue) {
+    var promise = this.promise;
+    var handler = this.handler;
+    if (!this.called) {
+        this.called = true;
+        var ret = this.isFinallyHandler()
+            ? handler.call(promise._boundValue())
+            : handler.call(promise._boundValue(), reasonOrValue);
+        if (ret === NEXT_FILTER) {
+            return ret;
+        } else if (ret !== undefined) {
+            promise._setReturnedNonUndefined();
+            var maybePromise = tryConvertToPromise(ret, promise);
+            if (maybePromise instanceof Promise) {
+                if (this.cancelPromise != null) {
+                    if (maybePromise._isCancelled()) {
+                        var reason =
+                            new CancellationError("late cancellation observer");
+                        promise._attachExtraTrace(reason);
+                        errorObj.e = reason;
+                        return errorObj;
+                    } else if (maybePromise.isPending()) {
+                        maybePromise._attachCancellationCallback(
+                            new FinallyHandlerCancelReaction(this));
+                    }
+                }
+                return maybePromise._then(
+                    succeed, fail, undefined, this, undefined);
+            }
+        }
+    }
+    if (promise.isRejected()) {
+        checkCancel(this);
+        errorObj.e = reasonOrValue;
+        return errorObj;
+    } else {
+        checkCancel(this);
+        return reasonOrValue;
+    }
+}
+Promise.prototype._passThrough = function(handler, type, success, fail) {
+    if (typeof handler !== "function") return this.then();
+    return this._then(success,
+                      fail,
+                      undefined,
+                      new PassThroughHandlerContext(this, type, handler),
+                      undefined);
+};
+Promise.prototype.lastly =
+Promise.prototype["finally"] = function (handler) {
+    return this._passThrough(handler,
+                             0,
+                             finallyHandler,
+                             finallyHandler);
+};
+Promise.prototype.tap = function (handler) {
+    return this._passThrough(handler, 1, finallyHandler);
+};
+Promise.prototype.tapCatch = function (handlerOrPredicate) {
+    var len = arguments.length;
+    if(len === 1) {
+        return this._passThrough(handlerOrPredicate,
+                                 1,
+                                 undefined,
+                                 finallyHandler);
+    } else {
+         var catchInstances = new Array(len - 1),
+            j = 0, i;
+        for (i = 0; i < len - 1; ++i) {
+            var item = arguments[i];
+            if (util.isObject(item)) {
+                catchInstances[j++] = item;
+            } else {
+                return Promise.reject(new TypeError(
+                    "tapCatch statement predicate: "
+                    + "expecting an object but got " + util.classString(item)
+                ));
+            }
+        }
+        catchInstances.length = j;
+        var handler = arguments[i];
+        return this._passThrough(catchFilter(catchInstances, handler, this),
+                                 1,
+                                 undefined,
+                                 finallyHandler);
+    }
+};
+return PassThroughHandlerContext;
+};
+},{"./catch_filter":5,"./util":21}],12:[function(_dereq_,module,exports){
+"use strict";
+module.exports =
+function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
+         getDomain) {
+var util = _dereq_("./util");
+var canEvaluate = util.canEvaluate;
+var tryCatch = util.tryCatch;
+var errorObj = util.errorObj;
+var reject;
+if (!true) {
+if (canEvaluate) {
+    var thenCallback = function(i) {
+        return new Function("value", "holder", "                             \n\
+            'use strict';                                                    \n\
+            holder.pIndex = value;                                           \n\
+            holder.checkFulfillment(this);                                   \n\
+            ".replace(/Index/g, i));
+    };
+    var promiseSetter = function(i) {
+        return new Function("promise", "holder", "                           \n\
+            'use strict';                                                    \n\
+            holder.pIndex = promise;                                         \n\
+            ".replace(/Index/g, i));
+    };
+    var generateHolderClass = function(total) {
+        var props = new Array(total);
+        for (var i = 0; i < props.length; ++i) {
+            props[i] = "this.p" + (i+1);
+        }
+        var assignment = props.join(" = ") + " = null;";
+        var cancellationCode= "var promise;\n" + props.map(function(prop) {
+            return "                                                         \n\
+                promise = " + prop + ";                                      \n\
+                if (promise instanceof Promise) {                            \n\
+                    promise.cancel();                                        \n\
+                }                                                            \n\
+            ";
+        }).join("\n");
+        var passedArguments = props.join(", ");
+        var name = "Holder$" + total;
+        var code = "return function(tryCatch, errorObj, Promise, async) {    \n\
+            'use strict';                                                    \n\
+            function [TheName](fn) {                                         \n\
+                [TheProperties]                                              \n\
+                this.fn = fn;                                                \n\
+                this.asyncNeeded = true;                                     \n\
+                this.now = 0;                                                \n\
+            }                                                                \n\
+                                                                             \n\
+            [TheName].prototype._callFunction = function(promise) {          \n\
+                promise._pushContext();                                      \n\
+                var ret = tryCatch(this.fn)([ThePassedArguments]);           \n\
+                promise._popContext();                                       \n\
+                if (ret === errorObj) {                                      \n\
+                    promise._rejectCallback(ret.e, false);                   \n\
+                } else {                                                     \n\
+                    promise._resolveCallback(ret);                           \n\
+                }                                                            \n\
+            };                                                               \n\
+                                                                             \n\
+            [TheName].prototype.checkFulfillment = function(promise) {       \n\
+                var now = ++this.now;                                        \n\
+                if (now === [TheTotal]) {                                    \n\
+                    if (this.asyncNeeded) {                                  \n\
+                        async.invoke(this._callFunction, this, promise);     \n\
+                    } else {                                                 \n\
+                        this._callFunction(promise);                         \n\
+                    }                                                        \n\
+                                                                             \n\
+                }                                                            \n\
+            };                                                               \n\
+                                                                             \n\
+            [TheName].prototype._resultCancelled = function() {              \n\
+                [CancellationCode]                                           \n\
+            };                                                               \n\
+                                                                             \n\
+            return [TheName];                                                \n\
+        }(tryCatch, errorObj, Promise, async);                               \n\
+        ";
+        code = code.replace(/\[TheName\]/g, name)
+            .replace(/\[TheTotal\]/g, total)
+            .replace(/\[ThePassedArguments\]/g, passedArguments)
+            .replace(/\[TheProperties\]/g, assignment)
+            .replace(/\[CancellationCode\]/g, cancellationCode);
+        return new Function("tryCatch", "errorObj", "Promise", "async", code)
+                           (tryCatch, errorObj, Promise, async);
+    };
+    var holderClasses = [];
+    var thenCallbacks = [];
+    var promiseSetters = [];
+    for (var i = 0; i < 8; ++i) {
+        holderClasses.push(generateHolderClass(i + 1));
+        thenCallbacks.push(thenCallback(i + 1));
+        promiseSetters.push(promiseSetter(i + 1));
+    }
+    reject = function (reason) {
+        this._reject(reason);
+    };
+}}
+Promise.join = function () {
+    var last = arguments.length - 1;
+    var fn;
+    if (last > 0 && typeof arguments[last] === "function") {
+        fn = arguments[last];
+        if (!true) {
+            if (last <= 8 && canEvaluate) {
+                var ret = new Promise(INTERNAL);
+                ret._captureStackTrace();
+                var HolderClass = holderClasses[last - 1];
+                var holder = new HolderClass(fn);
+                var callbacks = thenCallbacks;
+                for (var i = 0; i < last; ++i) {
+                    var maybePromise = tryConvertToPromise(arguments[i], ret);
+                    if (maybePromise instanceof Promise) {
+                        maybePromise = maybePromise._target();
+                        var bitField = maybePromise._bitField;
+                        ;
+                        if (((bitField & 50397184) === 0)) {
+                            maybePromise._then(callbacks[i], reject,
+                                               undefined, ret, holder);
+                            promiseSetters[i](maybePromise, holder);
+                            holder.asyncNeeded = false;
+                        } else if (((bitField & 33554432) !== 0)) {
+                            callbacks[i].call(ret,
+                                              maybePromise._value(), holder);
+                        } else if (((bitField & 16777216) !== 0)) {
+                            ret._reject(maybePromise._reason());
+                        } else {
+                            ret._cancel();
+                        }
+                    } else {
+                        callbacks[i].call(ret, maybePromise, holder);
+                    }
+                }
+                if (!ret._isFateSealed()) {
+                    if (holder.asyncNeeded) {
+                        var domain = getDomain();
+                        if (domain !== null) {
+                            holder.fn = util.domainBind(domain, holder.fn);
+                        }
+                    }
+                    ret._setAsyncGuaranteed();
+                    ret._setOnCancel(holder);
+                }
+                return ret;
+            }
+        }
+    }
+    var args = [].slice.call(arguments);;
+    if (fn) args.pop();
+    var ret = new PromiseArray(args).promise();
+    return fn !== undefined ? ret.spread(fn) : ret;
+};
+};
+},{"./util":21}],13:[function(_dereq_,module,exports){
+"use strict";
+module.exports =
+function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
+var util = _dereq_("./util");
+var tryCatch = util.tryCatch;
+Promise.method = function (fn) {
+    if (typeof fn !== "function") {
+        throw new Promise.TypeError("expecting a function but got " + util.classString(fn));
+    }
+    return function () {
+        var ret = new Promise(INTERNAL);
+        ret._captureStackTrace();
+        ret._pushContext();
+        var value = tryCatch(fn).apply(this, arguments);
+        var promiseCreated = ret._popContext();
+        debug.checkForgottenReturns(
+            value, promiseCreated, "Promise.method", ret);
+        ret._resolveFromSyncValue(value);
+        return ret;
+    };
+};
+Promise.attempt = Promise["try"] = function (fn) {
+    if (typeof fn !== "function") {
+        return apiRejection("expecting a function but got " + util.classString(fn));
+    }
+    var ret = new Promise(INTERNAL);
+    ret._captureStackTrace();
+    ret._pushContext();
+    var value;
+    if (arguments.length > 1) {
+        debug.deprecated("calling Promise.try with more than 1 argument");
+        var arg = arguments[1];
+        var ctx = arguments[2];
+        value = util.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
+                                  : tryCatch(fn).call(ctx, arg);
+    } else {
+        value = tryCatch(fn)();
+    }
+    var promiseCreated = ret._popContext();
+    debug.checkForgottenReturns(
+        value, promiseCreated, "Promise.try", ret);
+    ret._resolveFromSyncValue(value);
+    return ret;
+};
+Promise.prototype._resolveFromSyncValue = function (value) {
+    if (value === util.errorObj) {
+        this._rejectCallback(value.e, false);
+    } else {
+        this._resolveCallback(value, true);
+    }
+};
+};
+},{"./util":21}],14:[function(_dereq_,module,exports){
+"use strict";
+var util = _dereq_("./util");
+var maybeWrapAsError = util.maybeWrapAsError;
+var errors = _dereq_("./errors");
+var OperationalError = errors.OperationalError;
+var es5 = _dereq_("./es5");
+function isUntypedError(obj) {
+    return obj instanceof Error &&
+        es5.getPrototypeOf(obj) === Error.prototype;
+}
+var rErrorKey = /^(?:name|message|stack|cause)$/;
+function wrapAsOperationalError(obj) {
+    var ret;
+    if (isUntypedError(obj)) {
+        ret = new OperationalError(obj);
+        ret.name = obj.name;
+        ret.message = obj.message;
+        ret.stack = obj.stack;
+        var keys = es5.keys(obj);
+        for (var i = 0; i < keys.length; ++i) {
+            var key = keys[i];
+            if (!rErrorKey.test(key)) {
+                ret[key] = obj[key];
+            }
+        }
+        return ret;
+    }
+    util.markAsOriginatingFromRejection(obj);
+    return obj;
+}
+function nodebackForPromise(promise, multiArgs) {
+    return function(err, value) {
+        if (promise === null) return;
+        if (err) {
+            var wrapped = wrapAsOperationalError(maybeWrapAsError(err));
+            promise._attachExtraTrace(wrapped);
+            promise._reject(wrapped);
+        } else if (!multiArgs) {
+            promise._fulfill(value);
+        } else {
+            var args = [].slice.call(arguments, 1);;
+            promise._fulfill(args);
+        }
+        promise = null;
+    };
+}
+module.exports = nodebackForPromise;
+},{"./errors":9,"./es5":10,"./util":21}],15:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function() {
+var makeSelfResolutionError = function () {
+    return new TypeError("circular promise resolution chain\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+};
+var reflectHandler = function() {
+    return new Promise.PromiseInspection(this._target());
+};
+var apiRejection = function(msg) {
+    return Promise.reject(new TypeError(msg));
+};
+function Proxyable() {}
+var UNDEFINED_BINDING = {};
+var util = _dereq_("./util");
+var getDomain;
+if (util.isNode) {
+    getDomain = function() {
+        var ret = process.domain;
+        if (ret === undefined) ret = null;
+        return ret;
+    };
+} else {
+    getDomain = function() {
+        return null;
+    };
+}
+util.notEnumerableProp(Promise, "_getDomain", getDomain);
+var es5 = _dereq_("./es5");
+var Async = _dereq_("./async");
+var async = new Async();
+es5.defineProperty(Promise, "_async", {value: async});
+var errors = _dereq_("./errors");
+var TypeError = Promise.TypeError = errors.TypeError;
+Promise.RangeError = errors.RangeError;
+var CancellationError = Promise.CancellationError = errors.CancellationError;
+Promise.TimeoutError = errors.TimeoutError;
+Promise.OperationalError = errors.OperationalError;
+Promise.RejectionError = errors.OperationalError;
+Promise.AggregateError = errors.AggregateError;
+var INTERNAL = function(){};
+var APPLY = {};
+var NEXT_FILTER = {};
+var tryConvertToPromise = _dereq_("./thenables")(Promise, INTERNAL);
+var PromiseArray =
+    _dereq_("./promise_array")(Promise, INTERNAL,
+                               tryConvertToPromise, apiRejection, Proxyable);
+var Context = _dereq_("./context")(Promise);
+ /*jshint unused:false*/
+var createContext = Context.create;
+var debug = _dereq_("./debuggability")(Promise, Context);
+var CapturedTrace = debug.CapturedTrace;
+var PassThroughHandlerContext =
+    _dereq_("./finally")(Promise, tryConvertToPromise, NEXT_FILTER);
+var catchFilter = _dereq_("./catch_filter")(NEXT_FILTER);
+var nodebackForPromise = _dereq_("./nodeback");
+var errorObj = util.errorObj;
+var tryCatch = util.tryCatch;
+function check(self, executor) {
+    if (self == null || self.constructor !== Promise) {
+        throw new TypeError("the promise constructor cannot be invoked directly\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+    }
+    if (typeof executor !== "function") {
+        throw new TypeError("expecting a function but got " + util.classString(executor));
+    }
+}
+function Promise(executor) {
+    if (executor !== INTERNAL) {
+        check(this, executor);
+    }
+    this._bitField = 0;
+    this._fulfillmentHandler0 = undefined;
+    this._rejectionHandler0 = undefined;
+    this._promise0 = undefined;
+    this._receiver0 = undefined;
+    this._resolveFromExecutor(executor);
+    this._promiseCreated();
+    this._fireEvent("promiseCreated", this);
+}
+Promise.prototype.toString = function () {
+    return "[object Promise]";
+};
+Promise.prototype.caught = Promise.prototype["catch"] = function (fn) {
+    var len = arguments.length;
+    if (len > 1) {
+        var catchInstances = new Array(len - 1),
+            j = 0, i;
+        for (i = 0; i < len - 1; ++i) {
+            var item = arguments[i];
+            if (util.isObject(item)) {
+                catchInstances[j++] = item;
+            } else {
+                return apiRejection("Catch statement predicate: " +
+                    "expecting an object but got " + util.classString(item));
+            }
+        }
+        catchInstances.length = j;
+        fn = arguments[i];
+        return this.then(undefined, catchFilter(catchInstances, fn, this));
+    }
+    return this.then(undefined, fn);
+};
+Promise.prototype.reflect = function () {
+    return this._then(reflectHandler,
+        reflectHandler, undefined, this, undefined);
+};
+Promise.prototype.then = function (didFulfill, didReject) {
+    if (debug.warnings() && arguments.length > 0 &&
+        typeof didFulfill !== "function" &&
+        typeof didReject !== "function") {
+        var msg = ".then() only accepts functions but was passed: " +
+                util.classString(didFulfill);
+        if (arguments.length > 1) {
+            msg += ", " + util.classString(didReject);
+        }
+        this._warn(msg);
+    }
+    return this._then(didFulfill, didReject, undefined, undefined, undefined);
+};
+Promise.prototype.done = function (didFulfill, didReject) {
+    var promise =
+        this._then(didFulfill, didReject, undefined, undefined, undefined);
+    promise._setIsFinal();
+};
+Promise.prototype.spread = function (fn) {
+    if (typeof fn !== "function") {
+        return apiRejection("expecting a function but got " + util.classString(fn));
+    }
+    return this.all()._then(fn, undefined, undefined, APPLY, undefined);
+};
+Promise.prototype.toJSON = function () {
+    var ret = {
+        isFulfilled: false,
+        isRejected: false,
+        fulfillmentValue: undefined,
+        rejectionReason: undefined
+    };
+    if (this.isFulfilled()) {
+        ret.fulfillmentValue = this.value();
+        ret.isFulfilled = true;
+    } else if (this.isRejected()) {
+        ret.rejectionReason = this.reason();
+        ret.isRejected = true;
+    }
+    return ret;
+};
+Promise.prototype.all = function () {
+    if (arguments.length > 0) {
+        this._warn(".all() was passed arguments but it does not take any");
+    }
+    return new PromiseArray(this).promise();
+};
+Promise.prototype.error = function (fn) {
+    return this.caught(util.originatesFromRejection, fn);
+};
+Promise.getNewLibraryCopy = module.exports;
+Promise.is = function (val) {
+    return val instanceof Promise;
+};
+Promise.fromNode = Promise.fromCallback = function(fn) {
+    var ret = new Promise(INTERNAL);
+    ret._captureStackTrace();
+    var multiArgs = arguments.length > 1 ? !!Object(arguments[1]).multiArgs
+                                         : false;
+    var result = tryCatch(fn)(nodebackForPromise(ret, multiArgs));
+    if (result === errorObj) {
+        ret._rejectCallback(result.e, true);
+    }
+    if (!ret._isFateSealed()) ret._setAsyncGuaranteed();
+    return ret;
+};
+Promise.all = function (promises) {
+    return new PromiseArray(promises).promise();
+};
+Promise.cast = function (obj) {
+    var ret = tryConvertToPromise(obj);
+    if (!(ret instanceof Promise)) {
+        ret = new Promise(INTERNAL);
+        ret._captureStackTrace();
+        ret._setFulfilled();
+        ret._rejectionHandler0 = obj;
+    }
+    return ret;
+};
+Promise.resolve = Promise.fulfilled = Promise.cast;
+Promise.reject = Promise.rejected = function (reason) {
+    var ret = new Promise(INTERNAL);
+    ret._captureStackTrace();
+    ret._rejectCallback(reason, true);
+    return ret;
+};
+Promise.setScheduler = function(fn) {
+    if (typeof fn !== "function") {
+        throw new TypeError("expecting a function but got " + util.classString(fn));
+    }
+    return async.setScheduler(fn);
+};
+Promise.prototype._then = function (
+    didFulfill,
+    didReject,
+    _,    receiver,
+    internalData
+) {
+    var haveInternalData = internalData !== undefined;
+    var promise = haveInternalData ? internalData : new Promise(INTERNAL);
+    var target = this._target();
+    var bitField = target._bitField;
+    if (!haveInternalData) {
+        promise._propagateFrom(this, 3);
+        promise._captureStackTrace();
+        if (receiver === undefined &&
+            ((this._bitField & 2097152) !== 0)) {
+            if (!((bitField & 50397184) === 0)) {
+                receiver = this._boundValue();
+            } else {
+                receiver = target === this ? undefined : this._boundTo;
+            }
+        }
+        this._fireEvent("promiseChained", this, promise);
+    }
+    var domain = getDomain();
+    if (!((bitField & 50397184) === 0)) {
+        var handler, value, settler = target._settlePromiseCtx;
+        if (((bitField & 33554432) !== 0)) {
+            value = target._rejectionHandler0;
+            handler = didFulfill;
+        } else if (((bitField & 16777216) !== 0)) {
+            value = target._fulfillmentHandler0;
+            handler = didReject;
+            target._unsetRejectionIsUnhandled();
+        } else {
+            settler = target._settlePromiseLateCancellationObserver;
+            value = new CancellationError("late cancellation observer");
+            target._attachExtraTrace(value);
+            handler = didReject;
+        }
+        async.invoke(settler, target, {
+            handler: domain === null ? handler
+                : (typeof handler === "function" &&
+                    util.domainBind(domain, handler)),
+            promise: promise,
+            receiver: receiver,
+            value: value
         });
+    } else {
+        target._addCallbacks(didFulfill, didReject, promise, receiver, domain);
     }
-    $$.xgrid.exit().remove();
+    return promise;
 };
-c3_chart_internal_fn.updateYGrid = function () {
-    var $$ = this,
-        config = $$.config,
-        gridValues = $$.yAxis.tickValues() || $$.y.ticks(config.grid_y_ticks);
-    $$.ygrid = $$.main.select('.' + CLASS.ygrids).selectAll('.' + CLASS.ygrid).data(gridValues);
-    $$.ygrid.enter().append('line').attr('class', CLASS.ygrid);
-    $$.ygrid.attr("x1", config.axis_rotated ? $$.y : 0).attr("x2", config.axis_rotated ? $$.y : $$.width).attr("y1", config.axis_rotated ? 0 : $$.y).attr("y2", config.axis_rotated ? $$.height : $$.y);
-    $$.ygrid.exit().remove();
-    $$.smoothLines($$.ygrid, 'grid');
+Promise.prototype._length = function () {
+    return this._bitField & 65535;
 };
-c3_chart_internal_fn.gridTextAnchor = function (d) {
-    return d.position ? d.position : "end";
+Promise.prototype._isFateSealed = function () {
+    return (this._bitField & 117506048) !== 0;
 };
-c3_chart_internal_fn.gridTextDx = function (d) {
-    return d.position === 'start' ? 4 : d.position === 'middle' ? 0 : -4;
+Promise.prototype._isFollowing = function () {
+    return (this._bitField & 67108864) === 67108864;
 };
-c3_chart_internal_fn.xGridTextX = function (d) {
-    return d.position === 'start' ? -this.height : d.position === 'middle' ? -this.height / 2 : 0;
+Promise.prototype._setLength = function (len) {
+    this._bitField = (this._bitField & -65536) |
+        (len & 65535);
 };
-c3_chart_internal_fn.yGridTextX = function (d) {
-    return d.position === 'start' ? 0 : d.position === 'middle' ? this.width / 2 : this.width;
+Promise.prototype._setFulfilled = function () {
+    this._bitField = this._bitField | 33554432;
+    this._fireEvent("promiseFulfilled", this);
 };
-c3_chart_internal_fn.updateGrid = function (duration) {
-    var $$ = this,
-        main = $$.main,
-        config = $$.config,
-        xgridLine,
-        ygridLine,
-        yv;
-    $$.grid.style('visibility', $$.hasArcType() ? 'hidden' : 'visible');
-    main.select('line.' + CLASS.xgridFocus).style("visibility", "hidden");
-    if (config.grid_x_show) {
-        $$.updateXGrid();
+Promise.prototype._setRejected = function () {
+    this._bitField = this._bitField | 16777216;
+    this._fireEvent("promiseRejected", this);
+};
+Promise.prototype._setFollowing = function () {
+    this._bitField = this._bitField | 67108864;
+    this._fireEvent("promiseResolved", this);
+};
+Promise.prototype._setIsFinal = function () {
+    this._bitField = this._bitField | 4194304;
+};
+Promise.prototype._isFinal = function () {
+    return (this._bitField & 4194304) > 0;
+};
+Promise.prototype._unsetCancelled = function() {
+    this._bitField = this._bitField & (~65536);
+};
+Promise.prototype._setCancelled = function() {
+    this._bitField = this._bitField | 65536;
+    this._fireEvent("promiseCancelled", this);
+};
+Promise.prototype._setWillBeCancelled = function() {
+    this._bitField = this._bitField | 8388608;
+};
+Promise.prototype._setAsyncGuaranteed = function() {
+    if (async.hasCustomScheduler()) return;
+    this._bitField = this._bitField | 134217728;
+};
+Promise.prototype._receiverAt = function (index) {
+    var ret = index === 0 ? this._receiver0 : this[
+            index * 4 - 4 + 3];
+    if (ret === UNDEFINED_BINDING) {
+        return undefined;
+    } else if (ret === undefined && this._isBound()) {
+        return this._boundValue();
     }
-    $$.xgridLines = main.select('.' + CLASS.xgridLines).selectAll('.' + CLASS.xgridLine).data(config.grid_x_lines);
-    xgridLine = $$.xgridLines.enter().append('g').attr("class", function (d) {
-        return CLASS.xgridLine + (d['class'] ? ' ' + d['class'] : '');
-    });
-    xgridLine.append('line').style("opacity", 0);
-    xgridLine.append('text').attr("text-anchor", $$.gridTextAnchor).attr("transform", config.axis_rotated ? "" : "rotate(-90)").attr('dx', $$.gridTextDx).attr('dy', -5).style("opacity", 0);
-    $$.xgridLines.exit().transition().duration(duration).style("opacity", 0).remove();
-    if (config.grid_y_show) {
-        $$.updateYGrid();
+    return ret;
+};
+Promise.prototype._promiseAt = function (index) {
+    return this[
+            index * 4 - 4 + 2];
+};
+Promise.prototype._fulfillmentHandlerAt = function (index) {
+    return this[
+            index * 4 - 4 + 0];
+};
+Promise.prototype._rejectionHandlerAt = function (index) {
+    return this[
+            index * 4 - 4 + 1];
+};
+Promise.prototype._boundValue = function() {};
+Promise.prototype._migrateCallback0 = function (follower) {
+    var bitField = follower._bitField;
+    var fulfill = follower._fulfillmentHandler0;
+    var reject = follower._rejectionHandler0;
+    var promise = follower._promise0;
+    var receiver = follower._receiverAt(0);
+    if (receiver === undefined) receiver = UNDEFINED_BINDING;
+    this._addCallbacks(fulfill, reject, promise, receiver, null);
+};
+Promise.prototype._migrateCallbackAt = function (follower, index) {
+    var fulfill = follower._fulfillmentHandlerAt(index);
+    var reject = follower._rejectionHandlerAt(index);
+    var promise = follower._promiseAt(index);
+    var receiver = follower._receiverAt(index);
+    if (receiver === undefined) receiver = UNDEFINED_BINDING;
+    this._addCallbacks(fulfill, reject, promise, receiver, null);
+};
+Promise.prototype._addCallbacks = function (
+    fulfill,
+    reject,
+    promise,
+    receiver,
+    domain
+) {
+    var index = this._length();
+    if (index >= 65535 - 4) {
+        index = 0;
+        this._setLength(0);
     }
-    $$.ygridLines = main.select('.' + CLASS.ygridLines).selectAll('.' + CLASS.ygridLine).data(config.grid_y_lines);
-    ygridLine = $$.ygridLines.enter().append('g').attr("class", function (d) {
-        return CLASS.ygridLine + (d['class'] ? ' ' + d['class'] : '');
-    });
-    ygridLine.append('line').style("opacity", 0);
-    ygridLine.append('text').attr("text-anchor", $$.gridTextAnchor).attr("transform", config.axis_rotated ? "rotate(-90)" : "").attr('dx', $$.gridTextDx).attr('dy', -5).style("opacity", 0);
-    yv = $$.yv.bind($$);
-    $$.ygridLines.select('line').transition().duration(duration).attr("x1", config.axis_rotated ? yv : 0).attr("x2", config.axis_rotated ? yv : $$.width).attr("y1", config.axis_rotated ? 0 : yv).attr("y2", config.axis_rotated ? $$.height : yv).style("opacity", 1);
-    $$.ygridLines.select('text').transition().duration(duration).attr("x", config.axis_rotated ? $$.xGridTextX.bind($$) : $$.yGridTextX.bind($$)).attr("y", yv).text(function (d) {
-        return d.text;
-    }).style("opacity", 1);
-    $$.ygridLines.exit().transition().duration(duration).style("opacity", 0).remove();
-};
-c3_chart_internal_fn.redrawGrid = function (withTransition) {
-    var $$ = this,
-        config = $$.config,
-        xv = $$.xv.bind($$),
-        lines = $$.xgridLines.select('line'),
-        texts = $$.xgridLines.select('text');
-    return [(withTransition ? lines.transition() : lines).attr("x1", config.axis_rotated ? 0 : xv).attr("x2", config.axis_rotated ? $$.width : xv).attr("y1", config.axis_rotated ? xv : 0).attr("y2", config.axis_rotated ? xv : $$.height).style("opacity", 1), (withTransition ? texts.transition() : texts).attr("x", config.axis_rotated ? $$.yGridTextX.bind($$) : $$.xGridTextX.bind($$)).attr("y", xv).text(function (d) {
-        return d.text;
-    }).style("opacity", 1)];
-};
-c3_chart_internal_fn.showXGridFocus = function (selectedData) {
-    var $$ = this,
-        config = $$.config,
-        dataToShow = selectedData.filter(function (d) {
-        return d && isValue(d.value);
-    }),
-        focusEl = $$.main.selectAll('line.' + CLASS.xgridFocus),
-        xx = $$.xx.bind($$);
-    if (!config.tooltip_show) {
-        return;
-    }
-    if ($$.hasType('scatter') || $$.hasArcType()) {
-        return;
-    }
-    focusEl.style("visibility", "visible").data([dataToShow[0]]).attr(config.axis_rotated ? 'y1' : 'x1', xx).attr(config.axis_rotated ? 'y2' : 'x2', xx);
-    $$.smoothLines(focusEl, 'grid');
-};
-c3_chart_internal_fn.hideXGridFocus = function () {
-    this.main.select('line.' + CLASS.xgridFocus).style("visibility", "hidden");
-};
-c3_chart_internal_fn.updateXgridFocus = function () {
-    var $$ = this,
-        config = $$.config;
-    $$.main.select('line.' + CLASS.xgridFocus).attr("x1", config.axis_rotated ? 0 : -10).attr("x2", config.axis_rotated ? $$.width : -10).attr("y1", config.axis_rotated ? -10 : 0).attr("y2", config.axis_rotated ? -10 : $$.height);
-};
-c3_chart_internal_fn.generateGridData = function (type, scale) {
-    var $$ = this,
-        gridData = [],
-        xDomain,
-        firstYear,
-        lastYear,
-        i,
-        tickNum = $$.main.select("." + CLASS.axisX).selectAll('.tick').size();
-    if (type === 'year') {
-        xDomain = $$.getXDomain();
-        firstYear = xDomain[0].getFullYear();
-        lastYear = xDomain[1].getFullYear();
-        for (i = firstYear; i <= lastYear; i++) {
-            gridData.push(new Date(i + '-01-01 00:00:00'));
+    if (index === 0) {
+        this._promise0 = promise;
+        this._receiver0 = receiver;
+        if (typeof fulfill === "function") {
+            this._fulfillmentHandler0 =
+                domain === null ? fulfill : util.domainBind(domain, fulfill);
+        }
+        if (typeof reject === "function") {
+            this._rejectionHandler0 =
+                domain === null ? reject : util.domainBind(domain, reject);
         }
     } else {
-        gridData = scale.ticks(10);
-        if (gridData.length > tickNum) {
-            gridData = gridData.filter(function (d) {
-                return ("" + d).indexOf('.') < 0;
-            });
+        var base = index * 4 - 4;
+        this[base + 2] = promise;
+        this[base + 3] = receiver;
+        if (typeof fulfill === "function") {
+            this[base + 0] =
+                domain === null ? fulfill : util.domainBind(domain, fulfill);
+        }
+        if (typeof reject === "function") {
+            this[base + 1] =
+                domain === null ? reject : util.domainBind(domain, reject);
         }
     }
-    return gridData;
+    this._setLength(index + 1);
+    return index;
 };
-c3_chart_internal_fn.getGridFilterToRemove = function (params) {
-    return params ? function (line) {
+Promise.prototype._proxy = function (proxyable, arg) {
+    this._addCallbacks(undefined, undefined, arg, proxyable, null);
+};
+Promise.prototype._resolveCallback = function(value, shouldBind) {
+    if (((this._bitField & 117506048) !== 0)) return;
+    if (value === this)
+        return this._rejectCallback(makeSelfResolutionError(), false);
+    var maybePromise = tryConvertToPromise(value, this);
+    if (!(maybePromise instanceof Promise)) return this._fulfill(value);
+    if (shouldBind) this._propagateFrom(maybePromise, 2);
+    var promise = maybePromise._target();
+    if (promise === this) {
+        this._reject(makeSelfResolutionError());
+        return;
+    }
+    var bitField = promise._bitField;
+    if (((bitField & 50397184) === 0)) {
+        var len = this._length();
+        if (len > 0) promise._migrateCallback0(this);
+        for (var i = 1; i < len; ++i) {
+            promise._migrateCallbackAt(this, i);
+        }
+        this._setFollowing();
+        this._setLength(0);
+        this._setFollowee(promise);
+    } else if (((bitField & 33554432) !== 0)) {
+        this._fulfill(promise._value());
+    } else if (((bitField & 16777216) !== 0)) {
+        this._reject(promise._reason());
+    } else {
+        var reason = new CancellationError("late cancellation observer");
+        promise._attachExtraTrace(reason);
+        this._reject(reason);
+    }
+};
+Promise.prototype._rejectCallback =
+function(reason, synchronous, ignoreNonErrorWarnings) {
+    var trace = util.ensureErrorObject(reason);
+    var hasStack = trace === reason;
+    if (!hasStack && !ignoreNonErrorWarnings && debug.warnings()) {
+        var message = "a promise was rejected with a non-error: " +
+            util.classString(reason);
+        this._warn(message, true);
+    }
+    this._attachExtraTrace(trace, synchronous ? hasStack : false);
+    this._reject(reason);
+};
+Promise.prototype._resolveFromExecutor = function (executor) {
+    if (executor === INTERNAL) return;
+    var promise = this;
+    this._captureStackTrace();
+    this._pushContext();
+    var synchronous = true;
+    var r = this._execute(executor, function(value) {
+        promise._resolveCallback(value);
+    }, function (reason) {
+        promise._rejectCallback(reason, synchronous);
+    });
+    synchronous = false;
+    this._popContext();
+    if (r !== undefined) {
+        promise._rejectCallback(r, true);
+    }
+};
+Promise.prototype._settlePromiseFromHandler = function (
+    handler, receiver, value, promise
+) {
+    var bitField = promise._bitField;
+    if (((bitField & 65536) !== 0)) return;
+    promise._pushContext();
+    var x;
+    if (receiver === APPLY) {
+        if (!value || typeof value.length !== "number") {
+            x = errorObj;
+            x.e = new TypeError("cannot .spread() a non-array: " +
+                                    util.classString(value));
+        } else {
+            x = tryCatch(handler).apply(this._boundValue(), value);
+        }
+    } else {
+        x = tryCatch(handler).call(receiver, value);
+    }
+    var promiseCreated = promise._popContext();
+    bitField = promise._bitField;
+    if (((bitField & 65536) !== 0)) return;
+    if (x === NEXT_FILTER) {
+        promise._reject(value);
+    } else if (x === errorObj) {
+        promise._rejectCallback(x.e, false);
+    } else {
+        debug.checkForgottenReturns(x, promiseCreated, "",  promise, this);
+        promise._resolveCallback(x);
+    }
+};
+Promise.prototype._target = function() {
+    var ret = this;
+    while (ret._isFollowing()) ret = ret._followee();
+    return ret;
+};
+Promise.prototype._followee = function() {
+    return this._rejectionHandler0;
+};
+Promise.prototype._setFollowee = function(promise) {
+    this._rejectionHandler0 = promise;
+};
+Promise.prototype._settlePromise = function(promise, handler, receiver, value) {
+    var isPromise = promise instanceof Promise;
+    var bitField = this._bitField;
+    var asyncGuaranteed = ((bitField & 134217728) !== 0);
+    if (((bitField & 65536) !== 0)) {
+        if (isPromise) promise._invokeInternalOnCancel();
+        if (receiver instanceof PassThroughHandlerContext &&
+            receiver.isFinallyHandler()) {
+            receiver.cancelPromise = promise;
+            if (tryCatch(handler).call(receiver, value) === errorObj) {
+                promise._reject(errorObj.e);
+            }
+        } else if (handler === reflectHandler) {
+            promise._fulfill(reflectHandler.call(receiver));
+        } else if (receiver instanceof Proxyable) {
+            receiver._promiseCancelled(promise);
+        } else if (isPromise || promise instanceof PromiseArray) {
+            promise._cancel();
+        } else {
+            receiver.cancel();
+        }
+    } else if (typeof handler === "function") {
+        if (!isPromise) {
+            handler.call(receiver, value, promise);
+        } else {
+            if (asyncGuaranteed) promise._setAsyncGuaranteed();
+            this._settlePromiseFromHandler(handler, receiver, value, promise);
+        }
+    } else if (receiver instanceof Proxyable) {
+        if (!receiver._isResolved()) {
+            if (((bitField & 33554432) !== 0)) {
+                receiver._promiseFulfilled(value, promise);
+            } else {
+                receiver._promiseRejected(value, promise);
+            }
+        }
+    } else if (isPromise) {
+        if (asyncGuaranteed) promise._setAsyncGuaranteed();
+        if (((bitField & 33554432) !== 0)) {
+            promise._fulfill(value);
+        } else {
+            promise._reject(value);
+        }
+    }
+};
+Promise.prototype._settlePromiseLateCancellationObserver = function(ctx) {
+    var handler = ctx.handler;
+    var promise = ctx.promise;
+    var receiver = ctx.receiver;
+    var value = ctx.value;
+    if (typeof handler === "function") {
+        if (!(promise instanceof Promise)) {
+            handler.call(receiver, value, promise);
+        } else {
+            this._settlePromiseFromHandler(handler, receiver, value, promise);
+        }
+    } else if (promise instanceof Promise) {
+        promise._reject(value);
+    }
+};
+Promise.prototype._settlePromiseCtx = function(ctx) {
+    this._settlePromise(ctx.promise, ctx.handler, ctx.receiver, ctx.value);
+};
+Promise.prototype._settlePromise0 = function(handler, value, bitField) {
+    var promise = this._promise0;
+    var receiver = this._receiverAt(0);
+    this._promise0 = undefined;
+    this._receiver0 = undefined;
+    this._settlePromise(promise, handler, receiver, value);
+};
+Promise.prototype._clearCallbackDataAtIndex = function(index) {
+    var base = index * 4 - 4;
+    this[base + 2] =
+    this[base + 3] =
+    this[base + 0] =
+    this[base + 1] = undefined;
+};
+Promise.prototype._fulfill = function (value) {
+    var bitField = this._bitField;
+    if (((bitField & 117506048) >>> 16)) return;
+    if (value === this) {
+        var err = makeSelfResolutionError();
+        this._attachExtraTrace(err);
+        return this._reject(err);
+    }
+    this._setFulfilled();
+    this._rejectionHandler0 = value;
+    if ((bitField & 65535) > 0) {
+        if (((bitField & 134217728) !== 0)) {
+            this._settlePromises();
+        } else {
+            async.settlePromises(this);
+        }
+    }
+};
+Promise.prototype._reject = function (reason) {
+    var bitField = this._bitField;
+    if (((bitField & 117506048) >>> 16)) return;
+    this._setRejected();
+    this._fulfillmentHandler0 = reason;
+    if (this._isFinal()) {
+        return async.fatalError(reason, util.isNode);
+    }
+    if ((bitField & 65535) > 0) {
+        async.settlePromises(this);
+    } else {
+        this._ensurePossibleRejectionHandled();
+    }
+};
+Promise.prototype._fulfillPromises = function (len, value) {
+    for (var i = 1; i < len; i++) {
+        var handler = this._fulfillmentHandlerAt(i);
+        var promise = this._promiseAt(i);
+        var receiver = this._receiverAt(i);
+        this._clearCallbackDataAtIndex(i);
+        this._settlePromise(promise, handler, receiver, value);
+    }
+};
+Promise.prototype._rejectPromises = function (len, reason) {
+    for (var i = 1; i < len; i++) {
+        var handler = this._rejectionHandlerAt(i);
+        var promise = this._promiseAt(i);
+        var receiver = this._receiverAt(i);
+        this._clearCallbackDataAtIndex(i);
+        this._settlePromise(promise, handler, receiver, reason);
+    }
+};
+Promise.prototype._settlePromises = function () {
+    var bitField = this._bitField;
+    var len = (bitField & 65535);
+    if (len > 0) {
+        if (((bitField & 16842752) !== 0)) {
+            var reason = this._fulfillmentHandler0;
+            this._settlePromise0(this._rejectionHandler0, reason, bitField);
+            this._rejectPromises(len, reason);
+        } else {
+            var value = this._rejectionHandler0;
+            this._settlePromise0(this._fulfillmentHandler0, value, bitField);
+            this._fulfillPromises(len, value);
+        }
+        this._setLength(0);
+    }
+    this._clearCancellationData();
+};
+Promise.prototype._settledValue = function() {
+    var bitField = this._bitField;
+    if (((bitField & 33554432) !== 0)) {
+        return this._rejectionHandler0;
+    } else if (((bitField & 16777216) !== 0)) {
+        return this._fulfillmentHandler0;
+    }
+};
+function deferResolve(v) {this.promise._resolveCallback(v);}
+function deferReject(v) {this.promise._rejectCallback(v, false);}
+Promise.defer = Promise.pending = function() {
+    debug.deprecated("Promise.defer", "new Promise");
+    var promise = new Promise(INTERNAL);
+    return {
+        promise: promise,
+        resolve: deferResolve,
+        reject: deferReject
+    };
+};
+util.notEnumerableProp(Promise,
+                       "_makeSelfResolutionError",
+                       makeSelfResolutionError);
+_dereq_("./method")(Promise, INTERNAL, tryConvertToPromise, apiRejection,
+    debug);
+_dereq_("./bind")(Promise, INTERNAL, tryConvertToPromise, debug);
+_dereq_("./cancel")(Promise, PromiseArray, apiRejection, debug);
+_dereq_("./direct_resolve")(Promise);
+_dereq_("./synchronous_inspection")(Promise);
+_dereq_("./join")(
+    Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain);
+Promise.Promise = Promise;
+Promise.version = "3.5.1";
+    util.toFastProperties(Promise);                                          
+    util.toFastProperties(Promise.prototype);                                
+    function fillTypes(value) {                                              
+        var p = new Promise(INTERNAL);                                       
+        p._fulfillmentHandler0 = value;                                      
+        p._rejectionHandler0 = value;                                        
+        p._promise0 = value;                                                 
+        p._receiver0 = value;                                                
+    }                                                                        
+    fillTypes({a: 1});                                                       
+    fillTypes({b: 2});                                                       
+    fillTypes({c: 3});                                                       
+    fillTypes(1);                                                            
+    fillTypes(function(){});                                                 
+    fillTypes(undefined);                                                    
+    fillTypes(false);                                                        
+    fillTypes(new Promise(INTERNAL));                                        
+    debug.setBounds(Async.firstLineError, util.lastLineError);               
+    return Promise;                                                          
+};
+},{"./async":1,"./bind":2,"./cancel":4,"./catch_filter":5,"./context":6,"./debuggability":7,"./direct_resolve":8,"./errors":9,"./es5":10,"./finally":11,"./join":12,"./method":13,"./nodeback":14,"./promise_array":16,"./synchronous_inspection":19,"./thenables":20,"./util":21}],16:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL, tryConvertToPromise,
+    apiRejection, Proxyable) {
+var util = _dereq_("./util");
+var isArray = util.isArray;
+function toResolutionValue(val) {
+    switch(val) {
+    case -2: return [];
+    case -3: return {};
+    case -6: return new Map();
+    }
+}
+function PromiseArray(values) {
+    var promise = this._promise = new Promise(INTERNAL);
+    if (values instanceof Promise) {
+        promise._propagateFrom(values, 3);
+    }
+    promise._setOnCancel(this);
+    this._values = values;
+    this._length = 0;
+    this._totalResolved = 0;
+    this._init(undefined, -2);
+}
+util.inherits(PromiseArray, Proxyable);
+PromiseArray.prototype.length = function () {
+    return this._length;
+};
+PromiseArray.prototype.promise = function () {
+    return this._promise;
+};
+PromiseArray.prototype._init = function init(_, resolveValueIfEmpty) {
+    var values = tryConvertToPromise(this._values, this._promise);
+    if (values instanceof Promise) {
+        values = values._target();
+        var bitField = values._bitField;
+        ;
+        this._values = values;
+        if (((bitField & 50397184) === 0)) {
+            this._promise._setAsyncGuaranteed();
+            return values._then(
+                init,
+                this._reject,
+                undefined,
+                this,
+                resolveValueIfEmpty
+           );
+        } else if (((bitField & 33554432) !== 0)) {
+            values = values._value();
+        } else if (((bitField & 16777216) !== 0)) {
+            return this._reject(values._reason());
+        } else {
+            return this._cancel();
+        }
+    }
+    values = util.asArray(values);
+    if (values === null) {
+        var err = apiRejection(
+            "expecting an array or an iterable object but got " + util.classString(values)).reason();
+        this._promise._rejectCallback(err, false);
+        return;
+    }
+    if (values.length === 0) {
+        if (resolveValueIfEmpty === -5) {
+            this._resolveEmptyArray();
+        }
+        else {
+            this._resolve(toResolutionValue(resolveValueIfEmpty));
+        }
+        return;
+    }
+    this._iterate(values);
+};
+PromiseArray.prototype._iterate = function(values) {
+    var len = this.getActualLength(values.length);
+    this._length = len;
+    this._values = this.shouldCopyValues() ? new Array(len) : this._values;
+    var result = this._promise;
+    var isResolved = false;
+    var bitField = null;
+    for (var i = 0; i < len; ++i) {
+        var maybePromise = tryConvertToPromise(values[i], result);
+        if (maybePromise instanceof Promise) {
+            maybePromise = maybePromise._target();
+            bitField = maybePromise._bitField;
+        } else {
+            bitField = null;
+        }
+        if (isResolved) {
+            if (bitField !== null) {
+                maybePromise.suppressUnhandledRejections();
+            }
+        } else if (bitField !== null) {
+            if (((bitField & 50397184) === 0)) {
+                maybePromise._proxy(this, i);
+                this._values[i] = maybePromise;
+            } else if (((bitField & 33554432) !== 0)) {
+                isResolved = this._promiseFulfilled(maybePromise._value(), i);
+            } else if (((bitField & 16777216) !== 0)) {
+                isResolved = this._promiseRejected(maybePromise._reason(), i);
+            } else {
+                isResolved = this._promiseCancelled(i);
+            }
+        } else {
+            isResolved = this._promiseFulfilled(maybePromise, i);
+        }
+    }
+    if (!isResolved) result._setAsyncGuaranteed();
+};
+PromiseArray.prototype._isResolved = function () {
+    return this._values === null;
+};
+PromiseArray.prototype._resolve = function (value) {
+    this._values = null;
+    this._promise._fulfill(value);
+};
+PromiseArray.prototype._cancel = function() {
+    if (this._isResolved() || !this._promise._isCancellable()) return;
+    this._values = null;
+    this._promise._cancel();
+};
+PromiseArray.prototype._reject = function (reason) {
+    this._values = null;
+    this._promise._rejectCallback(reason, false);
+};
+PromiseArray.prototype._promiseFulfilled = function (value, index) {
+    this._values[index] = value;
+    var totalResolved = ++this._totalResolved;
+    if (totalResolved >= this._length) {
+        this._resolve(this._values);
+        return true;
+    }
+    return false;
+};
+PromiseArray.prototype._promiseCancelled = function() {
+    this._cancel();
+    return true;
+};
+PromiseArray.prototype._promiseRejected = function (reason) {
+    this._totalResolved++;
+    this._reject(reason);
+    return true;
+};
+PromiseArray.prototype._resultCancelled = function() {
+    if (this._isResolved()) return;
+    var values = this._values;
+    this._cancel();
+    if (values instanceof Promise) {
+        values.cancel();
+    } else {
+        for (var i = 0; i < values.length; ++i) {
+            if (values[i] instanceof Promise) {
+                values[i].cancel();
+            }
+        }
+    }
+};
+PromiseArray.prototype.shouldCopyValues = function () {
+    return true;
+};
+PromiseArray.prototype.getActualLength = function (len) {
+    return len;
+};
+return PromiseArray;
+};
+},{"./util":21}],17:[function(_dereq_,module,exports){
+"use strict";
+function arrayMove(src, srcIndex, dst, dstIndex, len) {
+    for (var j = 0; j < len; ++j) {
+        dst[j + dstIndex] = src[j + srcIndex];
+        src[j + srcIndex] = void 0;
+    }
+}
+function Queue(capacity) {
+    this._capacity = capacity;
+    this._length = 0;
+    this._front = 0;
+}
+Queue.prototype._willBeOverCapacity = function (size) {
+    return this._capacity < size;
+};
+Queue.prototype._pushOne = function (arg) {
+    var length = this.length();
+    this._checkCapacity(length + 1);
+    var i = (this._front + length) & (this._capacity - 1);
+    this[i] = arg;
+    this._length = length + 1;
+};
+Queue.prototype.push = function (fn, receiver, arg) {
+    var length = this.length() + 3;
+    if (this._willBeOverCapacity(length)) {
+        this._pushOne(fn);
+        this._pushOne(receiver);
+        this._pushOne(arg);
+        return;
+    }
+    var j = this._front + length - 3;
+    this._checkCapacity(length);
+    var wrapMask = this._capacity - 1;
+    this[(j + 0) & wrapMask] = fn;
+    this[(j + 1) & wrapMask] = receiver;
+    this[(j + 2) & wrapMask] = arg;
+    this._length = length;
+};
+Queue.prototype.shift = function () {
+    var front = this._front,
+        ret = this[front];
+    this[front] = undefined;
+    this._front = (front + 1) & (this._capacity - 1);
+    this._length--;
+    return ret;
+};
+Queue.prototype.length = function () {
+    return this._length;
+};
+Queue.prototype._checkCapacity = function (size) {
+    if (this._capacity < size) {
+        this._resizeTo(this._capacity << 1);
+    }
+};
+Queue.prototype._resizeTo = function (capacity) {
+    var oldCapacity = this._capacity;
+    this._capacity = capacity;
+    var front = this._front;
+    var length = this._length;
+    var moveItemsCount = (front + length) & (oldCapacity - 1);
+    arrayMove(this, 0, this, oldCapacity, moveItemsCount);
+};
+module.exports = Queue;
+},{}],18:[function(_dereq_,module,exports){
+"use strict";
+var util = _dereq_("./util");
+var schedule;
+var noAsyncScheduler = function() {
+    throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+};
+var NativePromise = util.getNativePromise();
+if (util.isNode && typeof MutationObserver === "undefined") {
+    var GlobalSetImmediate = global.setImmediate;
+    var ProcessNextTick = process.nextTick;
+    schedule = util.isRecentNode
+                ? function(fn) { GlobalSetImmediate.call(global, fn); }
+                : function(fn) { ProcessNextTick.call(process, fn); };
+} else if (typeof NativePromise === "function" &&
+           typeof NativePromise.resolve === "function") {
+    var nativePromise = NativePromise.resolve();
+    schedule = function(fn) {
+        nativePromise.then(fn);
+    };
+} else if ((typeof MutationObserver !== "undefined") &&
+          !(typeof window !== "undefined" &&
+            window.navigator &&
+            (window.navigator.standalone || window.cordova))) {
+    schedule = (function() {
+        var div = document.createElement("div");
+        var opts = {attributes: true};
+        var toggleScheduled = false;
+        var div2 = document.createElement("div");
+        var o2 = new MutationObserver(function() {
+            div.classList.toggle("foo");
+            toggleScheduled = false;
+        });
+        o2.observe(div2, opts);
+        var scheduleToggle = function() {
+            if (toggleScheduled) return;
+            toggleScheduled = true;
+            div2.classList.toggle("foo");
+        };
+        return function schedule(fn) {
+            var o = new MutationObserver(function() {
+                o.disconnect();
+                fn();
+            });
+            o.observe(div, opts);
+            scheduleToggle();
+        };
+    })();
+} else if (typeof setImmediate !== "undefined") {
+    schedule = function (fn) {
+        setImmediate(fn);
+    };
+} else if (typeof setTimeout !== "undefined") {
+    schedule = function (fn) {
+        setTimeout(fn, 0);
+    };
+} else {
+    schedule = noAsyncScheduler;
+}
+module.exports = schedule;
+},{"./util":21}],19:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise) {
+function PromiseInspection(promise) {
+    if (promise !== undefined) {
+        promise = promise._target();
+        this._bitField = promise._bitField;
+        this._settledValueField = promise._isFateSealed()
+            ? promise._settledValue() : undefined;
+    }
+    else {
+        this._bitField = 0;
+        this._settledValueField = undefined;
+    }
+}
+PromiseInspection.prototype._settledValue = function() {
+    return this._settledValueField;
+};
+var value = PromiseInspection.prototype.value = function () {
+    if (!this.isFulfilled()) {
+        throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+    }
+    return this._settledValue();
+};
+var reason = PromiseInspection.prototype.error =
+PromiseInspection.prototype.reason = function () {
+    if (!this.isRejected()) {
+        throw new TypeError("cannot get rejection reason of a non-rejected promise\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
+    }
+    return this._settledValue();
+};
+var isFulfilled = PromiseInspection.prototype.isFulfilled = function() {
+    return (this._bitField & 33554432) !== 0;
+};
+var isRejected = PromiseInspection.prototype.isRejected = function () {
+    return (this._bitField & 16777216) !== 0;
+};
+var isPending = PromiseInspection.prototype.isPending = function () {
+    return (this._bitField & 50397184) === 0;
+};
+var isResolved = PromiseInspection.prototype.isResolved = function () {
+    return (this._bitField & 50331648) !== 0;
+};
+PromiseInspection.prototype.isCancelled = function() {
+    return (this._bitField & 8454144) !== 0;
+};
+Promise.prototype.__isCancelled = function() {
+    return (this._bitField & 65536) === 65536;
+};
+Promise.prototype._isCancelled = function() {
+    return this._target().__isCancelled();
+};
+Promise.prototype.isCancelled = function() {
+    return (this._target()._bitField & 8454144) !== 0;
+};
+Promise.prototype.isPending = function() {
+    return isPending.call(this._target());
+};
+Promise.prototype.isRejected = function() {
+    return isRejected.call(this._target());
+};
+Promise.prototype.isFulfilled = function() {
+    return isFulfilled.call(this._target());
+};
+Promise.prototype.isResolved = function() {
+    return isResolved.call(this._target());
+};
+Promise.prototype.value = function() {
+    return value.call(this._target());
+};
+Promise.prototype.reason = function() {
+    var target = this._target();
+    target._unsetRejectionIsUnhandled();
+    return reason.call(target);
+};
+Promise.prototype._value = function() {
+    return this._settledValue();
+};
+Promise.prototype._reason = function() {
+    this._unsetRejectionIsUnhandled();
+    return this._settledValue();
+};
+Promise.PromiseInspection = PromiseInspection;
+};
+},{}],20:[function(_dereq_,module,exports){
+"use strict";
+module.exports = function(Promise, INTERNAL) {
+var util = _dereq_("./util");
+var errorObj = util.errorObj;
+var isObject = util.isObject;
+function tryConvertToPromise(obj, context) {
+    if (isObject(obj)) {
+        if (obj instanceof Promise) return obj;
+        var then = getThen(obj);
+        if (then === errorObj) {
+            if (context) context._pushContext();
+            var ret = Promise.reject(then.e);
+            if (context) context._popContext();
+            return ret;
+        } else if (typeof then === "function") {
+            if (isAnyBluebirdPromise(obj)) {
+                var ret = new Promise(INTERNAL);
+                obj._then(
+                    ret._fulfill,
+                    ret._reject,
+                    undefined,
+                    ret,
+                    null
+                );
+                return ret;
+            }
+            return doThenable(obj, then, context);
+        }
+    }
+    return obj;
+}
+function doGetThen(obj) {
+    return obj.then;
+}
+function getThen(obj) {
+    try {
+        return doGetThen(obj);
+    } catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+var hasProp = {}.hasOwnProperty;
+function isAnyBluebirdPromise(obj) {
+    try {
+        return hasProp.call(obj, "_promise0");
+    } catch (e) {
+        return false;
+    }
+}
+function doThenable(x, then, context) {
+    var promise = new Promise(INTERNAL);
+    var ret = promise;
+    if (context) context._pushContext();
+    promise._captureStackTrace();
+    if (context) context._popContext();
+    var synchronous = true;
+    var result = util.tryCatch(then).call(x, resolve, reject);
+    synchronous = false;
+    if (promise && result === errorObj) {
+        promise._rejectCallback(result.e, true, true);
+        promise = null;
+    }
+    function resolve(value) {
+        if (!promise) return;
+        promise._resolveCallback(value);
+        promise = null;
+    }
+    function reject(reason) {
+        if (!promise) return;
+        promise._rejectCallback(reason, synchronous, true);
+        promise = null;
+    }
+    return ret;
+}
+return tryConvertToPromise;
+};
+},{"./util":21}],21:[function(_dereq_,module,exports){
+"use strict";
+var es5 = _dereq_("./es5");
+var canEvaluate = typeof navigator == "undefined";
+var errorObj = {e: {}};
+var tryCatchTarget;
+var globalObject = typeof self !== "undefined" ? self :
+    typeof window !== "undefined" ? window :
+    typeof global !== "undefined" ? global :
+    this !== undefined ? this : null;
+function tryCatcher() {
+    try {
+        var target = tryCatchTarget;
+        tryCatchTarget = null;
+        return target.apply(this, arguments);
+    } catch (e) {
+        errorObj.e = e;
+        return errorObj;
+    }
+}
+function tryCatch(fn) {
+    tryCatchTarget = fn;
+    return tryCatcher;
+}
+var inherits = function(Child, Parent) {
+    var hasProp = {}.hasOwnProperty;
+    function T() {
+        this.constructor = Child;
+        this.constructor$ = Parent;
+        for (var propertyName in Parent.prototype) {
+            if (hasProp.call(Parent.prototype, propertyName) &&
+                propertyName.charAt(propertyName.length-1) !== "$"
+           ) {
+                this[propertyName + "$"] = Parent.prototype[propertyName];
+            }
+        }
+    }
+    T.prototype = Parent.prototype;
+    Child.prototype = new T();
+    return Child.prototype;
+};
+function isPrimitive(val) {
+    return val == null || val === true || val === false ||
+        typeof val === "string" || typeof val === "number";
+}
+function isObject(value) {
+    return typeof value === "function" ||
+           typeof value === "object" && value !== null;
+}
+function maybeWrapAsError(maybeError) {
+    if (!isPrimitive(maybeError)) return maybeError;
+    return new Error(safeToString(maybeError));
+}
+function withAppended(target, appendee) {
+    var len = target.length;
+    var ret = new Array(len + 1);
+    var i;
+    for (i = 0; i < len; ++i) {
+        ret[i] = target[i];
+    }
+    ret[i] = appendee;
+    return ret;
+}
+function getDataPropertyOrDefault(obj, key, defaultValue) {
+    if (es5.isES5) {
+        var desc = Object.getOwnPropertyDescriptor(obj, key);
+        if (desc != null) {
+            return desc.get == null && desc.set == null
+                    ? desc.value
+                    : defaultValue;
+        }
+    } else {
+        return {}.hasOwnProperty.call(obj, key) ? obj[key] : undefined;
+    }
+}
+function notEnumerableProp(obj, name, value) {
+    if (isPrimitive(obj)) return obj;
+    var descriptor = {
+        value: value,
+        configurable: true,
+        enumerable: false,
+        writable: true
+    };
+    es5.defineProperty(obj, name, descriptor);
+    return obj;
+}
+function thrower(r) {
+    throw r;
+}
+var inheritedDataKeys = (function() {
+    var excludedPrototypes = [
+        Array.prototype,
+        Object.prototype,
+        Function.prototype
+    ];
+    var isExcludedProto = function(val) {
+        for (var i = 0; i < excludedPrototypes.length; ++i) {
+            if (excludedPrototypes[i] === val) {
+                return true;
+            }
+        }
+        return false;
+    };
+    if (es5.isES5) {
+        var getKeys = Object.getOwnPropertyNames;
+        return function(obj) {
+            var ret = [];
+            var visitedKeys = Object.create(null);
+            while (obj != null && !isExcludedProto(obj)) {
+                var keys;
+                try {
+                    keys = getKeys(obj);
+                } catch (e) {
+                    return ret;
+                }
+                for (var i = 0; i < keys.length; ++i) {
+                    var key = keys[i];
+                    if (visitedKeys[key]) continue;
+                    visitedKeys[key] = true;
+                    var desc = Object.getOwnPropertyDescriptor(obj, key);
+                    if (desc != null && desc.get == null && desc.set == null) {
+                        ret.push(key);
+                    }
+                }
+                obj = es5.getPrototypeOf(obj);
+            }
+            return ret;
+        };
+    } else {
+        var hasProp = {}.hasOwnProperty;
+        return function(obj) {
+            if (isExcludedProto(obj)) return [];
+            var ret = [];
+            /*jshint forin:false */
+            enumeration: for (var key in obj) {
+                if (hasProp.call(obj, key)) {
+                    ret.push(key);
+                } else {
+                    for (var i = 0; i < excludedPrototypes.length; ++i) {
+                        if (hasProp.call(excludedPrototypes[i], key)) {
+                            continue enumeration;
+                        }
+                    }
+                    ret.push(key);
+                }
+            }
+            return ret;
+        };
+    }
+})();
+var thisAssignmentPattern = /this\s*\.\s*\S+\s*=/;
+function isClass(fn) {
+    try {
+        if (typeof fn === "function") {
+            var keys = es5.names(fn.prototype);
+            var hasMethods = es5.isES5 && keys.length > 1;
+            var hasMethodsOtherThanConstructor = keys.length > 0 &&
+                !(keys.length === 1 && keys[0] === "constructor");
+            var hasThisAssignmentAndStaticMethods =
+                thisAssignmentPattern.test(fn + "") && es5.names(fn).length > 0;
+            if (hasMethods || hasMethodsOtherThanConstructor ||
+                hasThisAssignmentAndStaticMethods) {
+                return true;
+            }
+        }
+        return false;
+    } catch (e) {
+        return false;
+    }
+}
+function toFastProperties(obj) {
+    /*jshint -W027,-W055,-W031*/
+    function FakeConstructor() {}
+    FakeConstructor.prototype = obj;
+    var l = 8;
+    while (l--) new FakeConstructor();
+    return obj;
+    eval(obj);
+}
+var rident = /^[a-z$_][a-z$_0-9]*$/i;
+function isIdentifier(str) {
+    return rident.test(str);
+}
+function filledRange(count, prefix, suffix) {
+    var ret = new Array(count);
+    for(var i = 0; i < count; ++i) {
+        ret[i] = prefix + i + suffix;
+    }
+    return ret;
+}
+function safeToString(obj) {
+    try {
+        return obj + "";
+    } catch (e) {
+        return "[no string representation]";
+    }
+}
+function isError(obj) {
+    return obj instanceof Error ||
+        (obj !== null &&
+           typeof obj === "object" &&
+           typeof obj.message === "string" &&
+           typeof obj.name === "string");
+}
+function markAsOriginatingFromRejection(e) {
+    try {
+        notEnumerableProp(e, "isOperational", true);
+    }
+    catch(ignore) {}
+}
+function originatesFromRejection(e) {
+    if (e == null) return false;
+    return ((e instanceof Error["__BluebirdErrorTypes__"].OperationalError) ||
+        e["isOperational"] === true);
+}
+function canAttachTrace(obj) {
+    return isError(obj) && es5.propertyIsWritable(obj, "stack");
+}
+var ensureErrorObject = (function() {
+    if (!("stack" in new Error())) {
+        return function(value) {
+            if (canAttachTrace(value)) return value;
+            try {throw new Error(safeToString(value));}
+            catch(err) {return err;}
+        };
+    } else {
+        return function(value) {
+            if (canAttachTrace(value)) return value;
+            return new Error(safeToString(value));
+        };
+    }
+})();
+function classString(obj) {
+    return {}.toString.call(obj);
+}
+function copyDescriptors(from, to, filter) {
+    var keys = es5.names(from);
+    for (var i = 0; i < keys.length; ++i) {
+        var key = keys[i];
+        if (filter(key)) {
+            try {
+                es5.defineProperty(to, key, es5.getDescriptor(from, key));
+            } catch (ignore) {}
+        }
+    }
+}
+var asArray = function(v) {
+    if (es5.isArray(v)) {
+        return v;
+    }
+    return null;
+};
+if (typeof Symbol !== "undefined" && Symbol.iterator) {
+    var ArrayFrom = typeof Array.from === "function" ? function(v) {
+        return Array.from(v);
+    } : function(v) {
+        var ret = [];
+        var it = v[Symbol.iterator]();
+        var itResult;
+        while (!((itResult = it.next()).done)) {
+            ret.push(itResult.value);
+        }
+        return ret;
+    };
+    asArray = function(v) {
+        if (es5.isArray(v)) {
+            return v;
+        } else if (v != null && typeof v[Symbol.iterator] === "function") {
+            return ArrayFrom(v);
+        }
+        return null;
+    };
+}
+var isNode = typeof process !== "undefined" &&
+        classString(process).toLowerCase() === "[object process]";
+var hasEnvVariables = typeof process !== "undefined" &&
+    typeof process.env !== "undefined";
+function env(key) {
+    return hasEnvVariables ? process.env[key] : undefined;
+}
+function getNativePromise() {
+    if (typeof Promise === "function") {
+        try {
+            var promise = new Promise(function(){});
+            if ({}.toString.call(promise) === "[object Promise]") {
+                return Promise;
+            }
+        } catch (e) {}
+    }
+}
+function domainBind(self, cb) {
+    return self.bind(cb);
+}
+var ret = {
+    isClass: isClass,
+    isIdentifier: isIdentifier,
+    inheritedDataKeys: inheritedDataKeys,
+    getDataPropertyOrDefault: getDataPropertyOrDefault,
+    thrower: thrower,
+    isArray: es5.isArray,
+    asArray: asArray,
+    notEnumerableProp: notEnumerableProp,
+    isPrimitive: isPrimitive,
+    isObject: isObject,
+    isError: isError,
+    canEvaluate: canEvaluate,
+    errorObj: errorObj,
+    tryCatch: tryCatch,
+    inherits: inherits,
+    withAppended: withAppended,
+    maybeWrapAsError: maybeWrapAsError,
+    toFastProperties: toFastProperties,
+    filledRange: filledRange,
+    toString: safeToString,
+    canAttachTrace: canAttachTrace,
+    ensureErrorObject: ensureErrorObject,
+    originatesFromRejection: originatesFromRejection,
+    markAsOriginatingFromRejection: markAsOriginatingFromRejection,
+    classString: classString,
+    copyDescriptors: copyDescriptors,
+    hasDevTools: typeof chrome !== "undefined" && chrome &&
+                 typeof chrome.loadTimes === "function",
+    isNode: isNode,
+    hasEnvVariables: hasEnvVariables,
+    env: env,
+    global: globalObject,
+    getNativePromise: getNativePromise,
+    domainBind: domainBind
+};
+ret.isRecentNode = ret.isNode && (function() {
+    var version = process.versions.node.split(".").map(Number);
+    return (version[0] === 0 && version[1] > 10) || (version[0] > 0);
+})();
+if (ret.isNode) ret.toFastProperties(process);
+try {throw new Error(); } catch (e) {ret.lastLineError = e;}
+module.exports = ret;
+},{"./es5":10}]},{},[3])(3)
+});                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
+}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
+},{"_process":75}],4:[function(require,module,exports){
+/* @license C3.js v0.4.22 | (c) C3 Team and other contributors | http://c3js.org/ */
+(function (global, factory) {
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.c3 = factory());
+}(this, (function () { 'use strict';
+    var CLASS = {
+        target: 'c3-target',
+        chart: 'c3-chart',
+        chartLine: 'c3-chart-line',
+        chartLines: 'c3-chart-lines',
+        chartBar: 'c3-chart-bar',
+        chartBars: 'c3-chart-bars',
+        chartText: 'c3-chart-text',
+        chartTexts: 'c3-chart-texts',
+        chartArc: 'c3-chart-arc',
+        chartArcs: 'c3-chart-arcs',
+        chartArcsTitle: 'c3-chart-arcs-title',
+        chartArcsBackground: 'c3-chart-arcs-background',
+        chartArcsGaugeUnit: 'c3-chart-arcs-gauge-unit',
+        chartArcsGaugeMax: 'c3-chart-arcs-gauge-max',
+        chartArcsGaugeMin: 'c3-chart-arcs-gauge-min',
+        selectedCircle: 'c3-selected-circle',
+        selectedCircles: 'c3-selected-circles',
+        eventRect: 'c3-event-rect',
+        eventRects: 'c3-event-rects',
+        eventRectsSingle: 'c3-event-rects-single',
+        eventRectsMultiple: 'c3-event-rects-multiple',
+        zoomRect: 'c3-zoom-rect',
+        brush: 'c3-brush',
+        focused: 'c3-focused',
+        defocused: 'c3-defocused',
+        region: 'c3-region',
+        regions: 'c3-regions',
+        title: 'c3-title',
+        tooltipContainer: 'c3-tooltip-container',
+        tooltip: 'c3-tooltip',
+        tooltipName: 'c3-tooltip-name',
+        shape: 'c3-shape',
+        shapes: 'c3-shapes',
+        line: 'c3-line',
+        lines: 'c3-lines',
+        bar: 'c3-bar',
+        bars: 'c3-bars',
+        circle: 'c3-circle',
+        circles: 'c3-circles',
+        arc: 'c3-arc',
+        arcLabelLine: 'c3-arc-label-line',
+        arcs: 'c3-arcs',
+        area: 'c3-area',
+        areas: 'c3-areas',
+        empty: 'c3-empty',
+        text: 'c3-text',
+        texts: 'c3-texts',
+        gaugeValue: 'c3-gauge-value',
+        grid: 'c3-grid',
+        gridLines: 'c3-grid-lines',
+        xgrid: 'c3-xgrid',
+        xgrids: 'c3-xgrids',
+        xgridLine: 'c3-xgrid-line',
+        xgridLines: 'c3-xgrid-lines',
+        xgridFocus: 'c3-xgrid-focus',
+        ygrid: 'c3-ygrid',
+        ygrids: 'c3-ygrids',
+        ygridLine: 'c3-ygrid-line',
+        ygridLines: 'c3-ygrid-lines',
+        axis: 'c3-axis',
+        axisX: 'c3-axis-x',
+        axisXLabel: 'c3-axis-x-label',
+        axisY: 'c3-axis-y',
+        axisYLabel: 'c3-axis-y-label',
+        axisY2: 'c3-axis-y2',
+        axisY2Label: 'c3-axis-y2-label',
+        legendBackground: 'c3-legend-background',
+        legendItem: 'c3-legend-item',
+        legendItemEvent: 'c3-legend-item-event',
+        legendItemTile: 'c3-legend-item-tile',
+        legendItemHidden: 'c3-legend-item-hidden',
+        legendItemFocused: 'c3-legend-item-focused',
+        dragarea: 'c3-dragarea',
+        EXPANDED: '_expanded_',
+        SELECTED: '_selected_',
+        INCLUDED: '_included_'
+    };
+    var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) {
+      return typeof obj;
+    } : function (obj) {
+      return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj;
+    };
+    var classCallCheck = function (instance, Constructor) {
+      if (!(instance instanceof Constructor)) {
+        throw new TypeError("Cannot call a class as a function");
+      }
+    };
+    var inherits = function (subClass, superClass) {
+      if (typeof superClass !== "function" && superClass !== null) {
+        throw new TypeError("Super expression must either be null or a function, not " + typeof superClass);
+      }
+      subClass.prototype = Object.create(superClass && superClass.prototype, {
+        constructor: {
+          value: subClass,
+          enumerable: false,
+          writable: true,
+          configurable: true
+        }
+      });
+      if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass;
+    };
+    var possibleConstructorReturn = function (self, call) {
+      if (!self) {
+        throw new ReferenceError("this hasn't been initialised - super() hasn't been called");
+      }
+      return call && (typeof call === "object" || typeof call === "function") ? call : self;
+    };
+    var isValue = function isValue(v) {
+        return v || v === 0;
+    };
+    var isFunction = function isFunction(o) {
+        return typeof o === 'function';
+    };
+    var isArray = function isArray(o) {
+        return Array.isArray(o);
+    };
+    var isString = function isString(o) {
+        return typeof o === 'string';
+    };
+    var isUndefined = function isUndefined(v) {
+        return typeof v === 'undefined';
+    };
+    var isDefined = function isDefined(v) {
+        return typeof v !== 'undefined';
+    };
+    var ceil10 = function ceil10(v) {
+        return Math.ceil(v / 10) * 10;
+    };
+    var asHalfPixel = function asHalfPixel(n) {
+        return Math.ceil(n) + 0.5;
+    };
+    var diffDomain = function diffDomain(d) {
+        return d[1] - d[0];
+    };
+    var isEmpty = function isEmpty(o) {
+        return typeof o === 'undefined' || o === null || isString(o) && o.length === 0 || (typeof o === 'undefined' ? 'undefined' : _typeof(o)) === 'object' && Object.keys(o).length === 0;
+    };
+    var notEmpty = function notEmpty(o) {
+        return !c3_chart_internal_fn.isEmpty(o);
+    };
+    var getOption = function getOption(options, key, defaultValue) {
+        return isDefined(options[key]) ? options[key] : defaultValue;
+    };
+    var hasValue = function hasValue(dict, value) {
         var found = false;
-        [].concat(params).forEach(function (param) {
-            if ('value' in param && line.value === param.value || 'class' in param && line['class'] === param['class']) {
+        Object.keys(dict).forEach(function (key) {
+            if (dict[key] === value) {
                 found = true;
             }
         });
         return found;
-    } : function () {
-        return true;
     };
-};
-c3_chart_internal_fn.removeGridLines = function (params, forX) {
-    var $$ = this,
-        config = $$.config,
-        toRemove = $$.getGridFilterToRemove(params),
-        toShow = function toShow(line) {
-        return !toRemove(line);
-    },
-        classLines = forX ? CLASS.xgridLines : CLASS.ygridLines,
-        classLine = forX ? CLASS.xgridLine : CLASS.ygridLine;
-    $$.main.select('.' + classLines).selectAll('.' + classLine).filter(toRemove).transition().duration(config.transition_duration).style('opacity', 0).remove();
-    if (forX) {
-        config.grid_x_lines = config.grid_x_lines.filter(toShow);
-    } else {
-        config.grid_y_lines = config.grid_y_lines.filter(toShow);
+    var sanitise = function sanitise(str) {
+        return typeof str === 'string' ? str.replace(/</g, '&lt;').replace(/>/g, '&gt;') : str;
+    };
+    var getPathBox = function getPathBox(path) {
+        var box = path.getBoundingClientRect(),
+            items = [path.pathSegList.getItem(0), path.pathSegList.getItem(1)],
+            minX = items[0].x,
+            minY = Math.min(items[0].y, items[1].y);
+        return { x: minX, y: minY, width: box.width, height: box.height };
+    };
+    var c3_axis_fn;
+    var c3_axis_internal_fn;
+    function AxisInternal(component, params) {
+        var internal = this;
+        internal.component = component;
+        internal.params = params || {};
+        internal.d3 = component.d3;
+        internal.scale = internal.d3.scale.linear();
+        internal.range;
+        internal.orient = "bottom";
+        internal.innerTickSize = 6;
+        internal.outerTickSize = this.params.withOuterTick ? 6 : 0;
+        internal.tickPadding = 3;
+        internal.tickValues = null;
+        internal.tickFormat;
+        internal.tickArguments;
+        internal.tickOffset = 0;
+        internal.tickCulling = true;
+        internal.tickCentered;
+        internal.tickTextCharSize;
+        internal.tickTextRotate = internal.params.tickTextRotate;
+        internal.tickLength;
+        internal.axis = internal.generateAxis();
     }
-};
-c3_chart_internal_fn.initEventRect = function () {
-    var $$ = this;
-    $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.eventRects).style('fill-opacity', 0);
-};
-c3_chart_internal_fn.redrawEventRect = function () {
-    var $$ = this,
-        config = $$.config,
-        eventRectUpdate,
-        maxDataCountTarget,
-        isMultipleX = $$.isMultipleX();
-    var eventRects = $$.main.select('.' + CLASS.eventRects).style('cursor', config.zoom_enabled ? config.axis_rotated ? 'ns-resize' : 'ew-resize' : null).classed(CLASS.eventRectsMultiple, isMultipleX).classed(CLASS.eventRectsSingle, !isMultipleX);
-    eventRects.selectAll('.' + CLASS.eventRect).remove();
-    $$.eventRect = eventRects.selectAll('.' + CLASS.eventRect);
-    if (isMultipleX) {
-        eventRectUpdate = $$.eventRect.data([0]);
-        $$.generateEventRectsForMultipleXs(eventRectUpdate.enter());
-        $$.updateEventRect(eventRectUpdate);
-    } else {
-        maxDataCountTarget = $$.getMaxDataCountTarget($$.data.targets);
-        eventRects.datum(maxDataCountTarget ? maxDataCountTarget.values : []);
-        $$.eventRect = eventRects.selectAll('.' + CLASS.eventRect);
-        eventRectUpdate = $$.eventRect.data(function (d) {
-            return d;
+    c3_axis_internal_fn = AxisInternal.prototype;
+    c3_axis_internal_fn.axisX = function (selection, x, tickOffset) {
+        selection.attr("transform", function (d) {
+            return "translate(" + Math.ceil(x(d) + tickOffset) + ", 0)";
         });
-        $$.generateEventRectsForSingleX(eventRectUpdate.enter());
-        $$.updateEventRect(eventRectUpdate);
-        eventRectUpdate.exit().remove();
-    }
-};
-c3_chart_internal_fn.updateEventRect = function (eventRectUpdate) {
-    var $$ = this,
-        config = $$.config,
-        x,
-        y,
-        w,
-        h,
-        rectW,
-        rectX;
-    eventRectUpdate = eventRectUpdate || $$.eventRect.data(function (d) {
-        return d;
-    });
-    if ($$.isMultipleX()) {
-        x = 0;
-        y = 0;
-        w = $$.width;
-        h = $$.height;
-    } else {
-        if (($$.isCustomX() || $$.isTimeSeries()) && !$$.isCategorized()) {
-            $$.updateXs();
-            rectW = function rectW(d) {
-                var prevX = $$.getPrevX(d.index),
-                    nextX = $$.getNextX(d.index);
-                if (prevX === null && nextX === null) {
-                    return config.axis_rotated ? $$.height : $$.width;
-                }
-                if (prevX === null) {
-                    prevX = $$.x.domain()[0];
-                }
-                if (nextX === null) {
-                    nextX = $$.x.domain()[1];
-                }
-                return Math.max(0, ($$.x(nextX) - $$.x(prevX)) / 2);
-            };
-            rectX = function rectX(d) {
-                var prevX = $$.getPrevX(d.index),
-                    nextX = $$.getNextX(d.index),
-                    thisX = $$.data.xs[d.id][d.index];
-                if (prevX === null && nextX === null) {
-                    return 0;
-                }
-                if (prevX === null) {
-                    prevX = $$.x.domain()[0];
-                }
-                return ($$.x(thisX) + $$.x(prevX)) / 2;
-            };
-        } else {
-            rectW = $$.getEventRectWidth();
-            rectX = function rectX(d) {
-                return $$.x(d.x) - rectW / 2;
-            };
-        }
-        x = config.axis_rotated ? 0 : rectX;
-        y = config.axis_rotated ? rectX : 0;
-        w = config.axis_rotated ? $$.width : rectW;
-        h = config.axis_rotated ? rectW : $$.height;
-    }
-    eventRectUpdate.attr('class', $$.classEvent.bind($$)).attr("x", x).attr("y", y).attr("width", w).attr("height", h);
-};
-c3_chart_internal_fn.generateEventRectsForSingleX = function (eventRectEnter) {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config;
-    eventRectEnter.append("rect").attr("class", $$.classEvent.bind($$)).style("cursor", config.data_selection_enabled && config.data_selection_grouped ? "pointer" : null).on('mouseover', function (d) {
-        var index = d.index;
-        if ($$.dragging || $$.flowing) {
-            return;
-        }
-        if ($$.hasArcType()) {
-            return;
-        }
-        if (config.point_focus_expand_enabled) {
-            $$.expandCircles(index, null, true);
-        }
-        $$.expandBars(index, null, true);
-        $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function (d) {
-            config.data_onmouseover.call($$.api, d);
+    };
+    c3_axis_internal_fn.axisY = function (selection, y) {
+        selection.attr("transform", function (d) {
+            return "translate(0," + Math.ceil(y(d)) + ")";
         });
-    }).on('mouseout', function (d) {
-        var index = d.index;
-        if (!$$.config) {
-            return;
+    };
+    c3_axis_internal_fn.scaleExtent = function (domain) {
+        var start = domain[0],
+            stop = domain[domain.length - 1];
+        return start < stop ? [start, stop] : [stop, start];
+    };
+    c3_axis_internal_fn.generateTicks = function (scale) {
+        var internal = this;
+        var i,
+            domain,
+            ticks = [];
+        if (scale.ticks) {
+            return scale.ticks.apply(scale, internal.tickArguments);
         }
-        if ($$.hasArcType()) {
-            return;
+        domain = scale.domain();
+        for (i = Math.ceil(domain[0]); i < domain[1]; i++) {
+            ticks.push(i);
         }
-        $$.hideXGridFocus();
-        $$.hideTooltip();
-        $$.unexpandCircles();
-        $$.unexpandBars();
-        $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function (d) {
-            config.data_onmouseout.call($$.api, d);
-        });
-    }).on('mousemove', function (d) {
-        var selectedData,
-            index = d.index,
-            eventRect = $$.svg.select('.' + CLASS.eventRect + '-' + index);
-        if ($$.dragging || $$.flowing) {
-            return;
+        if (ticks.length > 0 && ticks[0] > 0) {
+            ticks.unshift(ticks[0] - (ticks[1] - ticks[0]));
         }
-        if ($$.hasArcType()) {
-            return;
+        return ticks;
+    };
+    c3_axis_internal_fn.copyScale = function () {
+        var internal = this;
+        var newScale = internal.scale.copy(),
+            domain;
+        if (internal.params.isCategory) {
+            domain = internal.scale.domain();
+            newScale.domain([domain[0], domain[1] - 1]);
         }
-        if ($$.isStepType(d) && $$.config.line_step_type === 'step-after' && d3.mouse(this)[0] < $$.x($$.getXValue(d.id, index))) {
-            index -= 1;
+        return newScale;
+    };
+    c3_axis_internal_fn.textFormatted = function (v) {
+        var internal = this,
+            formatted = internal.tickFormat ? internal.tickFormat(v) : v;
+        return typeof formatted !== 'undefined' ? formatted : '';
+    };
+    c3_axis_internal_fn.updateRange = function () {
+        var internal = this;
+        internal.range = internal.scale.rangeExtent ? internal.scale.rangeExtent() : internal.scaleExtent(internal.scale.range());
+        return internal.range;
+    };
+    c3_axis_internal_fn.updateTickTextCharSize = function (tick) {
+        var internal = this;
+        if (internal.tickTextCharSize) {
+            return internal.tickTextCharSize;
         }
-        selectedData = $$.filterTargetsToShow($$.data.targets).map(function (t) {
-            return $$.addName($$.getValueOnIndex(t.values, index));
-        });
-        if (config.tooltip_grouped) {
-            $$.showTooltip(selectedData, this);
-            $$.showXGridFocus(selectedData);
-        }
-        if (config.tooltip_grouped && (!config.data_selection_enabled || config.data_selection_grouped)) {
-            return;
-        }
-        $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function () {
-            d3.select(this).classed(CLASS.EXPANDED, true);
-            if (config.data_selection_enabled) {
-                eventRect.style('cursor', config.data_selection_grouped ? 'pointer' : null);
-            }
-            if (!config.tooltip_grouped) {
-                $$.hideXGridFocus();
-                $$.hideTooltip();
-                if (!config.data_selection_grouped) {
-                    $$.unexpandCircles(index);
-                    $$.unexpandBars(index);
-                }
-            }
-        }).filter(function (d) {
-            return $$.isWithinShape(this, d);
+        var size = {
+            h: 11.5,
+            w: 5.5
+        };
+        tick.select('text').text(function (d) {
+            return internal.textFormatted(d);
         }).each(function (d) {
-            if (config.data_selection_enabled && (config.data_selection_grouped || config.data_selection_isselectable(d))) {
-                eventRect.style('cursor', 'pointer');
+            var box = this.getBoundingClientRect(),
+                text = internal.textFormatted(d),
+                h = box.height,
+                w = text ? box.width / text.length : undefined;
+            if (h && w) {
+                size.h = h;
+                size.w = w;
             }
-            if (!config.tooltip_grouped) {
-                $$.showTooltip([d], this);
-                $$.showXGridFocus([d]);
-                if (config.point_focus_expand_enabled) {
-                    $$.expandCircles(index, d.id, true);
-                }
-                $$.expandBars(index, d.id, true);
-            }
-        });
-    }).on('click', function (d) {
-        var index = d.index;
-        if ($$.hasArcType() || !$$.toggleShape) {
-            return;
-        }
-        if ($$.cancelClick) {
-            $$.cancelClick = false;
-            return;
-        }
-        if ($$.isStepType(d) && config.line_step_type === 'step-after' && d3.mouse(this)[0] < $$.x($$.getXValue(d.id, index))) {
-            index -= 1;
-        }
-        $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function (d) {
-            if (config.data_selection_grouped || $$.isWithinShape(this, d)) {
-                $$.toggleShape(this, d, index);
-                $$.config.data_onclick.call($$.api, d, this);
-            }
-        });
-    }).call(config.data_selection_draggable && $$.drag ? d3.behavior.drag().origin(Object).on('drag', function () {
-        $$.drag(d3.mouse(this));
-    }).on('dragstart', function () {
-        $$.dragstart(d3.mouse(this));
-    }).on('dragend', function () {
-        $$.dragend();
-    }) : function () {});
-};
-c3_chart_internal_fn.generateEventRectsForMultipleXs = function (eventRectEnter) {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config;
-    function mouseout() {
-        $$.svg.select('.' + CLASS.eventRect).style('cursor', null);
-        $$.hideXGridFocus();
-        $$.hideTooltip();
-        $$.unexpandCircles();
-        $$.unexpandBars();
-    }
-    eventRectEnter.append('rect').attr('x', 0).attr('y', 0).attr('width', $$.width).attr('height', $$.height).attr('class', CLASS.eventRect).on('mouseout', function () {
-        if (!$$.config) {
-            return;
-        }
-        if ($$.hasArcType()) {
-            return;
-        }
-        mouseout();
-    }).on('mousemove', function () {
-        var targetsToShow = $$.filterTargetsToShow($$.data.targets);
-        var mouse, closest, sameXData, selectedData;
-        if ($$.dragging) {
-            return;
-        }
-        if ($$.hasArcType(targetsToShow)) {
-            return;
-        }
-        mouse = d3.mouse(this);
-        closest = $$.findClosestFromTargets(targetsToShow, mouse);
-        if ($$.mouseover && (!closest || closest.id !== $$.mouseover.id)) {
-            config.data_onmouseout.call($$.api, $$.mouseover);
-            $$.mouseover = undefined;
-        }
-        if (!closest) {
-            mouseout();
-            return;
-        }
-        if ($$.isScatterType(closest) || !config.tooltip_grouped) {
-            sameXData = [closest];
-        } else {
-            sameXData = $$.filterByX(targetsToShow, closest.x);
-        }
-        selectedData = sameXData.map(function (d) {
-            return $$.addName(d);
-        });
-        $$.showTooltip(selectedData, this);
-        if (config.point_focus_expand_enabled) {
-            $$.expandCircles(closest.index, closest.id, true);
-        }
-        $$.expandBars(closest.index, closest.id, true);
-        $$.showXGridFocus(selectedData);
-        if ($$.isBarType(closest.id) || $$.dist(closest, mouse) < config.point_sensitivity) {
-            $$.svg.select('.' + CLASS.eventRect).style('cursor', 'pointer');
-            if (!$$.mouseover) {
-                config.data_onmouseover.call($$.api, closest);
-                $$.mouseover = closest;
-            }
-        }
-    }).on('click', function () {
-        var targetsToShow = $$.filterTargetsToShow($$.data.targets);
-        var mouse, closest;
-        if ($$.hasArcType(targetsToShow)) {
-            return;
-        }
-        mouse = d3.mouse(this);
-        closest = $$.findClosestFromTargets(targetsToShow, mouse);
-        if (!closest) {
-            return;
-        }
-        if ($$.isBarType(closest.id) || $$.dist(closest, mouse) < config.point_sensitivity) {
-            $$.main.selectAll('.' + CLASS.shapes + $$.getTargetSelectorSuffix(closest.id)).selectAll('.' + CLASS.shape + '-' + closest.index).each(function () {
-                if (config.data_selection_grouped || $$.isWithinShape(this, closest)) {
-                    $$.toggleShape(this, closest, closest.index);
-                    $$.config.data_onclick.call($$.api, closest, this);
-                }
-            });
-        }
-    }).call(config.data_selection_draggable && $$.drag ? d3.behavior.drag().origin(Object).on('drag', function () {
-        $$.drag(d3.mouse(this));
-    }).on('dragstart', function () {
-        $$.dragstart(d3.mouse(this));
-    }).on('dragend', function () {
-        $$.dragend();
-    }) : function () {});
-};
-c3_chart_internal_fn.dispatchEvent = function (type, index, mouse) {
-    var $$ = this,
-        selector = '.' + CLASS.eventRect + (!$$.isMultipleX() ? '-' + index : ''),
-        eventRect = $$.main.select(selector).node(),
-        box = eventRect.getBoundingClientRect(),
-        x = box.left + (mouse ? mouse[0] : 0),
-        y = box.top + (mouse ? mouse[1] : 0),
-        event = document.createEvent("MouseEvents");
-    event.initMouseEvent(type, true, true, window, 0, x, y, x, y, false, false, false, false, 0, null);
-    eventRect.dispatchEvent(event);
-};
-c3_chart_internal_fn.initLegend = function () {
-    var $$ = this;
-    $$.legendItemTextBox = {};
-    $$.legendHasRendered = false;
-    $$.legend = $$.svg.append("g").attr("transform", $$.getTranslate('legend'));
-    if (!$$.config.legend_show) {
-        $$.legend.style('visibility', 'hidden');
-        $$.hiddenLegendIds = $$.mapToIds($$.data.targets);
-        return;
-    }
-    $$.updateLegendWithDefaults();
-};
-c3_chart_internal_fn.updateLegendWithDefaults = function () {
-    var $$ = this;
-    $$.updateLegend($$.mapToIds($$.data.targets), { withTransform: false, withTransitionForTransform: false, withTransition: false });
-};
-c3_chart_internal_fn.updateSizeForLegend = function (legendHeight, legendWidth) {
-    var $$ = this,
-        config = $$.config,
-        insetLegendPosition = {
-        top: $$.isLegendTop ? $$.getCurrentPaddingTop() + config.legend_inset_y + 5.5 : $$.currentHeight - legendHeight - $$.getCurrentPaddingBottom() - config.legend_inset_y,
-        left: $$.isLegendLeft ? $$.getCurrentPaddingLeft() + config.legend_inset_x + 0.5 : $$.currentWidth - legendWidth - $$.getCurrentPaddingRight() - config.legend_inset_x + 0.5
+        }).text('');
+        internal.tickTextCharSize = size;
+        return size;
     };
-    $$.margin3 = {
-        top: $$.isLegendRight ? 0 : $$.isLegendInset ? insetLegendPosition.top : $$.currentHeight - legendHeight,
-        right: NaN,
-        bottom: 0,
-        left: $$.isLegendRight ? $$.currentWidth - legendWidth : $$.isLegendInset ? insetLegendPosition.left : 0
+    c3_axis_internal_fn.transitionise = function (selection) {
+        return this.params.withoutTransition ? selection : this.d3.transition(selection);
     };
-};
-c3_chart_internal_fn.transformLegend = function (withTransition) {
-    var $$ = this;
-    (withTransition ? $$.legend.transition() : $$.legend).attr("transform", $$.getTranslate('legend'));
-};
-c3_chart_internal_fn.updateLegendStep = function (step) {
-    this.legendStep = step;
-};
-c3_chart_internal_fn.updateLegendItemWidth = function (w) {
-    this.legendItemWidth = w;
-};
-c3_chart_internal_fn.updateLegendItemHeight = function (h) {
-    this.legendItemHeight = h;
-};
-c3_chart_internal_fn.getLegendWidth = function () {
-    var $$ = this;
-    return $$.config.legend_show ? $$.isLegendRight || $$.isLegendInset ? $$.legendItemWidth * ($$.legendStep + 1) : $$.currentWidth : 0;
-};
-c3_chart_internal_fn.getLegendHeight = function () {
-    var $$ = this,
-        h = 0;
-    if ($$.config.legend_show) {
-        if ($$.isLegendRight) {
-            h = $$.currentHeight;
-        } else {
-            h = Math.max(20, $$.legendItemHeight) * ($$.legendStep + 1);
+    c3_axis_internal_fn.isVertical = function () {
+        return this.orient === 'left' || this.orient === 'right';
+    };
+    c3_axis_internal_fn.tspanData = function (d, i, ticks, scale) {
+        var internal = this;
+        var splitted = internal.params.tickMultiline ? internal.splitTickText(d, ticks, scale) : [].concat(internal.textFormatted(d));
+        return splitted.map(function (s) {
+            return { index: i, splitted: s, length: splitted.length };
+        });
+    };
+    c3_axis_internal_fn.splitTickText = function (d, ticks, scale) {
+        var internal = this,
+            tickText = internal.textFormatted(d),
+            maxWidth = internal.params.tickWidth,
+            subtext,
+            spaceIndex,
+            textWidth,
+            splitted = [];
+        if (Object.prototype.toString.call(tickText) === "[object Array]") {
+            return tickText;
         }
-    }
-    return h;
-};
-c3_chart_internal_fn.opacityForLegend = function (legendItem) {
-    return legendItem.classed(CLASS.legendItemHidden) ? null : 1;
-};
-c3_chart_internal_fn.opacityForUnfocusedLegend = function (legendItem) {
-    return legendItem.classed(CLASS.legendItemHidden) ? null : 0.3;
-};
-c3_chart_internal_fn.toggleFocusLegend = function (targetIds, focus) {
-    var $$ = this;
-    targetIds = $$.mapToTargetIds(targetIds);
-    $$.legend.selectAll('.' + CLASS.legendItem).filter(function (id) {
-        return targetIds.indexOf(id) >= 0;
-    }).classed(CLASS.legendItemFocused, focus).transition().duration(100).style('opacity', function () {
-        var opacity = focus ? $$.opacityForLegend : $$.opacityForUnfocusedLegend;
-        return opacity.call($$, $$.d3.select(this));
-    });
-};
-c3_chart_internal_fn.revertLegend = function () {
-    var $$ = this,
-        d3 = $$.d3;
-    $$.legend.selectAll('.' + CLASS.legendItem).classed(CLASS.legendItemFocused, false).transition().duration(100).style('opacity', function () {
-        return $$.opacityForLegend(d3.select(this));
-    });
-};
-c3_chart_internal_fn.showLegend = function (targetIds) {
-    var $$ = this,
-        config = $$.config;
-    if (!config.legend_show) {
-        config.legend_show = true;
-        $$.legend.style('visibility', 'visible');
-        if (!$$.legendHasRendered) {
-            $$.updateLegendWithDefaults();
+        if (!maxWidth || maxWidth <= 0) {
+            maxWidth = internal.isVertical() ? 95 : internal.params.isCategory ? Math.ceil(scale(ticks[1]) - scale(ticks[0])) - 12 : 110;
         }
-    }
-    $$.removeHiddenLegendIds(targetIds);
-    $$.legend.selectAll($$.selectorLegends(targetIds)).style('visibility', 'visible').transition().style('opacity', function () {
-        return $$.opacityForLegend($$.d3.select(this));
-    });
-};
-c3_chart_internal_fn.hideLegend = function (targetIds) {
-    var $$ = this,
-        config = $$.config;
-    if (config.legend_show && isEmpty(targetIds)) {
-        config.legend_show = false;
-        $$.legend.style('visibility', 'hidden');
-    }
-    $$.addHiddenLegendIds(targetIds);
-    $$.legend.selectAll($$.selectorLegends(targetIds)).style('opacity', 0).style('visibility', 'hidden');
-};
-c3_chart_internal_fn.clearLegendItemTextBoxCache = function () {
-    this.legendItemTextBox = {};
-};
-c3_chart_internal_fn.updateLegend = function (targetIds, options, transitions) {
-    var $$ = this,
-        config = $$.config;
-    var xForLegend, xForLegendText, xForLegendRect, yForLegend, yForLegendText, yForLegendRect, x1ForLegendTile, x2ForLegendTile, yForLegendTile;
-    var paddingTop = 4,
-        paddingRight = 10,
-        maxWidth = 0,
-        maxHeight = 0,
-        posMin = 10,
-        tileWidth = config.legend_item_tile_width + 5;
-    var l,
-        totalLength = 0,
-        offsets = {},
-        widths = {},
-        heights = {},
-        margins = [0],
-        steps = {},
-        step = 0;
-    var withTransition, withTransitionForTransform;
-    var texts, rects, tiles, background;
-    targetIds = targetIds.filter(function (id) {
-        return !isDefined(config.data_names[id]) || config.data_names[id] !== null;
-    });
-    options = options || {};
-    withTransition = getOption(options, "withTransition", true);
-    withTransitionForTransform = getOption(options, "withTransitionForTransform", true);
-    function getTextBox(textElement, id) {
-        if (!$$.legendItemTextBox[id]) {
-            $$.legendItemTextBox[id] = $$.getTextRect(textElement.textContent, CLASS.legendItem, textElement);
-        }
-        return $$.legendItemTextBox[id];
-    }
-    function updatePositions(textElement, id, index) {
-        var reset = index === 0,
-            isLast = index === targetIds.length - 1,
-            box = getTextBox(textElement, id),
-            itemWidth = box.width + tileWidth + (isLast && !($$.isLegendRight || $$.isLegendInset) ? 0 : paddingRight) + config.legend_padding,
-            itemHeight = box.height + paddingTop,
-            itemLength = $$.isLegendRight || $$.isLegendInset ? itemHeight : itemWidth,
-            areaLength = $$.isLegendRight || $$.isLegendInset ? $$.getLegendHeight() : $$.getLegendWidth(),
-            margin,
-            maxLength;
-        function updateValues(id, withoutStep) {
-            if (!withoutStep) {
-                margin = (areaLength - totalLength - itemLength) / 2;
-                if (margin < posMin) {
-                    margin = (areaLength - itemLength) / 2;
-                    totalLength = 0;
-                    step++;
+        function split(splitted, text) {
+            spaceIndex = undefined;
+            for (var i = 1; i < text.length; i++) {
+                if (text.charAt(i) === ' ') {
+                    spaceIndex = i;
+                }
+                subtext = text.substr(0, i + 1);
+                textWidth = internal.tickTextCharSize.w * subtext.length;
+                if (maxWidth < textWidth) {
+                    return split(splitted.concat(text.substr(0, spaceIndex ? spaceIndex : i)), text.slice(spaceIndex ? spaceIndex + 1 : i));
                 }
             }
-            steps[id] = step;
-            margins[step] = $$.isLegendInset ? 10 : margin;
-            offsets[id] = totalLength;
-            totalLength += itemLength;
+            return splitted.concat(text);
         }
-        if (reset) {
-            totalLength = 0;
-            step = 0;
-            maxWidth = 0;
-            maxHeight = 0;
+        return split(splitted, tickText + "");
+    };
+    c3_axis_internal_fn.updateTickLength = function () {
+        var internal = this;
+        internal.tickLength = Math.max(internal.innerTickSize, 0) + internal.tickPadding;
+    };
+    c3_axis_internal_fn.lineY2 = function (d) {
+        var internal = this,
+            tickPosition = internal.scale(d) + (internal.tickCentered ? 0 : internal.tickOffset);
+        return internal.range[0] < tickPosition && tickPosition < internal.range[1] ? internal.innerTickSize : 0;
+    };
+    c3_axis_internal_fn.textY = function () {
+        var internal = this,
+            rotate = internal.tickTextRotate;
+        return rotate ? 11.5 - 2.5 * (rotate / 15) * (rotate > 0 ? 1 : -1) : internal.tickLength;
+    };
+    c3_axis_internal_fn.textTransform = function () {
+        var internal = this,
+            rotate = internal.tickTextRotate;
+        return rotate ? "rotate(" + rotate + ")" : "";
+    };
+    c3_axis_internal_fn.textTextAnchor = function () {
+        var internal = this,
+            rotate = internal.tickTextRotate;
+        return rotate ? rotate > 0 ? "start" : "end" : "middle";
+    };
+    c3_axis_internal_fn.tspanDx = function () {
+        var internal = this,
+            rotate = internal.tickTextRotate;
+        return rotate ? 8 * Math.sin(Math.PI * (rotate / 180)) : 0;
+    };
+    c3_axis_internal_fn.tspanDy = function (d, i) {
+        var internal = this,
+            dy = internal.tickTextCharSize.h;
+        if (i === 0) {
+            if (internal.isVertical()) {
+                dy = -((d.length - 1) * (internal.tickTextCharSize.h / 2) - 3);
+            } else {
+                dy = ".71em";
+            }
         }
-        if (config.legend_show && !$$.isLegendToShow(id)) {
-            widths[id] = heights[id] = steps[id] = offsets[id] = 0;
-            return;
-        }
-        widths[id] = itemWidth;
-        heights[id] = itemHeight;
-        if (!maxWidth || itemWidth >= maxWidth) {
-            maxWidth = itemWidth;
-        }
-        if (!maxHeight || itemHeight >= maxHeight) {
-            maxHeight = itemHeight;
-        }
-        maxLength = $$.isLegendRight || $$.isLegendInset ? maxHeight : maxWidth;
-        if (config.legend_equally) {
-            Object.keys(widths).forEach(function (id) {
-                widths[id] = maxWidth;
-            });
-            Object.keys(heights).forEach(function (id) {
-                heights[id] = maxHeight;
-            });
-            margin = (areaLength - maxLength * targetIds.length) / 2;
-            if (margin < posMin) {
-                totalLength = 0;
-                step = 0;
-                targetIds.forEach(function (id) {
-                    updateValues(id);
+        return dy;
+    };
+    c3_axis_internal_fn.generateAxis = function () {
+        var internal = this,
+            d3 = internal.d3,
+            params = internal.params;
+        function axis(g) {
+            g.each(function () {
+                var g = axis.g = d3.select(this);
+                var scale0 = this.__chart__ || internal.scale,
+                    scale1 = this.__chart__ = internal.copyScale();
+                var ticks = internal.tickValues ? internal.tickValues : internal.generateTicks(scale1),
+                    tick = g.selectAll(".tick").data(ticks, scale1),
+                    tickEnter = tick.enter().insert("g", ".domain").attr("class", "tick").style("opacity", 1e-6),
+                tickExit = tick.exit().remove(),
+                    tickUpdate = internal.transitionise(tick).style("opacity", 1),
+                    tickTransform,
+                    tickX,
+                    tickY;
+                if (params.isCategory) {
+                    internal.tickOffset = Math.ceil((scale1(1) - scale1(0)) / 2);
+                    tickX = internal.tickCentered ? 0 : internal.tickOffset;
+                    tickY = internal.tickCentered ? internal.tickOffset : 0;
+                } else {
+                    internal.tickOffset = tickX = 0;
+                }
+                tickEnter.append("line");
+                tickEnter.append("text");
+                internal.updateRange();
+                internal.updateTickLength();
+                internal.updateTickTextCharSize(g.select('.tick'));
+                var lineUpdate = tickUpdate.select("line"),
+                    textUpdate = tickUpdate.select("text"),
+                    tspanUpdate = tick.select("text").selectAll('tspan').data(function (d, i) {
+                    return internal.tspanData(d, i, ticks, scale1);
                 });
-            } else {
-                updateValues(id, true);
-            }
-        } else {
-            updateValues(id);
+                tspanUpdate.enter().append('tspan');
+                tspanUpdate.exit().remove();
+                tspanUpdate.text(function (d) {
+                    return d.splitted;
+                });
+                var path = g.selectAll(".domain").data([0]),
+                    pathUpdate = (path.enter().append("path").attr("class", "domain"), internal.transitionise(path));
+                switch (internal.orient) {
+                    case "bottom":
+                        {
+                            tickTransform = internal.axisX;
+                            lineUpdate.attr("x1", tickX).attr("x2", tickX).attr("y2", function (d, i) {
+                                return internal.lineY2(d, i);
+                            });
+                            textUpdate.attr("x", 0).attr("y", function (d, i) {
+                                return internal.textY(d, i);
+                            }).attr("transform", function (d, i) {
+                                return internal.textTransform(d, i);
+                            }).style("text-anchor", function (d, i) {
+                                return internal.textTextAnchor(d, i);
+                            });
+                            tspanUpdate.attr('x', 0).attr("dy", function (d, i) {
+                                return internal.tspanDy(d, i);
+                            }).attr('dx', function (d, i) {
+                                return internal.tspanDx(d, i);
+                            });
+                            pathUpdate.attr("d", "M" + internal.range[0] + "," + internal.outerTickSize + "V0H" + internal.range[1] + "V" + internal.outerTickSize);
+                            break;
+                        }
+                    case "top":
+                        {
+                            tickTransform = internal.axisX;
+                            lineUpdate.attr("x1", tickX).attr("x2", tickX).attr("y2", function (d, i) {
+                                return -1 * internal.lineY2(d, i);
+                            });
+                            textUpdate.attr("x", 0).attr("y", function (d, i) {
+                                return -1 * internal.textY(d, i) - (params.isCategory ? 2 : internal.tickLength - 2);
+                            }).attr("transform", function (d, i) {
+                                return internal.textTransform(d, i);
+                            }).style("text-anchor", function (d, i) {
+                                return internal.textTextAnchor(d, i);
+                            });
+                            tspanUpdate.attr('x', 0).attr("dy", function (d, i) {
+                                return internal.tspanDy(d, i);
+                            }).attr('dx', function (d, i) {
+                                return internal.tspanDx(d, i);
+                            });
+                            pathUpdate.attr("d", "M" + internal.range[0] + "," + -internal.outerTickSize + "V0H" + internal.range[1] + "V" + -internal.outerTickSize);
+                            break;
+                        }
+                    case "left":
+                        {
+                            tickTransform = internal.axisY;
+                            lineUpdate.attr("x2", -internal.innerTickSize).attr("y1", tickY).attr("y2", tickY);
+                            textUpdate.attr("x", -internal.tickLength).attr("y", internal.tickOffset).style("text-anchor", "end");
+                            tspanUpdate.attr('x', -internal.tickLength).attr("dy", function (d, i) {
+                                return internal.tspanDy(d, i);
+                            });
+                            pathUpdate.attr("d", "M" + -internal.outerTickSize + "," + internal.range[0] + "H0V" + internal.range[1] + "H" + -internal.outerTickSize);
+                            break;
+                        }
+                    case "right":
+                        {
+                            tickTransform = internal.axisY;
+                            lineUpdate.attr("x2", internal.innerTickSize).attr("y1", tickY).attr("y2", tickY);
+                            textUpdate.attr("x", internal.tickLength).attr("y", internal.tickOffset).style("text-anchor", "start");
+                            tspanUpdate.attr('x', internal.tickLength).attr("dy", function (d, i) {
+                                return internal.tspanDy(d, i);
+                            });
+                            pathUpdate.attr("d", "M" + internal.outerTickSize + "," + internal.range[0] + "H0V" + internal.range[1] + "H" + internal.outerTickSize);
+                            break;
+                        }
+                }
+                if (scale1.rangeBand) {
+                    var x = scale1,
+                        dx = x.rangeBand() / 2;
+                    scale0 = scale1 = function scale1(d) {
+                        return x(d) + dx;
+                    };
+                } else if (scale0.rangeBand) {
+                    scale0 = scale1;
+                } else {
+                    tickExit.call(tickTransform, scale1, internal.tickOffset);
+                }
+                tickEnter.call(tickTransform, scale0, internal.tickOffset);
+                tickUpdate.call(tickTransform, scale1, internal.tickOffset);
+            });
         }
-    }
-    if ($$.isLegendInset) {
-        step = config.legend_inset_step ? config.legend_inset_step : targetIds.length;
-        $$.updateLegendStep(step);
-    }
-    if ($$.isLegendRight) {
-        xForLegend = function xForLegend(id) {
-            return maxWidth * steps[id];
-        };
-        yForLegend = function yForLegend(id) {
-            return margins[steps[id]] + offsets[id];
-        };
-    } else if ($$.isLegendInset) {
-        xForLegend = function xForLegend(id) {
-            return maxWidth * steps[id] + 10;
-        };
-        yForLegend = function yForLegend(id) {
-            return margins[steps[id]] + offsets[id];
-        };
-    } else {
-        xForLegend = function xForLegend(id) {
-            return margins[steps[id]] + offsets[id];
-        };
-        yForLegend = function yForLegend(id) {
-            return maxHeight * steps[id];
-        };
-    }
-    xForLegendText = function xForLegendText(id, i) {
-        return xForLegend(id, i) + 4 + config.legend_item_tile_width;
-    };
-    yForLegendText = function yForLegendText(id, i) {
-        return yForLegend(id, i) + 9;
-    };
-    xForLegendRect = function xForLegendRect(id, i) {
-        return xForLegend(id, i);
-    };
-    yForLegendRect = function yForLegendRect(id, i) {
-        return yForLegend(id, i) - 5;
-    };
-    x1ForLegendTile = function x1ForLegendTile(id, i) {
-        return xForLegend(id, i) - 2;
-    };
-    x2ForLegendTile = function x2ForLegendTile(id, i) {
-        return xForLegend(id, i) - 2 + config.legend_item_tile_width;
-    };
-    yForLegendTile = function yForLegendTile(id, i) {
-        return yForLegend(id, i) + 4;
-    };
-    l = $$.legend.selectAll('.' + CLASS.legendItem).data(targetIds).enter().append('g').attr('class', function (id) {
-        return $$.generateClass(CLASS.legendItem, id);
-    }).style('visibility', function (id) {
-        return $$.isLegendToShow(id) ? 'visible' : 'hidden';
-    }).style('cursor', 'pointer').on('click', function (id) {
-        if (config.legend_item_onclick) {
-            config.legend_item_onclick.call($$, id);
-        } else {
-            if ($$.d3.event.altKey) {
-                $$.api.hide();
-                $$.api.show(id);
-            } else {
-                $$.api.toggle(id);
-                $$.isTargetToShow(id) ? $$.api.focus(id) : $$.api.revert();
-            }
-        }
-    }).on('mouseover', function (id) {
-        if (config.legend_item_onmouseover) {
-            config.legend_item_onmouseover.call($$, id);
-        } else {
-            $$.d3.select(this).classed(CLASS.legendItemFocused, true);
-            if (!$$.transiting && $$.isTargetToShow(id)) {
-                $$.api.focus(id);
-            }
-        }
-    }).on('mouseout', function (id) {
-        if (config.legend_item_onmouseout) {
-            config.legend_item_onmouseout.call($$, id);
-        } else {
-            $$.d3.select(this).classed(CLASS.legendItemFocused, false);
-            $$.api.revert();
-        }
-    });
-    l.append('text').text(function (id) {
-        return isDefined(config.data_names[id]) ? config.data_names[id] : id;
-    }).each(function (id, i) {
-        updatePositions(this, id, i);
-    }).style("pointer-events", "none").attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendText : -200).attr('y', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendText);
-    l.append('rect').attr("class", CLASS.legendItemEvent).style('fill-opacity', 0).attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendRect : -200).attr('y', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendRect);
-    l.append('line').attr('class', CLASS.legendItemTile).style('stroke', $$.color).style("pointer-events", "none").attr('x1', $$.isLegendRight || $$.isLegendInset ? x1ForLegendTile : -200).attr('y1', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendTile).attr('x2', $$.isLegendRight || $$.isLegendInset ? x2ForLegendTile : -200).attr('y2', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendTile).attr('stroke-width', config.legend_item_tile_height);
-    background = $$.legend.select('.' + CLASS.legendBackground + ' rect');
-    if ($$.isLegendInset && maxWidth > 0 && background.size() === 0) {
-        background = $$.legend.insert('g', '.' + CLASS.legendItem).attr("class", CLASS.legendBackground).append('rect');
-    }
-    texts = $$.legend.selectAll('text').data(targetIds).text(function (id) {
-        return isDefined(config.data_names[id]) ? config.data_names[id] : id;
-    }
-    ).each(function (id, i) {
-        updatePositions(this, id, i);
-    });
-    (withTransition ? texts.transition() : texts).attr('x', xForLegendText).attr('y', yForLegendText);
-    rects = $$.legend.selectAll('rect.' + CLASS.legendItemEvent).data(targetIds);
-    (withTransition ? rects.transition() : rects).attr('width', function (id) {
-        return widths[id];
-    }).attr('height', function (id) {
-        return heights[id];
-    }).attr('x', xForLegendRect).attr('y', yForLegendRect);
-    tiles = $$.legend.selectAll('line.' + CLASS.legendItemTile).data(targetIds);
-    (withTransition ? tiles.transition() : tiles).style('stroke', $$.color).attr('x1', x1ForLegendTile).attr('y1', yForLegendTile).attr('x2', x2ForLegendTile).attr('y2', yForLegendTile);
-    if (background) {
-        (withTransition ? background.transition() : background).attr('height', $$.getLegendHeight() - 12).attr('width', maxWidth * (step + 1) + 10);
-    }
-    $$.legend.selectAll('.' + CLASS.legendItem).classed(CLASS.legendItemHidden, function (id) {
-        return !$$.isTargetToShow(id);
-    });
-    $$.updateLegendItemWidth(maxWidth);
-    $$.updateLegendItemHeight(maxHeight);
-    $$.updateLegendStep(step);
-    $$.updateSizes();
-    $$.updateScales();
-    $$.updateSvgSize();
-    $$.transformAll(withTransitionForTransform, transitions);
-    $$.legendHasRendered = true;
-};
-c3_chart_internal_fn.initRegion = function () {
-    var $$ = this;
-    $$.region = $$.main.append('g').attr("clip-path", $$.clipPath).attr("class", CLASS.regions);
-};
-c3_chart_internal_fn.updateRegion = function (duration) {
-    var $$ = this,
-        config = $$.config;
-    $$.region.style('visibility', $$.hasArcType() ? 'hidden' : 'visible');
-    $$.mainRegion = $$.main.select('.' + CLASS.regions).selectAll('.' + CLASS.region).data(config.regions);
-    $$.mainRegion.enter().append('g').append('rect').style("fill-opacity", 0);
-    $$.mainRegion.attr('class', $$.classRegion.bind($$));
-    $$.mainRegion.exit().transition().duration(duration).style("opacity", 0).remove();
-};
-c3_chart_internal_fn.redrawRegion = function (withTransition) {
-    var $$ = this,
-        regions = $$.mainRegion.selectAll('rect').each(function () {
-        var parentData = $$.d3.select(this.parentNode).datum();
-        $$.d3.select(this).datum(parentData);
-    }),
-        x = $$.regionX.bind($$),
-        y = $$.regionY.bind($$),
-        w = $$.regionWidth.bind($$),
-        h = $$.regionHeight.bind($$);
-    return [(withTransition ? regions.transition() : regions).attr("x", x).attr("y", y).attr("width", w).attr("height", h).style("fill-opacity", function (d) {
-        return isValue(d.opacity) ? d.opacity : 0.1;
-    })];
-};
-c3_chart_internal_fn.regionX = function (d) {
-    var $$ = this,
-        config = $$.config,
-        xPos,
-        yScale = d.axis === 'y' ? $$.y : $$.y2;
-    if (d.axis === 'y' || d.axis === 'y2') {
-        xPos = config.axis_rotated ? 'start' in d ? yScale(d.start) : 0 : 0;
-    } else {
-        xPos = config.axis_rotated ? 0 : 'start' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.start) : d.start) : 0;
-    }
-    return xPos;
-};
-c3_chart_internal_fn.regionY = function (d) {
-    var $$ = this,
-        config = $$.config,
-        yPos,
-        yScale = d.axis === 'y' ? $$.y : $$.y2;
-    if (d.axis === 'y' || d.axis === 'y2') {
-        yPos = config.axis_rotated ? 0 : 'end' in d ? yScale(d.end) : 0;
-    } else {
-        yPos = config.axis_rotated ? 'start' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.start) : d.start) : 0 : 0;
-    }
-    return yPos;
-};
-c3_chart_internal_fn.regionWidth = function (d) {
-    var $$ = this,
-        config = $$.config,
-        start = $$.regionX(d),
-        end,
-        yScale = d.axis === 'y' ? $$.y : $$.y2;
-    if (d.axis === 'y' || d.axis === 'y2') {
-        end = config.axis_rotated ? 'end' in d ? yScale(d.end) : $$.width : $$.width;
-    } else {
-        end = config.axis_rotated ? $$.width : 'end' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.end) : d.end) : $$.width;
-    }
-    return end < start ? 0 : end - start;
-};
-c3_chart_internal_fn.regionHeight = function (d) {
-    var $$ = this,
-        config = $$.config,
-        start = this.regionY(d),
-        end,
-        yScale = d.axis === 'y' ? $$.y : $$.y2;
-    if (d.axis === 'y' || d.axis === 'y2') {
-        end = config.axis_rotated ? $$.height : 'start' in d ? yScale(d.start) : $$.height;
-    } else {
-        end = config.axis_rotated ? 'end' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.end) : d.end) : $$.height : $$.height;
-    }
-    return end < start ? 0 : end - start;
-};
-c3_chart_internal_fn.isRegionOnX = function (d) {
-    return !d.axis || d.axis === 'x';
-};
-c3_chart_internal_fn.getScale = function (min, max, forTimeseries) {
-    return (forTimeseries ? this.d3.time.scale() : this.d3.scale.linear()).range([min, max]);
-};
-c3_chart_internal_fn.getX = function (min, max, domain, offset) {
-    var $$ = this,
-        scale = $$.getScale(min, max, $$.isTimeSeries()),
-        _scale = domain ? scale.domain(domain) : scale,
-        key;
-    if ($$.isCategorized()) {
-        offset = offset || function () {
-            return 0;
-        };
-        scale = function scale(d, raw) {
-            var v = _scale(d) + offset(d);
-            return raw ? v : Math.ceil(v);
-        };
-    } else {
-        scale = function scale(d, raw) {
-            var v = _scale(d);
-            return raw ? v : Math.ceil(v);
-        };
-    }
-    for (key in _scale) {
-        scale[key] = _scale[key];
-    }
-    scale.orgDomain = function () {
-        return _scale.domain();
-    };
-    if ($$.isCategorized()) {
-        scale.domain = function (domain) {
+        axis.scale = function (x) {
             if (!arguments.length) {
-                domain = this.orgDomain();
-                return [domain[0], domain[1] + 1];
+                return internal.scale;
             }
-            _scale.domain(domain);
-            return scale;
+            internal.scale = x;
+            return axis;
         };
+        axis.orient = function (x) {
+            if (!arguments.length) {
+                return internal.orient;
+            }
+            internal.orient = x in { top: 1, right: 1, bottom: 1, left: 1 } ? x + "" : "bottom";
+            return axis;
+        };
+        axis.tickFormat = function (format) {
+            if (!arguments.length) {
+                return internal.tickFormat;
+            }
+            internal.tickFormat = format;
+            return axis;
+        };
+        axis.tickCentered = function (isCentered) {
+            if (!arguments.length) {
+                return internal.tickCentered;
+            }
+            internal.tickCentered = isCentered;
+            return axis;
+        };
+        axis.tickOffset = function () {
+            return internal.tickOffset;
+        };
+        axis.tickInterval = function () {
+            var interval, length;
+            if (params.isCategory) {
+                interval = internal.tickOffset * 2;
+            } else {
+                length = axis.g.select('path.domain').node().getTotalLength() - internal.outerTickSize * 2;
+                interval = length / axis.g.selectAll('line').size();
+            }
+            return interval === Infinity ? 0 : interval;
+        };
+        axis.ticks = function () {
+            if (!arguments.length) {
+                return internal.tickArguments;
+            }
+            internal.tickArguments = arguments;
+            return axis;
+        };
+        axis.tickCulling = function (culling) {
+            if (!arguments.length) {
+                return internal.tickCulling;
+            }
+            internal.tickCulling = culling;
+            return axis;
+        };
+        axis.tickValues = function (x) {
+            if (typeof x === 'function') {
+                internal.tickValues = function () {
+                    return x(internal.scale.domain());
+                };
+            } else {
+                if (!arguments.length) {
+                    return internal.tickValues;
+                }
+                internal.tickValues = x;
+            }
+            return axis;
+        };
+        return axis;
+    };
+    var Axis = function (_Component) {
+        inherits(Axis, _Component);
+        function Axis(owner) {
+            classCallCheck(this, Axis);
+            var fn = {
+                fn: c3_axis_fn,
+                internal: {
+                    fn: c3_axis_internal_fn
+                }
+            };
+            var _this = possibleConstructorReturn(this, (Axis.__proto__ || Object.getPrototypeOf(Axis)).call(this, owner, 'axis', fn));
+            _this.d3 = owner.d3;
+            _this.internal = AxisInternal;
+            return _this;
+        }
+        return Axis;
+    }(Component);
+    c3_axis_fn = Axis.prototype;
+    c3_axis_fn.init = function init() {
+        var $$ = this.owner,
+            config = $$.config,
+            main = $$.main;
+        $$.axes.x = main.append("g").attr("class", CLASS.axis + ' ' + CLASS.axisX).attr("clip-path", config.axis_x_inner ? "" : $$.clipPathForXAxis).attr("transform", $$.getTranslate('x')).style("visibility", config.axis_x_show ? 'visible' : 'hidden');
+        $$.axes.x.append("text").attr("class", CLASS.axisXLabel).attr("transform", config.axis_rotated ? "rotate(-90)" : "").style("text-anchor", this.textAnchorForXAxisLabel.bind(this));
+        $$.axes.y = main.append("g").attr("class", CLASS.axis + ' ' + CLASS.axisY).attr("clip-path", config.axis_y_inner ? "" : $$.clipPathForYAxis).attr("transform", $$.getTranslate('y')).style("visibility", config.axis_y_show ? 'visible' : 'hidden');
+        $$.axes.y.append("text").attr("class", CLASS.axisYLabel).attr("transform", config.axis_rotated ? "" : "rotate(-90)").style("text-anchor", this.textAnchorForYAxisLabel.bind(this));
+        $$.axes.y2 = main.append("g").attr("class", CLASS.axis + ' ' + CLASS.axisY2)
+        .attr("transform", $$.getTranslate('y2')).style("visibility", config.axis_y2_show ? 'visible' : 'hidden');
+        $$.axes.y2.append("text").attr("class", CLASS.axisY2Label).attr("transform", config.axis_rotated ? "" : "rotate(-90)").style("text-anchor", this.textAnchorForY2AxisLabel.bind(this));
+    };
+    c3_axis_fn.getXAxis = function getXAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
+        var $$ = this.owner,
+            config = $$.config,
+            axisParams = {
+            isCategory: $$.isCategorized(),
+            withOuterTick: withOuterTick,
+            tickMultiline: config.axis_x_tick_multiline,
+            tickWidth: config.axis_x_tick_width,
+            tickTextRotate: withoutRotateTickText ? 0 : config.axis_x_tick_rotate,
+            withoutTransition: withoutTransition
+        },
+            axis = new this.internal(this, axisParams).axis.scale(scale).orient(orient);
+        if ($$.isTimeSeries() && tickValues && typeof tickValues !== "function") {
+            tickValues = tickValues.map(function (v) {
+                return $$.parseDate(v);
+            });
+        }
+        axis.tickFormat(tickFormat).tickValues(tickValues);
+        if ($$.isCategorized()) {
+            axis.tickCentered(config.axis_x_tick_centered);
+            if (isEmpty(config.axis_x_tick_culling)) {
+                config.axis_x_tick_culling = false;
+            }
+        }
+        return axis;
+    };
+    c3_axis_fn.updateXAxisTickValues = function updateXAxisTickValues(targets, axis) {
+        var $$ = this.owner,
+            config = $$.config,
+            tickValues;
+        if (config.axis_x_tick_fit || config.axis_x_tick_count) {
+            tickValues = this.generateTickValues($$.mapTargetsToUniqueXs(targets), config.axis_x_tick_count, $$.isTimeSeries());
+        }
+        if (axis) {
+            axis.tickValues(tickValues);
+        } else {
+            $$.xAxis.tickValues(tickValues);
+            $$.subXAxis.tickValues(tickValues);
+        }
+        return tickValues;
+    };
+    c3_axis_fn.getYAxis = function getYAxis(scale, orient, tickFormat, tickValues, withOuterTick, withoutTransition, withoutRotateTickText) {
+        var $$ = this.owner,
+            config = $$.config,
+            axisParams = {
+            withOuterTick: withOuterTick,
+            withoutTransition: withoutTransition,
+            tickTextRotate: withoutRotateTickText ? 0 : config.axis_y_tick_rotate
+        },
+            axis = new this.internal(this, axisParams).axis.scale(scale).orient(orient).tickFormat(tickFormat);
+        if ($$.isTimeSeriesY()) {
+            axis.ticks($$.d3.time[config.axis_y_tick_time_value], config.axis_y_tick_time_interval);
+        } else {
+            axis.tickValues(tickValues);
+        }
+        return axis;
+    };
+    c3_axis_fn.getId = function getId(id) {
+        var config = this.owner.config;
+        return id in config.data_axes ? config.data_axes[id] : 'y';
+    };
+    c3_axis_fn.getXAxisTickFormat = function getXAxisTickFormat() {
+        var $$ = this.owner,
+            config = $$.config,
+            format = $$.isTimeSeries() ? $$.defaultAxisTimeFormat : $$.isCategorized() ? $$.categoryName : function (v) {
+            return v < 0 ? v.toFixed(0) : v;
+        };
+        if (config.axis_x_tick_format) {
+            if (isFunction(config.axis_x_tick_format)) {
+                format = config.axis_x_tick_format;
+            } else if ($$.isTimeSeries()) {
+                format = function format(date) {
+                    return date ? $$.axisTimeFormat(config.axis_x_tick_format)(date) : "";
+                };
+            }
+        }
+        return isFunction(format) ? function (v) {
+            return format.call($$, v);
+        } : format;
+    };
+    c3_axis_fn.getTickValues = function getTickValues(tickValues, axis) {
+        return tickValues ? tickValues : axis ? axis.tickValues() : undefined;
+    };
+    c3_axis_fn.getXAxisTickValues = function getXAxisTickValues() {
+        return this.getTickValues(this.owner.config.axis_x_tick_values, this.owner.xAxis);
+    };
+    c3_axis_fn.getYAxisTickValues = function getYAxisTickValues() {
+        return this.getTickValues(this.owner.config.axis_y_tick_values, this.owner.yAxis);
+    };
+    c3_axis_fn.getY2AxisTickValues = function getY2AxisTickValues() {
+        return this.getTickValues(this.owner.config.axis_y2_tick_values, this.owner.y2Axis);
+    };
+    c3_axis_fn.getLabelOptionByAxisId = function getLabelOptionByAxisId(axisId) {
+        var $$ = this.owner,
+            config = $$.config,
+            option;
+        if (axisId === 'y') {
+            option = config.axis_y_label;
+        } else if (axisId === 'y2') {
+            option = config.axis_y2_label;
+        } else if (axisId === 'x') {
+            option = config.axis_x_label;
+        }
+        return option;
+    };
+    c3_axis_fn.getLabelText = function getLabelText(axisId) {
+        var option = this.getLabelOptionByAxisId(axisId);
+        return isString(option) ? option : option ? option.text : null;
+    };
+    c3_axis_fn.setLabelText = function setLabelText(axisId, text) {
+        var $$ = this.owner,
+            config = $$.config,
+            option = this.getLabelOptionByAxisId(axisId);
+        if (isString(option)) {
+            if (axisId === 'y') {
+                config.axis_y_label = text;
+            } else if (axisId === 'y2') {
+                config.axis_y2_label = text;
+            } else if (axisId === 'x') {
+                config.axis_x_label = text;
+            }
+        } else if (option) {
+            option.text = text;
+        }
+    };
+    c3_axis_fn.getLabelPosition = function getLabelPosition(axisId, defaultPosition) {
+        var option = this.getLabelOptionByAxisId(axisId),
+            position = option && (typeof option === 'undefined' ? 'undefined' : _typeof(option)) === 'object' && option.position ? option.position : defaultPosition;
+        return {
+            isInner: position.indexOf('inner') >= 0,
+            isOuter: position.indexOf('outer') >= 0,
+            isLeft: position.indexOf('left') >= 0,
+            isCenter: position.indexOf('center') >= 0,
+            isRight: position.indexOf('right') >= 0,
+            isTop: position.indexOf('top') >= 0,
+            isMiddle: position.indexOf('middle') >= 0,
+            isBottom: position.indexOf('bottom') >= 0
+        };
+    };
+    c3_axis_fn.getXAxisLabelPosition = function getXAxisLabelPosition() {
+        return this.getLabelPosition('x', this.owner.config.axis_rotated ? 'inner-top' : 'inner-right');
+    };
+    c3_axis_fn.getYAxisLabelPosition = function getYAxisLabelPosition() {
+        return this.getLabelPosition('y', this.owner.config.axis_rotated ? 'inner-right' : 'inner-top');
+    };
+    c3_axis_fn.getY2AxisLabelPosition = function getY2AxisLabelPosition() {
+        return this.getLabelPosition('y2', this.owner.config.axis_rotated ? 'inner-right' : 'inner-top');
+    };
+    c3_axis_fn.getLabelPositionById = function getLabelPositionById(id) {
+        return id === 'y2' ? this.getY2AxisLabelPosition() : id === 'y' ? this.getYAxisLabelPosition() : this.getXAxisLabelPosition();
+    };
+    c3_axis_fn.textForXAxisLabel = function textForXAxisLabel() {
+        return this.getLabelText('x');
+    };
+    c3_axis_fn.textForYAxisLabel = function textForYAxisLabel() {
+        return this.getLabelText('y');
+    };
+    c3_axis_fn.textForY2AxisLabel = function textForY2AxisLabel() {
+        return this.getLabelText('y2');
+    };
+    c3_axis_fn.xForAxisLabel = function xForAxisLabel(forHorizontal, position) {
+        var $$ = this.owner;
+        if (forHorizontal) {
+            return position.isLeft ? 0 : position.isCenter ? $$.width / 2 : $$.width;
+        } else {
+            return position.isBottom ? -$$.height : position.isMiddle ? -$$.height / 2 : 0;
+        }
+    };
+    c3_axis_fn.dxForAxisLabel = function dxForAxisLabel(forHorizontal, position) {
+        if (forHorizontal) {
+            return position.isLeft ? "0.5em" : position.isRight ? "-0.5em" : "0";
+        } else {
+            return position.isTop ? "-0.5em" : position.isBottom ? "0.5em" : "0";
+        }
+    };
+    c3_axis_fn.textAnchorForAxisLabel = function textAnchorForAxisLabel(forHorizontal, position) {
+        if (forHorizontal) {
+            return position.isLeft ? 'start' : position.isCenter ? 'middle' : 'end';
+        } else {
+            return position.isBottom ? 'start' : position.isMiddle ? 'middle' : 'end';
+        }
+    };
+    c3_axis_fn.xForXAxisLabel = function xForXAxisLabel() {
+        return this.xForAxisLabel(!this.owner.config.axis_rotated, this.getXAxisLabelPosition());
+    };
+    c3_axis_fn.xForYAxisLabel = function xForYAxisLabel() {
+        return this.xForAxisLabel(this.owner.config.axis_rotated, this.getYAxisLabelPosition());
+    };
+    c3_axis_fn.xForY2AxisLabel = function xForY2AxisLabel() {
+        return this.xForAxisLabel(this.owner.config.axis_rotated, this.getY2AxisLabelPosition());
+    };
+    c3_axis_fn.dxForXAxisLabel = function dxForXAxisLabel() {
+        return this.dxForAxisLabel(!this.owner.config.axis_rotated, this.getXAxisLabelPosition());
+    };
+    c3_axis_fn.dxForYAxisLabel = function dxForYAxisLabel() {
+        return this.dxForAxisLabel(this.owner.config.axis_rotated, this.getYAxisLabelPosition());
+    };
+    c3_axis_fn.dxForY2AxisLabel = function dxForY2AxisLabel() {
+        return this.dxForAxisLabel(this.owner.config.axis_rotated, this.getY2AxisLabelPosition());
+    };
+    c3_axis_fn.dyForXAxisLabel = function dyForXAxisLabel() {
+        var $$ = this.owner,
+            config = $$.config,
+            position = this.getXAxisLabelPosition();
+        if (config.axis_rotated) {
+            return position.isInner ? "1.2em" : -25 - ($$.config.axis_x_inner ? 0 : this.getMaxTickWidth('x'));
+        } else {
+            return position.isInner ? "-0.5em" : config.axis_x_height ? config.axis_x_height - 10 : "3em";
+        }
+    };
+    c3_axis_fn.dyForYAxisLabel = function dyForYAxisLabel() {
+        var $$ = this.owner,
+            position = this.getYAxisLabelPosition();
+        if ($$.config.axis_rotated) {
+            return position.isInner ? "-0.5em" : "3em";
+        } else {
+            return position.isInner ? "1.2em" : -10 - ($$.config.axis_y_inner ? 0 : this.getMaxTickWidth('y') + 10);
+        }
+    };
+    c3_axis_fn.dyForY2AxisLabel = function dyForY2AxisLabel() {
+        var $$ = this.owner,
+            position = this.getY2AxisLabelPosition();
+        if ($$.config.axis_rotated) {
+            return position.isInner ? "1.2em" : "-2.2em";
+        } else {
+            return position.isInner ? "-0.5em" : 15 + ($$.config.axis_y2_inner ? 0 : this.getMaxTickWidth('y2') + 15);
+        }
+    };
+    c3_axis_fn.textAnchorForXAxisLabel = function textAnchorForXAxisLabel() {
+        var $$ = this.owner;
+        return this.textAnchorForAxisLabel(!$$.config.axis_rotated, this.getXAxisLabelPosition());
+    };
+    c3_axis_fn.textAnchorForYAxisLabel = function textAnchorForYAxisLabel() {
+        var $$ = this.owner;
+        return this.textAnchorForAxisLabel($$.config.axis_rotated, this.getYAxisLabelPosition());
+    };
+    c3_axis_fn.textAnchorForY2AxisLabel = function textAnchorForY2AxisLabel() {
+        var $$ = this.owner;
+        return this.textAnchorForAxisLabel($$.config.axis_rotated, this.getY2AxisLabelPosition());
+    };
+    c3_axis_fn.getMaxTickWidth = function getMaxTickWidth(id, withoutRecompute) {
+        var $$ = this.owner,
+            config = $$.config,
+            maxWidth = 0,
+            targetsToShow,
+            scale,
+            axis,
+            dummy,
+            svg;
+        if (withoutRecompute && $$.currentMaxTickWidths[id]) {
+            return $$.currentMaxTickWidths[id];
+        }
+        if ($$.svg) {
+            targetsToShow = $$.filterTargetsToShow($$.data.targets);
+            if (id === 'y') {
+                scale = $$.y.copy().domain($$.getYDomain(targetsToShow, 'y'));
+                axis = this.getYAxis(scale, $$.yOrient, config.axis_y_tick_format, $$.yAxisTickValues, false, true, true);
+            } else if (id === 'y2') {
+                scale = $$.y2.copy().domain($$.getYDomain(targetsToShow, 'y2'));
+                axis = this.getYAxis(scale, $$.y2Orient, config.axis_y2_tick_format, $$.y2AxisTickValues, false, true, true);
+            } else {
+                scale = $$.x.copy().domain($$.getXDomain(targetsToShow));
+                axis = this.getXAxis(scale, $$.xOrient, $$.xAxisTickFormat, $$.xAxisTickValues, false, true, true);
+                this.updateXAxisTickValues(targetsToShow, axis);
+            }
+            dummy = $$.d3.select('body').append('div').classed('c3', true);
+            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0), svg.append('g').call(axis).each(function () {
+                $$.d3.select(this).selectAll('text').each(function () {
+                    var box = this.getBoundingClientRect();
+                    if (maxWidth < box.width) {
+                        maxWidth = box.width;
+                    }
+                });
+                dummy.remove();
+            });
+        }
+        $$.currentMaxTickWidths[id] = maxWidth <= 0 ? $$.currentMaxTickWidths[id] : maxWidth;
+        return $$.currentMaxTickWidths[id];
+    };
+    c3_axis_fn.updateLabels = function updateLabels(withTransition) {
+        var $$ = this.owner;
+        var axisXLabel = $$.main.select('.' + CLASS.axisX + ' .' + CLASS.axisXLabel),
+            axisYLabel = $$.main.select('.' + CLASS.axisY + ' .' + CLASS.axisYLabel),
+            axisY2Label = $$.main.select('.' + CLASS.axisY2 + ' .' + CLASS.axisY2Label);
+        (withTransition ? axisXLabel.transition() : axisXLabel).attr("x", this.xForXAxisLabel.bind(this)).attr("dx", this.dxForXAxisLabel.bind(this)).attr("dy", this.dyForXAxisLabel.bind(this)).text(this.textForXAxisLabel.bind(this));
+        (withTransition ? axisYLabel.transition() : axisYLabel).attr("x", this.xForYAxisLabel.bind(this)).attr("dx", this.dxForYAxisLabel.bind(this)).attr("dy", this.dyForYAxisLabel.bind(this)).text(this.textForYAxisLabel.bind(this));
+        (withTransition ? axisY2Label.transition() : axisY2Label).attr("x", this.xForY2AxisLabel.bind(this)).attr("dx", this.dxForY2AxisLabel.bind(this)).attr("dy", this.dyForY2AxisLabel.bind(this)).text(this.textForY2AxisLabel.bind(this));
+    };
+    c3_axis_fn.getPadding = function getPadding(padding, key, defaultValue, domainLength) {
+        var p = typeof padding === 'number' ? padding : padding[key];
+        if (!isValue(p)) {
+            return defaultValue;
+        }
+        if (padding.unit === 'ratio') {
+            return padding[key] * domainLength;
+        }
+        return this.convertPixelsToAxisPadding(p, domainLength);
+    };
+    c3_axis_fn.convertPixelsToAxisPadding = function convertPixelsToAxisPadding(pixels, domainLength) {
+        var $$ = this.owner,
+            length = $$.config.axis_rotated ? $$.width : $$.height;
+        return domainLength * (pixels / length);
+    };
+    c3_axis_fn.generateTickValues = function generateTickValues(values, tickCount, forTimeSeries) {
+        var tickValues = values,
+            targetCount,
+            start,
+            end,
+            count,
+            interval,
+            i,
+            tickValue;
+        if (tickCount) {
+            targetCount = isFunction(tickCount) ? tickCount() : tickCount;
+            if (targetCount === 1) {
+                tickValues = [values[0]];
+            } else if (targetCount === 2) {
+                tickValues = [values[0], values[values.length - 1]];
+            } else if (targetCount > 2) {
+                count = targetCount - 2;
+                start = values[0];
+                end = values[values.length - 1];
+                interval = (end - start) / (count + 1);
+                tickValues = [start];
+                for (i = 0; i < count; i++) {
+                    tickValue = +start + interval * (i + 1);
+                    tickValues.push(forTimeSeries ? new Date(tickValue) : tickValue);
+                }
+                tickValues.push(end);
+            }
+        }
+        if (!forTimeSeries) {
+            tickValues = tickValues.sort(function (a, b) {
+                return a - b;
+            });
+        }
+        return tickValues;
+    };
+    c3_axis_fn.generateTransitions = function generateTransitions(duration) {
+        var $$ = this.owner,
+            axes = $$.axes;
+        return {
+            axisX: duration ? axes.x.transition().duration(duration) : axes.x,
+            axisY: duration ? axes.y.transition().duration(duration) : axes.y,
+            axisY2: duration ? axes.y2.transition().duration(duration) : axes.y2,
+            axisSubX: duration ? axes.subx.transition().duration(duration) : axes.subx
+        };
+    };
+    c3_axis_fn.redraw = function redraw(transitions, isHidden) {
+        var $$ = this.owner;
+        $$.axes.x.style("opacity", isHidden ? 0 : 1);
+        $$.axes.y.style("opacity", isHidden ? 0 : 1);
+        $$.axes.y2.style("opacity", isHidden ? 0 : 1);
+        $$.axes.subx.style("opacity", isHidden ? 0 : 1);
+        transitions.axisX.call($$.xAxis);
+        transitions.axisY.call($$.yAxis);
+        transitions.axisY2.call($$.y2Axis);
+        transitions.axisSubX.call($$.subXAxis);
+    };
+    var c3 = { version: "0.4.22" };
+    var c3_chart_fn;
+    var c3_chart_internal_fn;
+    function Component(owner, componentKey, fn) {
+        this.owner = owner;
+        c3.chart.internal[componentKey] = fn;
     }
-    return scale;
-};
-c3_chart_internal_fn.getY = function (min, max, domain) {
-    var scale = this.getScale(min, max, this.isTimeSeriesY());
-    if (domain) {
-        scale.domain(domain);
+    function Chart(config) {
+        var $$ = this.internal = new ChartInternal(this);
+        $$.loadConfig(config);
+        $$.beforeInit(config);
+        $$.init();
+        $$.afterInit(config);
+        (function bindThis(fn, target, argThis) {
+            Object.keys(fn).forEach(function (key) {
+                target[key] = fn[key].bind(argThis);
+                if (Object.keys(fn[key]).length > 0) {
+                    bindThis(fn[key], target[key], argThis);
+                }
+            });
+        })(c3_chart_fn, this, this);
     }
-    return scale;
-};
-c3_chart_internal_fn.getYScale = function (id) {
-    return this.axis.getId(id) === 'y2' ? this.y2 : this.y;
-};
-c3_chart_internal_fn.getSubYScale = function (id) {
-    return this.axis.getId(id) === 'y2' ? this.subY2 : this.subY;
-};
-c3_chart_internal_fn.updateScales = function () {
-    var $$ = this,
-        config = $$.config,
-        forInit = !$$.x;
-    $$.xMin = config.axis_rotated ? 1 : 0;
-    $$.xMax = config.axis_rotated ? $$.height : $$.width;
-    $$.yMin = config.axis_rotated ? 0 : $$.height;
-    $$.yMax = config.axis_rotated ? $$.width : 1;
-    $$.subXMin = $$.xMin;
-    $$.subXMax = $$.xMax;
-    $$.subYMin = config.axis_rotated ? 0 : $$.height2;
-    $$.subYMax = config.axis_rotated ? $$.width2 : 1;
-    $$.x = $$.getX($$.xMin, $$.xMax, forInit ? undefined : $$.x.orgDomain(), function () {
-        return $$.xAxis.tickOffset();
-    });
-    $$.y = $$.getY($$.yMin, $$.yMax, forInit ? config.axis_y_default : $$.y.domain());
-    $$.y2 = $$.getY($$.yMin, $$.yMax, forInit ? config.axis_y2_default : $$.y2.domain());
-    $$.subX = $$.getX($$.xMin, $$.xMax, $$.orgXDomain, function (d) {
-        return d % 1 ? 0 : $$.subXAxis.tickOffset();
-    });
-    $$.subY = $$.getY($$.subYMin, $$.subYMax, forInit ? config.axis_y_default : $$.subY.domain());
-    $$.subY2 = $$.getY($$.subYMin, $$.subYMax, forInit ? config.axis_y2_default : $$.subY2.domain());
-    $$.xAxisTickFormat = $$.axis.getXAxisTickFormat();
-    $$.xAxisTickValues = $$.axis.getXAxisTickValues();
-    $$.yAxisTickValues = $$.axis.getYAxisTickValues();
-    $$.y2AxisTickValues = $$.axis.getY2AxisTickValues();
-    $$.xAxis = $$.axis.getXAxis($$.x, $$.xOrient, $$.xAxisTickFormat, $$.xAxisTickValues, config.axis_x_tick_outer);
-    $$.subXAxis = $$.axis.getXAxis($$.subX, $$.subXOrient, $$.xAxisTickFormat, $$.xAxisTickValues, config.axis_x_tick_outer);
-    $$.yAxis = $$.axis.getYAxis($$.y, $$.yOrient, config.axis_y_tick_format, $$.yAxisTickValues, config.axis_y_tick_outer);
-    $$.y2Axis = $$.axis.getYAxis($$.y2, $$.y2Orient, config.axis_y2_tick_format, $$.y2AxisTickValues, config.axis_y2_tick_outer);
-    if (!forInit) {
+    function ChartInternal(api) {
+        var $$ = this;
+        $$.d3 = window.d3 ? window.d3 : typeof require !== 'undefined' ? require("d3") : undefined;
+        $$.api = api;
+        $$.config = $$.getDefaultConfig();
+        $$.data = {};
+        $$.cache = {};
+        $$.axes = {};
+    }
+    c3.generate = function (config) {
+        return new Chart(config);
+    };
+    c3.chart = {
+        fn: Chart.prototype,
+        internal: {
+            fn: ChartInternal.prototype
+        }
+    };
+    c3_chart_fn = c3.chart.fn;
+    c3_chart_internal_fn = c3.chart.internal.fn;
+    c3_chart_internal_fn.beforeInit = function () {
+    };
+    c3_chart_internal_fn.afterInit = function () {
+    };
+    c3_chart_internal_fn.init = function () {
+        var $$ = this,
+            config = $$.config;
+        $$.initParams();
+        if (config.data_url) {
+            $$.convertUrlToData(config.data_url, config.data_mimeType, config.data_headers, config.data_keys, $$.initWithData);
+        } else if (config.data_json) {
+            $$.initWithData($$.convertJsonToData(config.data_json, config.data_keys));
+        } else if (config.data_rows) {
+            $$.initWithData($$.convertRowsToData(config.data_rows));
+        } else if (config.data_columns) {
+            $$.initWithData($$.convertColumnsToData(config.data_columns));
+        } else {
+            throw Error('url or json or rows or columns is required.');
+        }
+    };
+    c3_chart_internal_fn.initParams = function () {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config;
+        $$.clipId = "c3-" + +new Date() + '-clip', $$.clipIdForXAxis = $$.clipId + '-xaxis', $$.clipIdForYAxis = $$.clipId + '-yaxis', $$.clipIdForGrid = $$.clipId + '-grid', $$.clipIdForSubchart = $$.clipId + '-subchart', $$.clipPath = $$.getClipPath($$.clipId), $$.clipPathForXAxis = $$.getClipPath($$.clipIdForXAxis), $$.clipPathForYAxis = $$.getClipPath($$.clipIdForYAxis);
+        $$.clipPathForGrid = $$.getClipPath($$.clipIdForGrid), $$.clipPathForSubchart = $$.getClipPath($$.clipIdForSubchart), $$.dragStart = null;
+        $$.dragging = false;
+        $$.flowing = false;
+        $$.cancelClick = false;
+        $$.mouseover = false;
+        $$.transiting = false;
+        $$.color = $$.generateColor();
+        $$.levelColor = $$.generateLevelColor();
+        $$.dataTimeFormat = config.data_xLocaltime ? d3.time.format : d3.time.format.utc;
+        $$.axisTimeFormat = config.axis_x_localtime ? d3.time.format : d3.time.format.utc;
+        $$.defaultAxisTimeFormat = $$.axisTimeFormat.multi([[".%L", function (d) {
+            return d.getMilliseconds();
+        }], [":%S", function (d) {
+            return d.getSeconds();
+        }], ["%I:%M", function (d) {
+            return d.getMinutes();
+        }], ["%I %p", function (d) {
+            return d.getHours();
+        }], ["%-m/%-d", function (d) {
+            return d.getDay() && d.getDate() !== 1;
+        }], ["%-m/%-d", function (d) {
+            return d.getDate() !== 1;
+        }], ["%-m/%-d", function (d) {
+            return d.getMonth();
+        }], ["%Y/%-m/%-d", function () {
+            return true;
+        }]]);
+        $$.hiddenTargetIds = [];
+        $$.hiddenLegendIds = [];
+        $$.focusedTargetIds = [];
+        $$.defocusedTargetIds = [];
+        $$.xOrient = config.axis_rotated ? config.axis_x_inner ? "right" : "left" : config.axis_x_inner ? "top" : "bottom";
+        $$.yOrient = config.axis_rotated ? config.axis_y_inner ? "top" : "bottom" : config.axis_y_inner ? "right" : "left";
+        $$.y2Orient = config.axis_rotated ? config.axis_y2_inner ? "bottom" : "top" : config.axis_y2_inner ? "left" : "right";
+        $$.subXOrient = config.axis_rotated ? "left" : "bottom";
+        $$.isLegendRight = config.legend_position === 'right';
+        $$.isLegendInset = config.legend_position === 'inset';
+        $$.isLegendTop = config.legend_inset_anchor === 'top-left' || config.legend_inset_anchor === 'top-right';
+        $$.isLegendLeft = config.legend_inset_anchor === 'top-left' || config.legend_inset_anchor === 'bottom-left';
+        $$.legendStep = 0;
+        $$.legendItemWidth = 0;
+        $$.legendItemHeight = 0;
+        $$.currentMaxTickWidths = {
+            x: 0,
+            y: 0,
+            y2: 0
+        };
+        $$.rotated_padding_left = 30;
+        $$.rotated_padding_right = config.axis_rotated && !config.axis_x_show ? 0 : 30;
+        $$.rotated_padding_top = 5;
+        $$.withoutFadeIn = {};
+        $$.intervalForObserveInserted = undefined;
+        $$.axes.subx = d3.selectAll([]);
+    };
+    c3_chart_internal_fn.initChartElements = function () {
+        if (this.initBar) {
+            this.initBar();
+        }
+        if (this.initLine) {
+            this.initLine();
+        }
+        if (this.initArc) {
+            this.initArc();
+        }
+        if (this.initGauge) {
+            this.initGauge();
+        }
+        if (this.initText) {
+            this.initText();
+        }
+    };
+    c3_chart_internal_fn.initWithData = function (data) {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config;
+        var defs,
+            main,
+            binding = true;
+        $$.axis = new Axis($$);
+        if ($$.initPie) {
+            $$.initPie();
+        }
+        if ($$.initBrush) {
+            $$.initBrush();
+        }
+        if ($$.initZoom) {
+            $$.initZoom();
+        }
+        if (!config.bindto) {
+            $$.selectChart = d3.selectAll([]);
+        } else if (typeof config.bindto.node === 'function') {
+            $$.selectChart = config.bindto;
+        } else {
+            $$.selectChart = d3.select(config.bindto);
+        }
+        if ($$.selectChart.empty()) {
+            $$.selectChart = d3.select(document.createElement('div')).style('opacity', 0);
+            $$.observeInserted($$.selectChart);
+            binding = false;
+        }
+        $$.selectChart.html("").classed("c3", true);
+        $$.data.xs = {};
+        $$.data.targets = $$.convertDataToTargets(data);
+        if (config.data_filter) {
+            $$.data.targets = $$.data.targets.filter(config.data_filter);
+        }
+        if (config.data_hide) {
+            $$.addHiddenTargetIds(config.data_hide === true ? $$.mapToIds($$.data.targets) : config.data_hide);
+        }
+        if (config.legend_hide) {
+            $$.addHiddenLegendIds(config.legend_hide === true ? $$.mapToIds($$.data.targets) : config.legend_hide);
+        }
+        $$.updateSizes();
+        $$.updateScales();
+        $$.x.domain(d3.extent($$.getXDomain($$.data.targets)));
+        $$.y.domain($$.getYDomain($$.data.targets, 'y'));
+        $$.y2.domain($$.getYDomain($$.data.targets, 'y2'));
+        $$.subX.domain($$.x.domain());
+        $$.subY.domain($$.y.domain());
+        $$.subY2.domain($$.y2.domain());
+        $$.orgXDomain = $$.x.domain();
         if ($$.brush) {
             $$.brush.scale($$.subX);
         }
         if (config.zoom_enabled) {
             $$.zoom.scale($$.x);
         }
-    }
-    if ($$.updateArc) {
-        $$.updateArc();
-    }
-};
-c3_chart_internal_fn.selectPoint = function (target, d, i) {
-    var $$ = this,
-        config = $$.config,
-        cx = (config.axis_rotated ? $$.circleY : $$.circleX).bind($$),
-        cy = (config.axis_rotated ? $$.circleX : $$.circleY).bind($$),
-        r = $$.pointSelectR.bind($$);
-    config.data_onselected.call($$.api, d, target.node());
-    $$.main.select('.' + CLASS.selectedCircles + $$.getTargetSelectorSuffix(d.id)).selectAll('.' + CLASS.selectedCircle + '-' + i).data([d]).enter().append('circle').attr("class", function () {
-        return $$.generateClass(CLASS.selectedCircle, i);
-    }).attr("cx", cx).attr("cy", cy).attr("stroke", function () {
-        return $$.color(d);
-    }).attr("r", function (d) {
-        return $$.pointSelectR(d) * 1.4;
-    }).transition().duration(100).attr("r", r);
-};
-c3_chart_internal_fn.unselectPoint = function (target, d, i) {
-    var $$ = this;
-    $$.config.data_onunselected.call($$.api, d, target.node());
-    $$.main.select('.' + CLASS.selectedCircles + $$.getTargetSelectorSuffix(d.id)).selectAll('.' + CLASS.selectedCircle + '-' + i).transition().duration(100).attr('r', 0).remove();
-};
-c3_chart_internal_fn.togglePoint = function (selected, target, d, i) {
-    selected ? this.selectPoint(target, d, i) : this.unselectPoint(target, d, i);
-};
-c3_chart_internal_fn.selectPath = function (target, d) {
-    var $$ = this;
-    $$.config.data_onselected.call($$, d, target.node());
-    if ($$.config.interaction_brighten) {
-        target.transition().duration(100).style("fill", function () {
-            return $$.d3.rgb($$.color(d)).brighter(0.75);
+        /*-- Basic Elements --*/
+        $$.svg = $$.selectChart.append("svg").style("overflow", "hidden").on('mouseenter', function () {
+            return config.onmouseover.call($$);
+        }).on('mouseleave', function () {
+            return config.onmouseout.call($$);
         });
-    }
-};
-c3_chart_internal_fn.unselectPath = function (target, d) {
-    var $$ = this;
-    $$.config.data_onunselected.call($$, d, target.node());
-    if ($$.config.interaction_brighten) {
-        target.transition().duration(100).style("fill", function () {
-            return $$.color(d);
-        });
-    }
-};
-c3_chart_internal_fn.togglePath = function (selected, target, d, i) {
-    selected ? this.selectPath(target, d, i) : this.unselectPath(target, d, i);
-};
-c3_chart_internal_fn.getToggle = function (that, d) {
-    var $$ = this,
-        toggle;
-    if (that.nodeName === 'circle') {
-        if ($$.isStepType(d)) {
-            toggle = function toggle() {};
-        } else {
-            toggle = $$.togglePoint;
+        if ($$.config.svg_classname) {
+            $$.svg.attr('class', $$.config.svg_classname);
         }
-    } else if (that.nodeName === 'path') {
-        toggle = $$.togglePath;
-    }
-    return toggle;
-};
-c3_chart_internal_fn.toggleShape = function (that, d, i) {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config,
-        shape = d3.select(that),
-        isSelected = shape.classed(CLASS.SELECTED),
-        toggle = $$.getToggle(that, d).bind($$);
-    if (config.data_selection_enabled && config.data_selection_isselectable(d)) {
-        if (!config.data_selection_multiple) {
-            $$.main.selectAll('.' + CLASS.shapes + (config.data_selection_grouped ? $$.getTargetSelectorSuffix(d.id) : "")).selectAll('.' + CLASS.shape).each(function (d, i) {
-                var shape = d3.select(this);
-                if (shape.classed(CLASS.SELECTED)) {
-                    toggle(false, shape.classed(CLASS.SELECTED, false), d, i);
-                }
+        defs = $$.svg.append("defs");
+        $$.clipChart = $$.appendClip(defs, $$.clipId);
+        $$.clipXAxis = $$.appendClip(defs, $$.clipIdForXAxis);
+        $$.clipYAxis = $$.appendClip(defs, $$.clipIdForYAxis);
+        $$.clipGrid = $$.appendClip(defs, $$.clipIdForGrid);
+        $$.clipSubchart = $$.appendClip(defs, $$.clipIdForSubchart);
+        $$.updateSvgSize();
+        main = $$.main = $$.svg.append("g").attr("transform", $$.getTranslate('main'));
+        if ($$.initSubchart) {
+            $$.initSubchart();
+        }
+        if ($$.initTooltip) {
+            $$.initTooltip();
+        }
+        if ($$.initLegend) {
+            $$.initLegend();
+        }
+        if ($$.initTitle) {
+            $$.initTitle();
+        }
+        /*-- Main Region --*/
+        main.append("text").attr("class", CLASS.text + ' ' + CLASS.empty).attr("text-anchor", "middle")
+        .attr("dominant-baseline", "middle");
+        $$.initRegion();
+        $$.initGrid();
+        main.append('g').attr("clip-path", $$.clipPath).attr('class', CLASS.chart);
+        if (config.grid_lines_front) {
+            $$.initGridLines();
+        }
+        $$.initEventRect();
+        $$.initChartElements();
+        main.insert('rect', config.zoom_privileged ? null : 'g.' + CLASS.regions).attr('class', CLASS.zoomRect).attr('width', $$.width).attr('height', $$.height).style('opacity', 0).on("dblclick.zoom", null);
+        if (config.axis_x_extent) {
+            $$.brush.extent($$.getDefaultExtent());
+        }
+        $$.axis.init();
+        $$.updateTargets($$.data.targets);
+        if (binding) {
+            $$.updateDimension();
+            $$.config.oninit.call($$);
+            $$.redraw({
+                withTransition: false,
+                withTransform: true,
+                withUpdateXDomain: true,
+                withUpdateOrgXDomain: true,
+                withTransitionForAxis: false
             });
         }
-        shape.classed(CLASS.SELECTED, !isSelected);
-        toggle(!isSelected, shape, d, i);
-    }
-};
-c3_chart_internal_fn.initBar = function () {
-    var $$ = this;
-    $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartBars);
-};
-c3_chart_internal_fn.updateTargetsForBar = function (targets) {
-    var $$ = this,
-        config = $$.config,
-        mainBarUpdate,
-        mainBarEnter,
-        classChartBar = $$.classChartBar.bind($$),
-        classBars = $$.classBars.bind($$),
-        classFocus = $$.classFocus.bind($$);
-    mainBarUpdate = $$.main.select('.' + CLASS.chartBars).selectAll('.' + CLASS.chartBar).data(targets).attr('class', function (d) {
-        return classChartBar(d) + classFocus(d);
-    });
-    mainBarEnter = mainBarUpdate.enter().append('g').attr('class', classChartBar).style("pointer-events", "none");
-    mainBarEnter.append('g').attr("class", classBars).style("cursor", function (d) {
-        return config.data_selection_isselectable(d) ? "pointer" : null;
-    });
-};
-c3_chart_internal_fn.updateBar = function (durationForExit) {
-    var $$ = this,
-        barData = $$.barData.bind($$),
-        classBar = $$.classBar.bind($$),
-        initialOpacity = $$.initialOpacity.bind($$),
-        color = function color(d) {
-        return $$.color(d.id);
+        $$.bindResize();
+        $$.api.element = $$.selectChart.node();
     };
-    $$.mainBar = $$.main.selectAll('.' + CLASS.bars).selectAll('.' + CLASS.bar).data(barData);
-    $$.mainBar.enter().append('path').attr("class", classBar).style("stroke", color).style("fill", color);
-    $$.mainBar.style("opacity", initialOpacity);
-    $$.mainBar.exit().transition().duration(durationForExit).remove();
-};
-c3_chart_internal_fn.redrawBar = function (drawBar, withTransition) {
-    return [(withTransition ? this.mainBar.transition(Math.random().toString()) : this.mainBar).attr('d', drawBar).style("stroke", this.color).style("fill", this.color).style("opacity", 1)];
-};
-c3_chart_internal_fn.getBarW = function (axis, barTargetsNum) {
-    var $$ = this,
-        config = $$.config,
-        w = typeof config.bar_width === 'number' ? config.bar_width : barTargetsNum ? axis.tickInterval() * config.bar_width_ratio / barTargetsNum : 0;
-    return config.bar_width_max && w > config.bar_width_max ? config.bar_width_max : w;
-};
-c3_chart_internal_fn.getBars = function (i, id) {
-    var $$ = this;
-    return (id ? $$.main.selectAll('.' + CLASS.bars + $$.getTargetSelectorSuffix(id)) : $$.main).selectAll('.' + CLASS.bar + (isValue(i) ? '-' + i : ''));
-};
-c3_chart_internal_fn.expandBars = function (i, id, reset) {
-    var $$ = this;
-    if (reset) {
-        $$.unexpandBars();
-    }
-    $$.getBars(i, id).classed(CLASS.EXPANDED, true);
-};
-c3_chart_internal_fn.unexpandBars = function (i) {
-    var $$ = this;
-    $$.getBars(i).classed(CLASS.EXPANDED, false);
-};
-c3_chart_internal_fn.generateDrawBar = function (barIndices, isSub) {
-    var $$ = this,
-        config = $$.config,
-        getPoints = $$.generateGetBarPoints(barIndices, isSub);
-    return function (d, i) {
-        var points = getPoints(d, i);
-        var indexX = config.axis_rotated ? 1 : 0;
-        var indexY = config.axis_rotated ? 0 : 1;
-        var path = 'M ' + points[0][indexX] + ',' + points[0][indexY] + ' ' + 'L' + points[1][indexX] + ',' + points[1][indexY] + ' ' + 'L' + points[2][indexX] + ',' + points[2][indexY] + ' ' + 'L' + points[3][indexX] + ',' + points[3][indexY] + ' ' + 'z';
-        return path;
+    c3_chart_internal_fn.smoothLines = function (el, type) {
+        var $$ = this;
+        if (type === 'grid') {
+            el.each(function () {
+                var g = $$.d3.select(this),
+                    x1 = g.attr('x1'),
+                    x2 = g.attr('x2'),
+                    y1 = g.attr('y1'),
+                    y2 = g.attr('y2');
+                g.attr({
+                    'x1': Math.ceil(x1),
+                    'x2': Math.ceil(x2),
+                    'y1': Math.ceil(y1),
+                    'y2': Math.ceil(y2)
+                });
+            });
+        }
     };
-};
-c3_chart_internal_fn.generateGetBarPoints = function (barIndices, isSub) {
-    var $$ = this,
-        axis = isSub ? $$.subXAxis : $$.xAxis,
-        barTargetsNum = barIndices.__max__ + 1,
-        barW = $$.getBarW(axis, barTargetsNum),
-        barX = $$.getShapeX(barW, barTargetsNum, barIndices, !!isSub),
-        barY = $$.getShapeY(!!isSub),
-        barOffset = $$.getShapeOffset($$.isBarType, barIndices, !!isSub),
-        barSpaceOffset = barW * ($$.config.bar_space / 2),
-        yScale = isSub ? $$.getSubYScale : $$.getYScale;
-    return function (d, i) {
-        var y0 = yScale.call($$, d.id)(0),
-            offset = barOffset(d, i) || y0,
-        posX = barX(d),
-            posY = barY(d);
-        if ($$.config.axis_rotated) {
-            if (0 < d.value && posY < y0 || d.value < 0 && y0 < posY) {
-                posY = y0;
+    c3_chart_internal_fn.updateSizes = function () {
+        var $$ = this,
+            config = $$.config;
+        var legendHeight = $$.legend ? $$.getLegendHeight() : 0,
+            legendWidth = $$.legend ? $$.getLegendWidth() : 0,
+            legendHeightForBottom = $$.isLegendRight || $$.isLegendInset ? 0 : legendHeight,
+            hasArc = $$.hasArcType(),
+            xAxisHeight = config.axis_rotated || hasArc ? 0 : $$.getHorizontalAxisHeight('x'),
+            subchartHeight = config.subchart_show && !hasArc ? config.subchart_size_height + xAxisHeight : 0;
+        $$.currentWidth = $$.getCurrentWidth();
+        $$.currentHeight = $$.getCurrentHeight();
+        $$.margin = config.axis_rotated ? {
+            top: $$.getHorizontalAxisHeight('y2') + $$.getCurrentPaddingTop(),
+            right: hasArc ? 0 : $$.getCurrentPaddingRight(),
+            bottom: $$.getHorizontalAxisHeight('y') + legendHeightForBottom + $$.getCurrentPaddingBottom(),
+            left: subchartHeight + (hasArc ? 0 : $$.getCurrentPaddingLeft())
+        } : {
+            top: 4 + $$.getCurrentPaddingTop(),
+            right: hasArc ? 0 : $$.getCurrentPaddingRight(),
+            bottom: xAxisHeight + subchartHeight + legendHeightForBottom + $$.getCurrentPaddingBottom(),
+            left: hasArc ? 0 : $$.getCurrentPaddingLeft()
+        };
+        $$.margin2 = config.axis_rotated ? {
+            top: $$.margin.top,
+            right: NaN,
+            bottom: 20 + legendHeightForBottom,
+            left: $$.rotated_padding_left
+        } : {
+            top: $$.currentHeight - subchartHeight - legendHeightForBottom,
+            right: NaN,
+            bottom: xAxisHeight + legendHeightForBottom,
+            left: $$.margin.left
+        };
+        $$.margin3 = {
+            top: 0,
+            right: NaN,
+            bottom: 0,
+            left: 0
+        };
+        if ($$.updateSizeForLegend) {
+            $$.updateSizeForLegend(legendHeight, legendWidth);
+        }
+        $$.width = $$.currentWidth - $$.margin.left - $$.margin.right;
+        $$.height = $$.currentHeight - $$.margin.top - $$.margin.bottom;
+        if ($$.width < 0) {
+            $$.width = 0;
+        }
+        if ($$.height < 0) {
+            $$.height = 0;
+        }
+        $$.width2 = config.axis_rotated ? $$.margin.left - $$.rotated_padding_left - $$.rotated_padding_right : $$.width;
+        $$.height2 = config.axis_rotated ? $$.height : $$.currentHeight - $$.margin2.top - $$.margin2.bottom;
+        if ($$.width2 < 0) {
+            $$.width2 = 0;
+        }
+        if ($$.height2 < 0) {
+            $$.height2 = 0;
+        }
+        $$.arcWidth = $$.width - ($$.isLegendRight ? legendWidth + 10 : 0);
+        $$.arcHeight = $$.height - ($$.isLegendRight ? 0 : 10);
+        if ($$.hasType('gauge') && !config.gauge_fullCircle) {
+            $$.arcHeight += $$.height - $$.getGaugeLabelHeight();
+        }
+        if ($$.updateRadius) {
+            $$.updateRadius();
+        }
+        if ($$.isLegendRight && hasArc) {
+            $$.margin3.left = $$.arcWidth / 2 + $$.radiusExpanded * 1.1;
+        }
+    };
+    c3_chart_internal_fn.updateTargets = function (targets) {
+        var $$ = this;
+        /*-- Main --*/
+        $$.updateTargetsForText(targets);
+        $$.updateTargetsForBar(targets);
+        $$.updateTargetsForLine(targets);
+        if ($$.hasArcType() && $$.updateTargetsForArc) {
+            $$.updateTargetsForArc(targets);
+        }
+        /*-- Sub --*/
+        if ($$.updateTargetsForSubchart) {
+            $$.updateTargetsForSubchart(targets);
+        }
+        $$.showTargets();
+    };
+    c3_chart_internal_fn.showTargets = function () {
+        var $$ = this;
+        $$.svg.selectAll('.' + CLASS.target).filter(function (d) {
+            return $$.isTargetToShow(d.id);
+        }).transition().duration($$.config.transition_duration).style("opacity", 1);
+    };
+    c3_chart_internal_fn.redraw = function (options, transitions) {
+        var $$ = this,
+            main = $$.main,
+            d3 = $$.d3,
+            config = $$.config;
+        var areaIndices = $$.getShapeIndices($$.isAreaType),
+            barIndices = $$.getShapeIndices($$.isBarType),
+            lineIndices = $$.getShapeIndices($$.isLineType);
+        var withY, withSubchart, withTransition, withTransitionForExit, withTransitionForAxis, withTransform, withUpdateXDomain, withUpdateOrgXDomain, withTrimXDomain, withLegend, withEventRect, withDimension, withUpdateXAxis;
+        var hideAxis = $$.hasArcType();
+        var drawArea, drawBar, drawLine, xForText, yForText;
+        var duration, durationForExit, durationForAxis;
+        var waitForDraw, flow;
+        var targetsToShow = $$.filterTargetsToShow($$.data.targets),
+            tickValues,
+            i,
+            intervalForCulling,
+            xDomainForZoom;
+        var xv = $$.xv.bind($$),
+            cx,
+            cy;
+        options = options || {};
+        withY = getOption(options, "withY", true);
+        withSubchart = getOption(options, "withSubchart", true);
+        withTransition = getOption(options, "withTransition", true);
+        withTransform = getOption(options, "withTransform", false);
+        withUpdateXDomain = getOption(options, "withUpdateXDomain", false);
+        withUpdateOrgXDomain = getOption(options, "withUpdateOrgXDomain", false);
+        withTrimXDomain = getOption(options, "withTrimXDomain", true);
+        withUpdateXAxis = getOption(options, "withUpdateXAxis", withUpdateXDomain);
+        withLegend = getOption(options, "withLegend", false);
+        withEventRect = getOption(options, "withEventRect", true);
+        withDimension = getOption(options, "withDimension", true);
+        withTransitionForExit = getOption(options, "withTransitionForExit", withTransition);
+        withTransitionForAxis = getOption(options, "withTransitionForAxis", withTransition);
+        duration = withTransition ? config.transition_duration : 0;
+        durationForExit = withTransitionForExit ? duration : 0;
+        durationForAxis = withTransitionForAxis ? duration : 0;
+        transitions = transitions || $$.axis.generateTransitions(durationForAxis);
+        if (withLegend && config.legend_show) {
+            $$.updateLegend($$.mapToIds($$.data.targets), options, transitions);
+        } else if (withDimension) {
+            $$.updateDimension(true);
+        }
+        if ($$.isCategorized() && targetsToShow.length === 0) {
+            $$.x.domain([0, $$.axes.x.selectAll('.tick').size()]);
+        }
+        if (targetsToShow.length) {
+            $$.updateXDomain(targetsToShow, withUpdateXDomain, withUpdateOrgXDomain, withTrimXDomain);
+            if (!config.axis_x_tick_values) {
+                tickValues = $$.axis.updateXAxisTickValues(targetsToShow);
+            }
+        } else {
+            $$.xAxis.tickValues([]);
+            $$.subXAxis.tickValues([]);
+        }
+        if (config.zoom_rescale && !options.flow) {
+            xDomainForZoom = $$.x.orgDomain();
+        }
+        $$.y.domain($$.getYDomain(targetsToShow, 'y', xDomainForZoom));
+        $$.y2.domain($$.getYDomain(targetsToShow, 'y2', xDomainForZoom));
+        if (!config.axis_y_tick_values && config.axis_y_tick_count) {
+            $$.yAxis.tickValues($$.axis.generateTickValues($$.y.domain(), config.axis_y_tick_count));
+        }
+        if (!config.axis_y2_tick_values && config.axis_y2_tick_count) {
+            $$.y2Axis.tickValues($$.axis.generateTickValues($$.y2.domain(), config.axis_y2_tick_count));
+        }
+        $$.axis.redraw(transitions, hideAxis);
+        $$.axis.updateLabels(withTransition);
+        if ((withUpdateXDomain || withUpdateXAxis) && targetsToShow.length) {
+            if (config.axis_x_tick_culling && tickValues) {
+                for (i = 1; i < tickValues.length; i++) {
+                    if (tickValues.length / i < config.axis_x_tick_culling_max) {
+                        intervalForCulling = i;
+                        break;
+                    }
+                }
+                $$.svg.selectAll('.' + CLASS.axisX + ' .tick text').each(function (e) {
+                    var index = tickValues.indexOf(e);
+                    if (index >= 0) {
+                        d3.select(this).style('display', index % intervalForCulling ? 'none' : 'block');
+                    }
+                });
+            } else {
+                $$.svg.selectAll('.' + CLASS.axisX + ' .tick text').style('display', 'block');
             }
         }
-        return [[posX + barSpaceOffset, offset], [posX + barSpaceOffset, posY - (y0 - offset)], [posX + barW - barSpaceOffset, posY - (y0 - offset)], [posX + barW - barSpaceOffset, offset]];
-    };
-};
-c3_chart_internal_fn.isWithinBar = function (that) {
-    var mouse = this.d3.mouse(that),
-        box = that.getBoundingClientRect(),
-        seg0 = that.pathSegList.getItem(0),
-        seg1 = that.pathSegList.getItem(1),
-        x = Math.min(seg0.x, seg1.x),
-        y = Math.min(seg0.y, seg1.y),
-        w = box.width,
-        h = box.height,
-        offset = 2,
-        sx = x - offset,
-        ex = x + w + offset,
-        sy = y + h + offset,
-        ey = y - offset;
-    return sx < mouse[0] && mouse[0] < ex && ey < mouse[1] && mouse[1] < sy;
-};
-c3_chart_internal_fn.getShapeIndices = function (typeFilter) {
-    var $$ = this,
-        config = $$.config,
-        indices = {},
-        i = 0,
-        j,
-        k;
-    $$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$)).forEach(function (d) {
-        for (j = 0; j < config.data_groups.length; j++) {
-            if (config.data_groups[j].indexOf(d.id) < 0) {
-                continue;
+        drawArea = $$.generateDrawArea ? $$.generateDrawArea(areaIndices, false) : undefined;
+        drawBar = $$.generateDrawBar ? $$.generateDrawBar(barIndices) : undefined;
+        drawLine = $$.generateDrawLine ? $$.generateDrawLine(lineIndices, false) : undefined;
+        xForText = $$.generateXYForText(areaIndices, barIndices, lineIndices, true);
+        yForText = $$.generateXYForText(areaIndices, barIndices, lineIndices, false);
+        if (withY) {
+            $$.subY.domain($$.getYDomain(targetsToShow, 'y'));
+            $$.subY2.domain($$.getYDomain(targetsToShow, 'y2'));
+        }
+        $$.updateXgridFocus();
+        main.select("text." + CLASS.text + '.' + CLASS.empty).attr("x", $$.width / 2).attr("y", $$.height / 2).text(config.data_empty_label_text).transition().style('opacity', targetsToShow.length ? 0 : 1);
+        $$.updateGrid(duration);
+        $$.updateRegion(duration);
+        $$.updateBar(durationForExit);
+        $$.updateLine(durationForExit);
+        $$.updateArea(durationForExit);
+        $$.updateCircle();
+        if ($$.hasDataLabel()) {
+            $$.updateText(durationForExit);
+        }
+        if ($$.redrawTitle) {
+            $$.redrawTitle();
+        }
+        if ($$.redrawArc) {
+            $$.redrawArc(duration, durationForExit, withTransform);
+        }
+        if ($$.redrawSubchart) {
+            $$.redrawSubchart(withSubchart, transitions, duration, durationForExit, areaIndices, barIndices, lineIndices);
+        }
+        main.selectAll('.' + CLASS.selectedCircles).filter($$.isBarType.bind($$)).selectAll('circle').remove();
+        if (config.interaction_enabled && !options.flow && withEventRect) {
+            $$.redrawEventRect();
+            if ($$.updateZoom) {
+                $$.updateZoom();
             }
-            for (k = 0; k < config.data_groups[j].length; k++) {
-                if (config.data_groups[j][k] in indices) {
-                    indices[d.id] = indices[config.data_groups[j][k]];
+        }
+        $$.updateCircleY();
+        cx = ($$.config.axis_rotated ? $$.circleY : $$.circleX).bind($$);
+        cy = ($$.config.axis_rotated ? $$.circleX : $$.circleY).bind($$);
+        if (options.flow) {
+            flow = $$.generateFlow({
+                targets: targetsToShow,
+                flow: options.flow,
+                duration: options.flow.duration,
+                drawBar: drawBar,
+                drawLine: drawLine,
+                drawArea: drawArea,
+                cx: cx,
+                cy: cy,
+                xv: xv,
+                xForText: xForText,
+                yForText: yForText
+            });
+        }
+        if ((duration || flow) && $$.isTabVisible()) {
+            d3.transition().duration(duration).each(function () {
+                var transitionsToWait = [];
+                [$$.redrawBar(drawBar, true), $$.redrawLine(drawLine, true), $$.redrawArea(drawArea, true), $$.redrawCircle(cx, cy, true), $$.redrawText(xForText, yForText, options.flow, true), $$.redrawRegion(true), $$.redrawGrid(true)].forEach(function (transitions) {
+                    transitions.forEach(function (transition) {
+                        transitionsToWait.push(transition);
+                    });
+                });
+                waitForDraw = $$.generateWait();
+                transitionsToWait.forEach(function (t) {
+                    waitForDraw.add(t);
+                });
+            }).call(waitForDraw, function () {
+                if (flow) {
+                    flow();
+                }
+                if (config.onrendered) {
+                    config.onrendered.call($$);
+                }
+            });
+        } else {
+            $$.redrawBar(drawBar);
+            $$.redrawLine(drawLine);
+            $$.redrawArea(drawArea);
+            $$.redrawCircle(cx, cy);
+            $$.redrawText(xForText, yForText, options.flow);
+            $$.redrawRegion();
+            $$.redrawGrid();
+            if (config.onrendered) {
+                config.onrendered.call($$);
+            }
+        }
+        $$.mapToIds($$.data.targets).forEach(function (id) {
+            $$.withoutFadeIn[id] = true;
+        });
+    };
+    c3_chart_internal_fn.updateAndRedraw = function (options) {
+        var $$ = this,
+            config = $$.config,
+            transitions;
+        options = options || {};
+        options.withTransition = getOption(options, "withTransition", true);
+        options.withTransform = getOption(options, "withTransform", false);
+        options.withLegend = getOption(options, "withLegend", false);
+        options.withUpdateXDomain = true;
+        options.withUpdateOrgXDomain = true;
+        options.withTransitionForExit = false;
+        options.withTransitionForTransform = getOption(options, "withTransitionForTransform", options.withTransition);
+        $$.updateSizes();
+        if (!(options.withLegend && config.legend_show)) {
+            transitions = $$.axis.generateTransitions(options.withTransitionForAxis ? config.transition_duration : 0);
+            $$.updateScales();
+            $$.updateSvgSize();
+            $$.transformAll(options.withTransitionForTransform, transitions);
+        }
+        $$.redraw(options, transitions);
+    };
+    c3_chart_internal_fn.redrawWithoutRescale = function () {
+        this.redraw({
+            withY: false,
+            withSubchart: false,
+            withEventRect: false,
+            withTransitionForAxis: false
+        });
+    };
+    c3_chart_internal_fn.isTimeSeries = function () {
+        return this.config.axis_x_type === 'timeseries';
+    };
+    c3_chart_internal_fn.isCategorized = function () {
+        return this.config.axis_x_type.indexOf('categor') >= 0;
+    };
+    c3_chart_internal_fn.isCustomX = function () {
+        var $$ = this,
+            config = $$.config;
+        return !$$.isTimeSeries() && (config.data_x || notEmpty(config.data_xs));
+    };
+    c3_chart_internal_fn.isTimeSeriesY = function () {
+        return this.config.axis_y_type === 'timeseries';
+    };
+    c3_chart_internal_fn.getTranslate = function (target) {
+        var $$ = this,
+            config = $$.config,
+            x,
+            y;
+        if (target === 'main') {
+            x = asHalfPixel($$.margin.left);
+            y = asHalfPixel($$.margin.top);
+        } else if (target === 'context') {
+            x = asHalfPixel($$.margin2.left);
+            y = asHalfPixel($$.margin2.top);
+        } else if (target === 'legend') {
+            x = $$.margin3.left;
+            y = $$.margin3.top;
+        } else if (target === 'x') {
+            x = 0;
+            y = config.axis_rotated ? 0 : $$.height;
+        } else if (target === 'y') {
+            x = 0;
+            y = config.axis_rotated ? $$.height : 0;
+        } else if (target === 'y2') {
+            x = config.axis_rotated ? 0 : $$.width;
+            y = config.axis_rotated ? 1 : 0;
+        } else if (target === 'subx') {
+            x = 0;
+            y = config.axis_rotated ? 0 : $$.height2;
+        } else if (target === 'arc') {
+            x = $$.arcWidth / 2;
+            y = $$.arcHeight / 2 - ($$.hasType('gauge') ? 6 : 0);
+        }
+        return "translate(" + x + "," + y + ")";
+    };
+    c3_chart_internal_fn.initialOpacity = function (d) {
+        return d.value !== null && this.withoutFadeIn[d.id] ? 1 : 0;
+    };
+    c3_chart_internal_fn.initialOpacityForCircle = function (d) {
+        return d.value !== null && this.withoutFadeIn[d.id] ? this.opacityForCircle(d) : 0;
+    };
+    c3_chart_internal_fn.opacityForCircle = function (d) {
+        var isPointShouldBeShown = isFunction(this.config.point_show) ? this.config.point_show(d) : this.config.point_show;
+        var opacity = isPointShouldBeShown ? 1 : 0;
+        return isValue(d.value) ? this.isScatterType(d) ? 0.5 : opacity : 0;
+    };
+    c3_chart_internal_fn.opacityForText = function () {
+        return this.hasDataLabel() ? 1 : 0;
+    };
+    c3_chart_internal_fn.xx = function (d) {
+        return d ? this.x(d.x) : null;
+    };
+    c3_chart_internal_fn.xv = function (d) {
+        var $$ = this,
+            value = d.value;
+        if ($$.isTimeSeries()) {
+            value = $$.parseDate(d.value);
+        } else if ($$.isCategorized() && typeof d.value === 'string') {
+            value = $$.config.axis_x_categories.indexOf(d.value);
+        }
+        return Math.ceil($$.x(value));
+    };
+    c3_chart_internal_fn.yv = function (d) {
+        var $$ = this,
+            yScale = d.axis && d.axis === 'y2' ? $$.y2 : $$.y;
+        return Math.ceil(yScale(d.value));
+    };
+    c3_chart_internal_fn.subxx = function (d) {
+        return d ? this.subX(d.x) : null;
+    };
+    c3_chart_internal_fn.transformMain = function (withTransition, transitions) {
+        var $$ = this,
+            xAxis,
+            yAxis,
+            y2Axis;
+        if (transitions && transitions.axisX) {
+            xAxis = transitions.axisX;
+        } else {
+            xAxis = $$.main.select('.' + CLASS.axisX);
+            if (withTransition) {
+                xAxis = xAxis.transition();
+            }
+        }
+        if (transitions && transitions.axisY) {
+            yAxis = transitions.axisY;
+        } else {
+            yAxis = $$.main.select('.' + CLASS.axisY);
+            if (withTransition) {
+                yAxis = yAxis.transition();
+            }
+        }
+        if (transitions && transitions.axisY2) {
+            y2Axis = transitions.axisY2;
+        } else {
+            y2Axis = $$.main.select('.' + CLASS.axisY2);
+            if (withTransition) {
+                y2Axis = y2Axis.transition();
+            }
+        }
+        (withTransition ? $$.main.transition() : $$.main).attr("transform", $$.getTranslate('main'));
+        xAxis.attr("transform", $$.getTranslate('x'));
+        yAxis.attr("transform", $$.getTranslate('y'));
+        y2Axis.attr("transform", $$.getTranslate('y2'));
+        $$.main.select('.' + CLASS.chartArcs).attr("transform", $$.getTranslate('arc'));
+    };
+    c3_chart_internal_fn.transformAll = function (withTransition, transitions) {
+        var $$ = this;
+        $$.transformMain(withTransition, transitions);
+        if ($$.config.subchart_show) {
+            $$.transformContext(withTransition, transitions);
+        }
+        if ($$.legend) {
+            $$.transformLegend(withTransition);
+        }
+    };
+    c3_chart_internal_fn.updateSvgSize = function () {
+        var $$ = this,
+            brush = $$.svg.select(".c3-brush .background");
+        $$.svg.attr('width', $$.currentWidth).attr('height', $$.currentHeight);
+        $$.svg.selectAll(['#' + $$.clipId, '#' + $$.clipIdForGrid]).select('rect').attr('width', $$.width).attr('height', $$.height);
+        $$.svg.select('#' + $$.clipIdForXAxis).select('rect').attr('x', $$.getXAxisClipX.bind($$)).attr('y', $$.getXAxisClipY.bind($$)).attr('width', $$.getXAxisClipWidth.bind($$)).attr('height', $$.getXAxisClipHeight.bind($$));
+        $$.svg.select('#' + $$.clipIdForYAxis).select('rect').attr('x', $$.getYAxisClipX.bind($$)).attr('y', $$.getYAxisClipY.bind($$)).attr('width', $$.getYAxisClipWidth.bind($$)).attr('height', $$.getYAxisClipHeight.bind($$));
+        $$.svg.select('#' + $$.clipIdForSubchart).select('rect').attr('width', $$.width).attr('height', brush.size() ? brush.attr('height') : 0);
+        $$.svg.select('.' + CLASS.zoomRect).attr('width', $$.width).attr('height', $$.height);
+        $$.selectChart.style('max-height', $$.currentHeight + "px");
+    };
+    c3_chart_internal_fn.updateDimension = function (withoutAxis) {
+        var $$ = this;
+        if (!withoutAxis) {
+            if ($$.config.axis_rotated) {
+                $$.axes.x.call($$.xAxis);
+                $$.axes.subx.call($$.subXAxis);
+            } else {
+                $$.axes.y.call($$.yAxis);
+                $$.axes.y2.call($$.y2Axis);
+            }
+        }
+        $$.updateSizes();
+        $$.updateScales();
+        $$.updateSvgSize();
+        $$.transformAll(false);
+    };
+    c3_chart_internal_fn.observeInserted = function (selection) {
+        var $$ = this,
+            observer;
+        if (typeof MutationObserver === 'undefined') {
+            window.console.error("MutationObserver not defined.");
+            return;
+        }
+        observer = new MutationObserver(function (mutations) {
+            mutations.forEach(function (mutation) {
+                if (mutation.type === 'childList' && mutation.previousSibling) {
+                    observer.disconnect();
+                    $$.intervalForObserveInserted = window.setInterval(function () {
+                        if (selection.node().parentNode) {
+                            window.clearInterval($$.intervalForObserveInserted);
+                            $$.updateDimension();
+                            if ($$.brush) {
+                                $$.brush.update();
+                            }
+                            $$.config.oninit.call($$);
+                            $$.redraw({
+                                withTransform: true,
+                                withUpdateXDomain: true,
+                                withUpdateOrgXDomain: true,
+                                withTransition: false,
+                                withTransitionForTransform: false,
+                                withLegend: true
+                            });
+                            selection.transition().style('opacity', 1);
+                        }
+                    }, 10);
+                }
+            });
+        });
+        observer.observe(selection.node(), { attributes: true, childList: true, characterData: true });
+    };
+    c3_chart_internal_fn.bindResize = function () {
+        var $$ = this,
+            config = $$.config;
+        $$.resizeFunction = $$.generateResize();
+        $$.resizeFunction.add(function () {
+            config.onresize.call($$);
+        });
+        if (config.resize_auto) {
+            $$.resizeFunction.add(function () {
+                if ($$.resizeTimeout !== undefined) {
+                    window.clearTimeout($$.resizeTimeout);
+                }
+                $$.resizeTimeout = window.setTimeout(function () {
+                    delete $$.resizeTimeout;
+                    $$.api.flush();
+                }, 100);
+            });
+        }
+        $$.resizeFunction.add(function () {
+            config.onresized.call($$);
+        });
+        $$.resizeIfElementDisplayed = function () {
+            if ($$.api == null || !$$.api.element.offsetParent) {
+                return;
+            }
+            $$.resizeFunction();
+        };
+        if (window.attachEvent) {
+            window.attachEvent('onresize', $$.resizeIfElementDisplayed);
+        } else if (window.addEventListener) {
+            window.addEventListener('resize', $$.resizeIfElementDisplayed, false);
+        } else {
+            var wrapper = window.onresize;
+            if (!wrapper) {
+                wrapper = $$.generateResize();
+            } else if (!wrapper.add || !wrapper.remove) {
+                wrapper = $$.generateResize();
+                wrapper.add(window.onresize);
+            }
+            wrapper.add($$.resizeFunction);
+            window.onresize = function () {
+                if (!$$.api.element.offsetParent) {
+                    return;
+                }
+                wrapper();
+            };
+        }
+    };
+    c3_chart_internal_fn.generateResize = function () {
+        var resizeFunctions = [];
+        function callResizeFunctions() {
+            resizeFunctions.forEach(function (f) {
+                f();
+            });
+        }
+        callResizeFunctions.add = function (f) {
+            resizeFunctions.push(f);
+        };
+        callResizeFunctions.remove = function (f) {
+            for (var i = 0; i < resizeFunctions.length; i++) {
+                if (resizeFunctions[i] === f) {
+                    resizeFunctions.splice(i, 1);
                     break;
                 }
             }
-        }
-        if (isUndefined(indices[d.id])) {
-            indices[d.id] = i++;
-        }
-    });
-    indices.__max__ = i - 1;
-    return indices;
-};
-c3_chart_internal_fn.getShapeX = function (offset, targetsNum, indices, isSub) {
-    var $$ = this,
-        scale = isSub ? $$.subX : $$.x;
-    return function (d) {
-        var index = d.id in indices ? indices[d.id] : 0;
-        return d.x || d.x === 0 ? scale(d.x) - offset * (targetsNum / 2 - index) : 0;
+        };
+        return callResizeFunctions;
     };
-};
-c3_chart_internal_fn.getShapeY = function (isSub) {
-    var $$ = this;
-    return function (d) {
-        var scale = isSub ? $$.getSubYScale(d.id) : $$.getYScale(d.id);
-        return scale(d.value);
-    };
-};
-c3_chart_internal_fn.getShapeOffset = function (typeFilter, indices, isSub) {
-    var $$ = this,
-        targets = $$.orderTargets($$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$))),
-        targetIds = targets.map(function (t) {
-        return t.id;
-    });
-    return function (d, i) {
-        var scale = isSub ? $$.getSubYScale(d.id) : $$.getYScale(d.id),
-            y0 = scale(0),
-            offset = y0;
-        targets.forEach(function (t) {
-            var values = $$.isStepType(d) ? $$.convertValuesToStep(t.values) : t.values;
-            if (t.id === d.id || indices[t.id] !== indices[d.id]) {
-                return;
+    c3_chart_internal_fn.endall = function (transition, callback) {
+        var n = 0;
+        transition.each(function () {
+            ++n;
+        }).each("end", function () {
+            if (! --n) {
+                callback.apply(this, arguments);
             }
-            if (targetIds.indexOf(t.id) < targetIds.indexOf(d.id)) {
-                if (typeof values[i] === 'undefined' || +values[i].x !== +d.x) {
-                    i = -1;
-                    values.forEach(function (v, j) {
-                        if (v.x === d.x) {
-                            i = j;
+        });
+    };
+    c3_chart_internal_fn.generateWait = function () {
+        var transitionsToWait = [],
+            f = function f(transition, callback) {
+            var timer = setInterval(function () {
+                var done = 0;
+                transitionsToWait.forEach(function (t) {
+                    if (t.empty()) {
+                        done += 1;
+                        return;
+                    }
+                    try {
+                        t.transition();
+                    } catch (e) {
+                        done += 1;
+                    }
+                });
+                if (done === transitionsToWait.length) {
+                    clearInterval(timer);
+                    if (callback) {
+                        callback();
+                    }
+                }
+            }, 10);
+        };
+        f.add = function (transition) {
+            transitionsToWait.push(transition);
+        };
+        return f;
+    };
+    c3_chart_internal_fn.parseDate = function (date) {
+        var $$ = this,
+            parsedDate;
+        if (date instanceof Date) {
+            parsedDate = date;
+        } else if (typeof date === 'string') {
+            parsedDate = $$.dataTimeFormat($$.config.data_xFormat).parse(date);
+        } else if ((typeof date === 'undefined' ? 'undefined' : _typeof(date)) === 'object') {
+            parsedDate = new Date(+date);
+        } else if (typeof date === 'number' && !isNaN(date)) {
+            parsedDate = new Date(+date);
+        }
+        if (!parsedDate || isNaN(+parsedDate)) {
+            window.console.error("Failed to parse x '" + date + "' to Date object");
+        }
+        return parsedDate;
+    };
+    c3_chart_internal_fn.isTabVisible = function () {
+        var hidden;
+        if (typeof document.hidden !== "undefined") {
+            hidden = "hidden";
+        } else if (typeof document.mozHidden !== "undefined") {
+            hidden = "mozHidden";
+        } else if (typeof document.msHidden !== "undefined") {
+            hidden = "msHidden";
+        } else if (typeof document.webkitHidden !== "undefined") {
+            hidden = "webkitHidden";
+        }
+        return document[hidden] ? false : true;
+    };
+    c3_chart_internal_fn.isValue = isValue;
+    c3_chart_internal_fn.isFunction = isFunction;
+    c3_chart_internal_fn.isString = isString;
+    c3_chart_internal_fn.isUndefined = isUndefined;
+    c3_chart_internal_fn.isDefined = isDefined;
+    c3_chart_internal_fn.ceil10 = ceil10;
+    c3_chart_internal_fn.asHalfPixel = asHalfPixel;
+    c3_chart_internal_fn.diffDomain = diffDomain;
+    c3_chart_internal_fn.isEmpty = isEmpty;
+    c3_chart_internal_fn.notEmpty = notEmpty;
+    c3_chart_internal_fn.notEmpty = notEmpty;
+    c3_chart_internal_fn.getOption = getOption;
+    c3_chart_internal_fn.hasValue = hasValue;
+    c3_chart_internal_fn.sanitise = sanitise;
+    c3_chart_internal_fn.getPathBox = getPathBox;
+    c3_chart_internal_fn.CLASS = CLASS;
+    /* jshint ignore:start */
+    if (!Function.prototype.bind) {
+        Function.prototype.bind = function (oThis) {
+            if (typeof this !== 'function') {
+                throw new TypeError('Function.prototype.bind - what is trying to be bound is not callable');
+            }
+            var aArgs = Array.prototype.slice.call(arguments, 1),
+                fToBind = this,
+                fNOP = function fNOP() {},
+                fBound = function fBound() {
+                return fToBind.apply(this instanceof fNOP ? this : oThis, aArgs.concat(Array.prototype.slice.call(arguments)));
+            };
+            fNOP.prototype = this.prototype;
+            fBound.prototype = new fNOP();
+            return fBound;
+        };
+    }
+    (function () {
+        if (!("SVGPathSeg" in window)) {
+            window.SVGPathSeg = function (type, typeAsLetter, owningPathSegList) {
+                this.pathSegType = type;
+                this.pathSegTypeAsLetter = typeAsLetter;
+                this._owningPathSegList = owningPathSegList;
+            };
+            window.SVGPathSeg.prototype.classname = "SVGPathSeg";
+            window.SVGPathSeg.PATHSEG_UNKNOWN = 0;
+            window.SVGPathSeg.PATHSEG_CLOSEPATH = 1;
+            window.SVGPathSeg.PATHSEG_MOVETO_ABS = 2;
+            window.SVGPathSeg.PATHSEG_MOVETO_REL = 3;
+            window.SVGPathSeg.PATHSEG_LINETO_ABS = 4;
+            window.SVGPathSeg.PATHSEG_LINETO_REL = 5;
+            window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS = 6;
+            window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL = 7;
+            window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS = 8;
+            window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL = 9;
+            window.SVGPathSeg.PATHSEG_ARC_ABS = 10;
+            window.SVGPathSeg.PATHSEG_ARC_REL = 11;
+            window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS = 12;
+            window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL = 13;
+            window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS = 14;
+            window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL = 15;
+            window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS = 16;
+            window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL = 17;
+            window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS = 18;
+            window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL = 19;
+            window.SVGPathSeg.prototype._segmentChanged = function () {
+                if (this._owningPathSegList) this._owningPathSegList.segmentChanged(this);
+            };
+            window.SVGPathSegClosePath = function (owningPathSegList) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CLOSEPATH, "z", owningPathSegList);
+            };
+            window.SVGPathSegClosePath.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegClosePath.prototype.toString = function () {
+                return "[object SVGPathSegClosePath]";
+            };
+            window.SVGPathSegClosePath.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter;
+            };
+            window.SVGPathSegClosePath.prototype.clone = function () {
+                return new window.SVGPathSegClosePath(undefined);
+            };
+            window.SVGPathSegMovetoAbs = function (owningPathSegList, x, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_MOVETO_ABS, "M", owningPathSegList);
+                this._x = x;
+                this._y = y;
+            };
+            window.SVGPathSegMovetoAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegMovetoAbs.prototype.toString = function () {
+                return "[object SVGPathSegMovetoAbs]";
+            };
+            window.SVGPathSegMovetoAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegMovetoAbs.prototype.clone = function () {
+                return new window.SVGPathSegMovetoAbs(undefined, this._x, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegMovetoAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegMovetoAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegMovetoRel = function (owningPathSegList, x, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_MOVETO_REL, "m", owningPathSegList);
+                this._x = x;
+                this._y = y;
+            };
+            window.SVGPathSegMovetoRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegMovetoRel.prototype.toString = function () {
+                return "[object SVGPathSegMovetoRel]";
+            };
+            window.SVGPathSegMovetoRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegMovetoRel.prototype.clone = function () {
+                return new window.SVGPathSegMovetoRel(undefined, this._x, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegMovetoRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegMovetoRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegLinetoAbs = function (owningPathSegList, x, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_ABS, "L", owningPathSegList);
+                this._x = x;
+                this._y = y;
+            };
+            window.SVGPathSegLinetoAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegLinetoAbs.prototype.toString = function () {
+                return "[object SVGPathSegLinetoAbs]";
+            };
+            window.SVGPathSegLinetoAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegLinetoAbs.prototype.clone = function () {
+                return new window.SVGPathSegLinetoAbs(undefined, this._x, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegLinetoAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegLinetoAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegLinetoRel = function (owningPathSegList, x, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_REL, "l", owningPathSegList);
+                this._x = x;
+                this._y = y;
+            };
+            window.SVGPathSegLinetoRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegLinetoRel.prototype.toString = function () {
+                return "[object SVGPathSegLinetoRel]";
+            };
+            window.SVGPathSegLinetoRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegLinetoRel.prototype.clone = function () {
+                return new window.SVGPathSegLinetoRel(undefined, this._x, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegLinetoRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegLinetoRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoCubicAbs = function (owningPathSegList, x, y, x1, y1, x2, y2) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS, "C", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._x1 = x1;
+                this._y1 = y1;
+                this._x2 = x2;
+                this._y2 = y2;
+            };
+            window.SVGPathSegCurvetoCubicAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoCubicAbs.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoCubicAbs]";
+            };
+            window.SVGPathSegCurvetoCubicAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoCubicAbs.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoCubicAbs(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "x1", { get: function get() {
+                    return this._x1;
+                }, set: function set(x1) {
+                    this._x1 = x1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "y1", { get: function get() {
+                    return this._y1;
+                }, set: function set(y1) {
+                    this._y1 = y1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "x2", { get: function get() {
+                    return this._x2;
+                }, set: function set(x2) {
+                    this._x2 = x2;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicAbs.prototype, "y2", { get: function get() {
+                    return this._y2;
+                }, set: function set(y2) {
+                    this._y2 = y2;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoCubicRel = function (owningPathSegList, x, y, x1, y1, x2, y2) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL, "c", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._x1 = x1;
+                this._y1 = y1;
+                this._x2 = x2;
+                this._y2 = y2;
+            };
+            window.SVGPathSegCurvetoCubicRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoCubicRel.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoCubicRel]";
+            };
+            window.SVGPathSegCurvetoCubicRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoCubicRel.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoCubicRel(undefined, this._x, this._y, this._x1, this._y1, this._x2, this._y2);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "x1", { get: function get() {
+                    return this._x1;
+                }, set: function set(x1) {
+                    this._x1 = x1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "y1", { get: function get() {
+                    return this._y1;
+                }, set: function set(y1) {
+                    this._y1 = y1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "x2", { get: function get() {
+                    return this._x2;
+                }, set: function set(x2) {
+                    this._x2 = x2;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicRel.prototype, "y2", { get: function get() {
+                    return this._y2;
+                }, set: function set(y2) {
+                    this._y2 = y2;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoQuadraticAbs = function (owningPathSegList, x, y, x1, y1) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS, "Q", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._x1 = x1;
+                this._y1 = y1;
+            };
+            window.SVGPathSegCurvetoQuadraticAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoQuadraticAbs.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoQuadraticAbs]";
+            };
+            window.SVGPathSegCurvetoQuadraticAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoQuadraticAbs.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoQuadraticAbs(undefined, this._x, this._y, this._x1, this._y1);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "x1", { get: function get() {
+                    return this._x1;
+                }, set: function set(x1) {
+                    this._x1 = x1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticAbs.prototype, "y1", { get: function get() {
+                    return this._y1;
+                }, set: function set(y1) {
+                    this._y1 = y1;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoQuadraticRel = function (owningPathSegList, x, y, x1, y1) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL, "q", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._x1 = x1;
+                this._y1 = y1;
+            };
+            window.SVGPathSegCurvetoQuadraticRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoQuadraticRel.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoQuadraticRel]";
+            };
+            window.SVGPathSegCurvetoQuadraticRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x1 + " " + this._y1 + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoQuadraticRel.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoQuadraticRel(undefined, this._x, this._y, this._x1, this._y1);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "x1", { get: function get() {
+                    return this._x1;
+                }, set: function set(x1) {
+                    this._x1 = x1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticRel.prototype, "y1", { get: function get() {
+                    return this._y1;
+                }, set: function set(y1) {
+                    this._y1 = y1;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegArcAbs = function (owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_ARC_ABS, "A", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._r1 = r1;
+                this._r2 = r2;
+                this._angle = angle;
+                this._largeArcFlag = largeArcFlag;
+                this._sweepFlag = sweepFlag;
+            };
+            window.SVGPathSegArcAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegArcAbs.prototype.toString = function () {
+                return "[object SVGPathSegArcAbs]";
+            };
+            window.SVGPathSegArcAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegArcAbs.prototype.clone = function () {
+                return new window.SVGPathSegArcAbs(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag);
+            };
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "r1", { get: function get() {
+                    return this._r1;
+                }, set: function set(r1) {
+                    this._r1 = r1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "r2", { get: function get() {
+                    return this._r2;
+                }, set: function set(r2) {
+                    this._r2 = r2;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "angle", { get: function get() {
+                    return this._angle;
+                }, set: function set(angle) {
+                    this._angle = angle;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "largeArcFlag", { get: function get() {
+                    return this._largeArcFlag;
+                }, set: function set(largeArcFlag) {
+                    this._largeArcFlag = largeArcFlag;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcAbs.prototype, "sweepFlag", { get: function get() {
+                    return this._sweepFlag;
+                }, set: function set(sweepFlag) {
+                    this._sweepFlag = sweepFlag;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegArcRel = function (owningPathSegList, x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_ARC_REL, "a", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._r1 = r1;
+                this._r2 = r2;
+                this._angle = angle;
+                this._largeArcFlag = largeArcFlag;
+                this._sweepFlag = sweepFlag;
+            };
+            window.SVGPathSegArcRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegArcRel.prototype.toString = function () {
+                return "[object SVGPathSegArcRel]";
+            };
+            window.SVGPathSegArcRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._r1 + " " + this._r2 + " " + this._angle + " " + (this._largeArcFlag ? "1" : "0") + " " + (this._sweepFlag ? "1" : "0") + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegArcRel.prototype.clone = function () {
+                return new window.SVGPathSegArcRel(undefined, this._x, this._y, this._r1, this._r2, this._angle, this._largeArcFlag, this._sweepFlag);
+            };
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "r1", { get: function get() {
+                    return this._r1;
+                }, set: function set(r1) {
+                    this._r1 = r1;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "r2", { get: function get() {
+                    return this._r2;
+                }, set: function set(r2) {
+                    this._r2 = r2;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "angle", { get: function get() {
+                    return this._angle;
+                }, set: function set(angle) {
+                    this._angle = angle;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "largeArcFlag", { get: function get() {
+                    return this._largeArcFlag;
+                }, set: function set(largeArcFlag) {
+                    this._largeArcFlag = largeArcFlag;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegArcRel.prototype, "sweepFlag", { get: function get() {
+                    return this._sweepFlag;
+                }, set: function set(sweepFlag) {
+                    this._sweepFlag = sweepFlag;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegLinetoHorizontalAbs = function (owningPathSegList, x) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS, "H", owningPathSegList);
+                this._x = x;
+            };
+            window.SVGPathSegLinetoHorizontalAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegLinetoHorizontalAbs.prototype.toString = function () {
+                return "[object SVGPathSegLinetoHorizontalAbs]";
+            };
+            window.SVGPathSegLinetoHorizontalAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x;
+            };
+            window.SVGPathSegLinetoHorizontalAbs.prototype.clone = function () {
+                return new window.SVGPathSegLinetoHorizontalAbs(undefined, this._x);
+            };
+            Object.defineProperty(window.SVGPathSegLinetoHorizontalAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegLinetoHorizontalRel = function (owningPathSegList, x) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL, "h", owningPathSegList);
+                this._x = x;
+            };
+            window.SVGPathSegLinetoHorizontalRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegLinetoHorizontalRel.prototype.toString = function () {
+                return "[object SVGPathSegLinetoHorizontalRel]";
+            };
+            window.SVGPathSegLinetoHorizontalRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x;
+            };
+            window.SVGPathSegLinetoHorizontalRel.prototype.clone = function () {
+                return new window.SVGPathSegLinetoHorizontalRel(undefined, this._x);
+            };
+            Object.defineProperty(window.SVGPathSegLinetoHorizontalRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegLinetoVerticalAbs = function (owningPathSegList, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS, "V", owningPathSegList);
+                this._y = y;
+            };
+            window.SVGPathSegLinetoVerticalAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegLinetoVerticalAbs.prototype.toString = function () {
+                return "[object SVGPathSegLinetoVerticalAbs]";
+            };
+            window.SVGPathSegLinetoVerticalAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._y;
+            };
+            window.SVGPathSegLinetoVerticalAbs.prototype.clone = function () {
+                return new window.SVGPathSegLinetoVerticalAbs(undefined, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegLinetoVerticalAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegLinetoVerticalRel = function (owningPathSegList, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL, "v", owningPathSegList);
+                this._y = y;
+            };
+            window.SVGPathSegLinetoVerticalRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegLinetoVerticalRel.prototype.toString = function () {
+                return "[object SVGPathSegLinetoVerticalRel]";
+            };
+            window.SVGPathSegLinetoVerticalRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._y;
+            };
+            window.SVGPathSegLinetoVerticalRel.prototype.clone = function () {
+                return new window.SVGPathSegLinetoVerticalRel(undefined, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegLinetoVerticalRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoCubicSmoothAbs = function (owningPathSegList, x, y, x2, y2) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS, "S", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._x2 = x2;
+                this._y2 = y2;
+            };
+            window.SVGPathSegCurvetoCubicSmoothAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoCubicSmoothAbs.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoCubicSmoothAbs]";
+            };
+            window.SVGPathSegCurvetoCubicSmoothAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoCubicSmoothAbs.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoCubicSmoothAbs(undefined, this._x, this._y, this._x2, this._y2);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "x2", { get: function get() {
+                    return this._x2;
+                }, set: function set(x2) {
+                    this._x2 = x2;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothAbs.prototype, "y2", { get: function get() {
+                    return this._y2;
+                }, set: function set(y2) {
+                    this._y2 = y2;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoCubicSmoothRel = function (owningPathSegList, x, y, x2, y2) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL, "s", owningPathSegList);
+                this._x = x;
+                this._y = y;
+                this._x2 = x2;
+                this._y2 = y2;
+            };
+            window.SVGPathSegCurvetoCubicSmoothRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoCubicSmoothRel.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoCubicSmoothRel]";
+            };
+            window.SVGPathSegCurvetoCubicSmoothRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x2 + " " + this._y2 + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoCubicSmoothRel.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoCubicSmoothRel(undefined, this._x, this._y, this._x2, this._y2);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "x2", { get: function get() {
+                    return this._x2;
+                }, set: function set(x2) {
+                    this._x2 = x2;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoCubicSmoothRel.prototype, "y2", { get: function get() {
+                    return this._y2;
+                }, set: function set(y2) {
+                    this._y2 = y2;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoQuadraticSmoothAbs = function (owningPathSegList, x, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS, "T", owningPathSegList);
+                this._x = x;
+                this._y = y;
+            };
+            window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoQuadraticSmoothAbs]";
+            };
+            window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoQuadraticSmoothAbs(undefined, this._x, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothAbs.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathSegCurvetoQuadraticSmoothRel = function (owningPathSegList, x, y) {
+                window.SVGPathSeg.call(this, window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL, "t", owningPathSegList);
+                this._x = x;
+                this._y = y;
+            };
+            window.SVGPathSegCurvetoQuadraticSmoothRel.prototype = Object.create(window.SVGPathSeg.prototype);
+            window.SVGPathSegCurvetoQuadraticSmoothRel.prototype.toString = function () {
+                return "[object SVGPathSegCurvetoQuadraticSmoothRel]";
+            };
+            window.SVGPathSegCurvetoQuadraticSmoothRel.prototype._asPathString = function () {
+                return this.pathSegTypeAsLetter + " " + this._x + " " + this._y;
+            };
+            window.SVGPathSegCurvetoQuadraticSmoothRel.prototype.clone = function () {
+                return new window.SVGPathSegCurvetoQuadraticSmoothRel(undefined, this._x, this._y);
+            };
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothRel.prototype, "x", { get: function get() {
+                    return this._x;
+                }, set: function set(x) {
+                    this._x = x;this._segmentChanged();
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathSegCurvetoQuadraticSmoothRel.prototype, "y", { get: function get() {
+                    return this._y;
+                }, set: function set(y) {
+                    this._y = y;this._segmentChanged();
+                }, enumerable: true });
+            window.SVGPathElement.prototype.createSVGPathSegClosePath = function () {
+                return new window.SVGPathSegClosePath(undefined);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegMovetoAbs = function (x, y) {
+                return new window.SVGPathSegMovetoAbs(undefined, x, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegMovetoRel = function (x, y) {
+                return new window.SVGPathSegMovetoRel(undefined, x, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegLinetoAbs = function (x, y) {
+                return new window.SVGPathSegLinetoAbs(undefined, x, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegLinetoRel = function (x, y) {
+                return new window.SVGPathSegLinetoRel(undefined, x, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicAbs = function (x, y, x1, y1, x2, y2) {
+                return new window.SVGPathSegCurvetoCubicAbs(undefined, x, y, x1, y1, x2, y2);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicRel = function (x, y, x1, y1, x2, y2) {
+                return new window.SVGPathSegCurvetoCubicRel(undefined, x, y, x1, y1, x2, y2);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticAbs = function (x, y, x1, y1) {
+                return new window.SVGPathSegCurvetoQuadraticAbs(undefined, x, y, x1, y1);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticRel = function (x, y, x1, y1) {
+                return new window.SVGPathSegCurvetoQuadraticRel(undefined, x, y, x1, y1);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegArcAbs = function (x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
+                return new window.SVGPathSegArcAbs(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegArcRel = function (x, y, r1, r2, angle, largeArcFlag, sweepFlag) {
+                return new window.SVGPathSegArcRel(undefined, x, y, r1, r2, angle, largeArcFlag, sweepFlag);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegLinetoHorizontalAbs = function (x) {
+                return new window.SVGPathSegLinetoHorizontalAbs(undefined, x);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegLinetoHorizontalRel = function (x) {
+                return new window.SVGPathSegLinetoHorizontalRel(undefined, x);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegLinetoVerticalAbs = function (y) {
+                return new window.SVGPathSegLinetoVerticalAbs(undefined, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegLinetoVerticalRel = function (y) {
+                return new window.SVGPathSegLinetoVerticalRel(undefined, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothAbs = function (x, y, x2, y2) {
+                return new window.SVGPathSegCurvetoCubicSmoothAbs(undefined, x, y, x2, y2);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoCubicSmoothRel = function (x, y, x2, y2) {
+                return new window.SVGPathSegCurvetoCubicSmoothRel(undefined, x, y, x2, y2);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothAbs = function (x, y) {
+                return new window.SVGPathSegCurvetoQuadraticSmoothAbs(undefined, x, y);
+            };
+            window.SVGPathElement.prototype.createSVGPathSegCurvetoQuadraticSmoothRel = function (x, y) {
+                return new window.SVGPathSegCurvetoQuadraticSmoothRel(undefined, x, y);
+            };
+            if (!("getPathSegAtLength" in window.SVGPathElement.prototype)) {
+                window.SVGPathElement.prototype.getPathSegAtLength = function (distance) {
+                    if (distance === undefined || !isFinite(distance)) throw "Invalid arguments.";
+                    var measurementElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+                    measurementElement.setAttribute("d", this.getAttribute("d"));
+                    var lastPathSegment = measurementElement.pathSegList.numberOfItems - 1;
+                    if (lastPathSegment <= 0) return 0;
+                    do {
+                        measurementElement.pathSegList.removeItem(lastPathSegment);
+                        if (distance > measurementElement.getTotalLength()) break;
+                        lastPathSegment--;
+                    } while (lastPathSegment > 0);
+                    return lastPathSegment;
+                };
+            }
+        }
+        if (!("SVGPathSegList" in window)) {
+            window.SVGPathSegList = function (pathElement) {
+                this._pathElement = pathElement;
+                this._list = this._parsePath(this._pathElement.getAttribute("d"));
+                this._mutationObserverConfig = { "attributes": true, "attributeFilter": ["d"] };
+                this._pathElementMutationObserver = new MutationObserver(this._updateListFromPathMutations.bind(this));
+                this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
+            };
+            window.SVGPathSegList.prototype.classname = "SVGPathSegList";
+            Object.defineProperty(window.SVGPathSegList.prototype, "numberOfItems", {
+                get: function get() {
+                    this._checkPathSynchronizedToList();
+                    return this._list.length;
+                },
+                enumerable: true
+            });
+            Object.defineProperty(window.SVGPathElement.prototype, "pathSegList", {
+                get: function get() {
+                    if (!this._pathSegList) this._pathSegList = new window.SVGPathSegList(this);
+                    return this._pathSegList;
+                },
+                enumerable: true
+            });
+            Object.defineProperty(window.SVGPathElement.prototype, "normalizedPathSegList", { get: function get() {
+                    return this.pathSegList;
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathElement.prototype, "animatedPathSegList", { get: function get() {
+                    return this.pathSegList;
+                }, enumerable: true });
+            Object.defineProperty(window.SVGPathElement.prototype, "animatedNormalizedPathSegList", { get: function get() {
+                    return this.pathSegList;
+                }, enumerable: true });
+            window.SVGPathSegList.prototype._checkPathSynchronizedToList = function () {
+                this._updateListFromPathMutations(this._pathElementMutationObserver.takeRecords());
+            };
+            window.SVGPathSegList.prototype._updateListFromPathMutations = function (mutationRecords) {
+                if (!this._pathElement) return;
+                var hasPathMutations = false;
+                mutationRecords.forEach(function (record) {
+                    if (record.attributeName == "d") hasPathMutations = true;
+                });
+                if (hasPathMutations) this._list = this._parsePath(this._pathElement.getAttribute("d"));
+            };
+            window.SVGPathSegList.prototype._writeListToPath = function () {
+                this._pathElementMutationObserver.disconnect();
+                this._pathElement.setAttribute("d", window.SVGPathSegList._pathSegArrayAsString(this._list));
+                this._pathElementMutationObserver.observe(this._pathElement, this._mutationObserverConfig);
+            };
+            window.SVGPathSegList.prototype.segmentChanged = function (pathSeg) {
+                this._writeListToPath();
+            };
+            window.SVGPathSegList.prototype.clear = function () {
+                this._checkPathSynchronizedToList();
+                this._list.forEach(function (pathSeg) {
+                    pathSeg._owningPathSegList = null;
+                });
+                this._list = [];
+                this._writeListToPath();
+            };
+            window.SVGPathSegList.prototype.initialize = function (newItem) {
+                this._checkPathSynchronizedToList();
+                this._list = [newItem];
+                newItem._owningPathSegList = this;
+                this._writeListToPath();
+                return newItem;
+            };
+            window.SVGPathSegList.prototype._checkValidIndex = function (index) {
+                if (isNaN(index) || index < 0 || index >= this.numberOfItems) throw "INDEX_SIZE_ERR";
+            };
+            window.SVGPathSegList.prototype.getItem = function (index) {
+                this._checkPathSynchronizedToList();
+                this._checkValidIndex(index);
+                return this._list[index];
+            };
+            window.SVGPathSegList.prototype.insertItemBefore = function (newItem, index) {
+                this._checkPathSynchronizedToList();
+                if (index > this.numberOfItems) index = this.numberOfItems;
+                if (newItem._owningPathSegList) {
+                    newItem = newItem.clone();
+                }
+                this._list.splice(index, 0, newItem);
+                newItem._owningPathSegList = this;
+                this._writeListToPath();
+                return newItem;
+            };
+            window.SVGPathSegList.prototype.replaceItem = function (newItem, index) {
+                this._checkPathSynchronizedToList();
+                if (newItem._owningPathSegList) {
+                    newItem = newItem.clone();
+                }
+                this._checkValidIndex(index);
+                this._list[index] = newItem;
+                newItem._owningPathSegList = this;
+                this._writeListToPath();
+                return newItem;
+            };
+            window.SVGPathSegList.prototype.removeItem = function (index) {
+                this._checkPathSynchronizedToList();
+                this._checkValidIndex(index);
+                var item = this._list[index];
+                this._list.splice(index, 1);
+                this._writeListToPath();
+                return item;
+            };
+            window.SVGPathSegList.prototype.appendItem = function (newItem) {
+                this._checkPathSynchronizedToList();
+                if (newItem._owningPathSegList) {
+                    newItem = newItem.clone();
+                }
+                this._list.push(newItem);
+                newItem._owningPathSegList = this;
+                this._writeListToPath();
+                return newItem;
+            };
+            window.SVGPathSegList._pathSegArrayAsString = function (pathSegArray) {
+                var string = "";
+                var first = true;
+                pathSegArray.forEach(function (pathSeg) {
+                    if (first) {
+                        first = false;
+                        string += pathSeg._asPathString();
+                    } else {
+                        string += " " + pathSeg._asPathString();
+                    }
+                });
+                return string;
+            };
+            window.SVGPathSegList.prototype._parsePath = function (string) {
+                if (!string || string.length == 0) return [];
+                var owningPathSegList = this;
+                var Builder = function Builder() {
+                    this.pathSegList = [];
+                };
+                Builder.prototype.appendSegment = function (pathSeg) {
+                    this.pathSegList.push(pathSeg);
+                };
+                var Source = function Source(string) {
+                    this._string = string;
+                    this._currentIndex = 0;
+                    this._endIndex = this._string.length;
+                    this._previousCommand = window.SVGPathSeg.PATHSEG_UNKNOWN;
+                    this._skipOptionalSpaces();
+                };
+                Source.prototype._isCurrentSpace = function () {
+                    var character = this._string[this._currentIndex];
+                    return character <= " " && (character == " " || character == "\n" || character == "\t" || character == "\r" || character == "\f");
+                };
+                Source.prototype._skipOptionalSpaces = function () {
+                    while (this._currentIndex < this._endIndex && this._isCurrentSpace()) {
+                        this._currentIndex++;
+                    }return this._currentIndex < this._endIndex;
+                };
+                Source.prototype._skipOptionalSpacesOrDelimiter = function () {
+                    if (this._currentIndex < this._endIndex && !this._isCurrentSpace() && this._string.charAt(this._currentIndex) != ",") return false;
+                    if (this._skipOptionalSpaces()) {
+                        if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ",") {
+                            this._currentIndex++;
+                            this._skipOptionalSpaces();
                         }
-                    });
+                    }
+                    return this._currentIndex < this._endIndex;
+                };
+                Source.prototype.hasMoreData = function () {
+                    return this._currentIndex < this._endIndex;
+                };
+                Source.prototype.peekSegmentType = function () {
+                    var lookahead = this._string[this._currentIndex];
+                    return this._pathSegTypeFromChar(lookahead);
+                };
+                Source.prototype._pathSegTypeFromChar = function (lookahead) {
+                    switch (lookahead) {
+                        case "Z":
+                        case "z":
+                            return window.SVGPathSeg.PATHSEG_CLOSEPATH;
+                        case "M":
+                            return window.SVGPathSeg.PATHSEG_MOVETO_ABS;
+                        case "m":
+                            return window.SVGPathSeg.PATHSEG_MOVETO_REL;
+                        case "L":
+                            return window.SVGPathSeg.PATHSEG_LINETO_ABS;
+                        case "l":
+                            return window.SVGPathSeg.PATHSEG_LINETO_REL;
+                        case "C":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS;
+                        case "c":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL;
+                        case "Q":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS;
+                        case "q":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL;
+                        case "A":
+                            return window.SVGPathSeg.PATHSEG_ARC_ABS;
+                        case "a":
+                            return window.SVGPathSeg.PATHSEG_ARC_REL;
+                        case "H":
+                            return window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS;
+                        case "h":
+                            return window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL;
+                        case "V":
+                            return window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS;
+                        case "v":
+                            return window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL;
+                        case "S":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS;
+                        case "s":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL;
+                        case "T":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS;
+                        case "t":
+                            return window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL;
+                        default:
+                            return window.SVGPathSeg.PATHSEG_UNKNOWN;
+                    }
+                };
+                Source.prototype._nextCommandHelper = function (lookahead, previousCommand) {
+                    if ((lookahead == "+" || lookahead == "-" || lookahead == "." || lookahead >= "0" && lookahead <= "9") && previousCommand != window.SVGPathSeg.PATHSEG_CLOSEPATH) {
+                        if (previousCommand == window.SVGPathSeg.PATHSEG_MOVETO_ABS) return window.SVGPathSeg.PATHSEG_LINETO_ABS;
+                        if (previousCommand == window.SVGPathSeg.PATHSEG_MOVETO_REL) return window.SVGPathSeg.PATHSEG_LINETO_REL;
+                        return previousCommand;
+                    }
+                    return window.SVGPathSeg.PATHSEG_UNKNOWN;
+                };
+                Source.prototype.initialCommandIsMoveTo = function () {
+                    if (!this.hasMoreData()) return true;
+                    var command = this.peekSegmentType();
+                    return command == window.SVGPathSeg.PATHSEG_MOVETO_ABS || command == window.SVGPathSeg.PATHSEG_MOVETO_REL;
+                };
+                Source.prototype._parseNumber = function () {
+                    var exponent = 0;
+                    var integer = 0;
+                    var frac = 1;
+                    var decimal = 0;
+                    var sign = 1;
+                    var expsign = 1;
+                    var startIndex = this._currentIndex;
+                    this._skipOptionalSpaces();
+                    if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "+") this._currentIndex++;else if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == "-") {
+                        this._currentIndex++;
+                        sign = -1;
+                    }
+                    if (this._currentIndex == this._endIndex || (this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") && this._string.charAt(this._currentIndex) != ".")
+                        return undefined;
+                    var startIntPartIndex = this._currentIndex;
+                    while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
+                        this._currentIndex++;
+                    }
+                    if (this._currentIndex != startIntPartIndex) {
+                        var scanIntPartIndex = this._currentIndex - 1;
+                        var multiplier = 1;
+                        while (scanIntPartIndex >= startIntPartIndex) {
+                            integer += multiplier * (this._string.charAt(scanIntPartIndex--) - "0");
+                            multiplier *= 10;
+                        }
+                    }
+                    if (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) == ".") {
+                        this._currentIndex++;
+                        if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") return undefined;
+                        while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
+                            frac *= 10;
+                            decimal += (this._string.charAt(this._currentIndex) - "0") / frac;
+                            this._currentIndex += 1;
+                        }
+                    }
+                    if (this._currentIndex != startIndex && this._currentIndex + 1 < this._endIndex && (this._string.charAt(this._currentIndex) == "e" || this._string.charAt(this._currentIndex) == "E") && this._string.charAt(this._currentIndex + 1) != "x" && this._string.charAt(this._currentIndex + 1) != "m") {
+                        this._currentIndex++;
+                        if (this._string.charAt(this._currentIndex) == "+") {
+                            this._currentIndex++;
+                        } else if (this._string.charAt(this._currentIndex) == "-") {
+                            this._currentIndex++;
+                            expsign = -1;
+                        }
+                        if (this._currentIndex >= this._endIndex || this._string.charAt(this._currentIndex) < "0" || this._string.charAt(this._currentIndex) > "9") return undefined;
+                        while (this._currentIndex < this._endIndex && this._string.charAt(this._currentIndex) >= "0" && this._string.charAt(this._currentIndex) <= "9") {
+                            exponent *= 10;
+                            exponent += this._string.charAt(this._currentIndex) - "0";
+                            this._currentIndex++;
+                        }
+                    }
+                    var number = integer + decimal;
+                    number *= sign;
+                    if (exponent) number *= Math.pow(10, expsign * exponent);
+                    if (startIndex == this._currentIndex) return undefined;
+                    this._skipOptionalSpacesOrDelimiter();
+                    return number;
+                };
+                Source.prototype._parseArcFlag = function () {
+                    if (this._currentIndex >= this._endIndex) return undefined;
+                    var flag = false;
+                    var flagChar = this._string.charAt(this._currentIndex++);
+                    if (flagChar == "0") flag = false;else if (flagChar == "1") flag = true;else return undefined;
+                    this._skipOptionalSpacesOrDelimiter();
+                    return flag;
+                };
+                Source.prototype.parseSegment = function () {
+                    var lookahead = this._string[this._currentIndex];
+                    var command = this._pathSegTypeFromChar(lookahead);
+                    if (command == window.SVGPathSeg.PATHSEG_UNKNOWN) {
+                        if (this._previousCommand == window.SVGPathSeg.PATHSEG_UNKNOWN) return null;
+                        command = this._nextCommandHelper(lookahead, this._previousCommand);
+                        if (command == window.SVGPathSeg.PATHSEG_UNKNOWN) return null;
+                    } else {
+                        this._currentIndex++;
+                    }
+                    this._previousCommand = command;
+                    switch (command) {
+                        case window.SVGPathSeg.PATHSEG_MOVETO_REL:
+                            return new window.SVGPathSegMovetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_MOVETO_ABS:
+                            return new window.SVGPathSegMovetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_LINETO_REL:
+                            return new window.SVGPathSegLinetoRel(owningPathSegList, this._parseNumber(), this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_LINETO_ABS:
+                            return new window.SVGPathSegLinetoAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_REL:
+                            return new window.SVGPathSegLinetoHorizontalRel(owningPathSegList, this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_LINETO_HORIZONTAL_ABS:
+                            return new window.SVGPathSegLinetoHorizontalAbs(owningPathSegList, this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_REL:
+                            return new window.SVGPathSegLinetoVerticalRel(owningPathSegList, this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_LINETO_VERTICAL_ABS:
+                            return new window.SVGPathSegLinetoVerticalAbs(owningPathSegList, this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_CLOSEPATH:
+                            this._skipOptionalSpaces();
+                            return new window.SVGPathSegClosePath(owningPathSegList);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_REL:
+                            var points = { x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegCurvetoCubicRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_ABS:
+                            var points = { x1: this._parseNumber(), y1: this._parseNumber(), x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegCurvetoCubicAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.x2, points.y2);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_REL:
+                            var points = { x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegCurvetoCubicSmoothRel(owningPathSegList, points.x, points.y, points.x2, points.y2);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_CUBIC_SMOOTH_ABS:
+                            var points = { x2: this._parseNumber(), y2: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegCurvetoCubicSmoothAbs(owningPathSegList, points.x, points.y, points.x2, points.y2);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_REL:
+                            var points = { x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegCurvetoQuadraticRel(owningPathSegList, points.x, points.y, points.x1, points.y1);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_ABS:
+                            var points = { x1: this._parseNumber(), y1: this._parseNumber(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegCurvetoQuadraticAbs(owningPathSegList, points.x, points.y, points.x1, points.y1);
+                        case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_REL:
+                            return new window.SVGPathSegCurvetoQuadraticSmoothRel(owningPathSegList, this._parseNumber(), this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_CURVETO_QUADRATIC_SMOOTH_ABS:
+                            return new window.SVGPathSegCurvetoQuadraticSmoothAbs(owningPathSegList, this._parseNumber(), this._parseNumber());
+                        case window.SVGPathSeg.PATHSEG_ARC_REL:
+                            var points = { x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegArcRel(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
+                        case window.SVGPathSeg.PATHSEG_ARC_ABS:
+                            var points = { x1: this._parseNumber(), y1: this._parseNumber(), arcAngle: this._parseNumber(), arcLarge: this._parseArcFlag(), arcSweep: this._parseArcFlag(), x: this._parseNumber(), y: this._parseNumber() };
+                            return new window.SVGPathSegArcAbs(owningPathSegList, points.x, points.y, points.x1, points.y1, points.arcAngle, points.arcLarge, points.arcSweep);
+                        default:
+                            throw "Unknown path seg type.";
+                    }
+                };
+                var builder = new Builder();
+                var source = new Source(string);
+                if (!source.initialCommandIsMoveTo()) return [];
+                while (source.hasMoreData()) {
+                    var pathSeg = source.parseSegment();
+                    if (!pathSeg) return [];
+                    builder.appendSegment(pathSeg);
                 }
-                if (i in values && values[i].value * d.value >= 0) {
-                    offset += scale(values[i].value) - y0;
+                return builder.pathSegList;
+            };
+        }
+    })();
+    /* jshint ignore:end */
+    c3_chart_fn.axis = function () {};
+    c3_chart_fn.axis.labels = function (labels) {
+        var $$ = this.internal;
+        if (arguments.length) {
+            Object.keys(labels).forEach(function (axisId) {
+                $$.axis.setLabelText(axisId, labels[axisId]);
+            });
+            $$.axis.updateLabels();
+        }
+    };
+    c3_chart_fn.axis.max = function (max) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (arguments.length) {
+            if ((typeof max === 'undefined' ? 'undefined' : _typeof(max)) === 'object') {
+                if (isValue(max.x)) {
+                    config.axis_x_max = max.x;
                 }
-            }
-        });
-        return offset;
-    };
-};
-c3_chart_internal_fn.isWithinShape = function (that, d) {
-    var $$ = this,
-        shape = $$.d3.select(that),
-        isWithin;
-    if (!$$.isTargetToShow(d.id)) {
-        isWithin = false;
-    } else if (that.nodeName === 'circle') {
-        isWithin = $$.isStepType(d) ? $$.isWithinStep(that, $$.getYScale(d.id)(d.value)) : $$.isWithinCircle(that, $$.pointSelectR(d) * 1.5);
-    } else if (that.nodeName === 'path') {
-        isWithin = shape.classed(CLASS.bar) ? $$.isWithinBar(that) : true;
-    }
-    return isWithin;
-};
-c3_chart_internal_fn.getInterpolate = function (d) {
-    var $$ = this,
-        interpolation = $$.isInterpolationType($$.config.spline_interpolation_type) ? $$.config.spline_interpolation_type : 'cardinal';
-    return $$.isSplineType(d) ? interpolation : $$.isStepType(d) ? $$.config.line_step_type : "linear";
-};
-c3_chart_internal_fn.initLine = function () {
-    var $$ = this;
-    $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartLines);
-};
-c3_chart_internal_fn.updateTargetsForLine = function (targets) {
-    var $$ = this,
-        config = $$.config,
-        mainLineUpdate,
-        mainLineEnter,
-        classChartLine = $$.classChartLine.bind($$),
-        classLines = $$.classLines.bind($$),
-        classAreas = $$.classAreas.bind($$),
-        classCircles = $$.classCircles.bind($$),
-        classFocus = $$.classFocus.bind($$);
-    mainLineUpdate = $$.main.select('.' + CLASS.chartLines).selectAll('.' + CLASS.chartLine).data(targets).attr('class', function (d) {
-        return classChartLine(d) + classFocus(d);
-    });
-    mainLineEnter = mainLineUpdate.enter().append('g').attr('class', classChartLine).style('opacity', 0).style("pointer-events", "none");
-    mainLineEnter.append('g').attr("class", classLines);
-    mainLineEnter.append('g').attr('class', classAreas);
-    mainLineEnter.append('g').attr("class", function (d) {
-        return $$.generateClass(CLASS.selectedCircles, d.id);
-    });
-    mainLineEnter.append('g').attr("class", classCircles).style("cursor", function (d) {
-        return config.data_selection_isselectable(d) ? "pointer" : null;
-    });
-    targets.forEach(function (t) {
-        $$.main.selectAll('.' + CLASS.selectedCircles + $$.getTargetSelectorSuffix(t.id)).selectAll('.' + CLASS.selectedCircle).each(function (d) {
-            d.value = t.values[d.index].value;
-        });
-    });
-};
-c3_chart_internal_fn.updateLine = function (durationForExit) {
-    var $$ = this;
-    $$.mainLine = $$.main.selectAll('.' + CLASS.lines).selectAll('.' + CLASS.line).data($$.lineData.bind($$));
-    $$.mainLine.enter().append('path').attr('class', $$.classLine.bind($$)).style("stroke", $$.color);
-    $$.mainLine.style("opacity", $$.initialOpacity.bind($$)).style('shape-rendering', function (d) {
-        return $$.isStepType(d) ? 'crispEdges' : '';
-    }).attr('transform', null);
-    $$.mainLine.exit().transition().duration(durationForExit).style('opacity', 0).remove();
-};
-c3_chart_internal_fn.redrawLine = function (drawLine, withTransition) {
-    return [(withTransition ? this.mainLine.transition(Math.random().toString()) : this.mainLine).attr("d", drawLine).style("stroke", this.color).style("opacity", 1)];
-};
-c3_chart_internal_fn.generateDrawLine = function (lineIndices, isSub) {
-    var $$ = this,
-        config = $$.config,
-        line = $$.d3.svg.line(),
-        getPoints = $$.generateGetLinePoints(lineIndices, isSub),
-        yScaleGetter = isSub ? $$.getSubYScale : $$.getYScale,
-        xValue = function xValue(d) {
-        return (isSub ? $$.subxx : $$.xx).call($$, d);
-    },
-        yValue = function yValue(d, i) {
-        return config.data_groups.length > 0 ? getPoints(d, i)[0][1] : yScaleGetter.call($$, d.id)(d.value);
-    };
-    line = config.axis_rotated ? line.x(yValue).y(xValue) : line.x(xValue).y(yValue);
-    if (!config.line_connectNull) {
-        line = line.defined(function (d) {
-            return d.value != null;
-        });
-    }
-    return function (d) {
-        var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
-            x = isSub ? $$.x : $$.subX,
-            y = yScaleGetter.call($$, d.id),
-            x0 = 0,
-            y0 = 0,
-            path;
-        if ($$.isLineType(d)) {
-            if (config.data_regions[d.id]) {
-                path = $$.lineWithRegions(values, x, y, config.data_regions[d.id]);
+                if (isValue(max.y)) {
+                    config.axis_y_max = max.y;
+                }
+                if (isValue(max.y2)) {
+                    config.axis_y2_max = max.y2;
+                }
             } else {
-                if ($$.isStepType(d)) {
-                    values = $$.convertValuesToStep(values);
+                config.axis_y_max = config.axis_y2_max = max;
+            }
+            $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
+        } else {
+            return {
+                x: config.axis_x_max,
+                y: config.axis_y_max,
+                y2: config.axis_y2_max
+            };
+        }
+    };
+    c3_chart_fn.axis.min = function (min) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (arguments.length) {
+            if ((typeof min === 'undefined' ? 'undefined' : _typeof(min)) === 'object') {
+                if (isValue(min.x)) {
+                    config.axis_x_min = min.x;
                 }
-                path = line.interpolate($$.getInterpolate(d))(values);
+                if (isValue(min.y)) {
+                    config.axis_y_min = min.y;
+                }
+                if (isValue(min.y2)) {
+                    config.axis_y2_min = min.y2;
+                }
+            } else {
+                config.axis_y_min = config.axis_y2_min = min;
+            }
+            $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
+        } else {
+            return {
+                x: config.axis_x_min,
+                y: config.axis_y_min,
+                y2: config.axis_y2_min
+            };
+        }
+    };
+    c3_chart_fn.axis.range = function (range) {
+        if (arguments.length) {
+            if (isDefined(range.max)) {
+                this.axis.max(range.max);
+            }
+            if (isDefined(range.min)) {
+                this.axis.min(range.min);
             }
         } else {
-            if (values[0]) {
-                x0 = x(values[0].x);
-                y0 = y(values[0].value);
-            }
-            path = config.axis_rotated ? "M " + y0 + " " + x0 : "M " + x0 + " " + y0;
+            return {
+                max: this.axis.max(),
+                min: this.axis.min()
+            };
         }
-        return path ? path : "M 0 0";
     };
-};
-c3_chart_internal_fn.generateGetLinePoints = function (lineIndices, isSub) {
-    var $$ = this,
-        config = $$.config,
-        lineTargetsNum = lineIndices.__max__ + 1,
-        x = $$.getShapeX(0, lineTargetsNum, lineIndices, !!isSub),
-        y = $$.getShapeY(!!isSub),
-        lineOffset = $$.getShapeOffset($$.isLineType, lineIndices, !!isSub),
-        yScale = isSub ? $$.getSubYScale : $$.getYScale;
-    return function (d, i) {
-        var y0 = yScale.call($$, d.id)(0),
-            offset = lineOffset(d, i) || y0,
-        posX = x(d),
-            posY = y(d);
-        if (config.axis_rotated) {
-            if (0 < d.value && posY < y0 || d.value < 0 && y0 < posY) {
-                posY = y0;
+    c3_chart_fn.category = function (i, category) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (arguments.length > 1) {
+            config.axis_x_categories[i] = category;
+            $$.redraw();
+        }
+        return config.axis_x_categories[i];
+    };
+    c3_chart_fn.categories = function (categories) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (!arguments.length) {
+            return config.axis_x_categories;
+        }
+        config.axis_x_categories = categories;
+        $$.redraw();
+        return config.axis_x_categories;
+    };
+    c3_chart_fn.resize = function (size) {
+        var $$ = this.internal,
+            config = $$.config;
+        config.size_width = size ? size.width : null;
+        config.size_height = size ? size.height : null;
+        this.flush();
+    };
+    c3_chart_fn.flush = function () {
+        var $$ = this.internal;
+        $$.updateAndRedraw({ withLegend: true, withTransition: false, withTransitionForTransform: false });
+    };
+    c3_chart_fn.destroy = function () {
+        var $$ = this.internal;
+        window.clearInterval($$.intervalForObserveInserted);
+        if ($$.resizeTimeout !== undefined) {
+            window.clearTimeout($$.resizeTimeout);
+        }
+        if (window.detachEvent) {
+            window.detachEvent('onresize', $$.resizeIfElementDisplayed);
+        } else if (window.removeEventListener) {
+            window.removeEventListener('resize', $$.resizeIfElementDisplayed);
+        } else {
+            var wrapper = window.onresize;
+            if (wrapper && wrapper.add && wrapper.remove) {
+                wrapper.remove($$.resizeFunction);
             }
         }
-        return [[posX, posY - (y0 - offset)], [posX, posY - (y0 - offset)],
-        [posX, posY - (y0 - offset)],
-        [posX, posY - (y0 - offset)]
-        ];
+        $$.resizeFunction.remove();
+        $$.selectChart.classed('c3', false).html("");
+        Object.keys($$).forEach(function (key) {
+            $$[key] = null;
+        });
+        return null;
     };
-};
-c3_chart_internal_fn.lineWithRegions = function (d, x, y, _regions) {
-    var $$ = this,
-        config = $$.config,
-        prev = -1,
-        i,
-        j,
-        s = "M",
-        sWithRegion,
-        xp,
-        yp,
-        dx,
-        dy,
-        dd,
-        diff,
-        diffx2,
-        xOffset = $$.isCategorized() ? 0.5 : 0,
-        xValue,
-        yValue,
-        regions = [];
-    function isWithinRegions(x, regions) {
-        var i;
-        for (i = 0; i < regions.length; i++) {
-            if (regions[i].start < x && x <= regions[i].end) {
+    c3_chart_fn.color = function (id) {
+        var $$ = this.internal;
+        return $$.color(id);
+    };
+    c3_chart_fn.data = function (targetIds) {
+        var targets = this.internal.data.targets;
+        return typeof targetIds === 'undefined' ? targets : targets.filter(function (t) {
+            return [].concat(targetIds).indexOf(t.id) >= 0;
+        });
+    };
+    c3_chart_fn.data.shown = function (targetIds) {
+        return this.internal.filterTargetsToShow(this.data(targetIds));
+    };
+    c3_chart_fn.data.values = function (targetId) {
+        var targets,
+            values = null;
+        if (targetId) {
+            targets = this.data(targetId);
+            values = targets[0] ? targets[0].values.map(function (d) {
+                return d.value;
+            }) : null;
+        }
+        return values;
+    };
+    c3_chart_fn.data.names = function (names) {
+        this.internal.clearLegendItemTextBoxCache();
+        return this.internal.updateDataAttributes('names', names);
+    };
+    c3_chart_fn.data.colors = function (colors) {
+        return this.internal.updateDataAttributes('colors', colors);
+    };
+    c3_chart_fn.data.axes = function (axes) {
+        return this.internal.updateDataAttributes('axes', axes);
+    };
+    c3_chart_fn.flow = function (args) {
+        var $$ = this.internal,
+            targets,
+            data,
+            notfoundIds = [],
+            orgDataCount = $$.getMaxDataCount(),
+            dataCount,
+            domain,
+            baseTarget,
+            baseValue,
+            length = 0,
+            tail = 0,
+            diff,
+            to;
+        if (args.json) {
+            data = $$.convertJsonToData(args.json, args.keys);
+        } else if (args.rows) {
+            data = $$.convertRowsToData(args.rows);
+        } else if (args.columns) {
+            data = $$.convertColumnsToData(args.columns);
+        } else {
+            return;
+        }
+        targets = $$.convertDataToTargets(data, true);
+        $$.data.targets.forEach(function (t) {
+            var found = false,
+                i,
+                j;
+            for (i = 0; i < targets.length; i++) {
+                if (t.id === targets[i].id) {
+                    found = true;
+                    if (t.values[t.values.length - 1]) {
+                        tail = t.values[t.values.length - 1].index + 1;
+                    }
+                    length = targets[i].values.length;
+                    for (j = 0; j < length; j++) {
+                        targets[i].values[j].index = tail + j;
+                        if (!$$.isTimeSeries()) {
+                            targets[i].values[j].x = tail + j;
+                        }
+                    }
+                    t.values = t.values.concat(targets[i].values);
+                    targets.splice(i, 1);
+                    break;
+                }
+            }
+            if (!found) {
+                notfoundIds.push(t.id);
+            }
+        });
+        $$.data.targets.forEach(function (t) {
+            var i, j;
+            for (i = 0; i < notfoundIds.length; i++) {
+                if (t.id === notfoundIds[i]) {
+                    tail = t.values[t.values.length - 1].index + 1;
+                    for (j = 0; j < length; j++) {
+                        t.values.push({
+                            id: t.id,
+                            index: tail + j,
+                            x: $$.isTimeSeries() ? $$.getOtherTargetX(tail + j) : tail + j,
+                            value: null
+                        });
+                    }
+                }
+            }
+        });
+        if ($$.data.targets.length) {
+            targets.forEach(function (t) {
+                var i,
+                    missing = [];
+                for (i = $$.data.targets[0].values[0].index; i < tail; i++) {
+                    missing.push({
+                        id: t.id,
+                        index: i,
+                        x: $$.isTimeSeries() ? $$.getOtherTargetX(i) : i,
+                        value: null
+                    });
+                }
+                t.values.forEach(function (v) {
+                    v.index += tail;
+                    if (!$$.isTimeSeries()) {
+                        v.x += tail;
+                    }
+                });
+                t.values = missing.concat(t.values);
+            });
+        }
+        $$.data.targets = $$.data.targets.concat(targets);
+        dataCount = $$.getMaxDataCount();
+        baseTarget = $$.data.targets[0];
+        baseValue = baseTarget.values[0];
+        if (isDefined(args.to)) {
+            length = 0;
+            to = $$.isTimeSeries() ? $$.parseDate(args.to) : args.to;
+            baseTarget.values.forEach(function (v) {
+                if (v.x < to) {
+                    length++;
+                }
+            });
+        } else if (isDefined(args.length)) {
+            length = args.length;
+        }
+        if (!orgDataCount) {
+            if ($$.isTimeSeries()) {
+                if (baseTarget.values.length > 1) {
+                    diff = baseTarget.values[baseTarget.values.length - 1].x - baseValue.x;
+                } else {
+                    diff = baseValue.x - $$.getXDomain($$.data.targets)[0];
+                }
+            } else {
+                diff = 1;
+            }
+            domain = [baseValue.x - diff, baseValue.x];
+            $$.updateXDomain(null, true, true, false, domain);
+        } else if (orgDataCount === 1) {
+            if ($$.isTimeSeries()) {
+                diff = (baseTarget.values[baseTarget.values.length - 1].x - baseValue.x) / 2;
+                domain = [new Date(+baseValue.x - diff), new Date(+baseValue.x + diff)];
+                $$.updateXDomain(null, true, true, false, domain);
+            }
+        }
+        $$.updateTargets($$.data.targets);
+        $$.redraw({
+            flow: {
+                index: baseValue.index,
+                length: length,
+                duration: isValue(args.duration) ? args.duration : $$.config.transition_duration,
+                done: args.done,
+                orgDataCount: orgDataCount
+            },
+            withLegend: true,
+            withTransition: orgDataCount > 1,
+            withTrimXDomain: false,
+            withUpdateXAxis: true
+        });
+    };
+    c3_chart_internal_fn.generateFlow = function (args) {
+        var $$ = this,
+            config = $$.config,
+            d3 = $$.d3;
+        return function () {
+            var targets = args.targets,
+                flow = args.flow,
+                drawBar = args.drawBar,
+                drawLine = args.drawLine,
+                drawArea = args.drawArea,
+                cx = args.cx,
+                cy = args.cy,
+                xv = args.xv,
+                xForText = args.xForText,
+                yForText = args.yForText,
+                duration = args.duration;
+            var translateX,
+                scaleX = 1,
+                transform,
+                flowIndex = flow.index,
+                flowLength = flow.length,
+                flowStart = $$.getValueOnIndex($$.data.targets[0].values, flowIndex),
+                flowEnd = $$.getValueOnIndex($$.data.targets[0].values, flowIndex + flowLength),
+                orgDomain = $$.x.domain(),
+                domain,
+                durationForFlow = flow.duration || duration,
+                done = flow.done || function () {},
+                wait = $$.generateWait();
+            var xgrid = $$.xgrid || d3.selectAll([]),
+                xgridLines = $$.xgridLines || d3.selectAll([]),
+                mainRegion = $$.mainRegion || d3.selectAll([]),
+                mainText = $$.mainText || d3.selectAll([]),
+                mainBar = $$.mainBar || d3.selectAll([]),
+                mainLine = $$.mainLine || d3.selectAll([]),
+                mainArea = $$.mainArea || d3.selectAll([]),
+                mainCircle = $$.mainCircle || d3.selectAll([]);
+            $$.flowing = true;
+            $$.data.targets.forEach(function (d) {
+                d.values.splice(0, flowLength);
+            });
+            domain = $$.updateXDomain(targets, true, true);
+            if ($$.updateXGrid) {
+                $$.updateXGrid(true);
+            }
+            if (!flow.orgDataCount) {
+                if ($$.data.targets[0].values.length !== 1) {
+                    translateX = $$.x(orgDomain[0]) - $$.x(domain[0]);
+                } else {
+                    if ($$.isTimeSeries()) {
+                        flowStart = $$.getValueOnIndex($$.data.targets[0].values, 0);
+                        flowEnd = $$.getValueOnIndex($$.data.targets[0].values, $$.data.targets[0].values.length - 1);
+                        translateX = $$.x(flowStart.x) - $$.x(flowEnd.x);
+                    } else {
+                        translateX = diffDomain(domain) / 2;
+                    }
+                }
+            } else if (flow.orgDataCount === 1 || (flowStart && flowStart.x) === (flowEnd && flowEnd.x)) {
+                translateX = $$.x(orgDomain[0]) - $$.x(domain[0]);
+            } else {
+                if ($$.isTimeSeries()) {
+                    translateX = $$.x(orgDomain[0]) - $$.x(domain[0]);
+                } else {
+                    translateX = $$.x(flowStart.x) - $$.x(flowEnd.x);
+                }
+            }
+            scaleX = diffDomain(orgDomain) / diffDomain(domain);
+            transform = 'translate(' + translateX + ',0) scale(' + scaleX + ',1)';
+            $$.hideXGridFocus();
+            d3.transition().ease('linear').duration(durationForFlow).each(function () {
+                wait.add($$.axes.x.transition().call($$.xAxis));
+                wait.add(mainBar.transition().attr('transform', transform));
+                wait.add(mainLine.transition().attr('transform', transform));
+                wait.add(mainArea.transition().attr('transform', transform));
+                wait.add(mainCircle.transition().attr('transform', transform));
+                wait.add(mainText.transition().attr('transform', transform));
+                wait.add(mainRegion.filter($$.isRegionOnX).transition().attr('transform', transform));
+                wait.add(xgrid.transition().attr('transform', transform));
+                wait.add(xgridLines.transition().attr('transform', transform));
+            }).call(wait, function () {
+                var i,
+                    shapes = [],
+                    texts = [],
+                    eventRects = [];
+                if (flowLength) {
+                    for (i = 0; i < flowLength; i++) {
+                        shapes.push('.' + CLASS.shape + '-' + (flowIndex + i));
+                        texts.push('.' + CLASS.text + '-' + (flowIndex + i));
+                        eventRects.push('.' + CLASS.eventRect + '-' + (flowIndex + i));
+                    }
+                    $$.svg.selectAll('.' + CLASS.shapes).selectAll(shapes).remove();
+                    $$.svg.selectAll('.' + CLASS.texts).selectAll(texts).remove();
+                    $$.svg.selectAll('.' + CLASS.eventRects).selectAll(eventRects).remove();
+                    $$.svg.select('.' + CLASS.xgrid).remove();
+                }
+                xgrid.attr('transform', null).attr($$.xgridAttr);
+                xgridLines.attr('transform', null);
+                xgridLines.select('line').attr("x1", config.axis_rotated ? 0 : xv).attr("x2", config.axis_rotated ? $$.width : xv);
+                xgridLines.select('text').attr("x", config.axis_rotated ? $$.width : 0).attr("y", xv);
+                mainBar.attr('transform', null).attr("d", drawBar);
+                mainLine.attr('transform', null).attr("d", drawLine);
+                mainArea.attr('transform', null).attr("d", drawArea);
+                mainCircle.attr('transform', null).attr("cx", cx).attr("cy", cy);
+                mainText.attr('transform', null).attr('x', xForText).attr('y', yForText).style('fill-opacity', $$.opacityForText.bind($$));
+                mainRegion.attr('transform', null);
+                mainRegion.select('rect').filter($$.isRegionOnX).attr("x", $$.regionX.bind($$)).attr("width", $$.regionWidth.bind($$));
+                if (config.interaction_enabled) {
+                    $$.redrawEventRect();
+                }
+                done();
+                $$.flowing = false;
+            });
+        };
+    };
+    c3_chart_fn.focus = function (targetIds) {
+        var $$ = this.internal,
+            candidates;
+        targetIds = $$.mapToTargetIds(targetIds);
+        candidates = $$.svg.selectAll($$.selectorTargets(targetIds.filter($$.isTargetToShow, $$))), this.revert();
+        this.defocus();
+        candidates.classed(CLASS.focused, true).classed(CLASS.defocused, false);
+        if ($$.hasArcType()) {
+            $$.expandArc(targetIds);
+        }
+        $$.toggleFocusLegend(targetIds, true);
+        $$.focusedTargetIds = targetIds;
+        $$.defocusedTargetIds = $$.defocusedTargetIds.filter(function (id) {
+            return targetIds.indexOf(id) < 0;
+        });
+    };
+    c3_chart_fn.defocus = function (targetIds) {
+        var $$ = this.internal,
+            candidates;
+        targetIds = $$.mapToTargetIds(targetIds);
+        candidates = $$.svg.selectAll($$.selectorTargets(targetIds.filter($$.isTargetToShow, $$))), candidates.classed(CLASS.focused, false).classed(CLASS.defocused, true);
+        if ($$.hasArcType()) {
+            $$.unexpandArc(targetIds);
+        }
+        $$.toggleFocusLegend(targetIds, false);
+        $$.focusedTargetIds = $$.focusedTargetIds.filter(function (id) {
+            return targetIds.indexOf(id) < 0;
+        });
+        $$.defocusedTargetIds = targetIds;
+    };
+    c3_chart_fn.revert = function (targetIds) {
+        var $$ = this.internal,
+            candidates;
+        targetIds = $$.mapToTargetIds(targetIds);
+        candidates = $$.svg.selectAll($$.selectorTargets(targetIds));
+        candidates.classed(CLASS.focused, false).classed(CLASS.defocused, false);
+        if ($$.hasArcType()) {
+            $$.unexpandArc(targetIds);
+        }
+        if ($$.config.legend_show) {
+            $$.showLegend(targetIds.filter($$.isLegendToShow.bind($$)));
+            $$.legend.selectAll($$.selectorLegends(targetIds)).filter(function () {
+                return $$.d3.select(this).classed(CLASS.legendItemFocused);
+            }).classed(CLASS.legendItemFocused, false);
+        }
+        $$.focusedTargetIds = [];
+        $$.defocusedTargetIds = [];
+    };
+    c3_chart_fn.xgrids = function (grids) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (!grids) {
+            return config.grid_x_lines;
+        }
+        config.grid_x_lines = grids;
+        $$.redrawWithoutRescale();
+        return config.grid_x_lines;
+    };
+    c3_chart_fn.xgrids.add = function (grids) {
+        var $$ = this.internal;
+        return this.xgrids($$.config.grid_x_lines.concat(grids ? grids : []));
+    };
+    c3_chart_fn.xgrids.remove = function (params) {
+        var $$ = this.internal;
+        $$.removeGridLines(params, true);
+    };
+    c3_chart_fn.ygrids = function (grids) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (!grids) {
+            return config.grid_y_lines;
+        }
+        config.grid_y_lines = grids;
+        $$.redrawWithoutRescale();
+        return config.grid_y_lines;
+    };
+    c3_chart_fn.ygrids.add = function (grids) {
+        var $$ = this.internal;
+        return this.ygrids($$.config.grid_y_lines.concat(grids ? grids : []));
+    };
+    c3_chart_fn.ygrids.remove = function (params) {
+        var $$ = this.internal;
+        $$.removeGridLines(params, false);
+    };
+    c3_chart_fn.groups = function (groups) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (isUndefined(groups)) {
+            return config.data_groups;
+        }
+        config.data_groups = groups;
+        $$.redraw();
+        return config.data_groups;
+    };
+    c3_chart_fn.legend = function () {};
+    c3_chart_fn.legend.show = function (targetIds) {
+        var $$ = this.internal;
+        $$.showLegend($$.mapToTargetIds(targetIds));
+        $$.updateAndRedraw({ withLegend: true });
+    };
+    c3_chart_fn.legend.hide = function (targetIds) {
+        var $$ = this.internal;
+        $$.hideLegend($$.mapToTargetIds(targetIds));
+        $$.updateAndRedraw({ withLegend: true });
+    };
+    c3_chart_fn.load = function (args) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (args.xs) {
+            $$.addXs(args.xs);
+        }
+        if ('names' in args) {
+            c3_chart_fn.data.names.bind(this)(args.names);
+        }
+        if ('classes' in args) {
+            Object.keys(args.classes).forEach(function (id) {
+                config.data_classes[id] = args.classes[id];
+            });
+        }
+        if ('categories' in args && $$.isCategorized()) {
+            config.axis_x_categories = args.categories;
+        }
+        if ('axes' in args) {
+            Object.keys(args.axes).forEach(function (id) {
+                config.data_axes[id] = args.axes[id];
+            });
+        }
+        if ('colors' in args) {
+            Object.keys(args.colors).forEach(function (id) {
+                config.data_colors[id] = args.colors[id];
+            });
+        }
+        if ('cacheIds' in args && $$.hasCaches(args.cacheIds)) {
+            $$.load($$.getCaches(args.cacheIds), args.done);
+            return;
+        }
+        if ('unload' in args) {
+            $$.unload($$.mapToTargetIds(typeof args.unload === 'boolean' && args.unload ? null : args.unload), function () {
+                $$.loadFromArgs(args);
+            });
+        } else {
+            $$.loadFromArgs(args);
+        }
+    };
+    c3_chart_fn.unload = function (args) {
+        var $$ = this.internal;
+        args = args || {};
+        if (args instanceof Array) {
+            args = { ids: args };
+        } else if (typeof args === 'string') {
+            args = { ids: [args] };
+        }
+        $$.unload($$.mapToTargetIds(args.ids), function () {
+            $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
+            if (args.done) {
+                args.done();
+            }
+        });
+    };
+    c3_chart_fn.regions = function (regions) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (!regions) {
+            return config.regions;
+        }
+        config.regions = regions;
+        $$.redrawWithoutRescale();
+        return config.regions;
+    };
+    c3_chart_fn.regions.add = function (regions) {
+        var $$ = this.internal,
+            config = $$.config;
+        if (!regions) {
+            return config.regions;
+        }
+        config.regions = config.regions.concat(regions);
+        $$.redrawWithoutRescale();
+        return config.regions;
+    };
+    c3_chart_fn.regions.remove = function (options) {
+        var $$ = this.internal,
+            config = $$.config,
+            duration,
+            classes,
+            regions;
+        options = options || {};
+        duration = $$.getOption(options, "duration", config.transition_duration);
+        classes = $$.getOption(options, "classes", [CLASS.region]);
+        regions = $$.main.select('.' + CLASS.regions).selectAll(classes.map(function (c) {
+            return '.' + c;
+        }));
+        (duration ? regions.transition().duration(duration) : regions).style('opacity', 0).remove();
+        config.regions = config.regions.filter(function (region) {
+            var found = false;
+            if (!region['class']) {
+                return true;
+            }
+            region['class'].split(' ').forEach(function (c) {
+                if (classes.indexOf(c) >= 0) {
+                    found = true;
+                }
+            });
+            return !found;
+        });
+        return config.regions;
+    };
+    c3_chart_fn.selected = function (targetId) {
+        var $$ = this.internal,
+            d3 = $$.d3;
+        return d3.merge($$.main.selectAll('.' + CLASS.shapes + $$.getTargetSelectorSuffix(targetId)).selectAll('.' + CLASS.shape).filter(function () {
+            return d3.select(this).classed(CLASS.SELECTED);
+        }).map(function (d) {
+            return d.map(function (d) {
+                var data = d.__data__;return data.data ? data.data : data;
+            });
+        }));
+    };
+    c3_chart_fn.select = function (ids, indices, resetOther) {
+        var $$ = this.internal,
+            d3 = $$.d3,
+            config = $$.config;
+        if (!config.data_selection_enabled) {
+            return;
+        }
+        $$.main.selectAll('.' + CLASS.shapes).selectAll('.' + CLASS.shape).each(function (d, i) {
+            var shape = d3.select(this),
+                id = d.data ? d.data.id : d.id,
+                toggle = $$.getToggle(this, d).bind($$),
+                isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0,
+                isTargetIndex = !indices || indices.indexOf(i) >= 0,
+                isSelected = shape.classed(CLASS.SELECTED);
+            if (shape.classed(CLASS.line) || shape.classed(CLASS.area)) {
+                return;
+            }
+            if (isTargetId && isTargetIndex) {
+                if (config.data_selection_isselectable(d) && !isSelected) {
+                    toggle(true, shape.classed(CLASS.SELECTED, true), d, i);
+                }
+            } else if (isDefined(resetOther) && resetOther) {
+                if (isSelected) {
+                    toggle(false, shape.classed(CLASS.SELECTED, false), d, i);
+                }
+            }
+        });
+    };
+    c3_chart_fn.unselect = function (ids, indices) {
+        var $$ = this.internal,
+            d3 = $$.d3,
+            config = $$.config;
+        if (!config.data_selection_enabled) {
+            return;
+        }
+        $$.main.selectAll('.' + CLASS.shapes).selectAll('.' + CLASS.shape).each(function (d, i) {
+            var shape = d3.select(this),
+                id = d.data ? d.data.id : d.id,
+                toggle = $$.getToggle(this, d).bind($$),
+                isTargetId = config.data_selection_grouped || !ids || ids.indexOf(id) >= 0,
+                isTargetIndex = !indices || indices.indexOf(i) >= 0,
+                isSelected = shape.classed(CLASS.SELECTED);
+            if (shape.classed(CLASS.line) || shape.classed(CLASS.area)) {
+                return;
+            }
+            if (isTargetId && isTargetIndex) {
+                if (config.data_selection_isselectable(d)) {
+                    if (isSelected) {
+                        toggle(false, shape.classed(CLASS.SELECTED, false), d, i);
+                    }
+                }
+            }
+        });
+    };
+    c3_chart_fn.show = function (targetIds, options) {
+        var $$ = this.internal,
+            targets;
+        targetIds = $$.mapToTargetIds(targetIds);
+        options = options || {};
+        $$.removeHiddenTargetIds(targetIds);
+        targets = $$.svg.selectAll($$.selectorTargets(targetIds));
+        targets.transition().style('opacity', 1, 'important').call($$.endall, function () {
+            targets.style('opacity', null).style('opacity', 1);
+        });
+        if (options.withLegend) {
+            $$.showLegend(targetIds);
+        }
+        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
+    };
+    c3_chart_fn.hide = function (targetIds, options) {
+        var $$ = this.internal,
+            targets;
+        targetIds = $$.mapToTargetIds(targetIds);
+        options = options || {};
+        $$.addHiddenTargetIds(targetIds);
+        targets = $$.svg.selectAll($$.selectorTargets(targetIds));
+        targets.transition().style('opacity', 0, 'important').call($$.endall, function () {
+            targets.style('opacity', null).style('opacity', 0);
+        });
+        if (options.withLegend) {
+            $$.hideLegend(targetIds);
+        }
+        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
+    };
+    c3_chart_fn.toggle = function (targetIds, options) {
+        var that = this,
+            $$ = this.internal;
+        $$.mapToTargetIds(targetIds).forEach(function (targetId) {
+            $$.isTargetToShow(targetId) ? that.hide(targetId, options) : that.show(targetId, options);
+        });
+    };
+    c3_chart_fn.tooltip = function () {};
+    c3_chart_fn.tooltip.show = function (args) {
+        var $$ = this.internal,
+            index,
+            mouse;
+        if (args.mouse) {
+            mouse = args.mouse;
+        }
+        if (args.data) {
+            if ($$.isMultipleX()) {
+                mouse = [$$.x(args.data.x), $$.getYScale(args.data.id)(args.data.value)];
+                index = null;
+            } else {
+                index = isValue(args.data.index) ? args.data.index : $$.getIndexByX(args.data.x);
+            }
+        } else if (typeof args.x !== 'undefined') {
+            index = $$.getIndexByX(args.x);
+        } else if (typeof args.index !== 'undefined') {
+            index = args.index;
+        }
+        $$.dispatchEvent('mouseover', index, mouse);
+        $$.dispatchEvent('mousemove', index, mouse);
+        $$.config.tooltip_onshow.call($$, args.data);
+    };
+    c3_chart_fn.tooltip.hide = function () {
+        this.internal.dispatchEvent('mouseout', 0);
+        this.internal.config.tooltip_onhide.call(this);
+    };
+    c3_chart_fn.transform = function (type, targetIds) {
+        var $$ = this.internal,
+            options = ['pie', 'donut'].indexOf(type) >= 0 ? { withTransform: true } : null;
+        $$.transformTo(targetIds, type, options);
+    };
+    c3_chart_internal_fn.transformTo = function (targetIds, type, optionsForRedraw) {
+        var $$ = this,
+            withTransitionForAxis = !$$.hasArcType(),
+            options = optionsForRedraw || { withTransitionForAxis: withTransitionForAxis };
+        options.withTransitionForTransform = false;
+        $$.transiting = false;
+        $$.setTargetType(targetIds, type);
+        $$.updateTargets($$.data.targets);
+        $$.updateAndRedraw(options);
+    };
+    c3_chart_fn.x = function (x) {
+        var $$ = this.internal;
+        if (arguments.length) {
+            $$.updateTargetX($$.data.targets, x);
+            $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
+        }
+        return $$.data.xs;
+    };
+    c3_chart_fn.xs = function (xs) {
+        var $$ = this.internal;
+        if (arguments.length) {
+            $$.updateTargetXs($$.data.targets, xs);
+            $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true });
+        }
+        return $$.data.xs;
+    };
+    c3_chart_fn.zoom = function (domain) {
+        var $$ = this.internal;
+        if (domain) {
+            if ($$.isTimeSeries()) {
+                domain = domain.map(function (x) {
+                    return $$.parseDate(x);
+                });
+            }
+            $$.brush.extent(domain);
+            $$.redraw({ withUpdateXDomain: true, withY: $$.config.zoom_rescale });
+            $$.config.zoom_onzoom.call(this, $$.x.orgDomain());
+        }
+        return $$.brush.extent();
+    };
+    c3_chart_fn.zoom.enable = function (enabled) {
+        var $$ = this.internal;
+        $$.config.zoom_enabled = enabled;
+        $$.updateAndRedraw();
+    };
+    c3_chart_fn.unzoom = function () {
+        var $$ = this.internal;
+        $$.brush.clear().update();
+        $$.redraw({ withUpdateXDomain: true });
+    };
+    c3_chart_fn.zoom.max = function (max) {
+        var $$ = this.internal,
+            config = $$.config,
+            d3 = $$.d3;
+        if (max === 0 || max) {
+            config.zoom_x_max = d3.max([$$.orgXDomain[1], max]);
+        } else {
+            return config.zoom_x_max;
+        }
+    };
+    c3_chart_fn.zoom.min = function (min) {
+        var $$ = this.internal,
+            config = $$.config,
+            d3 = $$.d3;
+        if (min === 0 || min) {
+            config.zoom_x_min = d3.min([$$.orgXDomain[0], min]);
+        } else {
+            return config.zoom_x_min;
+        }
+    };
+    c3_chart_fn.zoom.range = function (range) {
+        if (arguments.length) {
+            if (isDefined(range.max)) {
+                this.domain.max(range.max);
+            }
+            if (isDefined(range.min)) {
+                this.domain.min(range.min);
+            }
+        } else {
+            return {
+                max: this.domain.max(),
+                min: this.domain.min()
+            };
+        }
+    };
+    c3_chart_internal_fn.initPie = function () {
+        var $$ = this,
+            d3 = $$.d3;
+        $$.pie = d3.layout.pie().value(function (d) {
+            return d.values.reduce(function (a, b) {
+                return a + b.value;
+            }, 0);
+        });
+        $$.pie.sort($$.getOrderFunction() || null);
+    };
+    c3_chart_internal_fn.updateRadius = function () {
+        var $$ = this,
+            config = $$.config,
+            w = config.gauge_width || config.donut_width,
+            gaugeArcWidth = $$.filterTargetsToShow($$.data.targets).length * $$.config.gauge_arcs_minWidth;
+        $$.radiusExpanded = Math.min($$.arcWidth, $$.arcHeight) / 2 * ($$.hasType('gauge') ? 0.85 : 1);
+        $$.radius = $$.radiusExpanded * 0.95;
+        $$.innerRadiusRatio = w ? ($$.radius - w) / $$.radius : 0.6;
+        $$.innerRadius = $$.hasType('donut') || $$.hasType('gauge') ? $$.radius * $$.innerRadiusRatio : 0;
+        $$.gaugeArcWidth = w ? w : gaugeArcWidth <= $$.radius - $$.innerRadius ? $$.radius - $$.innerRadius : gaugeArcWidth <= $$.radius ? gaugeArcWidth : $$.radius;
+    };
+    c3_chart_internal_fn.updateArc = function () {
+        var $$ = this;
+        $$.svgArc = $$.getSvgArc();
+        $$.svgArcExpanded = $$.getSvgArcExpanded();
+        $$.svgArcExpandedSub = $$.getSvgArcExpanded(0.98);
+    };
+    c3_chart_internal_fn.updateAngle = function (d) {
+        var $$ = this,
+            config = $$.config,
+            found = false,
+            index = 0,
+            gMin,
+            gMax,
+            gTic,
+            gValue;
+        if (!config) {
+            return null;
+        }
+        $$.pie($$.filterTargetsToShow($$.data.targets)).forEach(function (t) {
+            if (!found && t.data.id === d.data.id) {
+                found = true;
+                d = t;
+                d.index = index;
+            }
+            index++;
+        });
+        if (isNaN(d.startAngle)) {
+            d.startAngle = 0;
+        }
+        if (isNaN(d.endAngle)) {
+            d.endAngle = d.startAngle;
+        }
+        if ($$.isGaugeType(d.data)) {
+            gMin = config.gauge_min;
+            gMax = config.gauge_max;
+            gTic = Math.PI * (config.gauge_fullCircle ? 2 : 1) / (gMax - gMin);
+            gValue = d.value < gMin ? 0 : d.value < gMax ? d.value - gMin : gMax - gMin;
+            d.startAngle = config.gauge_startingAngle;
+            d.endAngle = d.startAngle + gTic * gValue;
+        }
+        return found ? d : null;
+    };
+    c3_chart_internal_fn.getSvgArc = function () {
+        var $$ = this,
+            hasGaugeType = $$.hasType('gauge'),
+            singleArcWidth = $$.gaugeArcWidth / $$.filterTargetsToShow($$.data.targets).length,
+            arc = $$.d3.svg.arc().outerRadius(function (d) {
+            return hasGaugeType ? $$.radius - singleArcWidth * d.index : $$.radius;
+        }).innerRadius(function (d) {
+            return hasGaugeType ? $$.radius - singleArcWidth * (d.index + 1) : $$.innerRadius;
+        }),
+            newArc = function newArc(d, withoutUpdate) {
+            var updated;
+            if (withoutUpdate) {
+                return arc(d);
+            }
+            updated = $$.updateAngle(d);
+            return updated ? arc(updated) : "M 0 0";
+        };
+        newArc.centroid = arc.centroid;
+        return newArc;
+    };
+    c3_chart_internal_fn.getSvgArcExpanded = function (rate) {
+        rate = rate || 1;
+        var $$ = this,
+            hasGaugeType = $$.hasType('gauge'),
+            singleArcWidth = $$.gaugeArcWidth / $$.filterTargetsToShow($$.data.targets).length,
+            expandWidth = Math.min($$.radiusExpanded * rate - $$.radius, singleArcWidth * 0.8 - (1 - rate) * 100),
+            arc = $$.d3.svg.arc().outerRadius(function (d) {
+            return hasGaugeType ? $$.radius - singleArcWidth * d.index + expandWidth : $$.radiusExpanded * rate;
+        }).innerRadius(function (d) {
+            return hasGaugeType ? $$.radius - singleArcWidth * (d.index + 1) : $$.innerRadius;
+        });
+        return function (d) {
+            var updated = $$.updateAngle(d);
+            return updated ? arc(updated) : "M 0 0";
+        };
+    };
+    c3_chart_internal_fn.getArc = function (d, withoutUpdate, force) {
+        return force || this.isArcType(d.data) ? this.svgArc(d, withoutUpdate) : "M 0 0";
+    };
+    c3_chart_internal_fn.transformForArcLabel = function (d) {
+        var $$ = this,
+            config = $$.config,
+            updated = $$.updateAngle(d),
+            c,
+            x,
+            y,
+            h,
+            ratio,
+            translate = "",
+            hasGauge = $$.hasType('gauge');
+        if (updated && !hasGauge) {
+            c = this.svgArc.centroid(updated);
+            x = isNaN(c[0]) ? 0 : c[0];
+            y = isNaN(c[1]) ? 0 : c[1];
+            h = Math.sqrt(x * x + y * y);
+            if ($$.hasType('donut') && config.donut_label_ratio) {
+                ratio = isFunction(config.donut_label_ratio) ? config.donut_label_ratio(d, $$.radius, h) : config.donut_label_ratio;
+            } else if ($$.hasType('pie') && config.pie_label_ratio) {
+                ratio = isFunction(config.pie_label_ratio) ? config.pie_label_ratio(d, $$.radius, h) : config.pie_label_ratio;
+            } else {
+                ratio = $$.radius && h ? (36 / $$.radius > 0.375 ? 1.175 - 36 / $$.radius : 0.8) * $$.radius / h : 0;
+            }
+            translate = "translate(" + x * ratio + ',' + y * ratio + ")";
+        } else if (updated && hasGauge && $$.filterTargetsToShow($$.data.targets).length > 1) {
+            var y1 = Math.sin(updated.endAngle - Math.PI / 2);
+            x = Math.cos(updated.endAngle - Math.PI / 2) * ($$.radiusExpanded + 25);
+            y = y1 * ($$.radiusExpanded + 15 - Math.abs(y1 * 10)) + 3;
+            translate = "translate(" + x + ',' + y + ")";
+        }
+        return translate;
+    };
+    c3_chart_internal_fn.getArcRatio = function (d) {
+        var $$ = this,
+            config = $$.config,
+            whole = Math.PI * ($$.hasType('gauge') && !config.gauge_fullCircle ? 1 : 2);
+        return d ? (d.endAngle - d.startAngle) / whole : null;
+    };
+    c3_chart_internal_fn.convertToArcData = function (d) {
+        return this.addName({
+            id: d.data.id,
+            value: d.value,
+            ratio: this.getArcRatio(d),
+            index: d.index
+        });
+    };
+    c3_chart_internal_fn.textForArcLabel = function (d) {
+        var $$ = this,
+            updated,
+            value,
+            ratio,
+            id,
+            format;
+        if (!$$.shouldShowArcLabel()) {
+            return "";
+        }
+        updated = $$.updateAngle(d);
+        value = updated ? updated.value : null;
+        ratio = $$.getArcRatio(updated);
+        id = d.data.id;
+        if (!$$.hasType('gauge') && !$$.meetsArcLabelThreshold(ratio)) {
+            return "";
+        }
+        format = $$.getArcLabelFormat();
+        return format ? format(value, ratio, id) : $$.defaultArcValueFormat(value, ratio);
+    };
+    c3_chart_internal_fn.textForGaugeMinMax = function (value, isMax) {
+        var $$ = this,
+            format = $$.getGaugeLabelExtents();
+        return format ? format(value, isMax) : value;
+    };
+    c3_chart_internal_fn.expandArc = function (targetIds) {
+        var $$ = this,
+            interval;
+        if ($$.transiting) {
+            interval = window.setInterval(function () {
+                if (!$$.transiting) {
+                    window.clearInterval(interval);
+                    if ($$.legend.selectAll('.c3-legend-item-focused').size() > 0) {
+                        $$.expandArc(targetIds);
+                    }
+                }
+            }, 10);
+            return;
+        }
+        targetIds = $$.mapToTargetIds(targetIds);
+        $$.svg.selectAll($$.selectorTargets(targetIds, '.' + CLASS.chartArc)).each(function (d) {
+            if (!$$.shouldExpand(d.data.id)) {
+                return;
+            }
+            $$.d3.select(this).selectAll('path').transition().duration($$.expandDuration(d.data.id)).attr("d", $$.svgArcExpanded).transition().duration($$.expandDuration(d.data.id) * 2).attr("d", $$.svgArcExpandedSub).each(function (d) {
+                if ($$.isDonutType(d.data)) {
+                }
+            });
+        });
+    };
+    c3_chart_internal_fn.unexpandArc = function (targetIds) {
+        var $$ = this;
+        if ($$.transiting) {
+            return;
+        }
+        targetIds = $$.mapToTargetIds(targetIds);
+        $$.svg.selectAll($$.selectorTargets(targetIds, '.' + CLASS.chartArc)).selectAll('path').transition().duration(function (d) {
+            return $$.expandDuration(d.data.id);
+        }).attr("d", $$.svgArc);
+        $$.svg.selectAll('.' + CLASS.arc);
+    };
+    c3_chart_internal_fn.expandDuration = function (id) {
+        var $$ = this,
+            config = $$.config;
+        if ($$.isDonutType(id)) {
+            return config.donut_expand_duration;
+        } else if ($$.isGaugeType(id)) {
+            return config.gauge_expand_duration;
+        } else if ($$.isPieType(id)) {
+            return config.pie_expand_duration;
+        } else {
+            return 50;
+        }
+    };
+    c3_chart_internal_fn.shouldExpand = function (id) {
+        var $$ = this,
+            config = $$.config;
+        return $$.isDonutType(id) && config.donut_expand || $$.isGaugeType(id) && config.gauge_expand || $$.isPieType(id) && config.pie_expand;
+    };
+    c3_chart_internal_fn.shouldShowArcLabel = function () {
+        var $$ = this,
+            config = $$.config,
+            shouldShow = true;
+        if ($$.hasType('donut')) {
+            shouldShow = config.donut_label_show;
+        } else if ($$.hasType('pie')) {
+            shouldShow = config.pie_label_show;
+        }
+        return shouldShow;
+    };
+    c3_chart_internal_fn.meetsArcLabelThreshold = function (ratio) {
+        var $$ = this,
+            config = $$.config,
+            threshold = $$.hasType('donut') ? config.donut_label_threshold : config.pie_label_threshold;
+        return ratio >= threshold;
+    };
+    c3_chart_internal_fn.getArcLabelFormat = function () {
+        var $$ = this,
+            config = $$.config,
+            format = config.pie_label_format;
+        if ($$.hasType('gauge')) {
+            format = config.gauge_label_format;
+        } else if ($$.hasType('donut')) {
+            format = config.donut_label_format;
+        }
+        return format;
+    };
+    c3_chart_internal_fn.getGaugeLabelExtents = function () {
+        var $$ = this,
+            config = $$.config;
+        return config.gauge_label_extents;
+    };
+    c3_chart_internal_fn.getArcTitle = function () {
+        var $$ = this;
+        return $$.hasType('donut') ? $$.config.donut_title : "";
+    };
+    c3_chart_internal_fn.updateTargetsForArc = function (targets) {
+        var $$ = this,
+            main = $$.main,
+            mainPieUpdate,
+            mainPieEnter,
+            classChartArc = $$.classChartArc.bind($$),
+            classArcs = $$.classArcs.bind($$),
+            classFocus = $$.classFocus.bind($$);
+        mainPieUpdate = main.select('.' + CLASS.chartArcs).selectAll('.' + CLASS.chartArc).data($$.pie(targets)).attr("class", function (d) {
+            return classChartArc(d) + classFocus(d.data);
+        });
+        mainPieEnter = mainPieUpdate.enter().append("g").attr("class", classChartArc);
+        mainPieEnter.append('g').attr('class', classArcs);
+        mainPieEnter.append("text").attr("dy", $$.hasType('gauge') ? "-.1em" : ".35em").style("opacity", 0).style("text-anchor", "middle").style("pointer-events", "none");
+    };
+    c3_chart_internal_fn.initArc = function () {
+        var $$ = this;
+        $$.arcs = $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartArcs).attr("transform", $$.getTranslate('arc'));
+        $$.arcs.append('text').attr('class', CLASS.chartArcsTitle).style("text-anchor", "middle").text($$.getArcTitle());
+    };
+    c3_chart_internal_fn.redrawArc = function (duration, durationForExit, withTransform) {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config,
+            main = $$.main,
+            mainArc,
+            backgroundArc,
+            mainArcLabelLine,
+            hasGaugeType = $$.hasType('gauge');
+        mainArc = main.selectAll('.' + CLASS.arcs).selectAll('.' + CLASS.arc).data($$.arcData.bind($$));
+        mainArc.enter().append('path').attr("class", $$.classArc.bind($$)).style("fill", function (d) {
+            return $$.color(d.data);
+        }).style("cursor", function (d) {
+            return config.interaction_enabled && config.data_selection_isselectable(d) ? "pointer" : null;
+        }).each(function (d) {
+            if ($$.isGaugeType(d.data)) {
+                d.startAngle = d.endAngle = config.gauge_startingAngle;
+            }
+            this._current = d;
+        });
+        if (hasGaugeType) {
+            mainArcLabelLine = main.selectAll('.' + CLASS.arcs).selectAll('.' + CLASS.arcLabelLine).data($$.arcData.bind($$));
+            mainArcLabelLine.enter().append('rect').attr("class", function (d) {
+                return CLASS.arcLabelLine + ' ' + CLASS.target + ' ' + CLASS.target + '-' + d.data.id;
+            });
+            if ($$.filterTargetsToShow($$.data.targets).length === 1) {
+                mainArcLabelLine.style("display", "none");
+            } else {
+                mainArcLabelLine.style("fill", function (d) {
+                    return config.color_pattern.length > 0 ? $$.levelColor(d.data.values[0].value) : $$.color(d.data);
+                }).style("display", config.gauge_labelLine_show ? "" : "none").each(function (d) {
+                    var lineLength = 0,
+                        lineThickness = 2,
+                        x = 0,
+                        y = 0,
+                        transform = "";
+                    if ($$.hiddenTargetIds.indexOf(d.data.id) < 0) {
+                        var updated = $$.updateAngle(d),
+                            innerLineLength = $$.gaugeArcWidth / $$.filterTargetsToShow($$.data.targets).length * (updated.index + 1),
+                            lineAngle = updated.endAngle - Math.PI / 2,
+                            arcInnerRadius = $$.radius - innerLineLength,
+                            linePositioningAngle = lineAngle - (arcInnerRadius === 0 ? 0 : 1 / arcInnerRadius);
+                        lineLength = $$.radiusExpanded - $$.radius + innerLineLength;
+                        x = Math.cos(linePositioningAngle) * arcInnerRadius;
+                        y = Math.sin(linePositioningAngle) * arcInnerRadius;
+                        transform = "rotate(" + lineAngle * 180 / Math.PI + ", " + x + ", " + y + ")";
+                    }
+                    d3.select(this).attr({ x: x, y: y, width: lineLength, height: lineThickness, transform: transform }).style("stroke-dasharray", "0, " + (lineLength + lineThickness) + ", 0");
+                });
+            }
+        }
+        mainArc.attr("transform", function (d) {
+            return !$$.isGaugeType(d.data) && withTransform ? "scale(0)" : "";
+        }).on('mouseover', config.interaction_enabled ? function (d) {
+            var updated, arcData;
+            if ($$.transiting) {
+                return;
+            }
+            updated = $$.updateAngle(d);
+            if (updated) {
+                arcData = $$.convertToArcData(updated);
+                $$.expandArc(updated.data.id);
+                $$.api.focus(updated.data.id);
+                $$.toggleFocusLegend(updated.data.id, true);
+                $$.config.data_onmouseover(arcData, this);
+            }
+        } : null).on('mousemove', config.interaction_enabled ? function (d) {
+            var updated = $$.updateAngle(d),
+                arcData,
+                selectedData;
+            if (updated) {
+                arcData = $$.convertToArcData(updated), selectedData = [arcData];
+                $$.showTooltip(selectedData, this);
+            }
+        } : null).on('mouseout', config.interaction_enabled ? function (d) {
+            var updated, arcData;
+            if ($$.transiting) {
+                return;
+            }
+            updated = $$.updateAngle(d);
+            if (updated) {
+                arcData = $$.convertToArcData(updated);
+                $$.unexpandArc(updated.data.id);
+                $$.api.revert();
+                $$.revertLegend();
+                $$.hideTooltip();
+                $$.config.data_onmouseout(arcData, this);
+            }
+        } : null).on('click', config.interaction_enabled ? function (d, i) {
+            var updated = $$.updateAngle(d),
+                arcData;
+            if (updated) {
+                arcData = $$.convertToArcData(updated);
+                if ($$.toggleShape) {
+                    $$.toggleShape(this, arcData, i);
+                }
+                $$.config.data_onclick.call($$.api, arcData, this);
+            }
+        } : null).each(function () {
+            $$.transiting = true;
+        }).transition().duration(duration).attrTween("d", function (d) {
+            var updated = $$.updateAngle(d),
+                interpolate;
+            if (!updated) {
+                return function () {
+                    return "M 0 0";
+                };
+            }
+            if (isNaN(this._current.startAngle)) {
+                this._current.startAngle = 0;
+            }
+            if (isNaN(this._current.endAngle)) {
+                this._current.endAngle = this._current.startAngle;
+            }
+            interpolate = d3.interpolate(this._current, updated);
+            this._current = interpolate(0);
+            return function (t) {
+                var interpolated = interpolate(t);
+                interpolated.data = d.data;
+                return $$.getArc(interpolated, true);
+            };
+        }).attr("transform", withTransform ? "scale(1)" : "").style("fill", function (d) {
+            return $$.levelColor ? $$.levelColor(d.data.values[0].value) : $$.color(d.data.id);
+        })
+        .call($$.endall, function () {
+            $$.transiting = false;
+        });
+        mainArc.exit().transition().duration(durationForExit).style('opacity', 0).remove();
+        main.selectAll('.' + CLASS.chartArc).select('text').style("opacity", 0).attr('class', function (d) {
+            return $$.isGaugeType(d.data) ? CLASS.gaugeValue : '';
+        }).text($$.textForArcLabel.bind($$)).attr("transform", $$.transformForArcLabel.bind($$)).style('font-size', function (d) {
+            return $$.isGaugeType(d.data) && $$.filterTargetsToShow($$.data.targets).length === 1 ? Math.round($$.radius / 5) + 'px' : '';
+        }).transition().duration(duration).style("opacity", function (d) {
+            return $$.isTargetToShow(d.data.id) && $$.isArcType(d.data) ? 1 : 0;
+        });
+        main.select('.' + CLASS.chartArcsTitle).style("opacity", $$.hasType('donut') || hasGaugeType ? 1 : 0);
+        if (hasGaugeType) {
+            var index = 0;
+            backgroundArc = $$.arcs.select('g.' + CLASS.chartArcsBackground).selectAll('path.' + CLASS.chartArcsBackground).data($$.data.targets);
+            backgroundArc.enter().append("path");
+            backgroundArc.attr("class", function (d, i) {
+                return CLASS.chartArcsBackground + ' ' + CLASS.chartArcsBackground + '-' + i;
+            }).attr("d", function (d1) {
+                if ($$.hiddenTargetIds.indexOf(d1.id) >= 0) {
+                    return "M 0 0";
+                }
+                var d = {
+                    data: [{ value: config.gauge_max }],
+                    startAngle: config.gauge_startingAngle,
+                    endAngle: -1 * config.gauge_startingAngle * (config.gauge_fullCircle ? Math.PI : 1),
+                    index: index++
+                };
+                return $$.getArc(d, true, true);
+            });
+            backgroundArc.exit().remove();
+            $$.arcs.select('.' + CLASS.chartArcsGaugeUnit).attr("dy", ".75em").text(config.gauge_label_show ? config.gauge_units : '');
+            $$.arcs.select('.' + CLASS.chartArcsGaugeMin).attr("dx", -1 * ($$.innerRadius + ($$.radius - $$.innerRadius) / (config.gauge_fullCircle ? 1 : 2)) + "px").attr("dy", "1.2em").text(config.gauge_label_show ? $$.textForGaugeMinMax(config.gauge_min, false) : '');
+            $$.arcs.select('.' + CLASS.chartArcsGaugeMax).attr("dx", $$.innerRadius + ($$.radius - $$.innerRadius) / (config.gauge_fullCircle ? 1 : 2) + "px").attr("dy", "1.2em").text(config.gauge_label_show ? $$.textForGaugeMinMax(config.gauge_max, true) : '');
+        }
+    };
+    c3_chart_internal_fn.initGauge = function () {
+        var arcs = this.arcs;
+        if (this.hasType('gauge')) {
+            arcs.append('g').attr("class", CLASS.chartArcsBackground);
+            arcs.append("text").attr("class", CLASS.chartArcsGaugeUnit).style("text-anchor", "middle").style("pointer-events", "none");
+            arcs.append("text").attr("class", CLASS.chartArcsGaugeMin).style("text-anchor", "middle").style("pointer-events", "none");
+            arcs.append("text").attr("class", CLASS.chartArcsGaugeMax).style("text-anchor", "middle").style("pointer-events", "none");
+        }
+    };
+    c3_chart_internal_fn.getGaugeLabelHeight = function () {
+        return this.config.gauge_label_show ? 20 : 0;
+    };
+    c3_chart_internal_fn.hasCaches = function (ids) {
+        for (var i = 0; i < ids.length; i++) {
+            if (!(ids[i] in this.cache)) {
+                return false;
+            }
+        }
+        return true;
+    };
+    c3_chart_internal_fn.addCache = function (id, target) {
+        this.cache[id] = this.cloneTarget(target);
+    };
+    c3_chart_internal_fn.getCaches = function (ids) {
+        var targets = [],
+            i;
+        for (i = 0; i < ids.length; i++) {
+            if (ids[i] in this.cache) {
+                targets.push(this.cloneTarget(this.cache[ids[i]]));
+            }
+        }
+        return targets;
+    };
+    c3_chart_internal_fn.categoryName = function (i) {
+        var config = this.config;
+        return i < config.axis_x_categories.length ? config.axis_x_categories[i] : i;
+    };
+    c3_chart_internal_fn.generateClass = function (prefix, targetId) {
+        return " " + prefix + " " + prefix + this.getTargetSelectorSuffix(targetId);
+    };
+    c3_chart_internal_fn.classText = function (d) {
+        return this.generateClass(CLASS.text, d.index);
+    };
+    c3_chart_internal_fn.classTexts = function (d) {
+        return this.generateClass(CLASS.texts, d.id);
+    };
+    c3_chart_internal_fn.classShape = function (d) {
+        return this.generateClass(CLASS.shape, d.index);
+    };
+    c3_chart_internal_fn.classShapes = function (d) {
+        return this.generateClass(CLASS.shapes, d.id);
+    };
+    c3_chart_internal_fn.classLine = function (d) {
+        return this.classShape(d) + this.generateClass(CLASS.line, d.id);
+    };
+    c3_chart_internal_fn.classLines = function (d) {
+        return this.classShapes(d) + this.generateClass(CLASS.lines, d.id);
+    };
+    c3_chart_internal_fn.classCircle = function (d) {
+        return this.classShape(d) + this.generateClass(CLASS.circle, d.index);
+    };
+    c3_chart_internal_fn.classCircles = function (d) {
+        return this.classShapes(d) + this.generateClass(CLASS.circles, d.id);
+    };
+    c3_chart_internal_fn.classBar = function (d) {
+        return this.classShape(d) + this.generateClass(CLASS.bar, d.index);
+    };
+    c3_chart_internal_fn.classBars = function (d) {
+        return this.classShapes(d) + this.generateClass(CLASS.bars, d.id);
+    };
+    c3_chart_internal_fn.classArc = function (d) {
+        return this.classShape(d.data) + this.generateClass(CLASS.arc, d.data.id);
+    };
+    c3_chart_internal_fn.classArcs = function (d) {
+        return this.classShapes(d.data) + this.generateClass(CLASS.arcs, d.data.id);
+    };
+    c3_chart_internal_fn.classArea = function (d) {
+        return this.classShape(d) + this.generateClass(CLASS.area, d.id);
+    };
+    c3_chart_internal_fn.classAreas = function (d) {
+        return this.classShapes(d) + this.generateClass(CLASS.areas, d.id);
+    };
+    c3_chart_internal_fn.classRegion = function (d, i) {
+        return this.generateClass(CLASS.region, i) + ' ' + ('class' in d ? d['class'] : '');
+    };
+    c3_chart_internal_fn.classEvent = function (d) {
+        return this.generateClass(CLASS.eventRect, d.index);
+    };
+    c3_chart_internal_fn.classTarget = function (id) {
+        var $$ = this;
+        var additionalClassSuffix = $$.config.data_classes[id],
+            additionalClass = '';
+        if (additionalClassSuffix) {
+            additionalClass = ' ' + CLASS.target + '-' + additionalClassSuffix;
+        }
+        return $$.generateClass(CLASS.target, id) + additionalClass;
+    };
+    c3_chart_internal_fn.classFocus = function (d) {
+        return this.classFocused(d) + this.classDefocused(d);
+    };
+    c3_chart_internal_fn.classFocused = function (d) {
+        return ' ' + (this.focusedTargetIds.indexOf(d.id) >= 0 ? CLASS.focused : '');
+    };
+    c3_chart_internal_fn.classDefocused = function (d) {
+        return ' ' + (this.defocusedTargetIds.indexOf(d.id) >= 0 ? CLASS.defocused : '');
+    };
+    c3_chart_internal_fn.classChartText = function (d) {
+        return CLASS.chartText + this.classTarget(d.id);
+    };
+    c3_chart_internal_fn.classChartLine = function (d) {
+        return CLASS.chartLine + this.classTarget(d.id);
+    };
+    c3_chart_internal_fn.classChartBar = function (d) {
+        return CLASS.chartBar + this.classTarget(d.id);
+    };
+    c3_chart_internal_fn.classChartArc = function (d) {
+        return CLASS.chartArc + this.classTarget(d.data.id);
+    };
+    c3_chart_internal_fn.getTargetSelectorSuffix = function (targetId) {
+        return targetId || targetId === 0 ? ('-' + targetId).replace(/[\s?!@#$%^&*()_=+,.<>'":;\[\]\/|~`{}\\]/g, '-') : '';
+    };
+    c3_chart_internal_fn.selectorTarget = function (id, prefix) {
+        return (prefix || '') + '.' + CLASS.target + this.getTargetSelectorSuffix(id);
+    };
+    c3_chart_internal_fn.selectorTargets = function (ids, prefix) {
+        var $$ = this;
+        ids = ids || [];
+        return ids.length ? ids.map(function (id) {
+            return $$.selectorTarget(id, prefix);
+        }) : null;
+    };
+    c3_chart_internal_fn.selectorLegend = function (id) {
+        return '.' + CLASS.legendItem + this.getTargetSelectorSuffix(id);
+    };
+    c3_chart_internal_fn.selectorLegends = function (ids) {
+        var $$ = this;
+        return ids && ids.length ? ids.map(function (id) {
+            return $$.selectorLegend(id);
+        }) : null;
+    };
+    c3_chart_internal_fn.getClipPath = function (id) {
+        var isIE9 = window.navigator.appVersion.toLowerCase().indexOf("msie 9.") >= 0;
+        return "url(" + (isIE9 ? "" : document.URL.split('#')[0]) + "#" + id + ")";
+    };
+    c3_chart_internal_fn.appendClip = function (parent, id) {
+        return parent.append("clipPath").attr("id", id).append("rect");
+    };
+    c3_chart_internal_fn.getAxisClipX = function (forHorizontal) {
+        var left = Math.max(30, this.margin.left);
+        return forHorizontal ? -(1 + left) : -(left - 1);
+    };
+    c3_chart_internal_fn.getAxisClipY = function (forHorizontal) {
+        return forHorizontal ? -20 : -this.margin.top;
+    };
+    c3_chart_internal_fn.getXAxisClipX = function () {
+        var $$ = this;
+        return $$.getAxisClipX(!$$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.getXAxisClipY = function () {
+        var $$ = this;
+        return $$.getAxisClipY(!$$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.getYAxisClipX = function () {
+        var $$ = this;
+        return $$.config.axis_y_inner ? -1 : $$.getAxisClipX($$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.getYAxisClipY = function () {
+        var $$ = this;
+        return $$.getAxisClipY($$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.getAxisClipWidth = function (forHorizontal) {
+        var $$ = this,
+            left = Math.max(30, $$.margin.left),
+            right = Math.max(30, $$.margin.right);
+        return forHorizontal ? $$.width + 2 + left + right : $$.margin.left + 20;
+    };
+    c3_chart_internal_fn.getAxisClipHeight = function (forHorizontal) {
+        return (forHorizontal ? this.margin.bottom : this.margin.top + this.height) + 20;
+    };
+    c3_chart_internal_fn.getXAxisClipWidth = function () {
+        var $$ = this;
+        return $$.getAxisClipWidth(!$$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.getXAxisClipHeight = function () {
+        var $$ = this;
+        return $$.getAxisClipHeight(!$$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.getYAxisClipWidth = function () {
+        var $$ = this;
+        return $$.getAxisClipWidth($$.config.axis_rotated) + ($$.config.axis_y_inner ? 20 : 0);
+    };
+    c3_chart_internal_fn.getYAxisClipHeight = function () {
+        var $$ = this;
+        return $$.getAxisClipHeight($$.config.axis_rotated);
+    };
+    c3_chart_internal_fn.generateColor = function () {
+        var $$ = this,
+            config = $$.config,
+            d3 = $$.d3,
+            colors = config.data_colors,
+            pattern = notEmpty(config.color_pattern) ? config.color_pattern : d3.scale.category10().range(),
+            callback = config.data_color,
+            ids = [];
+        return function (d) {
+            var id = d.id || d.data && d.data.id || d,
+                color;
+            if (colors[id] instanceof Function) {
+                color = colors[id](d);
+            }
+            else if (colors[id]) {
+                    color = colors[id];
+                }
+                else {
+                        if (ids.indexOf(id) < 0) {
+                            ids.push(id);
+                        }
+                        color = pattern[ids.indexOf(id) % pattern.length];
+                        colors[id] = color;
+                    }
+            return callback instanceof Function ? callback(color, d) : color;
+        };
+    };
+    c3_chart_internal_fn.generateLevelColor = function () {
+        var $$ = this,
+            config = $$.config,
+            colors = config.color_pattern,
+            threshold = config.color_threshold,
+            asValue = threshold.unit === 'value',
+            values = threshold.values && threshold.values.length ? threshold.values : [],
+            max = threshold.max || 100;
+        return notEmpty(config.color_threshold) ? function (value) {
+            var i,
+                v,
+                color = colors[colors.length - 1];
+            for (i = 0; i < values.length; i++) {
+                v = asValue ? value : value * 100 / max;
+                if (v < values[i]) {
+                    color = colors[i];
+                    break;
+                }
+            }
+            return color;
+        } : null;
+    };
+    c3_chart_internal_fn.getDefaultConfig = function () {
+        var config = {
+            bindto: '#chart',
+            svg_classname: undefined,
+            size_width: undefined,
+            size_height: undefined,
+            padding_left: undefined,
+            padding_right: undefined,
+            padding_top: undefined,
+            padding_bottom: undefined,
+            resize_auto: true,
+            zoom_enabled: false,
+            zoom_extent: undefined,
+            zoom_privileged: false,
+            zoom_rescale: false,
+            zoom_onzoom: function zoom_onzoom() {},
+            zoom_onzoomstart: function zoom_onzoomstart() {},
+            zoom_onzoomend: function zoom_onzoomend() {},
+            zoom_x_min: undefined,
+            zoom_x_max: undefined,
+            interaction_brighten: true,
+            interaction_enabled: true,
+            onmouseover: function onmouseover() {},
+            onmouseout: function onmouseout() {},
+            onresize: function onresize() {},
+            onresized: function onresized() {},
+            oninit: function oninit() {},
+            onrendered: function onrendered() {},
+            transition_duration: 350,
+            data_x: undefined,
+            data_xs: {},
+            data_xFormat: '%Y-%m-%d',
+            data_xLocaltime: true,
+            data_xSort: true,
+            data_idConverter: function data_idConverter(id) {
+                return id;
+            },
+            data_names: {},
+            data_classes: {},
+            data_groups: [],
+            data_axes: {},
+            data_type: undefined,
+            data_types: {},
+            data_labels: {},
+            data_order: 'desc',
+            data_regions: {},
+            data_color: undefined,
+            data_colors: {},
+            data_hide: false,
+            data_filter: undefined,
+            data_selection_enabled: false,
+            data_selection_grouped: false,
+            data_selection_isselectable: function data_selection_isselectable() {
+                return true;
+            },
+            data_selection_multiple: true,
+            data_selection_draggable: false,
+            data_onclick: function data_onclick() {},
+            data_onmouseover: function data_onmouseover() {},
+            data_onmouseout: function data_onmouseout() {},
+            data_onselected: function data_onselected() {},
+            data_onunselected: function data_onunselected() {},
+            data_url: undefined,
+            data_headers: undefined,
+            data_json: undefined,
+            data_rows: undefined,
+            data_columns: undefined,
+            data_mimeType: undefined,
+            data_keys: undefined,
+            data_empty_label_text: "",
+            subchart_show: false,
+            subchart_size_height: 60,
+            subchart_axis_x_show: true,
+            subchart_onbrush: function subchart_onbrush() {},
+            color_pattern: [],
+            color_threshold: {},
+            legend_show: true,
+            legend_hide: false,
+            legend_position: 'bottom',
+            legend_inset_anchor: 'top-left',
+            legend_inset_x: 10,
+            legend_inset_y: 0,
+            legend_inset_step: undefined,
+            legend_item_onclick: undefined,
+            legend_item_onmouseover: undefined,
+            legend_item_onmouseout: undefined,
+            legend_equally: false,
+            legend_padding: 0,
+            legend_item_tile_width: 10,
+            legend_item_tile_height: 10,
+            axis_rotated: false,
+            axis_x_show: true,
+            axis_x_type: 'indexed',
+            axis_x_localtime: true,
+            axis_x_categories: [],
+            axis_x_tick_centered: false,
+            axis_x_tick_format: undefined,
+            axis_x_tick_culling: {},
+            axis_x_tick_culling_max: 10,
+            axis_x_tick_count: undefined,
+            axis_x_tick_fit: true,
+            axis_x_tick_values: null,
+            axis_x_tick_rotate: 0,
+            axis_x_tick_outer: true,
+            axis_x_tick_multiline: true,
+            axis_x_tick_width: null,
+            axis_x_max: undefined,
+            axis_x_min: undefined,
+            axis_x_padding: {},
+            axis_x_height: undefined,
+            axis_x_extent: undefined,
+            axis_x_label: {},
+            axis_x_inner: undefined,
+            axis_y_show: true,
+            axis_y_type: undefined,
+            axis_y_max: undefined,
+            axis_y_min: undefined,
+            axis_y_inverted: false,
+            axis_y_center: undefined,
+            axis_y_inner: undefined,
+            axis_y_label: {},
+            axis_y_tick_format: undefined,
+            axis_y_tick_outer: true,
+            axis_y_tick_values: null,
+            axis_y_tick_rotate: 0,
+            axis_y_tick_count: undefined,
+            axis_y_tick_time_value: undefined,
+            axis_y_tick_time_interval: undefined,
+            axis_y_padding: {},
+            axis_y_default: undefined,
+            axis_y2_show: false,
+            axis_y2_max: undefined,
+            axis_y2_min: undefined,
+            axis_y2_inverted: false,
+            axis_y2_center: undefined,
+            axis_y2_inner: undefined,
+            axis_y2_label: {},
+            axis_y2_tick_format: undefined,
+            axis_y2_tick_outer: true,
+            axis_y2_tick_values: null,
+            axis_y2_tick_count: undefined,
+            axis_y2_padding: {},
+            axis_y2_default: undefined,
+            grid_x_show: false,
+            grid_x_type: 'tick',
+            grid_x_lines: [],
+            grid_y_show: false,
+            grid_y_lines: [],
+            grid_y_ticks: 10,
+            grid_focus_show: true,
+            grid_lines_front: true,
+            point_show: true,
+            point_r: 2.5,
+            point_sensitivity: 10,
+            point_focus_expand_enabled: true,
+            point_focus_expand_r: undefined,
+            point_select_r: undefined,
+            line_connectNull: false,
+            line_step_type: 'step',
+            bar_width: undefined,
+            bar_width_ratio: 0.6,
+            bar_width_max: undefined,
+            bar_zerobased: true,
+            bar_space: 0,
+            area_zerobased: true,
+            area_above: false,
+            pie_label_show: true,
+            pie_label_format: undefined,
+            pie_label_threshold: 0.05,
+            pie_label_ratio: undefined,
+            pie_expand: {},
+            pie_expand_duration: 50,
+            gauge_fullCircle: false,
+            gauge_label_show: true,
+            gauge_labelLine_show: true,
+            gauge_label_format: undefined,
+            gauge_min: 0,
+            gauge_max: 100,
+            gauge_startingAngle: -1 * Math.PI / 2,
+            gauge_label_extents: undefined,
+            gauge_units: undefined,
+            gauge_width: undefined,
+            gauge_arcs_minWidth: 5,
+            gauge_expand: {},
+            gauge_expand_duration: 50,
+            donut_label_show: true,
+            donut_label_format: undefined,
+            donut_label_threshold: 0.05,
+            donut_label_ratio: undefined,
+            donut_width: undefined,
+            donut_title: "",
+            donut_expand: {},
+            donut_expand_duration: 50,
+            spline_interpolation_type: 'cardinal',
+            regions: [],
+            tooltip_show: true,
+            tooltip_grouped: true,
+            tooltip_order: undefined,
+            tooltip_format_title: undefined,
+            tooltip_format_name: undefined,
+            tooltip_format_value: undefined,
+            tooltip_position: undefined,
+            tooltip_contents: function tooltip_contents(d, defaultTitleFormat, defaultValueFormat, color) {
+                return this.getTooltipContent ? this.getTooltipContent(d, defaultTitleFormat, defaultValueFormat, color) : '';
+            },
+            tooltip_init_show: false,
+            tooltip_init_x: 0,
+            tooltip_init_position: { top: '0px', left: '50px' },
+            tooltip_onshow: function tooltip_onshow() {},
+            tooltip_onhide: function tooltip_onhide() {},
+            title_text: undefined,
+            title_padding: {
+                top: 0,
+                right: 0,
+                bottom: 0,
+                left: 0
+            },
+            title_position: 'top-center'
+        };
+        Object.keys(this.additionalConfig).forEach(function (key) {
+            config[key] = this.additionalConfig[key];
+        }, this);
+        return config;
+    };
+    c3_chart_internal_fn.additionalConfig = {};
+    c3_chart_internal_fn.loadConfig = function (config) {
+        var this_config = this.config,
+            target,
+            keys,
+            read;
+        function find() {
+            var key = keys.shift();
+            if (key && target && (typeof target === 'undefined' ? 'undefined' : _typeof(target)) === 'object' && key in target) {
+                target = target[key];
+                return find();
+            } else if (!key) {
+                return target;
+            } else {
+                return undefined;
+            }
+        }
+        Object.keys(this_config).forEach(function (key) {
+            target = config;
+            keys = key.split('_');
+            read = find();
+            if (isDefined(read)) {
+                this_config[key] = read;
+            }
+        });
+    };
+    c3_chart_internal_fn.convertUrlToData = function (url, mimeType, headers, keys, done) {
+        var $$ = this,
+            type = mimeType ? mimeType : 'csv';
+        var req = $$.d3.xhr(url);
+        if (headers) {
+            Object.keys(headers).forEach(function (header) {
+                req.header(header, headers[header]);
+            });
+        }
+        req.get(function (error, data) {
+            var d;
+            var dataResponse = data.response || data.responseText;
+            if (!data) {
+                throw new Error(error.responseURL + ' ' + error.status + ' (' + error.statusText + ')');
+            }
+            if (type === 'json') {
+                d = $$.convertJsonToData(JSON.parse(dataResponse), keys);
+            } else if (type === 'tsv') {
+                d = $$.convertTsvToData(dataResponse);
+            } else {
+                d = $$.convertCsvToData(dataResponse);
+            }
+            done.call($$, d);
+        });
+    };
+    c3_chart_internal_fn.convertXsvToData = function (xsv, parser) {
+        var rows = parser.parseRows(xsv),
+            d;
+        if (rows.length === 1) {
+            d = [{}];
+            rows[0].forEach(function (id) {
+                d[0][id] = null;
+            });
+        } else {
+            d = parser.parse(xsv);
+        }
+        return d;
+    };
+    c3_chart_internal_fn.convertCsvToData = function (csv) {
+        return this.convertXsvToData(csv, this.d3.csv);
+    };
+    c3_chart_internal_fn.convertTsvToData = function (tsv) {
+        return this.convertXsvToData(tsv, this.d3.tsv);
+    };
+    c3_chart_internal_fn.convertJsonToData = function (json, keys) {
+        var $$ = this,
+            new_rows = [],
+            targetKeys,
+            data;
+        if (keys) {
+            if (keys.x) {
+                targetKeys = keys.value.concat(keys.x);
+                $$.config.data_x = keys.x;
+            } else {
+                targetKeys = keys.value;
+            }
+            new_rows.push(targetKeys);
+            json.forEach(function (o) {
+                var new_row = [];
+                targetKeys.forEach(function (key) {
+                    var v = $$.findValueInJson(o, key);
+                    if (isUndefined(v)) {
+                        v = null;
+                    }
+                    new_row.push(v);
+                });
+                new_rows.push(new_row);
+            });
+            data = $$.convertRowsToData(new_rows);
+        } else {
+            Object.keys(json).forEach(function (key) {
+                new_rows.push([key].concat(json[key]));
+            });
+            data = $$.convertColumnsToData(new_rows);
+        }
+        return data;
+    };
+    c3_chart_internal_fn.findValueInJson = function (object, path) {
+        path = path.replace(/\[(\w+)\]/g, '.$1');
+        path = path.replace(/^\./, '');
+        var pathArray = path.split('.');
+        for (var i = 0; i < pathArray.length; ++i) {
+            var k = pathArray[i];
+            if (k in object) {
+                object = object[k];
+            } else {
+                return;
+            }
+        }
+        return object;
+    };
+    /**
+     * Converts the rows to normalized data.
+     * @param {any[][]} rows The row data
+     * @return {Object[]}
+     */
+    c3_chart_internal_fn.convertRowsToData = function (rows) {
+        var newRows = [];
+        var keys = rows[0];
+        for (var i = 1; i < rows.length; i++) {
+            var newRow = {};
+            for (var j = 0; j < rows[i].length; j++) {
+                if (isUndefined(rows[i][j])) {
+                    throw new Error("Source data is missing a component at (" + i + "," + j + ")!");
+                }
+                newRow[keys[j]] = rows[i][j];
+            }
+            newRows.push(newRow);
+        }
+        return newRows;
+    };
+    /**
+     * Converts the columns to normalized data.
+     * @param {any[][]} columns The column data
+     * @return {Object[]}
+     */
+    c3_chart_internal_fn.convertColumnsToData = function (columns) {
+        var newRows = [];
+        for (var i = 0; i < columns.length; i++) {
+            var key = columns[i][0];
+            for (var j = 1; j < columns[i].length; j++) {
+                if (isUndefined(newRows[j - 1])) {
+                    newRows[j - 1] = {};
+                }
+                if (isUndefined(columns[i][j])) {
+                    throw new Error("Source data is missing a component at (" + i + "," + j + ")!");
+                }
+                newRows[j - 1][key] = columns[i][j];
+            }
+        }
+        return newRows;
+    };
+    c3_chart_internal_fn.convertDataToTargets = function (data, appendXs) {
+        var $$ = this,
+            config = $$.config,
+            ids = $$.d3.keys(data[0]).filter($$.isNotX, $$),
+            xs = $$.d3.keys(data[0]).filter($$.isX, $$),
+            targets;
+        ids.forEach(function (id) {
+            var xKey = $$.getXKey(id);
+            if ($$.isCustomX() || $$.isTimeSeries()) {
+                if (xs.indexOf(xKey) >= 0) {
+                    $$.data.xs[id] = (appendXs && $$.data.xs[id] ? $$.data.xs[id] : []).concat(data.map(function (d) {
+                        return d[xKey];
+                    }).filter(isValue).map(function (rawX, i) {
+                        return $$.generateTargetX(rawX, id, i);
+                    }));
+                }
+                else if (config.data_x) {
+                        $$.data.xs[id] = $$.getOtherTargetXs();
+                    }
+                    else if (notEmpty(config.data_xs)) {
+                            $$.data.xs[id] = $$.getXValuesOfXKey(xKey, $$.data.targets);
+                        }
+            } else {
+                $$.data.xs[id] = data.map(function (d, i) {
+                    return i;
+                });
+            }
+        });
+        ids.forEach(function (id) {
+            if (!$$.data.xs[id]) {
+                throw new Error('x is not defined for id = "' + id + '".');
+            }
+        });
+        targets = ids.map(function (id, index) {
+            var convertedId = config.data_idConverter(id);
+            return {
+                id: convertedId,
+                id_org: id,
+                values: data.map(function (d, i) {
+                    var xKey = $$.getXKey(id),
+                        rawX = d[xKey],
+                        value = d[id] !== null && !isNaN(d[id]) ? +d[id] : null,
+                        x;
+                    if ($$.isCustomX() && $$.isCategorized() && !isUndefined(rawX)) {
+                        if (index === 0 && i === 0) {
+                            config.axis_x_categories = [];
+                        }
+                        x = config.axis_x_categories.indexOf(rawX);
+                        if (x === -1) {
+                            x = config.axis_x_categories.length;
+                            config.axis_x_categories.push(rawX);
+                        }
+                    } else {
+                        x = $$.generateTargetX(rawX, id, i);
+                    }
+                    if (isUndefined(d[id]) || $$.data.xs[id].length <= i) {
+                        x = undefined;
+                    }
+                    return { x: x, value: value, id: convertedId };
+                }).filter(function (v) {
+                    return isDefined(v.x);
+                })
+            };
+        });
+        targets.forEach(function (t) {
+            var i;
+            if (config.data_xSort) {
+                t.values = t.values.sort(function (v1, v2) {
+                    var x1 = v1.x || v1.x === 0 ? v1.x : Infinity,
+                        x2 = v2.x || v2.x === 0 ? v2.x : Infinity;
+                    return x1 - x2;
+                });
+            }
+            i = 0;
+            t.values.forEach(function (v) {
+                v.index = i++;
+            });
+            $$.data.xs[t.id].sort(function (v1, v2) {
+                return v1 - v2;
+            });
+        });
+        $$.hasNegativeValue = $$.hasNegativeValueInTargets(targets);
+        $$.hasPositiveValue = $$.hasPositiveValueInTargets(targets);
+        if (config.data_type) {
+            $$.setTargetType($$.mapToIds(targets).filter(function (id) {
+                return !(id in config.data_types);
+            }), config.data_type);
+        }
+        targets.forEach(function (d) {
+            $$.addCache(d.id_org, d);
+        });
+        return targets;
+    };
+    c3_chart_internal_fn.isX = function (key) {
+        var $$ = this,
+            config = $$.config;
+        return config.data_x && key === config.data_x || notEmpty(config.data_xs) && hasValue(config.data_xs, key);
+    };
+    c3_chart_internal_fn.isNotX = function (key) {
+        return !this.isX(key);
+    };
+    c3_chart_internal_fn.getXKey = function (id) {
+        var $$ = this,
+            config = $$.config;
+        return config.data_x ? config.data_x : notEmpty(config.data_xs) ? config.data_xs[id] : null;
+    };
+    c3_chart_internal_fn.getXValuesOfXKey = function (key, targets) {
+        var $$ = this,
+            xValues,
+            ids = targets && notEmpty(targets) ? $$.mapToIds(targets) : [];
+        ids.forEach(function (id) {
+            if ($$.getXKey(id) === key) {
+                xValues = $$.data.xs[id];
+            }
+        });
+        return xValues;
+    };
+    c3_chart_internal_fn.getIndexByX = function (x) {
+        var $$ = this,
+            data = $$.filterByX($$.data.targets, x);
+        return data.length ? data[0].index : null;
+    };
+    c3_chart_internal_fn.getXValue = function (id, i) {
+        var $$ = this;
+        return id in $$.data.xs && $$.data.xs[id] && isValue($$.data.xs[id][i]) ? $$.data.xs[id][i] : i;
+    };
+    c3_chart_internal_fn.getOtherTargetXs = function () {
+        var $$ = this,
+            idsForX = Object.keys($$.data.xs);
+        return idsForX.length ? $$.data.xs[idsForX[0]] : null;
+    };
+    c3_chart_internal_fn.getOtherTargetX = function (index) {
+        var xs = this.getOtherTargetXs();
+        return xs && index < xs.length ? xs[index] : null;
+    };
+    c3_chart_internal_fn.addXs = function (xs) {
+        var $$ = this;
+        Object.keys(xs).forEach(function (id) {
+            $$.config.data_xs[id] = xs[id];
+        });
+    };
+    c3_chart_internal_fn.hasMultipleX = function (xs) {
+        return this.d3.set(Object.keys(xs).map(function (id) {
+            return xs[id];
+        })).size() > 1;
+    };
+    c3_chart_internal_fn.isMultipleX = function () {
+        return notEmpty(this.config.data_xs) || !this.config.data_xSort || this.hasType('scatter');
+    };
+    c3_chart_internal_fn.addName = function (data) {
+        var $$ = this,
+            name;
+        if (data) {
+            name = $$.config.data_names[data.id];
+            data.name = name !== undefined ? name : data.id;
+        }
+        return data;
+    };
+    c3_chart_internal_fn.getValueOnIndex = function (values, index) {
+        var valueOnIndex = values.filter(function (v) {
+            return v.index === index;
+        });
+        return valueOnIndex.length ? valueOnIndex[0] : null;
+    };
+    c3_chart_internal_fn.updateTargetX = function (targets, x) {
+        var $$ = this;
+        targets.forEach(function (t) {
+            t.values.forEach(function (v, i) {
+                v.x = $$.generateTargetX(x[i], t.id, i);
+            });
+            $$.data.xs[t.id] = x;
+        });
+    };
+    c3_chart_internal_fn.updateTargetXs = function (targets, xs) {
+        var $$ = this;
+        targets.forEach(function (t) {
+            if (xs[t.id]) {
+                $$.updateTargetX([t], xs[t.id]);
+            }
+        });
+    };
+    c3_chart_internal_fn.generateTargetX = function (rawX, id, index) {
+        var $$ = this,
+            x;
+        if ($$.isTimeSeries()) {
+            x = rawX ? $$.parseDate(rawX) : $$.parseDate($$.getXValue(id, index));
+        } else if ($$.isCustomX() && !$$.isCategorized()) {
+            x = isValue(rawX) ? +rawX : $$.getXValue(id, index);
+        } else {
+            x = index;
+        }
+        return x;
+    };
+    c3_chart_internal_fn.cloneTarget = function (target) {
+        return {
+            id: target.id,
+            id_org: target.id_org,
+            values: target.values.map(function (d) {
+                return { x: d.x, value: d.value, id: d.id };
+            })
+        };
+    };
+    c3_chart_internal_fn.updateXs = function () {
+        var $$ = this;
+        if ($$.data.targets.length) {
+            $$.xs = [];
+            $$.data.targets[0].values.forEach(function (v) {
+                $$.xs[v.index] = v.x;
+            });
+        }
+    };
+    c3_chart_internal_fn.getPrevX = function (i) {
+        var x = this.xs[i - 1];
+        return typeof x !== 'undefined' ? x : null;
+    };
+    c3_chart_internal_fn.getNextX = function (i) {
+        var x = this.xs[i + 1];
+        return typeof x !== 'undefined' ? x : null;
+    };
+    c3_chart_internal_fn.getMaxDataCount = function () {
+        var $$ = this;
+        return $$.d3.max($$.data.targets, function (t) {
+            return t.values.length;
+        });
+    };
+    c3_chart_internal_fn.getMaxDataCountTarget = function (targets) {
+        var length = targets.length,
+            max = 0,
+            maxTarget;
+        if (length > 1) {
+            targets.forEach(function (t) {
+                if (t.values.length > max) {
+                    maxTarget = t;
+                    max = t.values.length;
+                }
+            });
+        } else {
+            maxTarget = length ? targets[0] : null;
+        }
+        return maxTarget;
+    };
+    c3_chart_internal_fn.getEdgeX = function (targets) {
+        var $$ = this;
+        return !targets.length ? [0, 0] : [$$.d3.min(targets, function (t) {
+            return t.values[0].x;
+        }), $$.d3.max(targets, function (t) {
+            return t.values[t.values.length - 1].x;
+        })];
+    };
+    c3_chart_internal_fn.mapToIds = function (targets) {
+        return targets.map(function (d) {
+            return d.id;
+        });
+    };
+    c3_chart_internal_fn.mapToTargetIds = function (ids) {
+        var $$ = this;
+        return ids ? [].concat(ids) : $$.mapToIds($$.data.targets);
+    };
+    c3_chart_internal_fn.hasTarget = function (targets, id) {
+        var ids = this.mapToIds(targets),
+            i;
+        for (i = 0; i < ids.length; i++) {
+            if (ids[i] === id) {
                 return true;
             }
         }
         return false;
-    }
-    if (isDefined(_regions)) {
-        for (i = 0; i < _regions.length; i++) {
-            regions[i] = {};
-            if (isUndefined(_regions[i].start)) {
-                regions[i].start = d[0].x;
-            } else {
-                regions[i].start = $$.isTimeSeries() ? $$.parseDate(_regions[i].start) : _regions[i].start;
-            }
-            if (isUndefined(_regions[i].end)) {
-                regions[i].end = d[d.length - 1].x;
-            } else {
-                regions[i].end = $$.isTimeSeries() ? $$.parseDate(_regions[i].end) : _regions[i].end;
-            }
-        }
-    }
-    xValue = config.axis_rotated ? function (d) {
-        return y(d.value);
-    } : function (d) {
-        return x(d.x);
     };
-    yValue = config.axis_rotated ? function (d) {
-        return x(d.x);
-    } : function (d) {
-        return y(d.value);
+    c3_chart_internal_fn.isTargetToShow = function (targetId) {
+        return this.hiddenTargetIds.indexOf(targetId) < 0;
     };
-    function generateM(points) {
-        return 'M' + points[0][0] + ' ' + points[0][1] + ' ' + points[1][0] + ' ' + points[1][1];
-    }
-    if ($$.isTimeSeries()) {
-        sWithRegion = function sWithRegion(d0, d1, j, diff) {
-            var x0 = d0.x.getTime(),
-                x_diff = d1.x - d0.x,
-                xv0 = new Date(x0 + x_diff * j),
-                xv1 = new Date(x0 + x_diff * (j + diff)),
-                points;
-            if (config.axis_rotated) {
-                points = [[y(yp(j)), x(xv0)], [y(yp(j + diff)), x(xv1)]];
-            } else {
-                points = [[x(xv0), y(yp(j))], [x(xv1), y(yp(j + diff))]];
-            }
-            return generateM(points);
-        };
-    } else {
-        sWithRegion = function sWithRegion(d0, d1, j, diff) {
-            var points;
-            if (config.axis_rotated) {
-                points = [[y(yp(j), true), x(xp(j))], [y(yp(j + diff), true), x(xp(j + diff))]];
-            } else {
-                points = [[x(xp(j), true), y(yp(j))], [x(xp(j + diff), true), y(yp(j + diff))]];
-            }
-            return generateM(points);
-        };
-    }
-    for (i = 0; i < d.length; i++) {
-        if (isUndefined(regions) || !isWithinRegions(d[i].x, regions)) {
-            s += " " + xValue(d[i]) + " " + yValue(d[i]);
-        }
-        else {
-                xp = $$.getScale(d[i - 1].x + xOffset, d[i].x + xOffset, $$.isTimeSeries());
-                yp = $$.getScale(d[i - 1].value, d[i].value);
-                dx = x(d[i].x) - x(d[i - 1].x);
-                dy = y(d[i].value) - y(d[i - 1].value);
-                dd = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-                diff = 2 / dd;
-                diffx2 = diff * 2;
-                for (j = diff; j <= 1; j += diffx2) {
-                    s += sWithRegion(d[i - 1], d[i], j, diff);
-                }
-            }
-        prev = d[i].x;
-    }
-    return s;
-};
-c3_chart_internal_fn.updateArea = function (durationForExit) {
-    var $$ = this,
-        d3 = $$.d3;
-    $$.mainArea = $$.main.selectAll('.' + CLASS.areas).selectAll('.' + CLASS.area).data($$.lineData.bind($$));
-    $$.mainArea.enter().append('path').attr("class", $$.classArea.bind($$)).style("fill", $$.color).style("opacity", function () {
-        $$.orgAreaOpacity = +d3.select(this).style('opacity');return 0;
-    });
-    $$.mainArea.style("opacity", $$.orgAreaOpacity);
-    $$.mainArea.exit().transition().duration(durationForExit).style('opacity', 0).remove();
-};
-c3_chart_internal_fn.redrawArea = function (drawArea, withTransition) {
-    return [(withTransition ? this.mainArea.transition(Math.random().toString()) : this.mainArea).attr("d", drawArea).style("fill", this.color).style("opacity", this.orgAreaOpacity)];
-};
-c3_chart_internal_fn.generateDrawArea = function (areaIndices, isSub) {
-    var $$ = this,
-        config = $$.config,
-        area = $$.d3.svg.area(),
-        getPoints = $$.generateGetAreaPoints(areaIndices, isSub),
-        yScaleGetter = isSub ? $$.getSubYScale : $$.getYScale,
-        xValue = function xValue(d) {
-        return (isSub ? $$.subxx : $$.xx).call($$, d);
-    },
-        value0 = function value0(d, i) {
-        return config.data_groups.length > 0 ? getPoints(d, i)[0][1] : yScaleGetter.call($$, d.id)($$.getAreaBaseValue(d.id));
-    },
-        value1 = function value1(d, i) {
-        return config.data_groups.length > 0 ? getPoints(d, i)[1][1] : yScaleGetter.call($$, d.id)(d.value);
+    c3_chart_internal_fn.isLegendToShow = function (targetId) {
+        return this.hiddenLegendIds.indexOf(targetId) < 0;
     };
-    area = config.axis_rotated ? area.x0(value0).x1(value1).y(xValue) : area.x(xValue).y0(config.area_above ? 0 : value0).y1(value1);
-    if (!config.line_connectNull) {
-        area = area.defined(function (d) {
-            return d.value !== null;
+    c3_chart_internal_fn.filterTargetsToShow = function (targets) {
+        var $$ = this;
+        return targets.filter(function (t) {
+            return $$.isTargetToShow(t.id);
         });
-    }
-    return function (d) {
-        var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
-            x0 = 0,
-            y0 = 0,
-            path;
-        if ($$.isAreaType(d)) {
-            if ($$.isStepType(d)) {
-                values = $$.convertValuesToStep(values);
-            }
-            path = area.interpolate($$.getInterpolate(d))(values);
-        } else {
-            if (values[0]) {
-                x0 = $$.x(values[0].x);
-                y0 = $$.getYScale(d.id)(values[0].value);
-            }
-            path = config.axis_rotated ? "M " + y0 + " " + x0 : "M " + x0 + " " + y0;
-        }
-        return path ? path : "M 0 0";
     };
-};
-c3_chart_internal_fn.getAreaBaseValue = function () {
-    return 0;
-};
-c3_chart_internal_fn.generateGetAreaPoints = function (areaIndices, isSub) {
-    var $$ = this,
-        config = $$.config,
-        areaTargetsNum = areaIndices.__max__ + 1,
-        x = $$.getShapeX(0, areaTargetsNum, areaIndices, !!isSub),
-        y = $$.getShapeY(!!isSub),
-        areaOffset = $$.getShapeOffset($$.isAreaType, areaIndices, !!isSub),
-        yScale = isSub ? $$.getSubYScale : $$.getYScale;
-    return function (d, i) {
-        var y0 = yScale.call($$, d.id)(0),
-            offset = areaOffset(d, i) || y0,
-        posX = x(d),
-            posY = y(d);
-        if (config.axis_rotated) {
-            if (0 < d.value && posY < y0 || d.value < 0 && y0 < posY) {
-                posY = y0;
+    c3_chart_internal_fn.mapTargetsToUniqueXs = function (targets) {
+        var $$ = this;
+        var xs = $$.d3.set($$.d3.merge(targets.map(function (t) {
+            return t.values.map(function (v) {
+                return +v.x;
+            });
+        }))).values();
+        xs = $$.isTimeSeries() ? xs.map(function (x) {
+            return new Date(+x);
+        }) : xs.map(function (x) {
+            return +x;
+        });
+        return xs.sort(function (a, b) {
+            return a < b ? -1 : a > b ? 1 : a >= b ? 0 : NaN;
+        });
+    };
+    c3_chart_internal_fn.addHiddenTargetIds = function (targetIds) {
+        targetIds = targetIds instanceof Array ? targetIds : new Array(targetIds);
+        for (var i = 0; i < targetIds.length; i++) {
+            if (this.hiddenTargetIds.indexOf(targetIds[i]) < 0) {
+                this.hiddenTargetIds = this.hiddenTargetIds.concat(targetIds[i]);
             }
         }
-        return [[posX, offset], [posX, posY - (y0 - offset)], [posX, posY - (y0 - offset)],
-        [posX, offset]
-        ];
     };
-};
-c3_chart_internal_fn.updateCircle = function () {
-    var $$ = this;
-    $$.mainCircle = $$.main.selectAll('.' + CLASS.circles).selectAll('.' + CLASS.circle).data($$.lineOrScatterData.bind($$));
-    $$.mainCircle.enter().append("circle").attr("class", $$.classCircle.bind($$)).attr("r", $$.pointR.bind($$)).style("fill", $$.color);
-    $$.mainCircle.style("opacity", $$.initialOpacityForCircle.bind($$));
-    $$.mainCircle.exit().remove();
-};
-c3_chart_internal_fn.redrawCircle = function (cx, cy, withTransition) {
-    var selectedCircles = this.main.selectAll('.' + CLASS.selectedCircle);
-    return [(withTransition ? this.mainCircle.transition(Math.random().toString()) : this.mainCircle).style('opacity', this.opacityForCircle.bind(this)).style("fill", this.color).attr("cx", cx).attr("cy", cy), (withTransition ? selectedCircles.transition(Math.random().toString()) : selectedCircles).attr("cx", cx).attr("cy", cy)];
-};
-c3_chart_internal_fn.circleX = function (d) {
-    return d.x || d.x === 0 ? this.x(d.x) : null;
-};
-c3_chart_internal_fn.updateCircleY = function () {
-    var $$ = this,
-        lineIndices,
-        getPoints;
-    if ($$.config.data_groups.length > 0) {
-        lineIndices = $$.getShapeIndices($$.isLineType), getPoints = $$.generateGetLinePoints(lineIndices);
-        $$.circleY = function (d, i) {
-            return getPoints(d, i)[0][1];
-        };
-    } else {
-        $$.circleY = function (d) {
-            return $$.getYScale(d.id)(d.value);
-        };
-    }
-};
-c3_chart_internal_fn.getCircles = function (i, id) {
-    var $$ = this;
-    return (id ? $$.main.selectAll('.' + CLASS.circles + $$.getTargetSelectorSuffix(id)) : $$.main).selectAll('.' + CLASS.circle + (isValue(i) ? '-' + i : ''));
-};
-c3_chart_internal_fn.expandCircles = function (i, id, reset) {
-    var $$ = this,
-        r = $$.pointExpandedR.bind($$);
-    if (reset) {
-        $$.unexpandCircles();
-    }
-    $$.getCircles(i, id).classed(CLASS.EXPANDED, true).attr('r', r);
-};
-c3_chart_internal_fn.unexpandCircles = function (i) {
-    var $$ = this,
-        r = $$.pointR.bind($$);
-    $$.getCircles(i).filter(function () {
-        return $$.d3.select(this).classed(CLASS.EXPANDED);
-    }).classed(CLASS.EXPANDED, false).attr('r', r);
-};
-c3_chart_internal_fn.pointR = function (d) {
-    var $$ = this,
-        config = $$.config;
-    return $$.isStepType(d) ? 0 : isFunction(config.point_r) ? config.point_r(d) : config.point_r;
-};
-c3_chart_internal_fn.pointExpandedR = function (d) {
-    var $$ = this,
-        config = $$.config;
-    if (config.point_focus_expand_enabled) {
-        return isFunction(config.point_focus_expand_r) ? config.point_focus_expand_r(d) : config.point_focus_expand_r ? config.point_focus_expand_r : $$.pointR(d) * 1.75;
-    } else {
-        return $$.pointR(d);
-    }
-};
-c3_chart_internal_fn.pointSelectR = function (d) {
-    var $$ = this,
-        config = $$.config;
-    return isFunction(config.point_select_r) ? config.point_select_r(d) : config.point_select_r ? config.point_select_r : $$.pointR(d) * 4;
-};
-c3_chart_internal_fn.isWithinCircle = function (that, r) {
-    var d3 = this.d3,
-        mouse = d3.mouse(that),
-        d3_this = d3.select(that),
-        cx = +d3_this.attr("cx"),
-        cy = +d3_this.attr("cy");
-    return Math.sqrt(Math.pow(cx - mouse[0], 2) + Math.pow(cy - mouse[1], 2)) < r;
-};
-c3_chart_internal_fn.isWithinStep = function (that, y) {
-    return Math.abs(y - this.d3.mouse(that)[1]) < 30;
-};
-c3_chart_internal_fn.getCurrentWidth = function () {
-    var $$ = this,
-        config = $$.config;
-    return config.size_width ? config.size_width : $$.getParentWidth();
-};
-c3_chart_internal_fn.getCurrentHeight = function () {
-    var $$ = this,
-        config = $$.config,
-        h = config.size_height ? config.size_height : $$.getParentHeight();
-    return h > 0 ? h : 320 / ($$.hasType('gauge') && !config.gauge_fullCircle ? 2 : 1);
-};
-c3_chart_internal_fn.getCurrentPaddingTop = function () {
-    var $$ = this,
-        config = $$.config,
-        padding = isValue(config.padding_top) ? config.padding_top : 0;
-    if ($$.title && $$.title.node()) {
-        padding += $$.getTitlePadding();
-    }
-    return padding;
-};
-c3_chart_internal_fn.getCurrentPaddingBottom = function () {
-    var config = this.config;
-    return isValue(config.padding_bottom) ? config.padding_bottom : 0;
-};
-c3_chart_internal_fn.getCurrentPaddingLeft = function (withoutRecompute) {
-    var $$ = this,
-        config = $$.config;
-    if (isValue(config.padding_left)) {
-        return config.padding_left;
-    } else if (config.axis_rotated) {
-        return !config.axis_x_show ? 1 : Math.max(ceil10($$.getAxisWidthByAxisId('x', withoutRecompute)), 40);
-    } else if (!config.axis_y_show || config.axis_y_inner) {
-        return $$.axis.getYAxisLabelPosition().isOuter ? 30 : 1;
-    } else {
-        return ceil10($$.getAxisWidthByAxisId('y', withoutRecompute));
-    }
-};
-c3_chart_internal_fn.getCurrentPaddingRight = function () {
-    var $$ = this,
-        config = $$.config,
-        defaultPadding = 10,
-        legendWidthOnRight = $$.isLegendRight ? $$.getLegendWidth() + 20 : 0;
-    if (isValue(config.padding_right)) {
-        return config.padding_right + 1;
-    } else if (config.axis_rotated) {
-        return defaultPadding + legendWidthOnRight;
-    } else if (!config.axis_y2_show || config.axis_y2_inner) {
-        return 2 + legendWidthOnRight + ($$.axis.getY2AxisLabelPosition().isOuter ? 20 : 0);
-    } else {
-        return ceil10($$.getAxisWidthByAxisId('y2')) + legendWidthOnRight;
-    }
-};
-c3_chart_internal_fn.getParentRectValue = function (key) {
-    var parent = this.selectChart.node(),
-        v;
-    while (parent && parent.tagName !== 'BODY') {
-        try {
-            v = parent.getBoundingClientRect()[key];
-        } catch (e) {
-            if (key === 'width') {
-                v = parent.offsetWidth;
+    c3_chart_internal_fn.removeHiddenTargetIds = function (targetIds) {
+        this.hiddenTargetIds = this.hiddenTargetIds.filter(function (id) {
+            return targetIds.indexOf(id) < 0;
+        });
+    };
+    c3_chart_internal_fn.addHiddenLegendIds = function (targetIds) {
+        targetIds = targetIds instanceof Array ? targetIds : new Array(targetIds);
+        for (var i = 0; i < targetIds.length; i++) {
+            if (this.hiddenLegendIds.indexOf(targetIds[i]) < 0) {
+                this.hiddenLegendIds = this.hiddenLegendIds.concat(targetIds[i]);
             }
         }
-        if (v) {
-            break;
-        }
-        parent = parent.parentNode;
-    }
-    return v;
-};
-c3_chart_internal_fn.getParentWidth = function () {
-    return this.getParentRectValue('width');
-};
-c3_chart_internal_fn.getParentHeight = function () {
-    var h = this.selectChart.style('height');
-    return h.indexOf('px') > 0 ? +h.replace('px', '') : 0;
-};
-c3_chart_internal_fn.getSvgLeft = function (withoutRecompute) {
-    var $$ = this,
-        config = $$.config,
-        hasLeftAxisRect = config.axis_rotated || !config.axis_rotated && !config.axis_y_inner,
-        leftAxisClass = config.axis_rotated ? CLASS.axisX : CLASS.axisY,
-        leftAxis = $$.main.select('.' + leftAxisClass).node(),
-        svgRect = leftAxis && hasLeftAxisRect ? leftAxis.getBoundingClientRect() : { right: 0 },
-        chartRect = $$.selectChart.node().getBoundingClientRect(),
-        hasArc = $$.hasArcType(),
-        svgLeft = svgRect.right - chartRect.left - (hasArc ? 0 : $$.getCurrentPaddingLeft(withoutRecompute));
-    return svgLeft > 0 ? svgLeft : 0;
-};
-c3_chart_internal_fn.getAxisWidthByAxisId = function (id, withoutRecompute) {
-    var $$ = this,
-        position = $$.axis.getLabelPositionById(id);
-    return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40);
-};
-c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
-    var $$ = this,
-        config = $$.config,
-        h = 30;
-    if (axisId === 'x' && !config.axis_x_show) {
-        return 8;
-    }
-    if (axisId === 'x' && config.axis_x_height) {
-        return config.axis_x_height;
-    }
-    if (axisId === 'y' && !config.axis_y_show) {
-        return config.legend_show && !$$.isLegendRight && !$$.isLegendInset ? 10 : 1;
-    }
-    if (axisId === 'y2' && !config.axis_y2_show) {
-        return $$.rotated_padding_top;
-    }
-    if (axisId === 'x' && !config.axis_rotated && config.axis_x_tick_rotate) {
-        h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
-    }
-    if (axisId === 'y' && config.axis_rotated && config.axis_y_tick_rotate) {
-        h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_y_tick_rotate) / 180);
-    }
-    return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0);
-};
-c3_chart_internal_fn.getEventRectWidth = function () {
-    return Math.max(0, this.xAxis.tickInterval());
-};
-c3_chart_internal_fn.initBrush = function () {
-    var $$ = this,
-        d3 = $$.d3;
-    $$.brush = d3.svg.brush().on("brush", function () {
-        $$.redrawForBrush();
-    });
-    $$.brush.update = function () {
-        if ($$.context) {
-            $$.context.select('.' + CLASS.brush).call(this);
-        }
-        return this;
     };
-    $$.brush.scale = function (scale) {
-        return $$.config.axis_rotated ? this.y(scale) : this.x(scale);
+    c3_chart_internal_fn.removeHiddenLegendIds = function (targetIds) {
+        this.hiddenLegendIds = this.hiddenLegendIds.filter(function (id) {
+            return targetIds.indexOf(id) < 0;
+        });
     };
-};
-c3_chart_internal_fn.initSubchart = function () {
-    var $$ = this,
-        config = $$.config,
-        context = $$.context = $$.svg.append("g").attr("transform", $$.getTranslate('context')),
-        visibility = config.subchart_show ? 'visible' : 'hidden';
-    context.style('visibility', visibility);
-    context.append('g').attr("clip-path", $$.clipPathForSubchart).attr('class', CLASS.chart);
-    context.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartBars);
-    context.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartLines);
-    context.append("g").attr("clip-path", $$.clipPath).attr("class", CLASS.brush).call($$.brush);
-    $$.axes.subx = context.append("g").attr("class", CLASS.axisX).attr("transform", $$.getTranslate('subx')).attr("clip-path", config.axis_rotated ? "" : $$.clipPathForXAxis).style("visibility", config.subchart_axis_x_show ? visibility : 'hidden');
-};
-c3_chart_internal_fn.updateTargetsForSubchart = function (targets) {
-    var $$ = this,
-        context = $$.context,
-        config = $$.config,
-        contextLineEnter,
-        contextLineUpdate,
-        contextBarEnter,
-        contextBarUpdate,
-        classChartBar = $$.classChartBar.bind($$),
-        classBars = $$.classBars.bind($$),
-        classChartLine = $$.classChartLine.bind($$),
-        classLines = $$.classLines.bind($$),
-        classAreas = $$.classAreas.bind($$);
-    if (config.subchart_show) {
-        contextBarUpdate = context.select('.' + CLASS.chartBars).selectAll('.' + CLASS.chartBar).data(targets).attr('class', classChartBar);
-        contextBarEnter = contextBarUpdate.enter().append('g').style('opacity', 0).attr('class', classChartBar);
-        contextBarEnter.append('g').attr("class", classBars);
-        contextLineUpdate = context.select('.' + CLASS.chartLines).selectAll('.' + CLASS.chartLine).data(targets).attr('class', classChartLine);
-        contextLineEnter = contextLineUpdate.enter().append('g').style('opacity', 0).attr('class', classChartLine);
-        contextLineEnter.append("g").attr("class", classLines);
-        contextLineEnter.append("g").attr("class", classAreas);
-        context.selectAll('.' + CLASS.brush + ' rect').attr(config.axis_rotated ? "width" : "height", config.axis_rotated ? $$.width2 : $$.height2);
-    }
-};
-c3_chart_internal_fn.updateBarForSubchart = function (durationForExit) {
-    var $$ = this;
-    $$.contextBar = $$.context.selectAll('.' + CLASS.bars).selectAll('.' + CLASS.bar).data($$.barData.bind($$));
-    $$.contextBar.enter().append('path').attr("class", $$.classBar.bind($$)).style("stroke", 'none').style("fill", $$.color);
-    $$.contextBar.style("opacity", $$.initialOpacity.bind($$));
-    $$.contextBar.exit().transition().duration(durationForExit).style('opacity', 0).remove();
-};
-c3_chart_internal_fn.redrawBarForSubchart = function (drawBarOnSub, withTransition, duration) {
-    (withTransition ? this.contextBar.transition(Math.random().toString()).duration(duration) : this.contextBar).attr('d', drawBarOnSub).style('opacity', 1);
-};
-c3_chart_internal_fn.updateLineForSubchart = function (durationForExit) {
-    var $$ = this;
-    $$.contextLine = $$.context.selectAll('.' + CLASS.lines).selectAll('.' + CLASS.line).data($$.lineData.bind($$));
-    $$.contextLine.enter().append('path').attr('class', $$.classLine.bind($$)).style('stroke', $$.color);
-    $$.contextLine.style("opacity", $$.initialOpacity.bind($$));
-    $$.contextLine.exit().transition().duration(durationForExit).style('opacity', 0).remove();
-};
-c3_chart_internal_fn.redrawLineForSubchart = function (drawLineOnSub, withTransition, duration) {
-    (withTransition ? this.contextLine.transition(Math.random().toString()).duration(duration) : this.contextLine).attr("d", drawLineOnSub).style('opacity', 1);
-};
-c3_chart_internal_fn.updateAreaForSubchart = function (durationForExit) {
-    var $$ = this,
-        d3 = $$.d3;
-    $$.contextArea = $$.context.selectAll('.' + CLASS.areas).selectAll('.' + CLASS.area).data($$.lineData.bind($$));
-    $$.contextArea.enter().append('path').attr("class", $$.classArea.bind($$)).style("fill", $$.color).style("opacity", function () {
-        $$.orgAreaOpacity = +d3.select(this).style('opacity');return 0;
-    });
-    $$.contextArea.style("opacity", 0);
-    $$.contextArea.exit().transition().duration(durationForExit).style('opacity', 0).remove();
-};
-c3_chart_internal_fn.redrawAreaForSubchart = function (drawAreaOnSub, withTransition, duration) {
-    (withTransition ? this.contextArea.transition(Math.random().toString()).duration(duration) : this.contextArea).attr("d", drawAreaOnSub).style("fill", this.color).style("opacity", this.orgAreaOpacity);
-};
-c3_chart_internal_fn.redrawSubchart = function (withSubchart, transitions, duration, durationForExit, areaIndices, barIndices, lineIndices) {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config,
-        drawAreaOnSub,
-        drawBarOnSub,
-        drawLineOnSub;
-    $$.context.style('visibility', config.subchart_show ? 'visible' : 'hidden');
-    if (config.subchart_show) {
-        if (d3.event && d3.event.type === 'zoom') {
-            $$.brush.extent($$.x.orgDomain()).update();
-        }
-        if (withSubchart) {
-            if (!$$.brush.empty()) {
-                $$.brush.extent($$.x.orgDomain()).update();
-            }
-            drawAreaOnSub = $$.generateDrawArea(areaIndices, true);
-            drawBarOnSub = $$.generateDrawBar(barIndices, true);
-            drawLineOnSub = $$.generateDrawLine(lineIndices, true);
-            $$.updateBarForSubchart(duration);
-            $$.updateLineForSubchart(duration);
-            $$.updateAreaForSubchart(duration);
-            $$.redrawBarForSubchart(drawBarOnSub, duration, duration);
-            $$.redrawLineForSubchart(drawLineOnSub, duration, duration);
-            $$.redrawAreaForSubchart(drawAreaOnSub, duration, duration);
-        }
-    }
-};
-c3_chart_internal_fn.redrawForBrush = function () {
-    var $$ = this,
-        x = $$.x;
-    $$.redraw({
-        withTransition: false,
-        withY: $$.config.zoom_rescale,
-        withSubchart: false,
-        withUpdateXDomain: true,
-        withDimension: false
-    });
-    $$.config.subchart_onbrush.call($$.api, x.orgDomain());
-};
-c3_chart_internal_fn.transformContext = function (withTransition, transitions) {
-    var $$ = this,
-        subXAxis;
-    if (transitions && transitions.axisSubX) {
-        subXAxis = transitions.axisSubX;
-    } else {
-        subXAxis = $$.context.select('.' + CLASS.axisX);
-        if (withTransition) {
-            subXAxis = subXAxis.transition();
-        }
-    }
-    $$.context.attr("transform", $$.getTranslate('context'));
-    subXAxis.attr("transform", $$.getTranslate('subx'));
-};
-c3_chart_internal_fn.getDefaultExtent = function () {
-    var $$ = this,
-        config = $$.config,
-        extent = isFunction(config.axis_x_extent) ? config.axis_x_extent($$.getXDomain($$.data.targets)) : config.axis_x_extent;
-    if ($$.isTimeSeries()) {
-        extent = [$$.parseDate(extent[0]), $$.parseDate(extent[1])];
-    }
-    return extent;
-};
-c3_chart_internal_fn.initText = function () {
-    var $$ = this;
-    $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartTexts);
-    $$.mainText = $$.d3.selectAll([]);
-};
-c3_chart_internal_fn.updateTargetsForText = function (targets) {
-    var $$ = this,
-        mainTextUpdate,
-        mainTextEnter,
-        classChartText = $$.classChartText.bind($$),
-        classTexts = $$.classTexts.bind($$),
-        classFocus = $$.classFocus.bind($$);
-    mainTextUpdate = $$.main.select('.' + CLASS.chartTexts).selectAll('.' + CLASS.chartText).data(targets).attr('class', function (d) {
-        return classChartText(d) + classFocus(d);
-    });
-    mainTextEnter = mainTextUpdate.enter().append('g').attr('class', classChartText).style('opacity', 0).style("pointer-events", "none");
-    mainTextEnter.append('g').attr('class', classTexts);
-};
-c3_chart_internal_fn.updateText = function (durationForExit) {
-    var $$ = this,
-        config = $$.config,
-        barOrLineData = $$.barOrLineData.bind($$),
-        classText = $$.classText.bind($$);
-    $$.mainText = $$.main.selectAll('.' + CLASS.texts).selectAll('.' + CLASS.text).data(barOrLineData);
-    $$.mainText.enter().append('text').attr("class", classText).attr('text-anchor', function (d) {
-        return config.axis_rotated ? d.value < 0 ? 'end' : 'start' : 'middle';
-    }).style("stroke", 'none').style("fill", function (d) {
-        return $$.color(d);
-    }).style("fill-opacity", 0);
-    $$.mainText.text(function (d, i, j) {
-        return $$.dataLabelFormat(d.id)(d.value, d.id, i, j);
-    });
-    $$.mainText.exit().transition().duration(durationForExit).style('fill-opacity', 0).remove();
-};
-c3_chart_internal_fn.redrawText = function (xForText, yForText, forFlow, withTransition) {
-    return [(withTransition ? this.mainText.transition() : this.mainText).attr('x', xForText).attr('y', yForText).style("fill", this.color).style("fill-opacity", forFlow ? 0 : this.opacityForText.bind(this))];
-};
-c3_chart_internal_fn.getTextRect = function (text, cls, element) {
-    var dummy = this.d3.select('body').append('div').classed('c3', true),
-        svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0),
-        font = this.d3.select(element).style('font'),
-        rect;
-    svg.selectAll('.dummy').data([text]).enter().append('text').classed(cls ? cls : "", true).style('font', font).text(text).each(function () {
-        rect = this.getBoundingClientRect();
-    });
-    dummy.remove();
-    return rect;
-};
-c3_chart_internal_fn.generateXYForText = function (areaIndices, barIndices, lineIndices, forX) {
-    var $$ = this,
-        getAreaPoints = $$.generateGetAreaPoints(areaIndices, false),
-        getBarPoints = $$.generateGetBarPoints(barIndices, false),
-        getLinePoints = $$.generateGetLinePoints(lineIndices, false),
-        getter = forX ? $$.getXForText : $$.getYForText;
-    return function (d, i) {
-        var getPoints = $$.isAreaType(d) ? getAreaPoints : $$.isBarType(d) ? getBarPoints : getLinePoints;
-        return getter.call($$, getPoints(d, i), d, this);
+    c3_chart_internal_fn.getValuesAsIdKeyed = function (targets) {
+        var ys = {};
+        targets.forEach(function (t) {
+            ys[t.id] = [];
+            t.values.forEach(function (v) {
+                ys[t.id].push(v.value);
+            });
+        });
+        return ys;
     };
-};
-c3_chart_internal_fn.getXForText = function (points, d, textElement) {
-    var $$ = this,
-        box = textElement.getBoundingClientRect(),
-        xPos,
-        padding;
-    if ($$.config.axis_rotated) {
-        padding = $$.isBarType(d) ? 4 : 6;
-        xPos = points[2][1] + padding * (d.value < 0 ? -1 : 1);
-    } else {
-        xPos = $$.hasType('bar') ? (points[2][0] + points[0][0]) / 2 : points[0][0];
-    }
-    if (d.value === null) {
-        if (xPos > $$.width) {
-            xPos = $$.width - box.width;
-        } else if (xPos < 0) {
-            xPos = 4;
-        }
-    }
-    return xPos;
-};
-c3_chart_internal_fn.getYForText = function (points, d, textElement) {
-    var $$ = this,
-        box = textElement.getBoundingClientRect(),
-        yPos;
-    if ($$.config.axis_rotated) {
-        yPos = (points[0][0] + points[2][0] + box.height * 0.6) / 2;
-    } else {
-        yPos = points[2][1];
-        if (d.value < 0 || d.value === 0 && !$$.hasPositiveValue) {
-            yPos += box.height;
-            if ($$.isBarType(d) && $$.isSafari()) {
-                yPos -= 3;
-            } else if (!$$.isBarType(d) && $$.isChrome()) {
-                yPos += 3;
-            }
-        } else {
-            yPos += $$.isBarType(d) ? -3 : -6;
-        }
-    }
-    if (d.value === null && !$$.config.axis_rotated) {
-        if (yPos < box.height) {
-            yPos = box.height;
-        } else if (yPos > this.height) {
-            yPos = this.height - 4;
-        }
-    }
-    return yPos;
-};
-c3_chart_internal_fn.initTitle = function () {
-    var $$ = this;
-    $$.title = $$.svg.append("text").text($$.config.title_text).attr("class", $$.CLASS.title);
-};
-c3_chart_internal_fn.redrawTitle = function () {
-    var $$ = this;
-    $$.title.attr("x", $$.xForTitle.bind($$)).attr("y", $$.yForTitle.bind($$));
-};
-c3_chart_internal_fn.xForTitle = function () {
-    var $$ = this,
-        config = $$.config,
-        position = config.title_position || 'left',
-        x;
-    if (position.indexOf('right') >= 0) {
-        x = $$.currentWidth - $$.getTextRect($$.title.node().textContent, $$.CLASS.title, $$.title.node()).width - config.title_padding.right;
-    } else if (position.indexOf('center') >= 0) {
-        x = ($$.currentWidth - $$.getTextRect($$.title.node().textContent, $$.CLASS.title, $$.title.node()).width) / 2;
-    } else {
-        x = config.title_padding.left;
-    }
-    return x;
-};
-c3_chart_internal_fn.yForTitle = function () {
-    var $$ = this;
-    return $$.config.title_padding.top + $$.getTextRect($$.title.node().textContent, $$.CLASS.title, $$.title.node()).height;
-};
-c3_chart_internal_fn.getTitlePadding = function () {
-    var $$ = this;
-    return $$.yForTitle() + $$.config.title_padding.bottom;
-};
-c3_chart_internal_fn.initTooltip = function () {
-    var $$ = this,
-        config = $$.config,
-        i;
-    $$.tooltip = $$.selectChart.style("position", "relative").append("div").attr('class', CLASS.tooltipContainer).style("position", "absolute").style("pointer-events", "none").style("display", "none");
-    if (config.tooltip_init_show) {
-        if ($$.isTimeSeries() && isString(config.tooltip_init_x)) {
-            config.tooltip_init_x = $$.parseDate(config.tooltip_init_x);
-            for (i = 0; i < $$.data.targets[0].values.length; i++) {
-                if ($$.data.targets[0].values[i].x - config.tooltip_init_x === 0) {
-                    break;
+    c3_chart_internal_fn.checkValueInTargets = function (targets, checker) {
+        var ids = Object.keys(targets),
+            i,
+            j,
+            values;
+        for (i = 0; i < ids.length; i++) {
+            values = targets[ids[i]].values;
+            for (j = 0; j < values.length; j++) {
+                if (checker(values[j].value)) {
+                    return true;
                 }
             }
-            config.tooltip_init_x = i;
         }
-        $$.tooltip.html(config.tooltip_contents.call($$, $$.data.targets.map(function (d) {
-            return $$.addName(d.values[config.tooltip_init_x]);
-        }), $$.axis.getXAxisTickFormat(), $$.getYFormat($$.hasArcType()), $$.color));
-        $$.tooltip.style("top", config.tooltip_init_position.top).style("left", config.tooltip_init_position.left).style("display", "block");
-    }
-};
-c3_chart_internal_fn.getTooltipSortFunction = function () {
-    var $$ = this,
-        config = $$.config;
-    if (config.data_groups.length === 0 || config.tooltip_order !== undefined) {
-        var order = config.tooltip_order;
-        if (order === undefined) {
-            order = config.data_order;
-        }
-        var valueOf = function valueOf(obj) {
-            return obj ? obj.value : null;
-        };
-        if (isString(order) && order.toLowerCase() === 'asc') {
-            return function (a, b) {
-                return valueOf(a) - valueOf(b);
-            };
-        } else if (isString(order) && order.toLowerCase() === 'desc') {
-            return function (a, b) {
-                return valueOf(b) - valueOf(a);
-            };
-        } else if (isFunction(order)) {
-            var sortFunction = order;
-            if (config.tooltip_order === undefined) {
-                sortFunction = function sortFunction(a, b) {
-                    return order(a ? {
-                        id: a.id,
-                        values: [a]
-                    } : null, b ? {
-                        id: b.id,
-                        values: [b]
-                    } : null);
+        return false;
+    };
+    c3_chart_internal_fn.hasNegativeValueInTargets = function (targets) {
+        return this.checkValueInTargets(targets, function (v) {
+            return v < 0;
+        });
+    };
+    c3_chart_internal_fn.hasPositiveValueInTargets = function (targets) {
+        return this.checkValueInTargets(targets, function (v) {
+            return v > 0;
+        });
+    };
+    c3_chart_internal_fn.isOrderDesc = function () {
+        var config = this.config;
+        return typeof config.data_order === 'string' && config.data_order.toLowerCase() === 'desc';
+    };
+    c3_chart_internal_fn.isOrderAsc = function () {
+        var config = this.config;
+        return typeof config.data_order === 'string' && config.data_order.toLowerCase() === 'asc';
+    };
+    c3_chart_internal_fn.getOrderFunction = function () {
+        var $$ = this,
+            config = $$.config,
+            orderAsc = $$.isOrderAsc(),
+            orderDesc = $$.isOrderDesc();
+        if (orderAsc || orderDesc) {
+            return function (t1, t2) {
+                var reducer = function reducer(p, c) {
+                    return p + Math.abs(c.value);
                 };
-            }
-            return sortFunction;
-        } else if (isArray(order)) {
-            return function (a, b) {
-                return order.indexOf(a.id) - order.indexOf(b.id);
+                var t1Sum = t1.values.reduce(reducer, 0),
+                    t2Sum = t2.values.reduce(reducer, 0);
+                return orderDesc ? t2Sum - t1Sum : t1Sum - t2Sum;
+            };
+        } else if (isFunction(config.data_order)) {
+            return config.data_order;
+        } else if (isArray(config.data_order)) {
+            var order = config.data_order;
+            return function (t1, t2) {
+                return order.indexOf(t1.id) - order.indexOf(t2.id);
             };
         }
-    } else {
-        var ids = $$.orderTargets($$.data.targets).map(function (i) {
-            return i.id;
-        });
-        if ($$.isOrderAsc() || $$.isOrderDesc()) {
-            ids = ids.reverse();
+    };
+    c3_chart_internal_fn.orderTargets = function (targets) {
+        var fct = this.getOrderFunction();
+        if (fct) {
+            targets.sort(fct);
+            if (this.isOrderAsc() || this.isOrderDesc()) {
+                targets.reverse();
+            }
         }
-        return function (a, b) {
-            return ids.indexOf(a.id) - ids.indexOf(b.id);
+        return targets;
+    };
+    c3_chart_internal_fn.filterByX = function (targets, x) {
+        return this.d3.merge(targets.map(function (t) {
+            return t.values;
+        })).filter(function (v) {
+            return v.x - x === 0;
+        });
+    };
+    c3_chart_internal_fn.filterRemoveNull = function (data) {
+        return data.filter(function (d) {
+            return isValue(d.value);
+        });
+    };
+    c3_chart_internal_fn.filterByXDomain = function (targets, xDomain) {
+        return targets.map(function (t) {
+            return {
+                id: t.id,
+                id_org: t.id_org,
+                values: t.values.filter(function (v) {
+                    return xDomain[0] <= v.x && v.x <= xDomain[1];
+                })
+            };
+        });
+    };
+    c3_chart_internal_fn.hasDataLabel = function () {
+        var config = this.config;
+        if (typeof config.data_labels === 'boolean' && config.data_labels) {
+            return true;
+        } else if (_typeof(config.data_labels) === 'object' && notEmpty(config.data_labels)) {
+            return true;
+        }
+        return false;
+    };
+    c3_chart_internal_fn.getDataLabelLength = function (min, max, key) {
+        var $$ = this,
+            lengths = [0, 0],
+            paddingCoef = 1.3;
+        $$.selectChart.select('svg').selectAll('.dummy').data([min, max]).enter().append('text').text(function (d) {
+            return $$.dataLabelFormat(d.id)(d);
+        }).each(function (d, i) {
+            lengths[i] = this.getBoundingClientRect()[key] * paddingCoef;
+        }).remove();
+        return lengths;
+    };
+    c3_chart_internal_fn.isNoneArc = function (d) {
+        return this.hasTarget(this.data.targets, d.id);
+    }, c3_chart_internal_fn.isArc = function (d) {
+        return 'data' in d && this.hasTarget(this.data.targets, d.data.id);
+    };
+    c3_chart_internal_fn.findSameXOfValues = function (values, index) {
+        var i,
+            targetX = values[index].x,
+            sames = [];
+        for (i = index - 1; i >= 0; i--) {
+            if (targetX !== values[i].x) {
+                break;
+            }
+            sames.push(values[i]);
+        }
+        for (i = index; i < values.length; i++) {
+            if (targetX !== values[i].x) {
+                break;
+            }
+            sames.push(values[i]);
+        }
+        return sames;
+    };
+    c3_chart_internal_fn.findClosestFromTargets = function (targets, pos) {
+        var $$ = this,
+            candidates;
+        candidates = targets.map(function (target) {
+            return $$.findClosest(target.values, pos);
+        });
+        return $$.findClosest(candidates, pos);
+    };
+    c3_chart_internal_fn.findClosest = function (values, pos) {
+        var $$ = this,
+            minDist = $$.config.point_sensitivity,
+            closest;
+        values.filter(function (v) {
+            return v && $$.isBarType(v.id);
+        }).forEach(function (v) {
+            var shape = $$.main.select('.' + CLASS.bars + $$.getTargetSelectorSuffix(v.id) + ' .' + CLASS.bar + '-' + v.index).node();
+            if (!closest && $$.isWithinBar(shape)) {
+                closest = v;
+            }
+        });
+        values.filter(function (v) {
+            return v && !$$.isBarType(v.id);
+        }).forEach(function (v) {
+            var d = $$.dist(v, pos);
+            if (d < minDist) {
+                minDist = d;
+                closest = v;
+            }
+        });
+        return closest;
+    };
+    c3_chart_internal_fn.dist = function (data, pos) {
+        var $$ = this,
+            config = $$.config,
+            xIndex = config.axis_rotated ? 1 : 0,
+            yIndex = config.axis_rotated ? 0 : 1,
+            y = $$.circleY(data, data.index),
+            x = $$.x(data.x);
+        return Math.sqrt(Math.pow(x - pos[xIndex], 2) + Math.pow(y - pos[yIndex], 2));
+    };
+    c3_chart_internal_fn.convertValuesToStep = function (values) {
+        var converted = [].concat(values),
+            i;
+        if (!this.isCategorized()) {
+            return values;
+        }
+        for (i = values.length + 1; 0 < i; i--) {
+            converted[i] = converted[i - 1];
+        }
+        converted[0] = {
+            x: converted[0].x - 1,
+            value: converted[0].value,
+            id: converted[0].id
         };
-    }
-};
-c3_chart_internal_fn.getTooltipContent = function (d, defaultTitleFormat, defaultValueFormat, color) {
-    var $$ = this,
-        config = $$.config,
-        titleFormat = config.tooltip_format_title || defaultTitleFormat,
-        nameFormat = config.tooltip_format_name || function (name) {
-        return name;
-    },
-        valueFormat = config.tooltip_format_value || defaultValueFormat,
-        text,
-        i,
-        title,
-        value,
-        name,
-        bgcolor;
-    var tooltipSortFunction = this.getTooltipSortFunction();
-    if (tooltipSortFunction) {
-        d.sort(tooltipSortFunction);
-    }
-    for (i = 0; i < d.length; i++) {
-        if (!(d[i] && (d[i].value || d[i].value === 0))) {
-            continue;
+        converted[values.length + 1] = {
+            x: converted[values.length].x + 1,
+            value: converted[values.length].value,
+            id: converted[values.length].id
+        };
+        return converted;
+    };
+    c3_chart_internal_fn.updateDataAttributes = function (name, attrs) {
+        var $$ = this,
+            config = $$.config,
+            current = config['data_' + name];
+        if (typeof attrs === 'undefined') {
+            return current;
         }
-        if (!text) {
-            title = sanitise(titleFormat ? titleFormat(d[i].x) : d[i].x);
-            text = "<table class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
-        }
-        value = sanitise(valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index, d));
-        if (value !== undefined) {
-            if (d[i].name === null) {
-                continue;
+        Object.keys(attrs).forEach(function (id) {
+            current[id] = attrs[id];
+        });
+        $$.redraw({ withLegend: true });
+        return current;
+    };
+    c3_chart_internal_fn.load = function (targets, args) {
+        var $$ = this;
+        if (targets) {
+            if (args.filter) {
+                targets = targets.filter(args.filter);
             }
-            name = sanitise(nameFormat(d[i].name, d[i].ratio, d[i].id, d[i].index));
-            bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
-            text += "<tr class='" + $$.CLASS.tooltipName + "-" + $$.getTargetSelectorSuffix(d[i].id) + "'>";
-            text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + name + "</td>";
-            text += "<td class='value'>" + value + "</td>";
-            text += "</tr>";
+            if (args.type || args.types) {
+                targets.forEach(function (t) {
+                    var type = args.types && args.types[t.id] ? args.types[t.id] : args.type;
+                    $$.setTargetType(t.id, type);
+                });
+            }
+            $$.data.targets.forEach(function (d) {
+                for (var i = 0; i < targets.length; i++) {
+                    if (d.id === targets[i].id) {
+                        d.values = targets[i].values;
+                        targets.splice(i, 1);
+                        break;
+                    }
+                }
+            });
+            $$.data.targets = $$.data.targets.concat(targets);
         }
-    }
-    return text + "</table>";
-};
-c3_chart_internal_fn.tooltipPosition = function (dataToShow, tWidth, tHeight, element) {
-    var $$ = this,
-        config = $$.config,
-        d3 = $$.d3;
-    var svgLeft, tooltipLeft, tooltipRight, tooltipTop, chartRight;
-    var forArc = $$.hasArcType(),
-        mouse = d3.mouse(element);
-    if (forArc) {
-        tooltipLeft = ($$.width - ($$.isLegendRight ? $$.getLegendWidth() : 0)) / 2 + mouse[0];
-        tooltipTop = $$.height / 2 + mouse[1] + 20;
-    } else {
-        svgLeft = $$.getSvgLeft(true);
-        if (config.axis_rotated) {
-            tooltipLeft = svgLeft + mouse[0] + 100;
-            tooltipRight = tooltipLeft + tWidth;
-            chartRight = $$.currentWidth - $$.getCurrentPaddingRight();
-            tooltipTop = $$.x(dataToShow[0].x) + 20;
+        $$.updateTargets($$.data.targets);
+        $$.redraw({ withUpdateOrgXDomain: true, withUpdateXDomain: true, withLegend: true });
+        if (args.done) {
+            args.done();
+        }
+    };
+    c3_chart_internal_fn.loadFromArgs = function (args) {
+        var $$ = this;
+        if (args.data) {
+            $$.load($$.convertDataToTargets(args.data), args);
+        } else if (args.url) {
+            $$.convertUrlToData(args.url, args.mimeType, args.headers, args.keys, function (data) {
+                $$.load($$.convertDataToTargets(data), args);
+            });
+        } else if (args.json) {
+            $$.load($$.convertDataToTargets($$.convertJsonToData(args.json, args.keys)), args);
+        } else if (args.rows) {
+            $$.load($$.convertDataToTargets($$.convertRowsToData(args.rows)), args);
+        } else if (args.columns) {
+            $$.load($$.convertDataToTargets($$.convertColumnsToData(args.columns)), args);
         } else {
-            tooltipLeft = svgLeft + $$.getCurrentPaddingLeft(true) + $$.x(dataToShow[0].x) + 20;
-            tooltipRight = tooltipLeft + tWidth;
-            chartRight = svgLeft + $$.currentWidth - $$.getCurrentPaddingRight();
-            tooltipTop = mouse[1] + 15;
+            $$.load(null, args);
         }
-        if (tooltipRight > chartRight) {
-            tooltipLeft -= tooltipRight - chartRight + 20;
+    };
+    c3_chart_internal_fn.unload = function (targetIds, done) {
+        var $$ = this;
+        if (!done) {
+            done = function done() {};
         }
-        if (tooltipTop + tHeight > $$.currentHeight) {
-            tooltipTop -= tHeight + 30;
-        }
-    }
-    if (tooltipTop < 0) {
-        tooltipTop = 0;
-    }
-    return { top: tooltipTop, left: tooltipLeft };
-};
-c3_chart_internal_fn.showTooltip = function (selectedData, element) {
-    var $$ = this,
-        config = $$.config;
-    var tWidth, tHeight, position;
-    var forArc = $$.hasArcType(),
-        dataToShow = selectedData.filter(function (d) {
-        return d && isValue(d.value);
-    }),
-        positionFunction = config.tooltip_position || c3_chart_internal_fn.tooltipPosition;
-    if (dataToShow.length === 0 || !config.tooltip_show) {
-        return;
-    }
-    $$.tooltip.html(config.tooltip_contents.call($$, selectedData, $$.axis.getXAxisTickFormat(), $$.getYFormat(forArc), $$.color)).style("display", "block");
-    tWidth = $$.tooltip.property('offsetWidth');
-    tHeight = $$.tooltip.property('offsetHeight');
-    position = positionFunction.call(this, dataToShow, tWidth, tHeight, element);
-    $$.tooltip.style("top", position.top + "px").style("left", position.left + 'px');
-};
-c3_chart_internal_fn.hideTooltip = function () {
-    this.tooltip.style("display", "none");
-};
-c3_chart_internal_fn.setTargetType = function (targetIds, type) {
-    var $$ = this,
-        config = $$.config;
-    $$.mapToTargetIds(targetIds).forEach(function (id) {
-        $$.withoutFadeIn[id] = type === config.data_types[id];
-        config.data_types[id] = type;
-    });
-    if (!targetIds) {
-        config.data_type = type;
-    }
-};
-c3_chart_internal_fn.hasType = function (type, targets) {
-    var $$ = this,
-        types = $$.config.data_types,
-        has = false;
-    targets = targets || $$.data.targets;
-    if (targets && targets.length) {
-        targets.forEach(function (target) {
-            var t = types[target.id];
-            if (t && t.indexOf(type) >= 0 || !t && type === 'line') {
-                has = true;
-            }
+        targetIds = targetIds.filter(function (id) {
+            return $$.hasTarget($$.data.targets, id);
         });
-    } else if (Object.keys(types).length) {
-        Object.keys(types).forEach(function (id) {
-            if (types[id] === type) {
-                has = true;
-            }
-        });
-    } else {
-        has = $$.config.data_type === type;
-    }
-    return has;
-};
-c3_chart_internal_fn.hasArcType = function (targets) {
-    return this.hasType('pie', targets) || this.hasType('donut', targets) || this.hasType('gauge', targets);
-};
-c3_chart_internal_fn.isLineType = function (d) {
-    var config = this.config,
-        id = isString(d) ? d : d.id;
-    return !config.data_types[id] || ['line', 'spline', 'area', 'area-spline', 'step', 'area-step'].indexOf(config.data_types[id]) >= 0;
-};
-c3_chart_internal_fn.isStepType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return ['step', 'area-step'].indexOf(this.config.data_types[id]) >= 0;
-};
-c3_chart_internal_fn.isSplineType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return ['spline', 'area-spline'].indexOf(this.config.data_types[id]) >= 0;
-};
-c3_chart_internal_fn.isAreaType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return ['area', 'area-spline', 'area-step'].indexOf(this.config.data_types[id]) >= 0;
-};
-c3_chart_internal_fn.isBarType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return this.config.data_types[id] === 'bar';
-};
-c3_chart_internal_fn.isScatterType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return this.config.data_types[id] === 'scatter';
-};
-c3_chart_internal_fn.isPieType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return this.config.data_types[id] === 'pie';
-};
-c3_chart_internal_fn.isGaugeType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return this.config.data_types[id] === 'gauge';
-};
-c3_chart_internal_fn.isDonutType = function (d) {
-    var id = isString(d) ? d : d.id;
-    return this.config.data_types[id] === 'donut';
-};
-c3_chart_internal_fn.isArcType = function (d) {
-    return this.isPieType(d) || this.isDonutType(d) || this.isGaugeType(d);
-};
-c3_chart_internal_fn.lineData = function (d) {
-    return this.isLineType(d) ? [d] : [];
-};
-c3_chart_internal_fn.arcData = function (d) {
-    return this.isArcType(d.data) ? [d] : [];
-};
-/* not used
- function scatterData(d) {
- return isScatterType(d) ? d.values : [];
- }
- */
-c3_chart_internal_fn.barData = function (d) {
-    return this.isBarType(d) ? d.values : [];
-};
-c3_chart_internal_fn.lineOrScatterData = function (d) {
-    return this.isLineType(d) || this.isScatterType(d) ? d.values : [];
-};
-c3_chart_internal_fn.barOrLineData = function (d) {
-    return this.isBarType(d) || this.isLineType(d) ? d.values : [];
-};
-c3_chart_internal_fn.isInterpolationType = function (type) {
-    return ['linear', 'linear-closed', 'basis', 'basis-open', 'basis-closed', 'bundle', 'cardinal', 'cardinal-open', 'cardinal-closed', 'monotone'].indexOf(type) >= 0;
-};
-c3_chart_internal_fn.isSafari = function () {
-    var ua = window.navigator.userAgent;
-    return ua.indexOf('Safari') >= 0 && ua.indexOf('Chrome') < 0;
-};
-c3_chart_internal_fn.isChrome = function () {
-    var ua = window.navigator.userAgent;
-    return ua.indexOf('Chrome') >= 0;
-};
-c3_chart_internal_fn.initZoom = function () {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config,
-        startEvent;
-    $$.zoom = d3.behavior.zoom().on("zoomstart", function () {
-        startEvent = d3.event.sourceEvent;
-        $$.zoom.altDomain = d3.event.sourceEvent.altKey ? $$.x.orgDomain() : null;
-        config.zoom_onzoomstart.call($$.api, d3.event.sourceEvent);
-    }).on("zoom", function () {
-        $$.redrawForZoom.call($$);
-    }).on('zoomend', function () {
-        var event = d3.event.sourceEvent;
-        if (event && startEvent.clientX === event.clientX && startEvent.clientY === event.clientY) {
+        if (!targetIds || targetIds.length === 0) {
+            done();
             return;
         }
-        $$.redrawEventRect();
-        $$.updateZoom();
-        config.zoom_onzoomend.call($$.api, $$.x.orgDomain());
-    });
-    $$.zoom.scale = function (scale) {
-        return config.axis_rotated ? this.y(scale) : this.x(scale);
+        $$.svg.selectAll(targetIds.map(function (id) {
+            return $$.selectorTarget(id);
+        })).transition().style('opacity', 0).remove().call($$.endall, done);
+        targetIds.forEach(function (id) {
+            $$.withoutFadeIn[id] = false;
+            if ($$.legend) {
+                $$.legend.selectAll('.' + CLASS.legendItem + $$.getTargetSelectorSuffix(id)).remove();
+            }
+            $$.data.targets = $$.data.targets.filter(function (t) {
+                return t.id !== id;
+            });
+        });
     };
-    $$.zoom.orgScaleExtent = function () {
-        var extent = config.zoom_extent ? config.zoom_extent : [1, 10];
-        return [extent[0], Math.max($$.getMaxDataCount() / extent[1], extent[1])];
+    c3_chart_internal_fn.getYDomainMin = function (targets) {
+        var $$ = this,
+            config = $$.config,
+            ids = $$.mapToIds(targets),
+            ys = $$.getValuesAsIdKeyed(targets),
+            j,
+            k,
+            baseId,
+            idsInGroup,
+            id,
+            hasNegativeValue;
+        if (config.data_groups.length > 0) {
+            hasNegativeValue = $$.hasNegativeValueInTargets(targets);
+            for (j = 0; j < config.data_groups.length; j++) {
+                idsInGroup = config.data_groups[j].filter(function (id) {
+                    return ids.indexOf(id) >= 0;
+                });
+                if (idsInGroup.length === 0) {
+                    continue;
+                }
+                baseId = idsInGroup[0];
+                if (hasNegativeValue && ys[baseId]) {
+                    ys[baseId].forEach(function (v, i) {
+                        ys[baseId][i] = v < 0 ? v : 0;
+                    });
+                }
+                for (k = 1; k < idsInGroup.length; k++) {
+                    id = idsInGroup[k];
+                    if (!ys[id]) {
+                        continue;
+                    }
+                    ys[id].forEach(function (v, i) {
+                        if ($$.axis.getId(id) === $$.axis.getId(baseId) && ys[baseId] && !(hasNegativeValue && +v > 0)) {
+                            ys[baseId][i] += +v;
+                        }
+                    });
+                }
+            }
+        }
+        return $$.d3.min(Object.keys(ys).map(function (key) {
+            return $$.d3.min(ys[key]);
+        }));
     };
-    $$.zoom.updateScaleExtent = function () {
-        var ratio = diffDomain($$.x.orgDomain()) / diffDomain($$.getZoomDomain()),
-            extent = this.orgScaleExtent();
-        this.scaleExtent([extent[0] * ratio, extent[1] * ratio]);
-        return this;
+    c3_chart_internal_fn.getYDomainMax = function (targets) {
+        var $$ = this,
+            config = $$.config,
+            ids = $$.mapToIds(targets),
+            ys = $$.getValuesAsIdKeyed(targets),
+            j,
+            k,
+            baseId,
+            idsInGroup,
+            id,
+            hasPositiveValue;
+        if (config.data_groups.length > 0) {
+            hasPositiveValue = $$.hasPositiveValueInTargets(targets);
+            for (j = 0; j < config.data_groups.length; j++) {
+                idsInGroup = config.data_groups[j].filter(function (id) {
+                    return ids.indexOf(id) >= 0;
+                });
+                if (idsInGroup.length === 0) {
+                    continue;
+                }
+                baseId = idsInGroup[0];
+                if (hasPositiveValue && ys[baseId]) {
+                    ys[baseId].forEach(function (v, i) {
+                        ys[baseId][i] = v > 0 ? v : 0;
+                    });
+                }
+                for (k = 1; k < idsInGroup.length; k++) {
+                    id = idsInGroup[k];
+                    if (!ys[id]) {
+                        continue;
+                    }
+                    ys[id].forEach(function (v, i) {
+                        if ($$.axis.getId(id) === $$.axis.getId(baseId) && ys[baseId] && !(hasPositiveValue && +v < 0)) {
+                            ys[baseId][i] += +v;
+                        }
+                    });
+                }
+            }
+        }
+        return $$.d3.max(Object.keys(ys).map(function (key) {
+            return $$.d3.max(ys[key]);
+        }));
     };
-};
-c3_chart_internal_fn.getZoomDomain = function () {
-    var $$ = this,
-        config = $$.config,
-        d3 = $$.d3,
-        min = d3.min([$$.orgXDomain[0], config.zoom_x_min]),
-        max = d3.max([$$.orgXDomain[1], config.zoom_x_max]);
-    return [min, max];
-};
-c3_chart_internal_fn.updateZoom = function () {
-    var $$ = this,
-        z = $$.config.zoom_enabled ? $$.zoom : function () {};
-    $$.main.select('.' + CLASS.zoomRect).call(z).on("dblclick.zoom", null);
-    $$.main.selectAll('.' + CLASS.eventRect).call(z).on("dblclick.zoom", null);
-};
-c3_chart_internal_fn.redrawForZoom = function () {
-    var $$ = this,
-        d3 = $$.d3,
-        config = $$.config,
-        zoom = $$.zoom,
-        x = $$.x;
-    if (!config.zoom_enabled) {
-        return;
-    }
-    if ($$.filterTargetsToShow($$.data.targets).length === 0) {
-        return;
-    }
-    if (d3.event.sourceEvent.type === 'mousemove' && zoom.altDomain) {
-        x.domain(zoom.altDomain);
-        zoom.scale(x).updateScaleExtent();
-        return;
-    }
-    if ($$.isCategorized() && x.orgDomain()[0] === $$.orgXDomain[0]) {
-        x.domain([$$.orgXDomain[0] - 1e-10, x.orgDomain()[1]]);
-    }
-    $$.redraw({
-        withTransition: false,
-        withY: config.zoom_rescale,
-        withSubchart: false,
-        withEventRect: false,
-        withDimension: false
-    });
-    if (d3.event.sourceEvent.type === 'mousemove') {
-        $$.cancelClick = true;
-    }
-    config.zoom_onzoom.call($$.api, x.orgDomain());
-};
-return c3$1;
+    c3_chart_internal_fn.getYDomain = function (targets, axisId, xDomain) {
+        var $$ = this,
+            config = $$.config,
+            targetsByAxisId = targets.filter(function (t) {
+            return $$.axis.getId(t.id) === axisId;
+        }),
+            yTargets = xDomain ? $$.filterByXDomain(targetsByAxisId, xDomain) : targetsByAxisId,
+            yMin = axisId === 'y2' ? config.axis_y2_min : config.axis_y_min,
+            yMax = axisId === 'y2' ? config.axis_y2_max : config.axis_y_max,
+            yDomainMin = $$.getYDomainMin(yTargets),
+            yDomainMax = $$.getYDomainMax(yTargets),
+            domain,
+            domainLength,
+            padding,
+            padding_top,
+            padding_bottom,
+            center = axisId === 'y2' ? config.axis_y2_center : config.axis_y_center,
+            yDomainAbs,
+            lengths,
+            diff,
+            ratio,
+            isAllPositive,
+            isAllNegative,
+            isZeroBased = $$.hasType('bar', yTargets) && config.bar_zerobased || $$.hasType('area', yTargets) && config.area_zerobased,
+            isInverted = axisId === 'y2' ? config.axis_y2_inverted : config.axis_y_inverted,
+            showHorizontalDataLabel = $$.hasDataLabel() && config.axis_rotated,
+            showVerticalDataLabel = $$.hasDataLabel() && !config.axis_rotated;
+        yDomainMin = isValue(yMin) ? yMin : isValue(yMax) ? yDomainMin < yMax ? yDomainMin : yMax - 10 : yDomainMin;
+        yDomainMax = isValue(yMax) ? yMax : isValue(yMin) ? yMin < yDomainMax ? yDomainMax : yMin + 10 : yDomainMax;
+        if (yTargets.length === 0) {
+            return axisId === 'y2' ? $$.y2.domain() : $$.y.domain();
+        }
+        if (isNaN(yDomainMin)) {
+            yDomainMin = 0;
+        }
+        if (isNaN(yDomainMax)) {
+            yDomainMax = yDomainMin;
+        }
+        if (yDomainMin === yDomainMax) {
+            yDomainMin < 0 ? yDomainMax = 0 : yDomainMin = 0;
+        }
+        isAllPositive = yDomainMin >= 0 && yDomainMax >= 0;
+        isAllNegative = yDomainMin <= 0 && yDomainMax <= 0;
+        if (isValue(yMin) && isAllPositive || isValue(yMax) && isAllNegative) {
+            isZeroBased = false;
+        }
+        if (isZeroBased) {
+            if (isAllPositive) {
+                yDomainMin = 0;
+            }
+            if (isAllNegative) {
+                yDomainMax = 0;
+            }
+        }
+        domainLength = Math.abs(yDomainMax - yDomainMin);
+        padding = padding_top = padding_bottom = domainLength * 0.1;
+        if (typeof center !== 'undefined') {
+            yDomainAbs = Math.max(Math.abs(yDomainMin), Math.abs(yDomainMax));
+            yDomainMax = center + yDomainAbs;
+            yDomainMin = center - yDomainAbs;
+        }
+        if (showHorizontalDataLabel) {
+            lengths = $$.getDataLabelLength(yDomainMin, yDomainMax, 'width');
+            diff = diffDomain($$.y.range());
+            ratio = [lengths[0] / diff, lengths[1] / diff];
+            padding_top += domainLength * (ratio[1] / (1 - ratio[0] - ratio[1]));
+            padding_bottom += domainLength * (ratio[0] / (1 - ratio[0] - ratio[1]));
+        } else if (showVerticalDataLabel) {
+            lengths = $$.getDataLabelLength(yDomainMin, yDomainMax, 'height');
+            padding_top += $$.axis.convertPixelsToAxisPadding(lengths[1], domainLength);
+            padding_bottom += $$.axis.convertPixelsToAxisPadding(lengths[0], domainLength);
+        }
+        if (axisId === 'y' && notEmpty(config.axis_y_padding)) {
+            padding_top = $$.axis.getPadding(config.axis_y_padding, 'top', padding_top, domainLength);
+            padding_bottom = $$.axis.getPadding(config.axis_y_padding, 'bottom', padding_bottom, domainLength);
+        }
+        if (axisId === 'y2' && notEmpty(config.axis_y2_padding)) {
+            padding_top = $$.axis.getPadding(config.axis_y2_padding, 'top', padding_top, domainLength);
+            padding_bottom = $$.axis.getPadding(config.axis_y2_padding, 'bottom', padding_bottom, domainLength);
+        }
+        if (isZeroBased) {
+            if (isAllPositive) {
+                padding_bottom = yDomainMin;
+            }
+            if (isAllNegative) {
+                padding_top = -yDomainMax;
+            }
+        }
+        domain = [yDomainMin - padding_bottom, yDomainMax + padding_top];
+        return isInverted ? domain.reverse() : domain;
+    };
+    c3_chart_internal_fn.getXDomainMin = function (targets) {
+        var $$ = this,
+            config = $$.config;
+        return isDefined(config.axis_x_min) ? $$.isTimeSeries() ? this.parseDate(config.axis_x_min) : config.axis_x_min : $$.d3.min(targets, function (t) {
+            return $$.d3.min(t.values, function (v) {
+                return v.x;
+            });
+        });
+    };
+    c3_chart_internal_fn.getXDomainMax = function (targets) {
+        var $$ = this,
+            config = $$.config;
+        return isDefined(config.axis_x_max) ? $$.isTimeSeries() ? this.parseDate(config.axis_x_max) : config.axis_x_max : $$.d3.max(targets, function (t) {
+            return $$.d3.max(t.values, function (v) {
+                return v.x;
+            });
+        });
+    };
+    c3_chart_internal_fn.getXDomainPadding = function (domain) {
+        var $$ = this,
+            config = $$.config,
+            diff = domain[1] - domain[0],
+            maxDataCount,
+            padding,
+            paddingLeft,
+            paddingRight;
+        if ($$.isCategorized()) {
+            padding = 0;
+        } else if ($$.hasType('bar')) {
+            maxDataCount = $$.getMaxDataCount();
+            padding = maxDataCount > 1 ? diff / (maxDataCount - 1) / 2 : 0.5;
+        } else {
+            padding = diff * 0.01;
+        }
+        if (_typeof(config.axis_x_padding) === 'object' && notEmpty(config.axis_x_padding)) {
+            paddingLeft = isValue(config.axis_x_padding.left) ? config.axis_x_padding.left : padding;
+            paddingRight = isValue(config.axis_x_padding.right) ? config.axis_x_padding.right : padding;
+        } else if (typeof config.axis_x_padding === 'number') {
+            paddingLeft = paddingRight = config.axis_x_padding;
+        } else {
+            paddingLeft = paddingRight = padding;
+        }
+        return { left: paddingLeft, right: paddingRight };
+    };
+    c3_chart_internal_fn.getXDomain = function (targets) {
+        var $$ = this,
+            xDomain = [$$.getXDomainMin(targets), $$.getXDomainMax(targets)],
+            firstX = xDomain[0],
+            lastX = xDomain[1],
+            padding = $$.getXDomainPadding(xDomain),
+            min = 0,
+            max = 0;
+        if (firstX - lastX === 0 && !$$.isCategorized()) {
+            if ($$.isTimeSeries()) {
+                firstX = new Date(firstX.getTime() * 0.5);
+                lastX = new Date(lastX.getTime() * 1.5);
+            } else {
+                firstX = firstX === 0 ? 1 : firstX * 0.5;
+                lastX = lastX === 0 ? -1 : lastX * 1.5;
+            }
+        }
+        if (firstX || firstX === 0) {
+            min = $$.isTimeSeries() ? new Date(firstX.getTime() - padding.left) : firstX - padding.left;
+        }
+        if (lastX || lastX === 0) {
+            max = $$.isTimeSeries() ? new Date(lastX.getTime() + padding.right) : lastX + padding.right;
+        }
+        return [min, max];
+    };
+    c3_chart_internal_fn.updateXDomain = function (targets, withUpdateXDomain, withUpdateOrgXDomain, withTrim, domain) {
+        var $$ = this,
+            config = $$.config;
+        if (withUpdateOrgXDomain) {
+            $$.x.domain(domain ? domain : $$.d3.extent($$.getXDomain(targets)));
+            $$.orgXDomain = $$.x.domain();
+            if (config.zoom_enabled) {
+                $$.zoom.scale($$.x).updateScaleExtent();
+            }
+            $$.subX.domain($$.x.domain());
+            if ($$.brush) {
+                $$.brush.scale($$.subX);
+            }
+        }
+        if (withUpdateXDomain) {
+            $$.x.domain(domain ? domain : !$$.brush || $$.brush.empty() ? $$.orgXDomain : $$.brush.extent());
+            if (config.zoom_enabled) {
+                $$.zoom.scale($$.x).updateScaleExtent();
+            }
+        }
+        if (withTrim) {
+            $$.x.domain($$.trimXDomain($$.x.orgDomain()));
+        }
+        return $$.x.domain();
+    };
+    c3_chart_internal_fn.trimXDomain = function (domain) {
+        var zoomDomain = this.getZoomDomain(),
+            min = zoomDomain[0],
+            max = zoomDomain[1];
+        if (domain[0] <= min) {
+            domain[1] = +domain[1] + (min - domain[0]);
+            domain[0] = min;
+        }
+        if (max <= domain[1]) {
+            domain[0] = +domain[0] - (domain[1] - max);
+            domain[1] = max;
+        }
+        return domain;
+    };
+    c3_chart_internal_fn.drag = function (mouse) {
+        var $$ = this,
+            config = $$.config,
+            main = $$.main,
+            d3 = $$.d3;
+        var sx, sy, mx, my, minX, maxX, minY, maxY;
+        if ($$.hasArcType()) {
+            return;
+        }
+        if (!config.data_selection_enabled) {
+            return;
+        }
+        if (config.zoom_enabled && !$$.zoom.altDomain) {
+            return;
+        }
+        if (!config.data_selection_multiple) {
+            return;
+        }
+        sx = $$.dragStart[0];
+        sy = $$.dragStart[1];
+        mx = mouse[0];
+        my = mouse[1];
+        minX = Math.min(sx, mx);
+        maxX = Math.max(sx, mx);
+        minY = config.data_selection_grouped ? $$.margin.top : Math.min(sy, my);
+        maxY = config.data_selection_grouped ? $$.height : Math.max(sy, my);
+        main.select('.' + CLASS.dragarea).attr('x', minX).attr('y', minY).attr('width', maxX - minX).attr('height', maxY - minY);
+        main.selectAll('.' + CLASS.shapes).selectAll('.' + CLASS.shape).filter(function (d) {
+            return config.data_selection_isselectable(d);
+        }).each(function (d, i) {
+            var shape = d3.select(this),
+                isSelected = shape.classed(CLASS.SELECTED),
+                isIncluded = shape.classed(CLASS.INCLUDED),
+                _x,
+                _y,
+                _w,
+                _h,
+                toggle,
+                isWithin = false,
+                box;
+            if (shape.classed(CLASS.circle)) {
+                _x = shape.attr("cx") * 1;
+                _y = shape.attr("cy") * 1;
+                toggle = $$.togglePoint;
+                isWithin = minX < _x && _x < maxX && minY < _y && _y < maxY;
+            } else if (shape.classed(CLASS.bar)) {
+                box = getPathBox(this);
+                _x = box.x;
+                _y = box.y;
+                _w = box.width;
+                _h = box.height;
+                toggle = $$.togglePath;
+                isWithin = !(maxX < _x || _x + _w < minX) && !(maxY < _y || _y + _h < minY);
+            } else {
+                return;
+            }
+            if (isWithin ^ isIncluded) {
+                shape.classed(CLASS.INCLUDED, !isIncluded);
+                shape.classed(CLASS.SELECTED, !isSelected);
+                toggle.call($$, !isSelected, shape, d, i);
+            }
+        });
+    };
+    c3_chart_internal_fn.dragstart = function (mouse) {
+        var $$ = this,
+            config = $$.config;
+        if ($$.hasArcType()) {
+            return;
+        }
+        if (!config.data_selection_enabled) {
+            return;
+        }
+        $$.dragStart = mouse;
+        $$.main.select('.' + CLASS.chart).append('rect').attr('class', CLASS.dragarea).style('opacity', 0.1);
+        $$.dragging = true;
+    };
+    c3_chart_internal_fn.dragend = function () {
+        var $$ = this,
+            config = $$.config;
+        if ($$.hasArcType()) {
+            return;
+        }
+        if (!config.data_selection_enabled) {
+            return;
+        }
+        $$.main.select('.' + CLASS.dragarea).transition().duration(100).style('opacity', 0).remove();
+        $$.main.selectAll('.' + CLASS.shape).classed(CLASS.INCLUDED, false);
+        $$.dragging = false;
+    };
+    c3_chart_internal_fn.getYFormat = function (forArc) {
+        var $$ = this,
+            formatForY = forArc && !$$.hasType('gauge') ? $$.defaultArcValueFormat : $$.yFormat,
+            formatForY2 = forArc && !$$.hasType('gauge') ? $$.defaultArcValueFormat : $$.y2Format;
+        return function (v, ratio, id) {
+            var format = $$.axis.getId(id) === 'y2' ? formatForY2 : formatForY;
+            return format.call($$, v, ratio);
+        };
+    };
+    c3_chart_internal_fn.yFormat = function (v) {
+        var $$ = this,
+            config = $$.config,
+            format = config.axis_y_tick_format ? config.axis_y_tick_format : $$.defaultValueFormat;
+        return format(v);
+    };
+    c3_chart_internal_fn.y2Format = function (v) {
+        var $$ = this,
+            config = $$.config,
+            format = config.axis_y2_tick_format ? config.axis_y2_tick_format : $$.defaultValueFormat;
+        return format(v);
+    };
+    c3_chart_internal_fn.defaultValueFormat = function (v) {
+        return isValue(v) ? +v : "";
+    };
+    c3_chart_internal_fn.defaultArcValueFormat = function (v, ratio) {
+        return (ratio * 100).toFixed(1) + '%';
+    };
+    c3_chart_internal_fn.dataLabelFormat = function (targetId) {
+        var $$ = this,
+            data_labels = $$.config.data_labels,
+            format,
+            defaultFormat = function defaultFormat(v) {
+            return isValue(v) ? +v : "";
+        };
+        if (typeof data_labels.format === 'function') {
+            format = data_labels.format;
+        } else if (_typeof(data_labels.format) === 'object') {
+            if (data_labels.format[targetId]) {
+                format = data_labels.format[targetId] === true ? defaultFormat : data_labels.format[targetId];
+            } else {
+                format = function format() {
+                    return '';
+                };
+            }
+        } else {
+            format = defaultFormat;
+        }
+        return format;
+    };
+    c3_chart_internal_fn.initGrid = function () {
+        var $$ = this,
+            config = $$.config,
+            d3 = $$.d3;
+        $$.grid = $$.main.append('g').attr("clip-path", $$.clipPathForGrid).attr('class', CLASS.grid);
+        if (config.grid_x_show) {
+            $$.grid.append("g").attr("class", CLASS.xgrids);
+        }
+        if (config.grid_y_show) {
+            $$.grid.append('g').attr('class', CLASS.ygrids);
+        }
+        if (config.grid_focus_show) {
+            $$.grid.append('g').attr("class", CLASS.xgridFocus).append('line').attr('class', CLASS.xgridFocus);
+        }
+        $$.xgrid = d3.selectAll([]);
+        if (!config.grid_lines_front) {
+            $$.initGridLines();
+        }
+    };
+    c3_chart_internal_fn.initGridLines = function () {
+        var $$ = this,
+            d3 = $$.d3;
+        $$.gridLines = $$.main.append('g').attr("clip-path", $$.clipPathForGrid).attr('class', CLASS.grid + ' ' + CLASS.gridLines);
+        $$.gridLines.append('g').attr("class", CLASS.xgridLines);
+        $$.gridLines.append('g').attr('class', CLASS.ygridLines);
+        $$.xgridLines = d3.selectAll([]);
+    };
+    c3_chart_internal_fn.updateXGrid = function (withoutUpdate) {
+        var $$ = this,
+            config = $$.config,
+            d3 = $$.d3,
+            xgridData = $$.generateGridData(config.grid_x_type, $$.x),
+            tickOffset = $$.isCategorized() ? $$.xAxis.tickOffset() : 0;
+        $$.xgridAttr = config.axis_rotated ? {
+            'x1': 0,
+            'x2': $$.width,
+            'y1': function y1(d) {
+                return $$.x(d) - tickOffset;
+            },
+            'y2': function y2(d) {
+                return $$.x(d) - tickOffset;
+            }
+        } : {
+            'x1': function x1(d) {
+                return $$.x(d) + tickOffset;
+            },
+            'x2': function x2(d) {
+                return $$.x(d) + tickOffset;
+            },
+            'y1': 0,
+            'y2': $$.height
+        };
+        $$.xgrid = $$.main.select('.' + CLASS.xgrids).selectAll('.' + CLASS.xgrid).data(xgridData);
+        $$.xgrid.enter().append('line').attr("class", CLASS.xgrid);
+        if (!withoutUpdate) {
+            $$.xgrid.attr($$.xgridAttr).style("opacity", function () {
+                return +d3.select(this).attr(config.axis_rotated ? 'y1' : 'x1') === (config.axis_rotated ? $$.height : 0) ? 0 : 1;
+            });
+        }
+        $$.xgrid.exit().remove();
+    };
+    c3_chart_internal_fn.updateYGrid = function () {
+        var $$ = this,
+            config = $$.config,
+            gridValues = $$.yAxis.tickValues() || $$.y.ticks(config.grid_y_ticks);
+        $$.ygrid = $$.main.select('.' + CLASS.ygrids).selectAll('.' + CLASS.ygrid).data(gridValues);
+        $$.ygrid.enter().append('line').attr('class', CLASS.ygrid);
+        $$.ygrid.attr("x1", config.axis_rotated ? $$.y : 0).attr("x2", config.axis_rotated ? $$.y : $$.width).attr("y1", config.axis_rotated ? 0 : $$.y).attr("y2", config.axis_rotated ? $$.height : $$.y);
+        $$.ygrid.exit().remove();
+        $$.smoothLines($$.ygrid, 'grid');
+    };
+    c3_chart_internal_fn.gridTextAnchor = function (d) {
+        return d.position ? d.position : "end";
+    };
+    c3_chart_internal_fn.gridTextDx = function (d) {
+        return d.position === 'start' ? 4 : d.position === 'middle' ? 0 : -4;
+    };
+    c3_chart_internal_fn.xGridTextX = function (d) {
+        return d.position === 'start' ? -this.height : d.position === 'middle' ? -this.height / 2 : 0;
+    };
+    c3_chart_internal_fn.yGridTextX = function (d) {
+        return d.position === 'start' ? 0 : d.position === 'middle' ? this.width / 2 : this.width;
+    };
+    c3_chart_internal_fn.updateGrid = function (duration) {
+        var $$ = this,
+            main = $$.main,
+            config = $$.config,
+            xgridLine,
+            ygridLine,
+            yv;
+        $$.grid.style('visibility', $$.hasArcType() ? 'hidden' : 'visible');
+        main.select('line.' + CLASS.xgridFocus).style("visibility", "hidden");
+        if (config.grid_x_show) {
+            $$.updateXGrid();
+        }
+        $$.xgridLines = main.select('.' + CLASS.xgridLines).selectAll('.' + CLASS.xgridLine).data(config.grid_x_lines);
+        xgridLine = $$.xgridLines.enter().append('g').attr("class", function (d) {
+            return CLASS.xgridLine + (d['class'] ? ' ' + d['class'] : '');
+        });
+        xgridLine.append('line').style("opacity", 0);
+        xgridLine.append('text').attr("text-anchor", $$.gridTextAnchor).attr("transform", config.axis_rotated ? "" : "rotate(-90)").attr('dx', $$.gridTextDx).attr('dy', -5).style("opacity", 0);
+        $$.xgridLines.exit().transition().duration(duration).style("opacity", 0).remove();
+        if (config.grid_y_show) {
+            $$.updateYGrid();
+        }
+        $$.ygridLines = main.select('.' + CLASS.ygridLines).selectAll('.' + CLASS.ygridLine).data(config.grid_y_lines);
+        ygridLine = $$.ygridLines.enter().append('g').attr("class", function (d) {
+            return CLASS.ygridLine + (d['class'] ? ' ' + d['class'] : '');
+        });
+        ygridLine.append('line').style("opacity", 0);
+        ygridLine.append('text').attr("text-anchor", $$.gridTextAnchor).attr("transform", config.axis_rotated ? "rotate(-90)" : "").attr('dx', $$.gridTextDx).attr('dy', -5).style("opacity", 0);
+        yv = $$.yv.bind($$);
+        $$.ygridLines.select('line').transition().duration(duration).attr("x1", config.axis_rotated ? yv : 0).attr("x2", config.axis_rotated ? yv : $$.width).attr("y1", config.axis_rotated ? 0 : yv).attr("y2", config.axis_rotated ? $$.height : yv).style("opacity", 1);
+        $$.ygridLines.select('text').transition().duration(duration).attr("x", config.axis_rotated ? $$.xGridTextX.bind($$) : $$.yGridTextX.bind($$)).attr("y", yv).text(function (d) {
+            return d.text;
+        }).style("opacity", 1);
+        $$.ygridLines.exit().transition().duration(duration).style("opacity", 0).remove();
+    };
+    c3_chart_internal_fn.redrawGrid = function (withTransition) {
+        var $$ = this,
+            config = $$.config,
+            xv = $$.xv.bind($$),
+            lines = $$.xgridLines.select('line'),
+            texts = $$.xgridLines.select('text');
+        return [(withTransition ? lines.transition() : lines).attr("x1", config.axis_rotated ? 0 : xv).attr("x2", config.axis_rotated ? $$.width : xv).attr("y1", config.axis_rotated ? xv : 0).attr("y2", config.axis_rotated ? xv : $$.height).style("opacity", 1), (withTransition ? texts.transition() : texts).attr("x", config.axis_rotated ? $$.yGridTextX.bind($$) : $$.xGridTextX.bind($$)).attr("y", xv).text(function (d) {
+            return d.text;
+        }).style("opacity", 1)];
+    };
+    c3_chart_internal_fn.showXGridFocus = function (selectedData) {
+        var $$ = this,
+            config = $$.config,
+            dataToShow = selectedData.filter(function (d) {
+            return d && isValue(d.value);
+        }),
+            focusEl = $$.main.selectAll('line.' + CLASS.xgridFocus),
+            xx = $$.xx.bind($$);
+        if (!config.tooltip_show) {
+            return;
+        }
+        if ($$.hasType('scatter') || $$.hasArcType()) {
+            return;
+        }
+        focusEl.style("visibility", "visible").data([dataToShow[0]]).attr(config.axis_rotated ? 'y1' : 'x1', xx).attr(config.axis_rotated ? 'y2' : 'x2', xx);
+        $$.smoothLines(focusEl, 'grid');
+    };
+    c3_chart_internal_fn.hideXGridFocus = function () {
+        this.main.select('line.' + CLASS.xgridFocus).style("visibility", "hidden");
+    };
+    c3_chart_internal_fn.updateXgridFocus = function () {
+        var $$ = this,
+            config = $$.config;
+        $$.main.select('line.' + CLASS.xgridFocus).attr("x1", config.axis_rotated ? 0 : -10).attr("x2", config.axis_rotated ? $$.width : -10).attr("y1", config.axis_rotated ? -10 : 0).attr("y2", config.axis_rotated ? -10 : $$.height);
+    };
+    c3_chart_internal_fn.generateGridData = function (type, scale) {
+        var $$ = this,
+            gridData = [],
+            xDomain,
+            firstYear,
+            lastYear,
+            i,
+            tickNum = $$.main.select("." + CLASS.axisX).selectAll('.tick').size();
+        if (type === 'year') {
+            xDomain = $$.getXDomain();
+            firstYear = xDomain[0].getFullYear();
+            lastYear = xDomain[1].getFullYear();
+            for (i = firstYear; i <= lastYear; i++) {
+                gridData.push(new Date(i + '-01-01 00:00:00'));
+            }
+        } else {
+            gridData = scale.ticks(10);
+            if (gridData.length > tickNum) {
+                gridData = gridData.filter(function (d) {
+                    return ("" + d).indexOf('.') < 0;
+                });
+            }
+        }
+        return gridData;
+    };
+    c3_chart_internal_fn.getGridFilterToRemove = function (params) {
+        return params ? function (line) {
+            var found = false;
+            [].concat(params).forEach(function (param) {
+                if ('value' in param && line.value === param.value || 'class' in param && line['class'] === param['class']) {
+                    found = true;
+                }
+            });
+            return found;
+        } : function () {
+            return true;
+        };
+    };
+    c3_chart_internal_fn.removeGridLines = function (params, forX) {
+        var $$ = this,
+            config = $$.config,
+            toRemove = $$.getGridFilterToRemove(params),
+            toShow = function toShow(line) {
+            return !toRemove(line);
+        },
+            classLines = forX ? CLASS.xgridLines : CLASS.ygridLines,
+            classLine = forX ? CLASS.xgridLine : CLASS.ygridLine;
+        $$.main.select('.' + classLines).selectAll('.' + classLine).filter(toRemove).transition().duration(config.transition_duration).style('opacity', 0).remove();
+        if (forX) {
+            config.grid_x_lines = config.grid_x_lines.filter(toShow);
+        } else {
+            config.grid_y_lines = config.grid_y_lines.filter(toShow);
+        }
+    };
+    c3_chart_internal_fn.initEventRect = function () {
+        var $$ = this;
+        $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.eventRects).style('fill-opacity', 0);
+    };
+    c3_chart_internal_fn.redrawEventRect = function () {
+        var $$ = this,
+            config = $$.config,
+            eventRectUpdate,
+            maxDataCountTarget,
+            isMultipleX = $$.isMultipleX();
+        var eventRects = $$.main.select('.' + CLASS.eventRects).style('cursor', config.zoom_enabled ? config.axis_rotated ? 'ns-resize' : 'ew-resize' : null).classed(CLASS.eventRectsMultiple, isMultipleX).classed(CLASS.eventRectsSingle, !isMultipleX);
+        eventRects.selectAll('.' + CLASS.eventRect).remove();
+        $$.eventRect = eventRects.selectAll('.' + CLASS.eventRect);
+        if (isMultipleX) {
+            eventRectUpdate = $$.eventRect.data([0]);
+            $$.generateEventRectsForMultipleXs(eventRectUpdate.enter());
+            $$.updateEventRect(eventRectUpdate);
+        } else {
+            maxDataCountTarget = $$.getMaxDataCountTarget($$.data.targets);
+            eventRects.datum(maxDataCountTarget ? maxDataCountTarget.values : []);
+            $$.eventRect = eventRects.selectAll('.' + CLASS.eventRect);
+            eventRectUpdate = $$.eventRect.data(function (d) {
+                return d;
+            });
+            $$.generateEventRectsForSingleX(eventRectUpdate.enter());
+            $$.updateEventRect(eventRectUpdate);
+            eventRectUpdate.exit().remove();
+        }
+    };
+    c3_chart_internal_fn.updateEventRect = function (eventRectUpdate) {
+        var $$ = this,
+            config = $$.config,
+            x,
+            y,
+            w,
+            h,
+            rectW,
+            rectX;
+        eventRectUpdate = eventRectUpdate || $$.eventRect.data(function (d) {
+            return d;
+        });
+        if ($$.isMultipleX()) {
+            x = 0;
+            y = 0;
+            w = $$.width;
+            h = $$.height;
+        } else {
+            if (($$.isCustomX() || $$.isTimeSeries()) && !$$.isCategorized()) {
+                $$.updateXs();
+                rectW = function rectW(d) {
+                    var prevX = $$.getPrevX(d.index),
+                        nextX = $$.getNextX(d.index);
+                    if (prevX === null && nextX === null) {
+                        return config.axis_rotated ? $$.height : $$.width;
+                    }
+                    if (prevX === null) {
+                        prevX = $$.x.domain()[0];
+                    }
+                    if (nextX === null) {
+                        nextX = $$.x.domain()[1];
+                    }
+                    return Math.max(0, ($$.x(nextX) - $$.x(prevX)) / 2);
+                };
+                rectX = function rectX(d) {
+                    var prevX = $$.getPrevX(d.index),
+                        nextX = $$.getNextX(d.index),
+                        thisX = $$.data.xs[d.id][d.index];
+                    if (prevX === null && nextX === null) {
+                        return 0;
+                    }
+                    if (prevX === null) {
+                        prevX = $$.x.domain()[0];
+                    }
+                    return ($$.x(thisX) + $$.x(prevX)) / 2;
+                };
+            } else {
+                rectW = $$.getEventRectWidth();
+                rectX = function rectX(d) {
+                    return $$.x(d.x) - rectW / 2;
+                };
+            }
+            x = config.axis_rotated ? 0 : rectX;
+            y = config.axis_rotated ? rectX : 0;
+            w = config.axis_rotated ? $$.width : rectW;
+            h = config.axis_rotated ? rectW : $$.height;
+        }
+        eventRectUpdate.attr('class', $$.classEvent.bind($$)).attr("x", x).attr("y", y).attr("width", w).attr("height", h);
+    };
+    c3_chart_internal_fn.generateEventRectsForSingleX = function (eventRectEnter) {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config;
+        eventRectEnter.append("rect").attr("class", $$.classEvent.bind($$)).style("cursor", config.data_selection_enabled && config.data_selection_grouped ? "pointer" : null).on('mouseover', function (d) {
+            var index = d.index;
+            if ($$.dragging || $$.flowing) {
+                return;
+            }
+            if ($$.hasArcType()) {
+                return;
+            }
+            if (config.point_focus_expand_enabled) {
+                $$.expandCircles(index, null, true);
+            }
+            $$.expandBars(index, null, true);
+            $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function (d) {
+                config.data_onmouseover.call($$.api, d);
+            });
+        }).on('mouseout', function (d) {
+            var index = d.index;
+            if (!$$.config) {
+                return;
+            }
+            if ($$.hasArcType()) {
+                return;
+            }
+            $$.hideXGridFocus();
+            $$.hideTooltip();
+            $$.unexpandCircles();
+            $$.unexpandBars();
+            $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function (d) {
+                config.data_onmouseout.call($$.api, d);
+            });
+        }).on('mousemove', function (d) {
+            var selectedData,
+                index = d.index,
+                eventRect = $$.svg.select('.' + CLASS.eventRect + '-' + index);
+            if ($$.dragging || $$.flowing) {
+                return;
+            }
+            if ($$.hasArcType()) {
+                return;
+            }
+            if ($$.isStepType(d) && $$.config.line_step_type === 'step-after' && d3.mouse(this)[0] < $$.x($$.getXValue(d.id, index))) {
+                index -= 1;
+            }
+            selectedData = $$.filterTargetsToShow($$.data.targets).map(function (t) {
+                return $$.addName($$.getValueOnIndex(t.values, index));
+            });
+            if (config.tooltip_grouped) {
+                $$.showTooltip(selectedData, this);
+                $$.showXGridFocus(selectedData);
+            }
+            if (config.tooltip_grouped && (!config.data_selection_enabled || config.data_selection_grouped)) {
+                return;
+            }
+            $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function () {
+                d3.select(this).classed(CLASS.EXPANDED, true);
+                if (config.data_selection_enabled) {
+                    eventRect.style('cursor', config.data_selection_grouped ? 'pointer' : null);
+                }
+                if (!config.tooltip_grouped) {
+                    $$.hideXGridFocus();
+                    $$.hideTooltip();
+                    if (!config.data_selection_grouped) {
+                        $$.unexpandCircles(index);
+                        $$.unexpandBars(index);
+                    }
+                }
+            }).filter(function (d) {
+                return $$.isWithinShape(this, d);
+            }).each(function (d) {
+                if (config.data_selection_enabled && (config.data_selection_grouped || config.data_selection_isselectable(d))) {
+                    eventRect.style('cursor', 'pointer');
+                }
+                if (!config.tooltip_grouped) {
+                    $$.showTooltip([d], this);
+                    $$.showXGridFocus([d]);
+                    if (config.point_focus_expand_enabled) {
+                        $$.expandCircles(index, d.id, true);
+                    }
+                    $$.expandBars(index, d.id, true);
+                }
+            });
+        }).on('click', function (d) {
+            var index = d.index;
+            if ($$.hasArcType() || !$$.toggleShape) {
+                return;
+            }
+            if ($$.cancelClick) {
+                $$.cancelClick = false;
+                return;
+            }
+            if ($$.isStepType(d) && config.line_step_type === 'step-after' && d3.mouse(this)[0] < $$.x($$.getXValue(d.id, index))) {
+                index -= 1;
+            }
+            $$.main.selectAll('.' + CLASS.shape + '-' + index).each(function (d) {
+                if (config.data_selection_grouped || $$.isWithinShape(this, d)) {
+                    $$.toggleShape(this, d, index);
+                    $$.config.data_onclick.call($$.api, d, this);
+                }
+            });
+        }).call(config.data_selection_draggable && $$.drag ? d3.behavior.drag().origin(Object).on('drag', function () {
+            $$.drag(d3.mouse(this));
+        }).on('dragstart', function () {
+            $$.dragstart(d3.mouse(this));
+        }).on('dragend', function () {
+            $$.dragend();
+        }) : function () {});
+    };
+    c3_chart_internal_fn.generateEventRectsForMultipleXs = function (eventRectEnter) {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config;
+        function mouseout() {
+            $$.svg.select('.' + CLASS.eventRect).style('cursor', null);
+            $$.hideXGridFocus();
+            $$.hideTooltip();
+            $$.unexpandCircles();
+            $$.unexpandBars();
+        }
+        eventRectEnter.append('rect').attr('x', 0).attr('y', 0).attr('width', $$.width).attr('height', $$.height).attr('class', CLASS.eventRect).on('mouseout', function () {
+            if (!$$.config) {
+                return;
+            }
+            if ($$.hasArcType()) {
+                return;
+            }
+            mouseout();
+        }).on('mousemove', function () {
+            var targetsToShow = $$.filterTargetsToShow($$.data.targets);
+            var mouse, closest, sameXData, selectedData;
+            if ($$.dragging) {
+                return;
+            }
+            if ($$.hasArcType(targetsToShow)) {
+                return;
+            }
+            mouse = d3.mouse(this);
+            closest = $$.findClosestFromTargets(targetsToShow, mouse);
+            if ($$.mouseover && (!closest || closest.id !== $$.mouseover.id)) {
+                config.data_onmouseout.call($$.api, $$.mouseover);
+                $$.mouseover = undefined;
+            }
+            if (!closest) {
+                mouseout();
+                return;
+            }
+            if ($$.isScatterType(closest) || !config.tooltip_grouped) {
+                sameXData = [closest];
+            } else {
+                sameXData = $$.filterByX(targetsToShow, closest.x);
+            }
+            selectedData = sameXData.map(function (d) {
+                return $$.addName(d);
+            });
+            $$.showTooltip(selectedData, this);
+            if (config.point_focus_expand_enabled) {
+                $$.expandCircles(closest.index, closest.id, true);
+            }
+            $$.expandBars(closest.index, closest.id, true);
+            $$.showXGridFocus(selectedData);
+            if ($$.isBarType(closest.id) || $$.dist(closest, mouse) < config.point_sensitivity) {
+                $$.svg.select('.' + CLASS.eventRect).style('cursor', 'pointer');
+                if (!$$.mouseover) {
+                    config.data_onmouseover.call($$.api, closest);
+                    $$.mouseover = closest;
+                }
+            }
+        }).on('click', function () {
+            var targetsToShow = $$.filterTargetsToShow($$.data.targets);
+            var mouse, closest;
+            if ($$.hasArcType(targetsToShow)) {
+                return;
+            }
+            mouse = d3.mouse(this);
+            closest = $$.findClosestFromTargets(targetsToShow, mouse);
+            if (!closest) {
+                return;
+            }
+            if ($$.isBarType(closest.id) || $$.dist(closest, mouse) < config.point_sensitivity) {
+                $$.main.selectAll('.' + CLASS.shapes + $$.getTargetSelectorSuffix(closest.id)).selectAll('.' + CLASS.shape + '-' + closest.index).each(function () {
+                    if (config.data_selection_grouped || $$.isWithinShape(this, closest)) {
+                        $$.toggleShape(this, closest, closest.index);
+                        $$.config.data_onclick.call($$.api, closest, this);
+                    }
+                });
+            }
+        }).call(config.data_selection_draggable && $$.drag ? d3.behavior.drag().origin(Object).on('drag', function () {
+            $$.drag(d3.mouse(this));
+        }).on('dragstart', function () {
+            $$.dragstart(d3.mouse(this));
+        }).on('dragend', function () {
+            $$.dragend();
+        }) : function () {});
+    };
+    c3_chart_internal_fn.dispatchEvent = function (type, index, mouse) {
+        var $$ = this,
+            selector = '.' + CLASS.eventRect + (!$$.isMultipleX() ? '-' + index : ''),
+            eventRect = $$.main.select(selector).node(),
+            box = eventRect.getBoundingClientRect(),
+            x = box.left + (mouse ? mouse[0] : 0),
+            y = box.top + (mouse ? mouse[1] : 0),
+            event = document.createEvent("MouseEvents");
+        event.initMouseEvent(type, true, true, window, 0, x, y, x, y, false, false, false, false, 0, null);
+        eventRect.dispatchEvent(event);
+    };
+    c3_chart_internal_fn.initLegend = function () {
+        var $$ = this;
+        $$.legendItemTextBox = {};
+        $$.legendHasRendered = false;
+        $$.legend = $$.svg.append("g").attr("transform", $$.getTranslate('legend'));
+        if (!$$.config.legend_show) {
+            $$.legend.style('visibility', 'hidden');
+            $$.hiddenLegendIds = $$.mapToIds($$.data.targets);
+            return;
+        }
+        $$.updateLegendWithDefaults();
+    };
+    c3_chart_internal_fn.updateLegendWithDefaults = function () {
+        var $$ = this;
+        $$.updateLegend($$.mapToIds($$.data.targets), { withTransform: false, withTransitionForTransform: false, withTransition: false });
+    };
+    c3_chart_internal_fn.updateSizeForLegend = function (legendHeight, legendWidth) {
+        var $$ = this,
+            config = $$.config,
+            insetLegendPosition = {
+            top: $$.isLegendTop ? $$.getCurrentPaddingTop() + config.legend_inset_y + 5.5 : $$.currentHeight - legendHeight - $$.getCurrentPaddingBottom() - config.legend_inset_y,
+            left: $$.isLegendLeft ? $$.getCurrentPaddingLeft() + config.legend_inset_x + 0.5 : $$.currentWidth - legendWidth - $$.getCurrentPaddingRight() - config.legend_inset_x + 0.5
+        };
+        $$.margin3 = {
+            top: $$.isLegendRight ? 0 : $$.isLegendInset ? insetLegendPosition.top : $$.currentHeight - legendHeight,
+            right: NaN,
+            bottom: 0,
+            left: $$.isLegendRight ? $$.currentWidth - legendWidth : $$.isLegendInset ? insetLegendPosition.left : 0
+        };
+    };
+    c3_chart_internal_fn.transformLegend = function (withTransition) {
+        var $$ = this;
+        (withTransition ? $$.legend.transition() : $$.legend).attr("transform", $$.getTranslate('legend'));
+    };
+    c3_chart_internal_fn.updateLegendStep = function (step) {
+        this.legendStep = step;
+    };
+    c3_chart_internal_fn.updateLegendItemWidth = function (w) {
+        this.legendItemWidth = w;
+    };
+    c3_chart_internal_fn.updateLegendItemHeight = function (h) {
+        this.legendItemHeight = h;
+    };
+    c3_chart_internal_fn.getLegendWidth = function () {
+        var $$ = this;
+        return $$.config.legend_show ? $$.isLegendRight || $$.isLegendInset ? $$.legendItemWidth * ($$.legendStep + 1) : $$.currentWidth : 0;
+    };
+    c3_chart_internal_fn.getLegendHeight = function () {
+        var $$ = this,
+            h = 0;
+        if ($$.config.legend_show) {
+            if ($$.isLegendRight) {
+                h = $$.currentHeight;
+            } else {
+                h = Math.max(20, $$.legendItemHeight) * ($$.legendStep + 1);
+            }
+        }
+        return h;
+    };
+    c3_chart_internal_fn.opacityForLegend = function (legendItem) {
+        return legendItem.classed(CLASS.legendItemHidden) ? null : 1;
+    };
+    c3_chart_internal_fn.opacityForUnfocusedLegend = function (legendItem) {
+        return legendItem.classed(CLASS.legendItemHidden) ? null : 0.3;
+    };
+    c3_chart_internal_fn.toggleFocusLegend = function (targetIds, focus) {
+        var $$ = this;
+        targetIds = $$.mapToTargetIds(targetIds);
+        $$.legend.selectAll('.' + CLASS.legendItem).filter(function (id) {
+            return targetIds.indexOf(id) >= 0;
+        }).classed(CLASS.legendItemFocused, focus).transition().duration(100).style('opacity', function () {
+            var opacity = focus ? $$.opacityForLegend : $$.opacityForUnfocusedLegend;
+            return opacity.call($$, $$.d3.select(this));
+        });
+    };
+    c3_chart_internal_fn.revertLegend = function () {
+        var $$ = this,
+            d3 = $$.d3;
+        $$.legend.selectAll('.' + CLASS.legendItem).classed(CLASS.legendItemFocused, false).transition().duration(100).style('opacity', function () {
+            return $$.opacityForLegend(d3.select(this));
+        });
+    };
+    c3_chart_internal_fn.showLegend = function (targetIds) {
+        var $$ = this,
+            config = $$.config;
+        if (!config.legend_show) {
+            config.legend_show = true;
+            $$.legend.style('visibility', 'visible');
+            if (!$$.legendHasRendered) {
+                $$.updateLegendWithDefaults();
+            }
+        }
+        $$.removeHiddenLegendIds(targetIds);
+        $$.legend.selectAll($$.selectorLegends(targetIds)).style('visibility', 'visible').transition().style('opacity', function () {
+            return $$.opacityForLegend($$.d3.select(this));
+        });
+    };
+    c3_chart_internal_fn.hideLegend = function (targetIds) {
+        var $$ = this,
+            config = $$.config;
+        if (config.legend_show && isEmpty(targetIds)) {
+            config.legend_show = false;
+            $$.legend.style('visibility', 'hidden');
+        }
+        $$.addHiddenLegendIds(targetIds);
+        $$.legend.selectAll($$.selectorLegends(targetIds)).style('opacity', 0).style('visibility', 'hidden');
+    };
+    c3_chart_internal_fn.clearLegendItemTextBoxCache = function () {
+        this.legendItemTextBox = {};
+    };
+    c3_chart_internal_fn.updateLegend = function (targetIds, options, transitions) {
+        var $$ = this,
+            config = $$.config;
+        var xForLegend, xForLegendText, xForLegendRect, yForLegend, yForLegendText, yForLegendRect, x1ForLegendTile, x2ForLegendTile, yForLegendTile;
+        var paddingTop = 4,
+            paddingRight = 10,
+            maxWidth = 0,
+            maxHeight = 0,
+            posMin = 10,
+            tileWidth = config.legend_item_tile_width + 5;
+        var l,
+            totalLength = 0,
+            offsets = {},
+            widths = {},
+            heights = {},
+            margins = [0],
+            steps = {},
+            step = 0;
+        var withTransition, withTransitionForTransform;
+        var texts, rects, tiles, background;
+        targetIds = targetIds.filter(function (id) {
+            return !isDefined(config.data_names[id]) || config.data_names[id] !== null;
+        });
+        options = options || {};
+        withTransition = getOption(options, "withTransition", true);
+        withTransitionForTransform = getOption(options, "withTransitionForTransform", true);
+        function getTextBox(textElement, id) {
+            if (!$$.legendItemTextBox[id]) {
+                $$.legendItemTextBox[id] = $$.getTextRect(textElement.textContent, CLASS.legendItem, textElement);
+            }
+            return $$.legendItemTextBox[id];
+        }
+        function updatePositions(textElement, id, index) {
+            var reset = index === 0,
+                isLast = index === targetIds.length - 1,
+                box = getTextBox(textElement, id),
+                itemWidth = box.width + tileWidth + (isLast && !($$.isLegendRight || $$.isLegendInset) ? 0 : paddingRight) + config.legend_padding,
+                itemHeight = box.height + paddingTop,
+                itemLength = $$.isLegendRight || $$.isLegendInset ? itemHeight : itemWidth,
+                areaLength = $$.isLegendRight || $$.isLegendInset ? $$.getLegendHeight() : $$.getLegendWidth(),
+                margin,
+                maxLength;
+            function updateValues(id, withoutStep) {
+                if (!withoutStep) {
+                    margin = (areaLength - totalLength - itemLength) / 2;
+                    if (margin < posMin) {
+                        margin = (areaLength - itemLength) / 2;
+                        totalLength = 0;
+                        step++;
+                    }
+                }
+                steps[id] = step;
+                margins[step] = $$.isLegendInset ? 10 : margin;
+                offsets[id] = totalLength;
+                totalLength += itemLength;
+            }
+            if (reset) {
+                totalLength = 0;
+                step = 0;
+                maxWidth = 0;
+                maxHeight = 0;
+            }
+            if (config.legend_show && !$$.isLegendToShow(id)) {
+                widths[id] = heights[id] = steps[id] = offsets[id] = 0;
+                return;
+            }
+            widths[id] = itemWidth;
+            heights[id] = itemHeight;
+            if (!maxWidth || itemWidth >= maxWidth) {
+                maxWidth = itemWidth;
+            }
+            if (!maxHeight || itemHeight >= maxHeight) {
+                maxHeight = itemHeight;
+            }
+            maxLength = $$.isLegendRight || $$.isLegendInset ? maxHeight : maxWidth;
+            if (config.legend_equally) {
+                Object.keys(widths).forEach(function (id) {
+                    widths[id] = maxWidth;
+                });
+                Object.keys(heights).forEach(function (id) {
+                    heights[id] = maxHeight;
+                });
+                margin = (areaLength - maxLength * targetIds.length) / 2;
+                if (margin < posMin) {
+                    totalLength = 0;
+                    step = 0;
+                    targetIds.forEach(function (id) {
+                        updateValues(id);
+                    });
+                } else {
+                    updateValues(id, true);
+                }
+            } else {
+                updateValues(id);
+            }
+        }
+        if ($$.isLegendInset) {
+            step = config.legend_inset_step ? config.legend_inset_step : targetIds.length;
+            $$.updateLegendStep(step);
+        }
+        if ($$.isLegendRight) {
+            xForLegend = function xForLegend(id) {
+                return maxWidth * steps[id];
+            };
+            yForLegend = function yForLegend(id) {
+                return margins[steps[id]] + offsets[id];
+            };
+        } else if ($$.isLegendInset) {
+            xForLegend = function xForLegend(id) {
+                return maxWidth * steps[id] + 10;
+            };
+            yForLegend = function yForLegend(id) {
+                return margins[steps[id]] + offsets[id];
+            };
+        } else {
+            xForLegend = function xForLegend(id) {
+                return margins[steps[id]] + offsets[id];
+            };
+            yForLegend = function yForLegend(id) {
+                return maxHeight * steps[id];
+            };
+        }
+        xForLegendText = function xForLegendText(id, i) {
+            return xForLegend(id, i) + 4 + config.legend_item_tile_width;
+        };
+        yForLegendText = function yForLegendText(id, i) {
+            return yForLegend(id, i) + 9;
+        };
+        xForLegendRect = function xForLegendRect(id, i) {
+            return xForLegend(id, i);
+        };
+        yForLegendRect = function yForLegendRect(id, i) {
+            return yForLegend(id, i) - 5;
+        };
+        x1ForLegendTile = function x1ForLegendTile(id, i) {
+            return xForLegend(id, i) - 2;
+        };
+        x2ForLegendTile = function x2ForLegendTile(id, i) {
+            return xForLegend(id, i) - 2 + config.legend_item_tile_width;
+        };
+        yForLegendTile = function yForLegendTile(id, i) {
+            return yForLegend(id, i) + 4;
+        };
+        l = $$.legend.selectAll('.' + CLASS.legendItem).data(targetIds).enter().append('g').attr('class', function (id) {
+            return $$.generateClass(CLASS.legendItem, id);
+        }).style('visibility', function (id) {
+            return $$.isLegendToShow(id) ? 'visible' : 'hidden';
+        }).style('cursor', 'pointer').on('click', function (id) {
+            if (config.legend_item_onclick) {
+                config.legend_item_onclick.call($$, id);
+            } else {
+                if ($$.d3.event.altKey) {
+                    $$.api.hide();
+                    $$.api.show(id);
+                } else {
+                    $$.api.toggle(id);
+                    $$.isTargetToShow(id) ? $$.api.focus(id) : $$.api.revert();
+                }
+            }
+        }).on('mouseover', function (id) {
+            if (config.legend_item_onmouseover) {
+                config.legend_item_onmouseover.call($$, id);
+            } else {
+                $$.d3.select(this).classed(CLASS.legendItemFocused, true);
+                if (!$$.transiting && $$.isTargetToShow(id)) {
+                    $$.api.focus(id);
+                }
+            }
+        }).on('mouseout', function (id) {
+            if (config.legend_item_onmouseout) {
+                config.legend_item_onmouseout.call($$, id);
+            } else {
+                $$.d3.select(this).classed(CLASS.legendItemFocused, false);
+                $$.api.revert();
+            }
+        });
+        l.append('text').text(function (id) {
+            return isDefined(config.data_names[id]) ? config.data_names[id] : id;
+        }).each(function (id, i) {
+            updatePositions(this, id, i);
+        }).style("pointer-events", "none").attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendText : -200).attr('y', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendText);
+        l.append('rect').attr("class", CLASS.legendItemEvent).style('fill-opacity', 0).attr('x', $$.isLegendRight || $$.isLegendInset ? xForLegendRect : -200).attr('y', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendRect);
+        l.append('line').attr('class', CLASS.legendItemTile).style('stroke', $$.color).style("pointer-events", "none").attr('x1', $$.isLegendRight || $$.isLegendInset ? x1ForLegendTile : -200).attr('y1', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendTile).attr('x2', $$.isLegendRight || $$.isLegendInset ? x2ForLegendTile : -200).attr('y2', $$.isLegendRight || $$.isLegendInset ? -200 : yForLegendTile).attr('stroke-width', config.legend_item_tile_height);
+        background = $$.legend.select('.' + CLASS.legendBackground + ' rect');
+        if ($$.isLegendInset && maxWidth > 0 && background.size() === 0) {
+            background = $$.legend.insert('g', '.' + CLASS.legendItem).attr("class", CLASS.legendBackground).append('rect');
+        }
+        texts = $$.legend.selectAll('text').data(targetIds).text(function (id) {
+            return isDefined(config.data_names[id]) ? config.data_names[id] : id;
+        })
+        .each(function (id, i) {
+            updatePositions(this, id, i);
+        });
+        (withTransition ? texts.transition() : texts).attr('x', xForLegendText).attr('y', yForLegendText);
+        rects = $$.legend.selectAll('rect.' + CLASS.legendItemEvent).data(targetIds);
+        (withTransition ? rects.transition() : rects).attr('width', function (id) {
+            return widths[id];
+        }).attr('height', function (id) {
+            return heights[id];
+        }).attr('x', xForLegendRect).attr('y', yForLegendRect);
+        tiles = $$.legend.selectAll('line.' + CLASS.legendItemTile).data(targetIds);
+        (withTransition ? tiles.transition() : tiles).style('stroke', $$.levelColor ? function (id) {
+            return $$.levelColor($$.cache[id].values[0].value);
+        } : $$.color).attr('x1', x1ForLegendTile).attr('y1', yForLegendTile).attr('x2', x2ForLegendTile).attr('y2', yForLegendTile);
+        if (background) {
+            (withTransition ? background.transition() : background).attr('height', $$.getLegendHeight() - 12).attr('width', maxWidth * (step + 1) + 10);
+        }
+        $$.legend.selectAll('.' + CLASS.legendItem).classed(CLASS.legendItemHidden, function (id) {
+            return !$$.isTargetToShow(id);
+        });
+        $$.updateLegendItemWidth(maxWidth);
+        $$.updateLegendItemHeight(maxHeight);
+        $$.updateLegendStep(step);
+        $$.updateSizes();
+        $$.updateScales();
+        $$.updateSvgSize();
+        $$.transformAll(withTransitionForTransform, transitions);
+        $$.legendHasRendered = true;
+    };
+    c3_chart_internal_fn.initRegion = function () {
+        var $$ = this;
+        $$.region = $$.main.append('g').attr("clip-path", $$.clipPath).attr("class", CLASS.regions);
+    };
+    c3_chart_internal_fn.updateRegion = function (duration) {
+        var $$ = this,
+            config = $$.config;
+        $$.region.style('visibility', $$.hasArcType() ? 'hidden' : 'visible');
+        $$.mainRegion = $$.main.select('.' + CLASS.regions).selectAll('.' + CLASS.region).data(config.regions);
+        $$.mainRegion.enter().append('g').append('rect').style("fill-opacity", 0);
+        $$.mainRegion.attr('class', $$.classRegion.bind($$));
+        $$.mainRegion.exit().transition().duration(duration).style("opacity", 0).remove();
+    };
+    c3_chart_internal_fn.redrawRegion = function (withTransition) {
+        var $$ = this,
+            regions = $$.mainRegion.selectAll('rect').each(function () {
+            var parentData = $$.d3.select(this.parentNode).datum();
+            $$.d3.select(this).datum(parentData);
+        }),
+            x = $$.regionX.bind($$),
+            y = $$.regionY.bind($$),
+            w = $$.regionWidth.bind($$),
+            h = $$.regionHeight.bind($$);
+        return [(withTransition ? regions.transition() : regions).attr("x", x).attr("y", y).attr("width", w).attr("height", h).style("fill-opacity", function (d) {
+            return isValue(d.opacity) ? d.opacity : 0.1;
+        })];
+    };
+    c3_chart_internal_fn.regionX = function (d) {
+        var $$ = this,
+            config = $$.config,
+            xPos,
+            yScale = d.axis === 'y' ? $$.y : $$.y2;
+        if (d.axis === 'y' || d.axis === 'y2') {
+            xPos = config.axis_rotated ? 'start' in d ? yScale(d.start) : 0 : 0;
+        } else {
+            xPos = config.axis_rotated ? 0 : 'start' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.start) : d.start) : 0;
+        }
+        return xPos;
+    };
+    c3_chart_internal_fn.regionY = function (d) {
+        var $$ = this,
+            config = $$.config,
+            yPos,
+            yScale = d.axis === 'y' ? $$.y : $$.y2;
+        if (d.axis === 'y' || d.axis === 'y2') {
+            yPos = config.axis_rotated ? 0 : 'end' in d ? yScale(d.end) : 0;
+        } else {
+            yPos = config.axis_rotated ? 'start' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.start) : d.start) : 0 : 0;
+        }
+        return yPos;
+    };
+    c3_chart_internal_fn.regionWidth = function (d) {
+        var $$ = this,
+            config = $$.config,
+            start = $$.regionX(d),
+            end,
+            yScale = d.axis === 'y' ? $$.y : $$.y2;
+        if (d.axis === 'y' || d.axis === 'y2') {
+            end = config.axis_rotated ? 'end' in d ? yScale(d.end) : $$.width : $$.width;
+        } else {
+            end = config.axis_rotated ? $$.width : 'end' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.end) : d.end) : $$.width;
+        }
+        return end < start ? 0 : end - start;
+    };
+    c3_chart_internal_fn.regionHeight = function (d) {
+        var $$ = this,
+            config = $$.config,
+            start = this.regionY(d),
+            end,
+            yScale = d.axis === 'y' ? $$.y : $$.y2;
+        if (d.axis === 'y' || d.axis === 'y2') {
+            end = config.axis_rotated ? $$.height : 'start' in d ? yScale(d.start) : $$.height;
+        } else {
+            end = config.axis_rotated ? 'end' in d ? $$.x($$.isTimeSeries() ? $$.parseDate(d.end) : d.end) : $$.height : $$.height;
+        }
+        return end < start ? 0 : end - start;
+    };
+    c3_chart_internal_fn.isRegionOnX = function (d) {
+        return !d.axis || d.axis === 'x';
+    };
+    c3_chart_internal_fn.getScale = function (min, max, forTimeseries) {
+        return (forTimeseries ? this.d3.time.scale() : this.d3.scale.linear()).range([min, max]);
+    };
+    c3_chart_internal_fn.getX = function (min, max, domain, offset) {
+        var $$ = this,
+            scale = $$.getScale(min, max, $$.isTimeSeries()),
+            _scale = domain ? scale.domain(domain) : scale,
+            key;
+        if ($$.isCategorized()) {
+            offset = offset || function () {
+                return 0;
+            };
+            scale = function scale(d, raw) {
+                var v = _scale(d) + offset(d);
+                return raw ? v : Math.ceil(v);
+            };
+        } else {
+            scale = function scale(d, raw) {
+                var v = _scale(d);
+                return raw ? v : Math.ceil(v);
+            };
+        }
+        for (key in _scale) {
+            scale[key] = _scale[key];
+        }
+        scale.orgDomain = function () {
+            return _scale.domain();
+        };
+        if ($$.isCategorized()) {
+            scale.domain = function (domain) {
+                if (!arguments.length) {
+                    domain = this.orgDomain();
+                    return [domain[0], domain[1] + 1];
+                }
+                _scale.domain(domain);
+                return scale;
+            };
+        }
+        return scale;
+    };
+    c3_chart_internal_fn.getY = function (min, max, domain) {
+        var scale = this.getScale(min, max, this.isTimeSeriesY());
+        if (domain) {
+            scale.domain(domain);
+        }
+        return scale;
+    };
+    c3_chart_internal_fn.getYScale = function (id) {
+        return this.axis.getId(id) === 'y2' ? this.y2 : this.y;
+    };
+    c3_chart_internal_fn.getSubYScale = function (id) {
+        return this.axis.getId(id) === 'y2' ? this.subY2 : this.subY;
+    };
+    c3_chart_internal_fn.updateScales = function () {
+        var $$ = this,
+            config = $$.config,
+            forInit = !$$.x;
+        $$.xMin = config.axis_rotated ? 1 : 0;
+        $$.xMax = config.axis_rotated ? $$.height : $$.width;
+        $$.yMin = config.axis_rotated ? 0 : $$.height;
+        $$.yMax = config.axis_rotated ? $$.width : 1;
+        $$.subXMin = $$.xMin;
+        $$.subXMax = $$.xMax;
+        $$.subYMin = config.axis_rotated ? 0 : $$.height2;
+        $$.subYMax = config.axis_rotated ? $$.width2 : 1;
+        $$.x = $$.getX($$.xMin, $$.xMax, forInit ? undefined : $$.x.orgDomain(), function () {
+            return $$.xAxis.tickOffset();
+        });
+        $$.y = $$.getY($$.yMin, $$.yMax, forInit ? config.axis_y_default : $$.y.domain());
+        $$.y2 = $$.getY($$.yMin, $$.yMax, forInit ? config.axis_y2_default : $$.y2.domain());
+        $$.subX = $$.getX($$.xMin, $$.xMax, $$.orgXDomain, function (d) {
+            return d % 1 ? 0 : $$.subXAxis.tickOffset();
+        });
+        $$.subY = $$.getY($$.subYMin, $$.subYMax, forInit ? config.axis_y_default : $$.subY.domain());
+        $$.subY2 = $$.getY($$.subYMin, $$.subYMax, forInit ? config.axis_y2_default : $$.subY2.domain());
+        $$.xAxisTickFormat = $$.axis.getXAxisTickFormat();
+        $$.xAxisTickValues = $$.axis.getXAxisTickValues();
+        $$.yAxisTickValues = $$.axis.getYAxisTickValues();
+        $$.y2AxisTickValues = $$.axis.getY2AxisTickValues();
+        $$.xAxis = $$.axis.getXAxis($$.x, $$.xOrient, $$.xAxisTickFormat, $$.xAxisTickValues, config.axis_x_tick_outer);
+        $$.subXAxis = $$.axis.getXAxis($$.subX, $$.subXOrient, $$.xAxisTickFormat, $$.xAxisTickValues, config.axis_x_tick_outer);
+        $$.yAxis = $$.axis.getYAxis($$.y, $$.yOrient, config.axis_y_tick_format, $$.yAxisTickValues, config.axis_y_tick_outer);
+        $$.y2Axis = $$.axis.getYAxis($$.y2, $$.y2Orient, config.axis_y2_tick_format, $$.y2AxisTickValues, config.axis_y2_tick_outer);
+        if (!forInit) {
+            if ($$.brush) {
+                $$.brush.scale($$.subX);
+            }
+            if (config.zoom_enabled) {
+                $$.zoom.scale($$.x);
+            }
+        }
+        if ($$.updateArc) {
+            $$.updateArc();
+        }
+    };
+    c3_chart_internal_fn.selectPoint = function (target, d, i) {
+        var $$ = this,
+            config = $$.config,
+            cx = (config.axis_rotated ? $$.circleY : $$.circleX).bind($$),
+            cy = (config.axis_rotated ? $$.circleX : $$.circleY).bind($$),
+            r = $$.pointSelectR.bind($$);
+        config.data_onselected.call($$.api, d, target.node());
+        $$.main.select('.' + CLASS.selectedCircles + $$.getTargetSelectorSuffix(d.id)).selectAll('.' + CLASS.selectedCircle + '-' + i).data([d]).enter().append('circle').attr("class", function () {
+            return $$.generateClass(CLASS.selectedCircle, i);
+        }).attr("cx", cx).attr("cy", cy).attr("stroke", function () {
+            return $$.color(d);
+        }).attr("r", function (d) {
+            return $$.pointSelectR(d) * 1.4;
+        }).transition().duration(100).attr("r", r);
+    };
+    c3_chart_internal_fn.unselectPoint = function (target, d, i) {
+        var $$ = this;
+        $$.config.data_onunselected.call($$.api, d, target.node());
+        $$.main.select('.' + CLASS.selectedCircles + $$.getTargetSelectorSuffix(d.id)).selectAll('.' + CLASS.selectedCircle + '-' + i).transition().duration(100).attr('r', 0).remove();
+    };
+    c3_chart_internal_fn.togglePoint = function (selected, target, d, i) {
+        selected ? this.selectPoint(target, d, i) : this.unselectPoint(target, d, i);
+    };
+    c3_chart_internal_fn.selectPath = function (target, d) {
+        var $$ = this;
+        $$.config.data_onselected.call($$, d, target.node());
+        if ($$.config.interaction_brighten) {
+            target.transition().duration(100).style("fill", function () {
+                return $$.d3.rgb($$.color(d)).brighter(0.75);
+            });
+        }
+    };
+    c3_chart_internal_fn.unselectPath = function (target, d) {
+        var $$ = this;
+        $$.config.data_onunselected.call($$, d, target.node());
+        if ($$.config.interaction_brighten) {
+            target.transition().duration(100).style("fill", function () {
+                return $$.color(d);
+            });
+        }
+    };
+    c3_chart_internal_fn.togglePath = function (selected, target, d, i) {
+        selected ? this.selectPath(target, d, i) : this.unselectPath(target, d, i);
+    };
+    c3_chart_internal_fn.getToggle = function (that, d) {
+        var $$ = this,
+            toggle;
+        if (that.nodeName === 'circle') {
+            if ($$.isStepType(d)) {
+                toggle = function toggle() {};
+            } else {
+                toggle = $$.togglePoint;
+            }
+        } else if (that.nodeName === 'path') {
+            toggle = $$.togglePath;
+        }
+        return toggle;
+    };
+    c3_chart_internal_fn.toggleShape = function (that, d, i) {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config,
+            shape = d3.select(that),
+            isSelected = shape.classed(CLASS.SELECTED),
+            toggle = $$.getToggle(that, d).bind($$);
+        if (config.data_selection_enabled && config.data_selection_isselectable(d)) {
+            if (!config.data_selection_multiple) {
+                $$.main.selectAll('.' + CLASS.shapes + (config.data_selection_grouped ? $$.getTargetSelectorSuffix(d.id) : "")).selectAll('.' + CLASS.shape).each(function (d, i) {
+                    var shape = d3.select(this);
+                    if (shape.classed(CLASS.SELECTED)) {
+                        toggle(false, shape.classed(CLASS.SELECTED, false), d, i);
+                    }
+                });
+            }
+            shape.classed(CLASS.SELECTED, !isSelected);
+            toggle(!isSelected, shape, d, i);
+        }
+    };
+    c3_chart_internal_fn.initBar = function () {
+        var $$ = this;
+        $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartBars);
+    };
+    c3_chart_internal_fn.updateTargetsForBar = function (targets) {
+        var $$ = this,
+            config = $$.config,
+            mainBarUpdate,
+            mainBarEnter,
+            classChartBar = $$.classChartBar.bind($$),
+            classBars = $$.classBars.bind($$),
+            classFocus = $$.classFocus.bind($$);
+        mainBarUpdate = $$.main.select('.' + CLASS.chartBars).selectAll('.' + CLASS.chartBar).data(targets).attr('class', function (d) {
+            return classChartBar(d) + classFocus(d);
+        });
+        mainBarEnter = mainBarUpdate.enter().append('g').attr('class', classChartBar).style("pointer-events", "none");
+        mainBarEnter.append('g').attr("class", classBars).style("cursor", function (d) {
+            return config.data_selection_isselectable(d) ? "pointer" : null;
+        });
+    };
+    c3_chart_internal_fn.updateBar = function (durationForExit) {
+        var $$ = this,
+            barData = $$.barData.bind($$),
+            classBar = $$.classBar.bind($$),
+            initialOpacity = $$.initialOpacity.bind($$),
+            color = function color(d) {
+            return $$.color(d.id);
+        };
+        $$.mainBar = $$.main.selectAll('.' + CLASS.bars).selectAll('.' + CLASS.bar).data(barData);
+        $$.mainBar.enter().append('path').attr("class", classBar).style("stroke", color).style("fill", color);
+        $$.mainBar.style("opacity", initialOpacity);
+        $$.mainBar.exit().transition().duration(durationForExit).remove();
+    };
+    c3_chart_internal_fn.redrawBar = function (drawBar, withTransition) {
+        return [(withTransition ? this.mainBar.transition(Math.random().toString()) : this.mainBar).attr('d', drawBar).style("stroke", this.color).style("fill", this.color).style("opacity", 1)];
+    };
+    c3_chart_internal_fn.getBarW = function (axis, barTargetsNum) {
+        var $$ = this,
+            config = $$.config,
+            w = typeof config.bar_width === 'number' ? config.bar_width : barTargetsNum ? axis.tickInterval() * config.bar_width_ratio / barTargetsNum : 0;
+        return config.bar_width_max && w > config.bar_width_max ? config.bar_width_max : w;
+    };
+    c3_chart_internal_fn.getBars = function (i, id) {
+        var $$ = this;
+        return (id ? $$.main.selectAll('.' + CLASS.bars + $$.getTargetSelectorSuffix(id)) : $$.main).selectAll('.' + CLASS.bar + (isValue(i) ? '-' + i : ''));
+    };
+    c3_chart_internal_fn.expandBars = function (i, id, reset) {
+        var $$ = this;
+        if (reset) {
+            $$.unexpandBars();
+        }
+        $$.getBars(i, id).classed(CLASS.EXPANDED, true);
+    };
+    c3_chart_internal_fn.unexpandBars = function (i) {
+        var $$ = this;
+        $$.getBars(i).classed(CLASS.EXPANDED, false);
+    };
+    c3_chart_internal_fn.generateDrawBar = function (barIndices, isSub) {
+        var $$ = this,
+            config = $$.config,
+            getPoints = $$.generateGetBarPoints(barIndices, isSub);
+        return function (d, i) {
+            var points = getPoints(d, i);
+            var indexX = config.axis_rotated ? 1 : 0;
+            var indexY = config.axis_rotated ? 0 : 1;
+            var path = 'M ' + points[0][indexX] + ',' + points[0][indexY] + ' ' + 'L' + points[1][indexX] + ',' + points[1][indexY] + ' ' + 'L' + points[2][indexX] + ',' + points[2][indexY] + ' ' + 'L' + points[3][indexX] + ',' + points[3][indexY] + ' ' + 'z';
+            return path;
+        };
+    };
+    c3_chart_internal_fn.generateGetBarPoints = function (barIndices, isSub) {
+        var $$ = this,
+            axis = isSub ? $$.subXAxis : $$.xAxis,
+            barTargetsNum = barIndices.__max__ + 1,
+            barW = $$.getBarW(axis, barTargetsNum),
+            barX = $$.getShapeX(barW, barTargetsNum, barIndices, !!isSub),
+            barY = $$.getShapeY(!!isSub),
+            barOffset = $$.getShapeOffset($$.isBarType, barIndices, !!isSub),
+            barSpaceOffset = barW * ($$.config.bar_space / 2),
+            yScale = isSub ? $$.getSubYScale : $$.getYScale;
+        return function (d, i) {
+            var y0 = yScale.call($$, d.id)(0),
+                offset = barOffset(d, i) || y0,
+            posX = barX(d),
+                posY = barY(d);
+            if ($$.config.axis_rotated) {
+                if (0 < d.value && posY < y0 || d.value < 0 && y0 < posY) {
+                    posY = y0;
+                }
+            }
+            return [[posX + barSpaceOffset, offset], [posX + barSpaceOffset, posY - (y0 - offset)], [posX + barW - barSpaceOffset, posY - (y0 - offset)], [posX + barW - barSpaceOffset, offset]];
+        };
+    };
+    c3_chart_internal_fn.isWithinBar = function (that) {
+        var mouse = this.d3.mouse(that),
+            box = that.getBoundingClientRect(),
+            seg0 = that.pathSegList.getItem(0),
+            seg1 = that.pathSegList.getItem(1),
+            x = Math.min(seg0.x, seg1.x),
+            y = Math.min(seg0.y, seg1.y),
+            w = box.width,
+            h = box.height,
+            offset = 2,
+            sx = x - offset,
+            ex = x + w + offset,
+            sy = y + h + offset,
+            ey = y - offset;
+        return sx < mouse[0] && mouse[0] < ex && ey < mouse[1] && mouse[1] < sy;
+    };
+    c3_chart_internal_fn.getShapeIndices = function (typeFilter) {
+        var $$ = this,
+            config = $$.config,
+            indices = {},
+            i = 0,
+            j,
+            k;
+        $$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$)).forEach(function (d) {
+            for (j = 0; j < config.data_groups.length; j++) {
+                if (config.data_groups[j].indexOf(d.id) < 0) {
+                    continue;
+                }
+                for (k = 0; k < config.data_groups[j].length; k++) {
+                    if (config.data_groups[j][k] in indices) {
+                        indices[d.id] = indices[config.data_groups[j][k]];
+                        break;
+                    }
+                }
+            }
+            if (isUndefined(indices[d.id])) {
+                indices[d.id] = i++;
+            }
+        });
+        indices.__max__ = i - 1;
+        return indices;
+    };
+    c3_chart_internal_fn.getShapeX = function (offset, targetsNum, indices, isSub) {
+        var $$ = this,
+            scale = isSub ? $$.subX : $$.x;
+        return function (d) {
+            var index = d.id in indices ? indices[d.id] : 0;
+            return d.x || d.x === 0 ? scale(d.x) - offset * (targetsNum / 2 - index) : 0;
+        };
+    };
+    c3_chart_internal_fn.getShapeY = function (isSub) {
+        var $$ = this;
+        return function (d) {
+            var scale = isSub ? $$.getSubYScale(d.id) : $$.getYScale(d.id);
+            return scale(d.value);
+        };
+    };
+    c3_chart_internal_fn.getShapeOffset = function (typeFilter, indices, isSub) {
+        var $$ = this,
+            targets = $$.orderTargets($$.filterTargetsToShow($$.data.targets.filter(typeFilter, $$))),
+            targetIds = targets.map(function (t) {
+            return t.id;
+        });
+        return function (d, i) {
+            var scale = isSub ? $$.getSubYScale(d.id) : $$.getYScale(d.id),
+                y0 = scale(0),
+                offset = y0;
+            targets.forEach(function (t) {
+                var values = $$.isStepType(d) ? $$.convertValuesToStep(t.values) : t.values;
+                if (t.id === d.id || indices[t.id] !== indices[d.id]) {
+                    return;
+                }
+                if (targetIds.indexOf(t.id) < targetIds.indexOf(d.id)) {
+                    if (typeof values[i] === 'undefined' || +values[i].x !== +d.x) {
+                        i = -1;
+                        values.forEach(function (v, j) {
+                            if (v.x === d.x) {
+                                i = j;
+                            }
+                        });
+                    }
+                    if (i in values && values[i].value * d.value >= 0) {
+                        offset += scale(values[i].value) - y0;
+                    }
+                }
+            });
+            return offset;
+        };
+    };
+    c3_chart_internal_fn.isWithinShape = function (that, d) {
+        var $$ = this,
+            shape = $$.d3.select(that),
+            isWithin;
+        if (!$$.isTargetToShow(d.id)) {
+            isWithin = false;
+        } else if (that.nodeName === 'circle') {
+            isWithin = $$.isStepType(d) ? $$.isWithinStep(that, $$.getYScale(d.id)(d.value)) : $$.isWithinCircle(that, $$.pointSelectR(d) * 1.5);
+        } else if (that.nodeName === 'path') {
+            isWithin = shape.classed(CLASS.bar) ? $$.isWithinBar(that) : true;
+        }
+        return isWithin;
+    };
+    c3_chart_internal_fn.getInterpolate = function (d) {
+        var $$ = this,
+            interpolation = $$.isInterpolationType($$.config.spline_interpolation_type) ? $$.config.spline_interpolation_type : 'cardinal';
+        return $$.isSplineType(d) ? interpolation : $$.isStepType(d) ? $$.config.line_step_type : "linear";
+    };
+    c3_chart_internal_fn.initLine = function () {
+        var $$ = this;
+        $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartLines);
+    };
+    c3_chart_internal_fn.updateTargetsForLine = function (targets) {
+        var $$ = this,
+            config = $$.config,
+            mainLineUpdate,
+            mainLineEnter,
+            classChartLine = $$.classChartLine.bind($$),
+            classLines = $$.classLines.bind($$),
+            classAreas = $$.classAreas.bind($$),
+            classCircles = $$.classCircles.bind($$),
+            classFocus = $$.classFocus.bind($$);
+        mainLineUpdate = $$.main.select('.' + CLASS.chartLines).selectAll('.' + CLASS.chartLine).data(targets).attr('class', function (d) {
+            return classChartLine(d) + classFocus(d);
+        });
+        mainLineEnter = mainLineUpdate.enter().append('g').attr('class', classChartLine).style('opacity', 0).style("pointer-events", "none");
+        mainLineEnter.append('g').attr("class", classLines);
+        mainLineEnter.append('g').attr('class', classAreas);
+        mainLineEnter.append('g').attr("class", function (d) {
+            return $$.generateClass(CLASS.selectedCircles, d.id);
+        });
+        mainLineEnter.append('g').attr("class", classCircles).style("cursor", function (d) {
+            return config.data_selection_isselectable(d) ? "pointer" : null;
+        });
+        targets.forEach(function (t) {
+            $$.main.selectAll('.' + CLASS.selectedCircles + $$.getTargetSelectorSuffix(t.id)).selectAll('.' + CLASS.selectedCircle).each(function (d) {
+                d.value = t.values[d.index].value;
+            });
+        });
+    };
+    c3_chart_internal_fn.updateLine = function (durationForExit) {
+        var $$ = this;
+        $$.mainLine = $$.main.selectAll('.' + CLASS.lines).selectAll('.' + CLASS.line).data($$.lineData.bind($$));
+        $$.mainLine.enter().append('path').attr('class', $$.classLine.bind($$)).style("stroke", $$.color);
+        $$.mainLine.style("opacity", $$.initialOpacity.bind($$)).style('shape-rendering', function (d) {
+            return $$.isStepType(d) ? 'crispEdges' : '';
+        }).attr('transform', null);
+        $$.mainLine.exit().transition().duration(durationForExit).style('opacity', 0).remove();
+    };
+    c3_chart_internal_fn.redrawLine = function (drawLine, withTransition) {
+        return [(withTransition ? this.mainLine.transition(Math.random().toString()) : this.mainLine).attr("d", drawLine).style("stroke", this.color).style("opacity", 1)];
+    };
+    c3_chart_internal_fn.generateDrawLine = function (lineIndices, isSub) {
+        var $$ = this,
+            config = $$.config,
+            line = $$.d3.svg.line(),
+            getPoints = $$.generateGetLinePoints(lineIndices, isSub),
+            yScaleGetter = isSub ? $$.getSubYScale : $$.getYScale,
+            xValue = function xValue(d) {
+            return (isSub ? $$.subxx : $$.xx).call($$, d);
+        },
+            yValue = function yValue(d, i) {
+            return config.data_groups.length > 0 ? getPoints(d, i)[0][1] : yScaleGetter.call($$, d.id)(d.value);
+        };
+        line = config.axis_rotated ? line.x(yValue).y(xValue) : line.x(xValue).y(yValue);
+        if (!config.line_connectNull) {
+            line = line.defined(function (d) {
+                return d.value != null;
+            });
+        }
+        return function (d) {
+            var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
+                x = isSub ? $$.x : $$.subX,
+                y = yScaleGetter.call($$, d.id),
+                x0 = 0,
+                y0 = 0,
+                path;
+            if ($$.isLineType(d)) {
+                if (config.data_regions[d.id]) {
+                    path = $$.lineWithRegions(values, x, y, config.data_regions[d.id]);
+                } else {
+                    if ($$.isStepType(d)) {
+                        values = $$.convertValuesToStep(values);
+                    }
+                    path = line.interpolate($$.getInterpolate(d))(values);
+                }
+            } else {
+                if (values[0]) {
+                    x0 = x(values[0].x);
+                    y0 = y(values[0].value);
+                }
+                path = config.axis_rotated ? "M " + y0 + " " + x0 : "M " + x0 + " " + y0;
+            }
+            return path ? path : "M 0 0";
+        };
+    };
+    c3_chart_internal_fn.generateGetLinePoints = function (lineIndices, isSub) {
+        var $$ = this,
+            config = $$.config,
+            lineTargetsNum = lineIndices.__max__ + 1,
+            x = $$.getShapeX(0, lineTargetsNum, lineIndices, !!isSub),
+            y = $$.getShapeY(!!isSub),
+            lineOffset = $$.getShapeOffset($$.isLineType, lineIndices, !!isSub),
+            yScale = isSub ? $$.getSubYScale : $$.getYScale;
+        return function (d, i) {
+            var y0 = yScale.call($$, d.id)(0),
+                offset = lineOffset(d, i) || y0,
+            posX = x(d),
+                posY = y(d);
+            if (config.axis_rotated) {
+                if (0 < d.value && posY < y0 || d.value < 0 && y0 < posY) {
+                    posY = y0;
+                }
+            }
+            return [[posX, posY - (y0 - offset)], [posX, posY - (y0 - offset)],
+            [posX, posY - (y0 - offset)],
+            [posX, posY - (y0 - offset)]
+            ];
+        };
+    };
+    c3_chart_internal_fn.lineWithRegions = function (d, x, y, _regions) {
+        var $$ = this,
+            config = $$.config,
+            prev = -1,
+            i,
+            j,
+            s = "M",
+            sWithRegion,
+            xp,
+            yp,
+            dx,
+            dy,
+            dd,
+            diff,
+            diffx2,
+            xOffset = $$.isCategorized() ? 0.5 : 0,
+            xValue,
+            yValue,
+            regions = [];
+        function isWithinRegions(x, regions) {
+            var i;
+            for (i = 0; i < regions.length; i++) {
+                if (regions[i].start < x && x <= regions[i].end) {
+                    return true;
+                }
+            }
+            return false;
+        }
+        if (isDefined(_regions)) {
+            for (i = 0; i < _regions.length; i++) {
+                regions[i] = {};
+                if (isUndefined(_regions[i].start)) {
+                    regions[i].start = d[0].x;
+                } else {
+                    regions[i].start = $$.isTimeSeries() ? $$.parseDate(_regions[i].start) : _regions[i].start;
+                }
+                if (isUndefined(_regions[i].end)) {
+                    regions[i].end = d[d.length - 1].x;
+                } else {
+                    regions[i].end = $$.isTimeSeries() ? $$.parseDate(_regions[i].end) : _regions[i].end;
+                }
+            }
+        }
+        xValue = config.axis_rotated ? function (d) {
+            return y(d.value);
+        } : function (d) {
+            return x(d.x);
+        };
+        yValue = config.axis_rotated ? function (d) {
+            return x(d.x);
+        } : function (d) {
+            return y(d.value);
+        };
+        function generateM(points) {
+            return 'M' + points[0][0] + ' ' + points[0][1] + ' ' + points[1][0] + ' ' + points[1][1];
+        }
+        if ($$.isTimeSeries()) {
+            sWithRegion = function sWithRegion(d0, d1, j, diff) {
+                var x0 = d0.x.getTime(),
+                    x_diff = d1.x - d0.x,
+                    xv0 = new Date(x0 + x_diff * j),
+                    xv1 = new Date(x0 + x_diff * (j + diff)),
+                    points;
+                if (config.axis_rotated) {
+                    points = [[y(yp(j)), x(xv0)], [y(yp(j + diff)), x(xv1)]];
+                } else {
+                    points = [[x(xv0), y(yp(j))], [x(xv1), y(yp(j + diff))]];
+                }
+                return generateM(points);
+            };
+        } else {
+            sWithRegion = function sWithRegion(d0, d1, j, diff) {
+                var points;
+                if (config.axis_rotated) {
+                    points = [[y(yp(j), true), x(xp(j))], [y(yp(j + diff), true), x(xp(j + diff))]];
+                } else {
+                    points = [[x(xp(j), true), y(yp(j))], [x(xp(j + diff), true), y(yp(j + diff))]];
+                }
+                return generateM(points);
+            };
+        }
+        for (i = 0; i < d.length; i++) {
+            if (isUndefined(regions) || !isWithinRegions(d[i].x, regions)) {
+                s += " " + xValue(d[i]) + " " + yValue(d[i]);
+            }
+            else {
+                    xp = $$.getScale(d[i - 1].x + xOffset, d[i].x + xOffset, $$.isTimeSeries());
+                    yp = $$.getScale(d[i - 1].value, d[i].value);
+                    dx = x(d[i].x) - x(d[i - 1].x);
+                    dy = y(d[i].value) - y(d[i - 1].value);
+                    dd = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+                    diff = 2 / dd;
+                    diffx2 = diff * 2;
+                    for (j = diff; j <= 1; j += diffx2) {
+                        s += sWithRegion(d[i - 1], d[i], j, diff);
+                    }
+                }
+            prev = d[i].x;
+        }
+        return s;
+    };
+    c3_chart_internal_fn.updateArea = function (durationForExit) {
+        var $$ = this,
+            d3 = $$.d3;
+        $$.mainArea = $$.main.selectAll('.' + CLASS.areas).selectAll('.' + CLASS.area).data($$.lineData.bind($$));
+        $$.mainArea.enter().append('path').attr("class", $$.classArea.bind($$)).style("fill", $$.color).style("opacity", function () {
+            $$.orgAreaOpacity = +d3.select(this).style('opacity');return 0;
+        });
+        $$.mainArea.style("opacity", $$.orgAreaOpacity);
+        $$.mainArea.exit().transition().duration(durationForExit).style('opacity', 0).remove();
+    };
+    c3_chart_internal_fn.redrawArea = function (drawArea, withTransition) {
+        return [(withTransition ? this.mainArea.transition(Math.random().toString()) : this.mainArea).attr("d", drawArea).style("fill", this.color).style("opacity", this.orgAreaOpacity)];
+    };
+    c3_chart_internal_fn.generateDrawArea = function (areaIndices, isSub) {
+        var $$ = this,
+            config = $$.config,
+            area = $$.d3.svg.area(),
+            getPoints = $$.generateGetAreaPoints(areaIndices, isSub),
+            yScaleGetter = isSub ? $$.getSubYScale : $$.getYScale,
+            xValue = function xValue(d) {
+            return (isSub ? $$.subxx : $$.xx).call($$, d);
+        },
+            value0 = function value0(d, i) {
+            return config.data_groups.length > 0 ? getPoints(d, i)[0][1] : yScaleGetter.call($$, d.id)($$.getAreaBaseValue(d.id));
+        },
+            value1 = function value1(d, i) {
+            return config.data_groups.length > 0 ? getPoints(d, i)[1][1] : yScaleGetter.call($$, d.id)(d.value);
+        };
+        area = config.axis_rotated ? area.x0(value0).x1(value1).y(xValue) : area.x(xValue).y0(config.area_above ? 0 : value0).y1(value1);
+        if (!config.line_connectNull) {
+            area = area.defined(function (d) {
+                return d.value !== null;
+            });
+        }
+        return function (d) {
+            var values = config.line_connectNull ? $$.filterRemoveNull(d.values) : d.values,
+                x0 = 0,
+                y0 = 0,
+                path;
+            if ($$.isAreaType(d)) {
+                if ($$.isStepType(d)) {
+                    values = $$.convertValuesToStep(values);
+                }
+                path = area.interpolate($$.getInterpolate(d))(values);
+            } else {
+                if (values[0]) {
+                    x0 = $$.x(values[0].x);
+                    y0 = $$.getYScale(d.id)(values[0].value);
+                }
+                path = config.axis_rotated ? "M " + y0 + " " + x0 : "M " + x0 + " " + y0;
+            }
+            return path ? path : "M 0 0";
+        };
+    };
+    c3_chart_internal_fn.getAreaBaseValue = function () {
+        return 0;
+    };
+    c3_chart_internal_fn.generateGetAreaPoints = function (areaIndices, isSub) {
+        var $$ = this,
+            config = $$.config,
+            areaTargetsNum = areaIndices.__max__ + 1,
+            x = $$.getShapeX(0, areaTargetsNum, areaIndices, !!isSub),
+            y = $$.getShapeY(!!isSub),
+            areaOffset = $$.getShapeOffset($$.isAreaType, areaIndices, !!isSub),
+            yScale = isSub ? $$.getSubYScale : $$.getYScale;
+        return function (d, i) {
+            var y0 = yScale.call($$, d.id)(0),
+                offset = areaOffset(d, i) || y0,
+            posX = x(d),
+                posY = y(d);
+            if (config.axis_rotated) {
+                if (0 < d.value && posY < y0 || d.value < 0 && y0 < posY) {
+                    posY = y0;
+                }
+            }
+            return [[posX, offset], [posX, posY - (y0 - offset)], [posX, posY - (y0 - offset)],
+            [posX, offset]
+            ];
+        };
+    };
+    c3_chart_internal_fn.updateCircle = function () {
+        var $$ = this;
+        $$.mainCircle = $$.main.selectAll('.' + CLASS.circles).selectAll('.' + CLASS.circle).data($$.lineOrScatterData.bind($$));
+        $$.mainCircle.enter().append("circle").attr("class", $$.classCircle.bind($$)).attr("r", $$.pointR.bind($$)).style("fill", $$.color);
+        $$.mainCircle.style("opacity", $$.initialOpacityForCircle.bind($$));
+        $$.mainCircle.exit().remove();
+    };
+    c3_chart_internal_fn.redrawCircle = function (cx, cy, withTransition) {
+        var selectedCircles = this.main.selectAll('.' + CLASS.selectedCircle);
+        return [(withTransition ? this.mainCircle.transition(Math.random().toString()) : this.mainCircle).style('opacity', this.opacityForCircle.bind(this)).style("fill", this.color).attr("cx", cx).attr("cy", cy), (withTransition ? selectedCircles.transition(Math.random().toString()) : selectedCircles).attr("cx", cx).attr("cy", cy)];
+    };
+    c3_chart_internal_fn.circleX = function (d) {
+        return d.x || d.x === 0 ? this.x(d.x) : null;
+    };
+    c3_chart_internal_fn.updateCircleY = function () {
+        var $$ = this,
+            lineIndices,
+            getPoints;
+        if ($$.config.data_groups.length > 0) {
+            lineIndices = $$.getShapeIndices($$.isLineType), getPoints = $$.generateGetLinePoints(lineIndices);
+            $$.circleY = function (d, i) {
+                return getPoints(d, i)[0][1];
+            };
+        } else {
+            $$.circleY = function (d) {
+                return $$.getYScale(d.id)(d.value);
+            };
+        }
+    };
+    c3_chart_internal_fn.getCircles = function (i, id) {
+        var $$ = this;
+        return (id ? $$.main.selectAll('.' + CLASS.circles + $$.getTargetSelectorSuffix(id)) : $$.main).selectAll('.' + CLASS.circle + (isValue(i) ? '-' + i : ''));
+    };
+    c3_chart_internal_fn.expandCircles = function (i, id, reset) {
+        var $$ = this,
+            r = $$.pointExpandedR.bind($$);
+        if (reset) {
+            $$.unexpandCircles();
+        }
+        $$.getCircles(i, id).classed(CLASS.EXPANDED, true).attr('r', r);
+    };
+    c3_chart_internal_fn.unexpandCircles = function (i) {
+        var $$ = this,
+            r = $$.pointR.bind($$);
+        $$.getCircles(i).filter(function () {
+            return $$.d3.select(this).classed(CLASS.EXPANDED);
+        }).classed(CLASS.EXPANDED, false).attr('r', r);
+    };
+    c3_chart_internal_fn.pointR = function (d) {
+        var $$ = this,
+            config = $$.config;
+        return $$.isStepType(d) ? 0 : isFunction(config.point_r) ? config.point_r(d) : config.point_r;
+    };
+    c3_chart_internal_fn.pointExpandedR = function (d) {
+        var $$ = this,
+            config = $$.config;
+        if (config.point_focus_expand_enabled) {
+            return isFunction(config.point_focus_expand_r) ? config.point_focus_expand_r(d) : config.point_focus_expand_r ? config.point_focus_expand_r : $$.pointR(d) * 1.75;
+        } else {
+            return $$.pointR(d);
+        }
+    };
+    c3_chart_internal_fn.pointSelectR = function (d) {
+        var $$ = this,
+            config = $$.config;
+        return isFunction(config.point_select_r) ? config.point_select_r(d) : config.point_select_r ? config.point_select_r : $$.pointR(d) * 4;
+    };
+    c3_chart_internal_fn.isWithinCircle = function (that, r) {
+        var d3 = this.d3,
+            mouse = d3.mouse(that),
+            d3_this = d3.select(that),
+            cx = +d3_this.attr("cx"),
+            cy = +d3_this.attr("cy");
+        return Math.sqrt(Math.pow(cx - mouse[0], 2) + Math.pow(cy - mouse[1], 2)) < r;
+    };
+    c3_chart_internal_fn.isWithinStep = function (that, y) {
+        return Math.abs(y - this.d3.mouse(that)[1]) < 30;
+    };
+    c3_chart_internal_fn.getCurrentWidth = function () {
+        var $$ = this,
+            config = $$.config;
+        return config.size_width ? config.size_width : $$.getParentWidth();
+    };
+    c3_chart_internal_fn.getCurrentHeight = function () {
+        var $$ = this,
+            config = $$.config,
+            h = config.size_height ? config.size_height : $$.getParentHeight();
+        return h > 0 ? h : 320 / ($$.hasType('gauge') && !config.gauge_fullCircle ? 2 : 1);
+    };
+    c3_chart_internal_fn.getCurrentPaddingTop = function () {
+        var $$ = this,
+            config = $$.config,
+            padding = isValue(config.padding_top) ? config.padding_top : 0;
+        if ($$.title && $$.title.node()) {
+            padding += $$.getTitlePadding();
+        }
+        return padding;
+    };
+    c3_chart_internal_fn.getCurrentPaddingBottom = function () {
+        var config = this.config;
+        return isValue(config.padding_bottom) ? config.padding_bottom : 0;
+    };
+    c3_chart_internal_fn.getCurrentPaddingLeft = function (withoutRecompute) {
+        var $$ = this,
+            config = $$.config;
+        if (isValue(config.padding_left)) {
+            return config.padding_left;
+        } else if (config.axis_rotated) {
+            return !config.axis_x_show || config.axis_x_inner ? 1 : Math.max(ceil10($$.getAxisWidthByAxisId('x', withoutRecompute)), 40);
+        } else if (!config.axis_y_show || config.axis_y_inner) {
+            return $$.axis.getYAxisLabelPosition().isOuter ? 30 : 1;
+        } else {
+            return ceil10($$.getAxisWidthByAxisId('y', withoutRecompute));
+        }
+    };
+    c3_chart_internal_fn.getCurrentPaddingRight = function () {
+        var $$ = this,
+            config = $$.config,
+            defaultPadding = 10,
+            legendWidthOnRight = $$.isLegendRight ? $$.getLegendWidth() + 20 : 0;
+        if (isValue(config.padding_right)) {
+            return config.padding_right + 1;
+        } else if (config.axis_rotated) {
+            return defaultPadding + legendWidthOnRight;
+        } else if (!config.axis_y2_show || config.axis_y2_inner) {
+            return 2 + legendWidthOnRight + ($$.axis.getY2AxisLabelPosition().isOuter ? 20 : 0);
+        } else {
+            return ceil10($$.getAxisWidthByAxisId('y2')) + legendWidthOnRight;
+        }
+    };
+    c3_chart_internal_fn.getParentRectValue = function (key) {
+        var parent = this.selectChart.node(),
+            v;
+        while (parent && parent.tagName !== 'BODY') {
+            try {
+                v = parent.getBoundingClientRect()[key];
+            } catch (e) {
+                if (key === 'width') {
+                    v = parent.offsetWidth;
+                }
+            }
+            if (v) {
+                break;
+            }
+            parent = parent.parentNode;
+        }
+        return v;
+    };
+    c3_chart_internal_fn.getParentWidth = function () {
+        return this.getParentRectValue('width');
+    };
+    c3_chart_internal_fn.getParentHeight = function () {
+        var h = this.selectChart.style('height');
+        return h.indexOf('px') > 0 ? +h.replace('px', '') : 0;
+    };
+    c3_chart_internal_fn.getSvgLeft = function (withoutRecompute) {
+        var $$ = this,
+            config = $$.config,
+            hasLeftAxisRect = config.axis_rotated || !config.axis_rotated && !config.axis_y_inner,
+            leftAxisClass = config.axis_rotated ? CLASS.axisX : CLASS.axisY,
+            leftAxis = $$.main.select('.' + leftAxisClass).node(),
+            svgRect = leftAxis && hasLeftAxisRect ? leftAxis.getBoundingClientRect() : { right: 0 },
+            chartRect = $$.selectChart.node().getBoundingClientRect(),
+            hasArc = $$.hasArcType(),
+            svgLeft = svgRect.right - chartRect.left - (hasArc ? 0 : $$.getCurrentPaddingLeft(withoutRecompute));
+        return svgLeft > 0 ? svgLeft : 0;
+    };
+    c3_chart_internal_fn.getAxisWidthByAxisId = function (id, withoutRecompute) {
+        var $$ = this,
+            position = $$.axis.getLabelPositionById(id);
+        return $$.axis.getMaxTickWidth(id, withoutRecompute) + (position.isInner ? 20 : 40);
+    };
+    c3_chart_internal_fn.getHorizontalAxisHeight = function (axisId) {
+        var $$ = this,
+            config = $$.config,
+            h = 30;
+        if (axisId === 'x' && !config.axis_x_show) {
+            return 8;
+        }
+        if (axisId === 'x' && config.axis_x_height) {
+            return config.axis_x_height;
+        }
+        if (axisId === 'y' && !config.axis_y_show) {
+            return config.legend_show && !$$.isLegendRight && !$$.isLegendInset ? 10 : 1;
+        }
+        if (axisId === 'y2' && !config.axis_y2_show) {
+            return $$.rotated_padding_top;
+        }
+        if (axisId === 'x' && !config.axis_rotated && config.axis_x_tick_rotate) {
+            h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_x_tick_rotate) / 180);
+        }
+        if (axisId === 'y' && config.axis_rotated && config.axis_y_tick_rotate) {
+            h = 30 + $$.axis.getMaxTickWidth(axisId) * Math.cos(Math.PI * (90 - config.axis_y_tick_rotate) / 180);
+        }
+        return h + ($$.axis.getLabelPositionById(axisId).isInner ? 0 : 10) + (axisId === 'y2' ? -10 : 0);
+    };
+    c3_chart_internal_fn.getEventRectWidth = function () {
+        return Math.max(0, this.xAxis.tickInterval());
+    };
+    c3_chart_internal_fn.initBrush = function () {
+        var $$ = this,
+            d3 = $$.d3;
+        $$.brush = d3.svg.brush().on("brush", function () {
+            $$.redrawForBrush();
+        });
+        $$.brush.update = function () {
+            if ($$.context) {
+                $$.context.select('.' + CLASS.brush).call(this);
+            }
+            return this;
+        };
+        $$.brush.scale = function (scale) {
+            return $$.config.axis_rotated ? this.y(scale) : this.x(scale);
+        };
+    };
+    c3_chart_internal_fn.initSubchart = function () {
+        var $$ = this,
+            config = $$.config,
+            context = $$.context = $$.svg.append("g").attr("transform", $$.getTranslate('context')),
+            visibility = config.subchart_show ? 'visible' : 'hidden';
+        context.style('visibility', visibility);
+        context.append('g').attr("clip-path", $$.clipPathForSubchart).attr('class', CLASS.chart);
+        context.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartBars);
+        context.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartLines);
+        context.append("g").attr("clip-path", $$.clipPath).attr("class", CLASS.brush).call($$.brush);
+        $$.axes.subx = context.append("g").attr("class", CLASS.axisX).attr("transform", $$.getTranslate('subx')).attr("clip-path", config.axis_rotated ? "" : $$.clipPathForXAxis).style("visibility", config.subchart_axis_x_show ? visibility : 'hidden');
+    };
+    c3_chart_internal_fn.updateTargetsForSubchart = function (targets) {
+        var $$ = this,
+            context = $$.context,
+            config = $$.config,
+            contextLineEnter,
+            contextLineUpdate,
+            contextBarEnter,
+            contextBarUpdate,
+            classChartBar = $$.classChartBar.bind($$),
+            classBars = $$.classBars.bind($$),
+            classChartLine = $$.classChartLine.bind($$),
+            classLines = $$.classLines.bind($$),
+            classAreas = $$.classAreas.bind($$);
+        if (config.subchart_show) {
+            contextBarUpdate = context.select('.' + CLASS.chartBars).selectAll('.' + CLASS.chartBar).data(targets).attr('class', classChartBar);
+            contextBarEnter = contextBarUpdate.enter().append('g').style('opacity', 0).attr('class', classChartBar);
+            contextBarEnter.append('g').attr("class", classBars);
+            contextLineUpdate = context.select('.' + CLASS.chartLines).selectAll('.' + CLASS.chartLine).data(targets).attr('class', classChartLine);
+            contextLineEnter = contextLineUpdate.enter().append('g').style('opacity', 0).attr('class', classChartLine);
+            contextLineEnter.append("g").attr("class", classLines);
+            contextLineEnter.append("g").attr("class", classAreas);
+            context.selectAll('.' + CLASS.brush + ' rect').attr(config.axis_rotated ? "width" : "height", config.axis_rotated ? $$.width2 : $$.height2);
+        }
+    };
+    c3_chart_internal_fn.updateBarForSubchart = function (durationForExit) {
+        var $$ = this;
+        $$.contextBar = $$.context.selectAll('.' + CLASS.bars).selectAll('.' + CLASS.bar).data($$.barData.bind($$));
+        $$.contextBar.enter().append('path').attr("class", $$.classBar.bind($$)).style("stroke", 'none').style("fill", $$.color);
+        $$.contextBar.style("opacity", $$.initialOpacity.bind($$));
+        $$.contextBar.exit().transition().duration(durationForExit).style('opacity', 0).remove();
+    };
+    c3_chart_internal_fn.redrawBarForSubchart = function (drawBarOnSub, withTransition, duration) {
+        (withTransition ? this.contextBar.transition(Math.random().toString()).duration(duration) : this.contextBar).attr('d', drawBarOnSub).style('opacity', 1);
+    };
+    c3_chart_internal_fn.updateLineForSubchart = function (durationForExit) {
+        var $$ = this;
+        $$.contextLine = $$.context.selectAll('.' + CLASS.lines).selectAll('.' + CLASS.line).data($$.lineData.bind($$));
+        $$.contextLine.enter().append('path').attr('class', $$.classLine.bind($$)).style('stroke', $$.color);
+        $$.contextLine.style("opacity", $$.initialOpacity.bind($$));
+        $$.contextLine.exit().transition().duration(durationForExit).style('opacity', 0).remove();
+    };
+    c3_chart_internal_fn.redrawLineForSubchart = function (drawLineOnSub, withTransition, duration) {
+        (withTransition ? this.contextLine.transition(Math.random().toString()).duration(duration) : this.contextLine).attr("d", drawLineOnSub).style('opacity', 1);
+    };
+    c3_chart_internal_fn.updateAreaForSubchart = function (durationForExit) {
+        var $$ = this,
+            d3 = $$.d3;
+        $$.contextArea = $$.context.selectAll('.' + CLASS.areas).selectAll('.' + CLASS.area).data($$.lineData.bind($$));
+        $$.contextArea.enter().append('path').attr("class", $$.classArea.bind($$)).style("fill", $$.color).style("opacity", function () {
+            $$.orgAreaOpacity = +d3.select(this).style('opacity');return 0;
+        });
+        $$.contextArea.style("opacity", 0);
+        $$.contextArea.exit().transition().duration(durationForExit).style('opacity', 0).remove();
+    };
+    c3_chart_internal_fn.redrawAreaForSubchart = function (drawAreaOnSub, withTransition, duration) {
+        (withTransition ? this.contextArea.transition(Math.random().toString()).duration(duration) : this.contextArea).attr("d", drawAreaOnSub).style("fill", this.color).style("opacity", this.orgAreaOpacity);
+    };
+    c3_chart_internal_fn.redrawSubchart = function (withSubchart, transitions, duration, durationForExit, areaIndices, barIndices, lineIndices) {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config,
+            drawAreaOnSub,
+            drawBarOnSub,
+            drawLineOnSub;
+        $$.context.style('visibility', config.subchart_show ? 'visible' : 'hidden');
+        if (config.subchart_show) {
+            if (d3.event && d3.event.type === 'zoom') {
+                $$.brush.extent($$.x.orgDomain()).update();
+            }
+            if (withSubchart) {
+                if (!$$.brush.empty()) {
+                    $$.brush.extent($$.x.orgDomain()).update();
+                }
+                drawAreaOnSub = $$.generateDrawArea(areaIndices, true);
+                drawBarOnSub = $$.generateDrawBar(barIndices, true);
+                drawLineOnSub = $$.generateDrawLine(lineIndices, true);
+                $$.updateBarForSubchart(duration);
+                $$.updateLineForSubchart(duration);
+                $$.updateAreaForSubchart(duration);
+                $$.redrawBarForSubchart(drawBarOnSub, duration, duration);
+                $$.redrawLineForSubchart(drawLineOnSub, duration, duration);
+                $$.redrawAreaForSubchart(drawAreaOnSub, duration, duration);
+            }
+        }
+    };
+    c3_chart_internal_fn.redrawForBrush = function () {
+        var $$ = this,
+            x = $$.x;
+        $$.redraw({
+            withTransition: false,
+            withY: $$.config.zoom_rescale,
+            withSubchart: false,
+            withUpdateXDomain: true,
+            withDimension: false
+        });
+        $$.config.subchart_onbrush.call($$.api, x.orgDomain());
+    };
+    c3_chart_internal_fn.transformContext = function (withTransition, transitions) {
+        var $$ = this,
+            subXAxis;
+        if (transitions && transitions.axisSubX) {
+            subXAxis = transitions.axisSubX;
+        } else {
+            subXAxis = $$.context.select('.' + CLASS.axisX);
+            if (withTransition) {
+                subXAxis = subXAxis.transition();
+            }
+        }
+        $$.context.attr("transform", $$.getTranslate('context'));
+        subXAxis.attr("transform", $$.getTranslate('subx'));
+    };
+    c3_chart_internal_fn.getDefaultExtent = function () {
+        var $$ = this,
+            config = $$.config,
+            extent = isFunction(config.axis_x_extent) ? config.axis_x_extent($$.getXDomain($$.data.targets)) : config.axis_x_extent;
+        if ($$.isTimeSeries()) {
+            extent = [$$.parseDate(extent[0]), $$.parseDate(extent[1])];
+        }
+        return extent;
+    };
+    c3_chart_internal_fn.initText = function () {
+        var $$ = this;
+        $$.main.select('.' + CLASS.chart).append("g").attr("class", CLASS.chartTexts);
+        $$.mainText = $$.d3.selectAll([]);
+    };
+    c3_chart_internal_fn.updateTargetsForText = function (targets) {
+        var $$ = this,
+            mainTextUpdate,
+            mainTextEnter,
+            classChartText = $$.classChartText.bind($$),
+            classTexts = $$.classTexts.bind($$),
+            classFocus = $$.classFocus.bind($$);
+        mainTextUpdate = $$.main.select('.' + CLASS.chartTexts).selectAll('.' + CLASS.chartText).data(targets).attr('class', function (d) {
+            return classChartText(d) + classFocus(d);
+        });
+        mainTextEnter = mainTextUpdate.enter().append('g').attr('class', classChartText).style('opacity', 0).style("pointer-events", "none");
+        mainTextEnter.append('g').attr('class', classTexts);
+    };
+    c3_chart_internal_fn.updateText = function (durationForExit) {
+        var $$ = this,
+            config = $$.config,
+            barOrLineData = $$.barOrLineData.bind($$),
+            classText = $$.classText.bind($$);
+        $$.mainText = $$.main.selectAll('.' + CLASS.texts).selectAll('.' + CLASS.text).data(barOrLineData);
+        $$.mainText.enter().append('text').attr("class", classText).attr('text-anchor', function (d) {
+            return config.axis_rotated ? d.value < 0 ? 'end' : 'start' : 'middle';
+        }).style("stroke", 'none').style("fill", function (d) {
+            return $$.color(d);
+        }).style("fill-opacity", 0);
+        $$.mainText.text(function (d, i, j) {
+            return $$.dataLabelFormat(d.id)(d.value, d.id, i, j);
+        });
+        $$.mainText.exit().transition().duration(durationForExit).style('fill-opacity', 0).remove();
+    };
+    c3_chart_internal_fn.redrawText = function (xForText, yForText, forFlow, withTransition) {
+        return [(withTransition ? this.mainText.transition() : this.mainText).attr('x', xForText).attr('y', yForText).style("fill", this.color).style("fill-opacity", forFlow ? 0 : this.opacityForText.bind(this))];
+    };
+    c3_chart_internal_fn.getTextRect = function (text, cls, element) {
+        var dummy = this.d3.select('body').append('div').classed('c3', true),
+            svg = dummy.append("svg").style('visibility', 'hidden').style('position', 'fixed').style('top', 0).style('left', 0),
+            font = this.d3.select(element).style('font'),
+            rect;
+        svg.selectAll('.dummy').data([text]).enter().append('text').classed(cls ? cls : "", true).style('font', font).text(text).each(function () {
+            rect = this.getBoundingClientRect();
+        });
+        dummy.remove();
+        return rect;
+    };
+    c3_chart_internal_fn.generateXYForText = function (areaIndices, barIndices, lineIndices, forX) {
+        var $$ = this,
+            getAreaPoints = $$.generateGetAreaPoints(areaIndices, false),
+            getBarPoints = $$.generateGetBarPoints(barIndices, false),
+            getLinePoints = $$.generateGetLinePoints(lineIndices, false),
+            getter = forX ? $$.getXForText : $$.getYForText;
+        return function (d, i) {
+            var getPoints = $$.isAreaType(d) ? getAreaPoints : $$.isBarType(d) ? getBarPoints : getLinePoints;
+            return getter.call($$, getPoints(d, i), d, this);
+        };
+    };
+    c3_chart_internal_fn.getXForText = function (points, d, textElement) {
+        var $$ = this,
+            box = textElement.getBoundingClientRect(),
+            xPos,
+            padding;
+        if ($$.config.axis_rotated) {
+            padding = $$.isBarType(d) ? 4 : 6;
+            xPos = points[2][1] + padding * (d.value < 0 ? -1 : 1);
+        } else {
+            xPos = $$.hasType('bar') ? (points[2][0] + points[0][0]) / 2 : points[0][0];
+        }
+        if (d.value === null) {
+            if (xPos > $$.width) {
+                xPos = $$.width - box.width;
+            } else if (xPos < 0) {
+                xPos = 4;
+            }
+        }
+        return xPos;
+    };
+    c3_chart_internal_fn.getYForText = function (points, d, textElement) {
+        var $$ = this,
+            box = textElement.getBoundingClientRect(),
+            yPos;
+        if ($$.config.axis_rotated) {
+            yPos = (points[0][0] + points[2][0] + box.height * 0.6) / 2;
+        } else {
+            yPos = points[2][1];
+            if (d.value < 0 || d.value === 0 && !$$.hasPositiveValue) {
+                yPos += box.height;
+                if ($$.isBarType(d) && $$.isSafari()) {
+                    yPos -= 3;
+                } else if (!$$.isBarType(d) && $$.isChrome()) {
+                    yPos += 3;
+                }
+            } else {
+                yPos += $$.isBarType(d) ? -3 : -6;
+            }
+        }
+        if (d.value === null && !$$.config.axis_rotated) {
+            if (yPos < box.height) {
+                yPos = box.height;
+            } else if (yPos > this.height) {
+                yPos = this.height - 4;
+            }
+        }
+        return yPos;
+    };
+    c3_chart_internal_fn.initTitle = function () {
+        var $$ = this;
+        $$.title = $$.svg.append("text").text($$.config.title_text).attr("class", $$.CLASS.title);
+    };
+    c3_chart_internal_fn.redrawTitle = function () {
+        var $$ = this;
+        $$.title.attr("x", $$.xForTitle.bind($$)).attr("y", $$.yForTitle.bind($$));
+    };
+    c3_chart_internal_fn.xForTitle = function () {
+        var $$ = this,
+            config = $$.config,
+            position = config.title_position || 'left',
+            x;
+        if (position.indexOf('right') >= 0) {
+            x = $$.currentWidth - $$.getTextRect($$.title.node().textContent, $$.CLASS.title, $$.title.node()).width - config.title_padding.right;
+        } else if (position.indexOf('center') >= 0) {
+            x = ($$.currentWidth - $$.getTextRect($$.title.node().textContent, $$.CLASS.title, $$.title.node()).width) / 2;
+        } else {
+            x = config.title_padding.left;
+        }
+        return x;
+    };
+    c3_chart_internal_fn.yForTitle = function () {
+        var $$ = this;
+        return $$.config.title_padding.top + $$.getTextRect($$.title.node().textContent, $$.CLASS.title, $$.title.node()).height;
+    };
+    c3_chart_internal_fn.getTitlePadding = function () {
+        var $$ = this;
+        return $$.yForTitle() + $$.config.title_padding.bottom;
+    };
+    c3_chart_internal_fn.initTooltip = function () {
+        var $$ = this,
+            config = $$.config,
+            i;
+        $$.tooltip = $$.selectChart.style("position", "relative").append("div").attr('class', CLASS.tooltipContainer).style("position", "absolute").style("pointer-events", "none").style("display", "none");
+        if (config.tooltip_init_show) {
+            if ($$.isTimeSeries() && isString(config.tooltip_init_x)) {
+                config.tooltip_init_x = $$.parseDate(config.tooltip_init_x);
+                for (i = 0; i < $$.data.targets[0].values.length; i++) {
+                    if ($$.data.targets[0].values[i].x - config.tooltip_init_x === 0) {
+                        break;
+                    }
+                }
+                config.tooltip_init_x = i;
+            }
+            $$.tooltip.html(config.tooltip_contents.call($$, $$.data.targets.map(function (d) {
+                return $$.addName(d.values[config.tooltip_init_x]);
+            }), $$.axis.getXAxisTickFormat(), $$.getYFormat($$.hasArcType()), $$.color));
+            $$.tooltip.style("top", config.tooltip_init_position.top).style("left", config.tooltip_init_position.left).style("display", "block");
+        }
+    };
+    c3_chart_internal_fn.getTooltipSortFunction = function () {
+        var $$ = this,
+            config = $$.config;
+        if (config.data_groups.length === 0 || config.tooltip_order !== undefined) {
+            var order = config.tooltip_order;
+            if (order === undefined) {
+                order = config.data_order;
+            }
+            var valueOf = function valueOf(obj) {
+                return obj ? obj.value : null;
+            };
+            if (isString(order) && order.toLowerCase() === 'asc') {
+                return function (a, b) {
+                    return valueOf(a) - valueOf(b);
+                };
+            } else if (isString(order) && order.toLowerCase() === 'desc') {
+                return function (a, b) {
+                    return valueOf(b) - valueOf(a);
+                };
+            } else if (isFunction(order)) {
+                var sortFunction = order;
+                if (config.tooltip_order === undefined) {
+                    sortFunction = function sortFunction(a, b) {
+                        return order(a ? {
+                            id: a.id,
+                            values: [a]
+                        } : null, b ? {
+                            id: b.id,
+                            values: [b]
+                        } : null);
+                    };
+                }
+                return sortFunction;
+            } else if (isArray(order)) {
+                return function (a, b) {
+                    return order.indexOf(a.id) - order.indexOf(b.id);
+                };
+            }
+        } else {
+            var ids = $$.orderTargets($$.data.targets).map(function (i) {
+                return i.id;
+            });
+            if ($$.isOrderAsc() || $$.isOrderDesc()) {
+                ids = ids.reverse();
+            }
+            return function (a, b) {
+                return ids.indexOf(a.id) - ids.indexOf(b.id);
+            };
+        }
+    };
+    c3_chart_internal_fn.getTooltipContent = function (d, defaultTitleFormat, defaultValueFormat, color) {
+        var $$ = this,
+            config = $$.config,
+            titleFormat = config.tooltip_format_title || defaultTitleFormat,
+            nameFormat = config.tooltip_format_name || function (name) {
+            return name;
+        },
+            valueFormat = config.tooltip_format_value || defaultValueFormat,
+            text,
+            i,
+            title,
+            value,
+            name,
+            bgcolor;
+        var tooltipSortFunction = this.getTooltipSortFunction();
+        if (tooltipSortFunction) {
+            d.sort(tooltipSortFunction);
+        }
+        for (i = 0; i < d.length; i++) {
+            if (!(d[i] && (d[i].value || d[i].value === 0))) {
+                continue;
+            }
+            if (!text) {
+                title = sanitise(titleFormat ? titleFormat(d[i].x) : d[i].x);
+                text = "<table class='" + $$.CLASS.tooltip + "'>" + (title || title === 0 ? "<tr><th colspan='2'>" + title + "</th></tr>" : "");
+            }
+            value = sanitise(valueFormat(d[i].value, d[i].ratio, d[i].id, d[i].index, d));
+            if (value !== undefined) {
+                if (d[i].name === null) {
+                    continue;
+                }
+                name = sanitise(nameFormat(d[i].name, d[i].ratio, d[i].id, d[i].index));
+                bgcolor = $$.levelColor ? $$.levelColor(d[i].value) : color(d[i].id);
+                text += "<tr class='" + $$.CLASS.tooltipName + "-" + $$.getTargetSelectorSuffix(d[i].id) + "'>";
+                text += "<td class='name'><span style='background-color:" + bgcolor + "'></span>" + name + "</td>";
+                text += "<td class='value'>" + value + "</td>";
+                text += "</tr>";
+            }
+        }
+        return text + "</table>";
+    };
+    c3_chart_internal_fn.tooltipPosition = function (dataToShow, tWidth, tHeight, element) {
+        var $$ = this,
+            config = $$.config,
+            d3 = $$.d3;
+        var svgLeft, tooltipLeft, tooltipRight, tooltipTop, chartRight;
+        var forArc = $$.hasArcType(),
+            mouse = d3.mouse(element);
+        if (forArc) {
+            tooltipLeft = ($$.width - ($$.isLegendRight ? $$.getLegendWidth() : 0)) / 2 + mouse[0];
+            tooltipTop = ($$.hasType('gauge') ? $$.height : $$.height / 2) + mouse[1] + 20;
+        } else {
+            svgLeft = $$.getSvgLeft(true);
+            if (config.axis_rotated) {
+                tooltipLeft = svgLeft + mouse[0] + 100;
+                tooltipRight = tooltipLeft + tWidth;
+                chartRight = $$.currentWidth - $$.getCurrentPaddingRight();
+                tooltipTop = $$.x(dataToShow[0].x) + 20;
+            } else {
+                tooltipLeft = svgLeft + $$.getCurrentPaddingLeft(true) + $$.x(dataToShow[0].x) + 20;
+                tooltipRight = tooltipLeft + tWidth;
+                chartRight = svgLeft + $$.currentWidth - $$.getCurrentPaddingRight();
+                tooltipTop = mouse[1] + 15;
+            }
+            if (tooltipRight > chartRight) {
+                tooltipLeft -= tooltipRight - chartRight + 20;
+            }
+            if (tooltipTop + tHeight > $$.currentHeight) {
+                tooltipTop -= tHeight + 30;
+            }
+        }
+        if (tooltipTop < 0) {
+            tooltipTop = 0;
+        }
+        return { top: tooltipTop, left: tooltipLeft };
+    };
+    c3_chart_internal_fn.showTooltip = function (selectedData, element) {
+        var $$ = this,
+            config = $$.config;
+        var tWidth, tHeight, position;
+        var forArc = $$.hasArcType(),
+            dataToShow = selectedData.filter(function (d) {
+            return d && isValue(d.value);
+        }),
+            positionFunction = config.tooltip_position || c3_chart_internal_fn.tooltipPosition;
+        if (dataToShow.length === 0 || !config.tooltip_show) {
+            return;
+        }
+        $$.tooltip.html(config.tooltip_contents.call($$, selectedData, $$.axis.getXAxisTickFormat(), $$.getYFormat(forArc), $$.color)).style("display", "block");
+        tWidth = $$.tooltip.property('offsetWidth');
+        tHeight = $$.tooltip.property('offsetHeight');
+        position = positionFunction.call(this, dataToShow, tWidth, tHeight, element);
+        $$.tooltip.style("top", position.top + "px").style("left", position.left + 'px');
+    };
+    c3_chart_internal_fn.hideTooltip = function () {
+        this.tooltip.style("display", "none");
+    };
+    c3_chart_internal_fn.setTargetType = function (targetIds, type) {
+        var $$ = this,
+            config = $$.config;
+        $$.mapToTargetIds(targetIds).forEach(function (id) {
+            $$.withoutFadeIn[id] = type === config.data_types[id];
+            config.data_types[id] = type;
+        });
+        if (!targetIds) {
+            config.data_type = type;
+        }
+    };
+    c3_chart_internal_fn.hasType = function (type, targets) {
+        var $$ = this,
+            types = $$.config.data_types,
+            has = false;
+        targets = targets || $$.data.targets;
+        if (targets && targets.length) {
+            targets.forEach(function (target) {
+                var t = types[target.id];
+                if (t && t.indexOf(type) >= 0 || !t && type === 'line') {
+                    has = true;
+                }
+            });
+        } else if (Object.keys(types).length) {
+            Object.keys(types).forEach(function (id) {
+                if (types[id] === type) {
+                    has = true;
+                }
+            });
+        } else {
+            has = $$.config.data_type === type;
+        }
+        return has;
+    };
+    c3_chart_internal_fn.hasArcType = function (targets) {
+        return this.hasType('pie', targets) || this.hasType('donut', targets) || this.hasType('gauge', targets);
+    };
+    c3_chart_internal_fn.isLineType = function (d) {
+        var config = this.config,
+            id = isString(d) ? d : d.id;
+        return !config.data_types[id] || ['line', 'spline', 'area', 'area-spline', 'step', 'area-step'].indexOf(config.data_types[id]) >= 0;
+    };
+    c3_chart_internal_fn.isStepType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return ['step', 'area-step'].indexOf(this.config.data_types[id]) >= 0;
+    };
+    c3_chart_internal_fn.isSplineType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return ['spline', 'area-spline'].indexOf(this.config.data_types[id]) >= 0;
+    };
+    c3_chart_internal_fn.isAreaType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return ['area', 'area-spline', 'area-step'].indexOf(this.config.data_types[id]) >= 0;
+    };
+    c3_chart_internal_fn.isBarType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return this.config.data_types[id] === 'bar';
+    };
+    c3_chart_internal_fn.isScatterType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return this.config.data_types[id] === 'scatter';
+    };
+    c3_chart_internal_fn.isPieType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return this.config.data_types[id] === 'pie';
+    };
+    c3_chart_internal_fn.isGaugeType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return this.config.data_types[id] === 'gauge';
+    };
+    c3_chart_internal_fn.isDonutType = function (d) {
+        var id = isString(d) ? d : d.id;
+        return this.config.data_types[id] === 'donut';
+    };
+    c3_chart_internal_fn.isArcType = function (d) {
+        return this.isPieType(d) || this.isDonutType(d) || this.isGaugeType(d);
+    };
+    c3_chart_internal_fn.lineData = function (d) {
+        return this.isLineType(d) ? [d] : [];
+    };
+    c3_chart_internal_fn.arcData = function (d) {
+        return this.isArcType(d.data) ? [d] : [];
+    };
+    /* not used
+     function scatterData(d) {
+     return isScatterType(d) ? d.values : [];
+     }
+     */
+    c3_chart_internal_fn.barData = function (d) {
+        return this.isBarType(d) ? d.values : [];
+    };
+    c3_chart_internal_fn.lineOrScatterData = function (d) {
+        return this.isLineType(d) || this.isScatterType(d) ? d.values : [];
+    };
+    c3_chart_internal_fn.barOrLineData = function (d) {
+        return this.isBarType(d) || this.isLineType(d) ? d.values : [];
+    };
+    c3_chart_internal_fn.isInterpolationType = function (type) {
+        return ['linear', 'linear-closed', 'basis', 'basis-open', 'basis-closed', 'bundle', 'cardinal', 'cardinal-open', 'cardinal-closed', 'monotone'].indexOf(type) >= 0;
+    };
+    c3_chart_internal_fn.isSafari = function () {
+        var ua = window.navigator.userAgent;
+        return ua.indexOf('Safari') >= 0 && ua.indexOf('Chrome') < 0;
+    };
+    c3_chart_internal_fn.isChrome = function () {
+        var ua = window.navigator.userAgent;
+        return ua.indexOf('Chrome') >= 0;
+    };
+    c3_chart_internal_fn.initZoom = function () {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config,
+            startEvent;
+        $$.zoom = d3.behavior.zoom().on("zoomstart", function () {
+            startEvent = d3.event.sourceEvent;
+            $$.zoom.altDomain = d3.event.sourceEvent.altKey ? $$.x.orgDomain() : null;
+            config.zoom_onzoomstart.call($$.api, d3.event.sourceEvent);
+        }).on("zoom", function () {
+            $$.redrawForZoom.call($$);
+        }).on('zoomend', function () {
+            var event = d3.event.sourceEvent;
+            if (event && startEvent.clientX === event.clientX && startEvent.clientY === event.clientY) {
+                return;
+            }
+            $$.redrawEventRect();
+            $$.updateZoom();
+            config.zoom_onzoomend.call($$.api, $$.x.orgDomain());
+        });
+        $$.zoom.scale = function (scale) {
+            return config.axis_rotated ? this.y(scale) : this.x(scale);
+        };
+        $$.zoom.orgScaleExtent = function () {
+            var extent = config.zoom_extent ? config.zoom_extent : [1, 10];
+            return [extent[0], Math.max($$.getMaxDataCount() / extent[1], extent[1])];
+        };
+        $$.zoom.updateScaleExtent = function () {
+            var ratio = diffDomain($$.x.orgDomain()) / diffDomain($$.getZoomDomain()),
+                extent = this.orgScaleExtent();
+            this.scaleExtent([extent[0] * ratio, extent[1] * ratio]);
+            return this;
+        };
+    };
+    c3_chart_internal_fn.getZoomDomain = function () {
+        var $$ = this,
+            config = $$.config,
+            d3 = $$.d3,
+            min = d3.min([$$.orgXDomain[0], config.zoom_x_min]),
+            max = d3.max([$$.orgXDomain[1], config.zoom_x_max]);
+        return [min, max];
+    };
+    c3_chart_internal_fn.updateZoom = function () {
+        var $$ = this,
+            z = $$.config.zoom_enabled ? $$.zoom : function () {};
+        $$.main.select('.' + CLASS.zoomRect).call(z).on("dblclick.zoom", null);
+        $$.main.selectAll('.' + CLASS.eventRect).call(z).on("dblclick.zoom", null);
+    };
+    c3_chart_internal_fn.redrawForZoom = function () {
+        var $$ = this,
+            d3 = $$.d3,
+            config = $$.config,
+            zoom = $$.zoom,
+            x = $$.x;
+        if (!config.zoom_enabled) {
+            return;
+        }
+        if ($$.filterTargetsToShow($$.data.targets).length === 0) {
+            return;
+        }
+        if (d3.event.sourceEvent.type === 'mousemove' && zoom.altDomain) {
+            x.domain(zoom.altDomain);
+            zoom.scale(x).updateScaleExtent();
+            return;
+        }
+        if ($$.isCategorized() && x.orgDomain()[0] === $$.orgXDomain[0]) {
+            x.domain([$$.orgXDomain[0] - 1e-10, x.orgDomain()[1]]);
+        }
+        $$.redraw({
+            withTransition: false,
+            withY: config.zoom_rescale,
+            withSubchart: false,
+            withEventRect: false,
+            withDimension: false
+        });
+        if (d3.event.sourceEvent.type === 'mousemove') {
+            $$.cancelClick = true;
+        }
+        config.zoom_onzoom.call($$.api, x.orgDomain());
+    };
+    return c3;
 })));
-},{"d3":5}],4:[function(require,module,exports){
-/**
- * Expose `Emitter`.
- */
-module.exports = Emitter;
-/**
- * Initialize a new `Emitter`.
- *
- * @api public
- */
-function Emitter(obj) {
-  if (obj) return mixin(obj);
-};
-/**
- * Mixin the emitter properties.
- *
- * @param {Object} obj
- * @return {Object}
- * @api private
- */
-function mixin(obj) {
-  for (var key in Emitter.prototype) {
-    obj[key] = Emitter.prototype[key];
-  }
-  return obj;
-}
-/**
- * Listen on the given `event` with `fn`.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-Emitter.prototype.on =
-Emitter.prototype.addEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])
-    .push(fn);
-  return this;
-};
-/**
- * Adds an `event` listener that will be invoked a single
- * time then automatically removed.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-Emitter.prototype.once = function(event, fn){
-  function on() {
-    this.off(event, on);
-    fn.apply(this, arguments);
-  }
-  on.fn = fn;
-  this.on(event, on);
-  return this;
-};
-/**
- * Remove the given callback for `event` or all
- * registered callbacks.
- *
- * @param {String} event
- * @param {Function} fn
- * @return {Emitter}
- * @api public
- */
-Emitter.prototype.off =
-Emitter.prototype.removeListener =
-Emitter.prototype.removeAllListeners =
-Emitter.prototype.removeEventListener = function(event, fn){
-  this._callbacks = this._callbacks || {};
-  if (0 == arguments.length) {
-    this._callbacks = {};
-    return this;
-  }
-  var callbacks = this._callbacks['$' + event];
-  if (!callbacks) return this;
-  if (1 == arguments.length) {
-    delete this._callbacks['$' + event];
-    return this;
-  }
-  var cb;
-  for (var i = 0; i < callbacks.length; i++) {
-    cb = callbacks[i];
-    if (cb === fn || cb.fn === fn) {
-      callbacks.splice(i, 1);
-      break;
-    }
-  }
-  return this;
-};
-/**
- * Emit `event` with the given args.
- *
- * @param {String} event
- * @param {Mixed} ...
- * @return {Emitter}
- */
-Emitter.prototype.emit = function(event){
-  this._callbacks = this._callbacks || {};
-  var args = [].slice.call(arguments, 1)
-    , callbacks = this._callbacks['$' + event];
-  if (callbacks) {
-    callbacks = callbacks.slice(0);
-    for (var i = 0, len = callbacks.length; i < len; ++i) {
-      callbacks[i].apply(this, args);
-    }
-  }
-  return this;
-};
-/**
- * Return array of callbacks for `event`.
- *
- * @param {String} event
- * @return {Array}
- * @api public
- */
-Emitter.prototype.listeners = function(event){
-  this._callbacks = this._callbacks || {};
-  return this._callbacks['$' + event] || [];
-};
-/**
- * Check if this emitter has `event` handlers.
- *
- * @param {String} event
- * @return {Boolean}
- * @api public
- */
-Emitter.prototype.hasListeners = function(event){
-  return !! this.listeners(event).length;
-};
-},{}],5:[function(require,module,exports){
+},{"d3":6}],5:[function(require,module,exports){
+/** * Expose `Emitter`. */if (typeof module !== 'undefined') {  module.exports = Emitter;}/** * Initialize a new `Emitter`. * * @api public */function Emitter(obj) {  if (obj) return mixin(obj);};/** * Mixin the emitter properties. * * @param {Object} obj * @return {Object} * @api private */function mixin(obj) {  for (var key in Emitter.prototype) {    obj[key] = Emitter.prototype[key];  }  return obj;}/** * Listen on the given `event` with `fn`. * * @param {String} event * @param {Function} fn * @return {Emitter} * @api public */Emitter.prototype.on =Emitter.prototype.addEventListener = function(event, fn){  this._callbacks = this._callbacks || {};  (this._callbacks['$' + event] = this._callbacks['$' + event] || [])    .push(fn);  return this;};/** * Adds an `event` listener that will be invoked a single * time then automatically removed. * * @param {String} event * @param {Function} fn * @return {Emitter} * @api public */Emitter.prototype.once = function(event, fn){  function on() {    this.off(event, on);    fn.apply(this, arguments);  }  on.fn = fn;  this.on(event, on);  return this;};/** * Remove the given callback for `event` or all * registered callbacks. * * @param {String} event * @param {Function} fn * @return {Emitter} * @api public */Emitter.prototype.off =Emitter.prototype.removeListener =Emitter.prototype.removeAllListeners =Emitter.prototype.removeEventListener = function(event, fn){  this._callbacks = this._callbacks || {};  if (0 == arguments.length) {    this._callbacks = {};    return this;  }  var callbacks = this._callbacks['$' + event];  if (!callbacks) return this;  if (1 == arguments.length) {    delete this._callbacks['$' + event];    return this;  }  var cb;  for (var i = 0; i < callbacks.length; i++) {    cb = callbacks[i];    if (cb === fn || cb.fn === fn) {      callbacks.splice(i, 1);      break;    }  }  return this;};/** * Emit `event` with the given args. * * @param {String} event * @param {Mixed} ... * @return {Emitter} */Emitter.prototype.emit = function(event){  this._callbacks = this._callbacks || {};  var args = [].slice.call(arguments, 1)    , callbacks = this._callbacks['$' + event];  if (callbacks) {    callbacks = callbacks.slice(0);    for (var i = 0, len = callbacks.length; i < len; ++i) {      callbacks[i].apply(this, args);    }  }  return this;};/** * Return array of callbacks for `event`. * * @param {String} event * @return {Array} * @api public */Emitter.prototype.listeners = function(event){  this._callbacks = this._callbacks || {};  return this._callbacks['$' + event] || [];};/** * Check if this emitter has `event` handlers. * * @param {String} event * @return {Boolean} * @api public */Emitter.prototype.hasListeners = function(event){  return !! this.listeners(event).length;};},{}],6:[function(require,module,exports){
 !function() {
   var d3 = {
     version: "3.5.17"
@@ -17909,7 +21241,7 @@ Emitter.prototype.hasListeners = function(event){
   });
   if (typeof define === "function" && define.amd) this.d3 = d3, define(d3); else if (typeof module === "object" && module.exports) module.exports = d3; else this.d3 = d3;
 }();
-},{}],6:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 /*!
  * JavaScript Cookie v2.1.0
  * https://github.com/js-cookie/js-cookie
@@ -18027,7 +21359,7 @@ Emitter.prototype.hasListeners = function(event){
 	}
 	return init(function () {});
 }));
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var KeenLibrary = require('keen-core');
 var Promise = require('./utils/promise');
 var each = require('keen-core/lib/utils/each'),
@@ -18154,7 +21486,7 @@ Query.prototype.addFilter = function(property, operator, value) {
   return this;
 };
 module.exports = KeenLibrary;
-},{"./request":8,"./utils/promise":10,"keen-core":12,"keen-core/lib/utils/each":13,"keen-core/lib/utils/extend":14}],8:[function(require,module,exports){
+},{"./request":9,"./utils/promise":11,"keen-core":12,"keen-core/lib/utils/each":13,"keen-core/lib/utils/extend":14}],9:[function(require,module,exports){
 var Promise = require('./utils/promise');
 var each = require('keen-core/lib/utils/each'),
     extend = require('keen-core/lib/utils/extend'),
@@ -18240,7 +21572,7 @@ function getAnalysisType(str){
   var split = str.split('/queries/');
   return split[split.length-1];
 }
-},{"./utils/http-server":9,"./utils/promise":10,"keen-core/lib/utils/each":13,"keen-core/lib/utils/extend":14}],9:[function(require,module,exports){
+},{"./utils/http-server":10,"./utils/promise":11,"keen-core/lib/utils/each":13,"keen-core/lib/utils/extend":14}],10:[function(require,module,exports){
 var each = require('keen-core/lib/utils/each'),
     serialize = require('keen-core/lib/utils/serialize');
 module.exports = {
@@ -18460,7 +21792,7 @@ function sendJsonp(config, callback){
     parent.removeChild(script);
   }
 }
-},{"keen-core/lib/utils/each":13,"keen-core/lib/utils/serialize":16}],10:[function(require,module,exports){
+},{"keen-core/lib/utils/each":13,"keen-core/lib/utils/serialize":16}],11:[function(require,module,exports){
 var Bluebird = require('bluebird/js/browser/bluebird.core');
 Bluebird.config({
   cancellation: true,
@@ -18468,3374 +21800,7 @@ Bluebird.config({
   warnings: false
 });
 module.exports = Bluebird;
-},{"bluebird/js/browser/bluebird.core":11}],11:[function(require,module,exports){
-(function (process,global){
-/* @preserve
- * The MIT License (MIT)
- * 
- * Copyright (c) 2013-2017 Petka Antonov
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * 
- */
-/**
- * bluebird build version 3.5.0
- * Features enabled: core
- * Features disabled: race, call_get, generators, map, nodeify, promisify, props, reduce, settle, some, using, timers, filter, any, each
-*/
-!function(e){if("object"==typeof exports&&"undefined"!=typeof module)module.exports=e();else if("function"==typeof define&&define.amd)define([],e);else{var f;"undefined"!=typeof window?f=window:"undefined"!=typeof global?f=global:"undefined"!=typeof self&&(f=self),f.Promise=e()}}(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof _dereq_=="function"&&_dereq_;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof _dereq_=="function"&&_dereq_;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(_dereq_,module,exports){
-"use strict";
-var firstLineError;
-try {throw new Error(); } catch (e) {firstLineError = e;}
-var schedule = _dereq_("./schedule");
-var Queue = _dereq_("./queue");
-var util = _dereq_("./util");
-function Async() {
-    this._customScheduler = false;
-    this._isTickUsed = false;
-    this._lateQueue = new Queue(16);
-    this._normalQueue = new Queue(16);
-    this._haveDrainedQueues = false;
-    this._trampolineEnabled = true;
-    var self = this;
-    this.drainQueues = function () {
-        self._drainQueues();
-    };
-    this._schedule = schedule;
-}
-Async.prototype.setScheduler = function(fn) {
-    var prev = this._schedule;
-    this._schedule = fn;
-    this._customScheduler = true;
-    return prev;
-};
-Async.prototype.hasCustomScheduler = function() {
-    return this._customScheduler;
-};
-Async.prototype.enableTrampoline = function() {
-    this._trampolineEnabled = true;
-};
-Async.prototype.disableTrampolineIfNecessary = function() {
-    if (util.hasDevTools) {
-        this._trampolineEnabled = false;
-    }
-};
-Async.prototype.haveItemsQueued = function () {
-    return this._isTickUsed || this._haveDrainedQueues;
-};
-Async.prototype.fatalError = function(e, isNode) {
-    if (isNode) {
-        process.stderr.write("Fatal " + (e instanceof Error ? e.stack : e) +
-            "\n");
-        process.exit(2);
-    } else {
-        this.throwLater(e);
-    }
-};
-Async.prototype.throwLater = function(fn, arg) {
-    if (arguments.length === 1) {
-        arg = fn;
-        fn = function () { throw arg; };
-    }
-    if (typeof setTimeout !== "undefined") {
-        setTimeout(function() {
-            fn(arg);
-        }, 0);
-    } else try {
-        this._schedule(function() {
-            fn(arg);
-        });
-    } catch (e) {
-        throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-    }
-};
-function AsyncInvokeLater(fn, receiver, arg) {
-    this._lateQueue.push(fn, receiver, arg);
-    this._queueTick();
-}
-function AsyncInvoke(fn, receiver, arg) {
-    this._normalQueue.push(fn, receiver, arg);
-    this._queueTick();
-}
-function AsyncSettlePromises(promise) {
-    this._normalQueue._pushOne(promise);
-    this._queueTick();
-}
-if (!util.hasDevTools) {
-    Async.prototype.invokeLater = AsyncInvokeLater;
-    Async.prototype.invoke = AsyncInvoke;
-    Async.prototype.settlePromises = AsyncSettlePromises;
-} else {
-    Async.prototype.invokeLater = function (fn, receiver, arg) {
-        if (this._trampolineEnabled) {
-            AsyncInvokeLater.call(this, fn, receiver, arg);
-        } else {
-            this._schedule(function() {
-                setTimeout(function() {
-                    fn.call(receiver, arg);
-                }, 100);
-            });
-        }
-    };
-    Async.prototype.invoke = function (fn, receiver, arg) {
-        if (this._trampolineEnabled) {
-            AsyncInvoke.call(this, fn, receiver, arg);
-        } else {
-            this._schedule(function() {
-                fn.call(receiver, arg);
-            });
-        }
-    };
-    Async.prototype.settlePromises = function(promise) {
-        if (this._trampolineEnabled) {
-            AsyncSettlePromises.call(this, promise);
-        } else {
-            this._schedule(function() {
-                promise._settlePromises();
-            });
-        }
-    };
-}
-Async.prototype._drainQueue = function(queue) {
-    while (queue.length() > 0) {
-        var fn = queue.shift();
-        if (typeof fn !== "function") {
-            fn._settlePromises();
-            continue;
-        }
-        var receiver = queue.shift();
-        var arg = queue.shift();
-        fn.call(receiver, arg);
-    }
-};
-Async.prototype._drainQueues = function () {
-    this._drainQueue(this._normalQueue);
-    this._reset();
-    this._haveDrainedQueues = true;
-    this._drainQueue(this._lateQueue);
-};
-Async.prototype._queueTick = function () {
-    if (!this._isTickUsed) {
-        this._isTickUsed = true;
-        this._schedule(this.drainQueues);
-    }
-};
-Async.prototype._reset = function () {
-    this._isTickUsed = false;
-};
-module.exports = Async;
-module.exports.firstLineError = firstLineError;
-},{"./queue":17,"./schedule":18,"./util":21}],2:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL, tryConvertToPromise, debug) {
-var calledBind = false;
-var rejectThis = function(_, e) {
-    this._reject(e);
-};
-var targetRejected = function(e, context) {
-    context.promiseRejectionQueued = true;
-    context.bindingPromise._then(rejectThis, rejectThis, null, this, e);
-};
-var bindingResolved = function(thisArg, context) {
-    if (((this._bitField & 50397184) === 0)) {
-        this._resolveCallback(context.target);
-    }
-};
-var bindingRejected = function(e, context) {
-    if (!context.promiseRejectionQueued) this._reject(e);
-};
-Promise.prototype.bind = function (thisArg) {
-    if (!calledBind) {
-        calledBind = true;
-        Promise.prototype._propagateFrom = debug.propagateFromFunction();
-        Promise.prototype._boundValue = debug.boundValueFunction();
-    }
-    var maybePromise = tryConvertToPromise(thisArg);
-    var ret = new Promise(INTERNAL);
-    ret._propagateFrom(this, 1);
-    var target = this._target();
-    ret._setBoundTo(maybePromise);
-    if (maybePromise instanceof Promise) {
-        var context = {
-            promiseRejectionQueued: false,
-            promise: ret,
-            target: target,
-            bindingPromise: maybePromise
-        };
-        target._then(INTERNAL, targetRejected, undefined, ret, context);
-        maybePromise._then(
-            bindingResolved, bindingRejected, undefined, ret, context);
-        ret._setOnCancel(maybePromise);
-    } else {
-        ret._resolveCallback(target);
-    }
-    return ret;
-};
-Promise.prototype._setBoundTo = function (obj) {
-    if (obj !== undefined) {
-        this._bitField = this._bitField | 2097152;
-        this._boundTo = obj;
-    } else {
-        this._bitField = this._bitField & (~2097152);
-    }
-};
-Promise.prototype._isBound = function () {
-    return (this._bitField & 2097152) === 2097152;
-};
-Promise.bind = function (thisArg, value) {
-    return Promise.resolve(value).bind(thisArg);
-};
-};
-},{}],3:[function(_dereq_,module,exports){
-"use strict";
-var old;
-if (typeof Promise !== "undefined") old = Promise;
-function noConflict() {
-    try { if (Promise === bluebird) Promise = old; }
-    catch (e) {}
-    return bluebird;
-}
-var bluebird = _dereq_("./promise")();
-bluebird.noConflict = noConflict;
-module.exports = bluebird;
-},{"./promise":15}],4:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise, PromiseArray, apiRejection, debug) {
-var util = _dereq_("./util");
-var tryCatch = util.tryCatch;
-var errorObj = util.errorObj;
-var async = Promise._async;
-Promise.prototype["break"] = Promise.prototype.cancel = function() {
-    if (!debug.cancellation()) return this._warn("cancellation is disabled");
-    var promise = this;
-    var child = promise;
-    while (promise._isCancellable()) {
-        if (!promise._cancelBy(child)) {
-            if (child._isFollowing()) {
-                child._followee().cancel();
-            } else {
-                child._cancelBranched();
-            }
-            break;
-        }
-        var parent = promise._cancellationParent;
-        if (parent == null || !parent._isCancellable()) {
-            if (promise._isFollowing()) {
-                promise._followee().cancel();
-            } else {
-                promise._cancelBranched();
-            }
-            break;
-        } else {
-            if (promise._isFollowing()) promise._followee().cancel();
-            promise._setWillBeCancelled();
-            child = promise;
-            promise = parent;
-        }
-    }
-};
-Promise.prototype._branchHasCancelled = function() {
-    this._branchesRemainingToCancel--;
-};
-Promise.prototype._enoughBranchesHaveCancelled = function() {
-    return this._branchesRemainingToCancel === undefined ||
-           this._branchesRemainingToCancel <= 0;
-};
-Promise.prototype._cancelBy = function(canceller) {
-    if (canceller === this) {
-        this._branchesRemainingToCancel = 0;
-        this._invokeOnCancel();
-        return true;
-    } else {
-        this._branchHasCancelled();
-        if (this._enoughBranchesHaveCancelled()) {
-            this._invokeOnCancel();
-            return true;
-        }
-    }
-    return false;
-};
-Promise.prototype._cancelBranched = function() {
-    if (this._enoughBranchesHaveCancelled()) {
-        this._cancel();
-    }
-};
-Promise.prototype._cancel = function() {
-    if (!this._isCancellable()) return;
-    this._setCancelled();
-    async.invoke(this._cancelPromises, this, undefined);
-};
-Promise.prototype._cancelPromises = function() {
-    if (this._length() > 0) this._settlePromises();
-};
-Promise.prototype._unsetOnCancel = function() {
-    this._onCancelField = undefined;
-};
-Promise.prototype._isCancellable = function() {
-    return this.isPending() && !this._isCancelled();
-};
-Promise.prototype.isCancellable = function() {
-    return this.isPending() && !this.isCancelled();
-};
-Promise.prototype._doInvokeOnCancel = function(onCancelCallback, internalOnly) {
-    if (util.isArray(onCancelCallback)) {
-        for (var i = 0; i < onCancelCallback.length; ++i) {
-            this._doInvokeOnCancel(onCancelCallback[i], internalOnly);
-        }
-    } else if (onCancelCallback !== undefined) {
-        if (typeof onCancelCallback === "function") {
-            if (!internalOnly) {
-                var e = tryCatch(onCancelCallback).call(this._boundValue());
-                if (e === errorObj) {
-                    this._attachExtraTrace(e.e);
-                    async.throwLater(e.e);
-                }
-            }
-        } else {
-            onCancelCallback._resultCancelled(this);
-        }
-    }
-};
-Promise.prototype._invokeOnCancel = function() {
-    var onCancelCallback = this._onCancel();
-    this._unsetOnCancel();
-    async.invoke(this._doInvokeOnCancel, this, onCancelCallback);
-};
-Promise.prototype._invokeInternalOnCancel = function() {
-    if (this._isCancellable()) {
-        this._doInvokeOnCancel(this._onCancel(), true);
-        this._unsetOnCancel();
-    }
-};
-Promise.prototype._resultCancelled = function() {
-    this.cancel();
-};
-};
-},{"./util":21}],5:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(NEXT_FILTER) {
-var util = _dereq_("./util");
-var getKeys = _dereq_("./es5").keys;
-var tryCatch = util.tryCatch;
-var errorObj = util.errorObj;
-function catchFilter(instances, cb, promise) {
-    return function(e) {
-        var boundTo = promise._boundValue();
-        predicateLoop: for (var i = 0; i < instances.length; ++i) {
-            var item = instances[i];
-            if (item === Error ||
-                (item != null && item.prototype instanceof Error)) {
-                if (e instanceof item) {
-                    return tryCatch(cb).call(boundTo, e);
-                }
-            } else if (typeof item === "function") {
-                var matchesPredicate = tryCatch(item).call(boundTo, e);
-                if (matchesPredicate === errorObj) {
-                    return matchesPredicate;
-                } else if (matchesPredicate) {
-                    return tryCatch(cb).call(boundTo, e);
-                }
-            } else if (util.isObject(e)) {
-                var keys = getKeys(item);
-                for (var j = 0; j < keys.length; ++j) {
-                    var key = keys[j];
-                    if (item[key] != e[key]) {
-                        continue predicateLoop;
-                    }
-                }
-                return tryCatch(cb).call(boundTo, e);
-            }
-        }
-        return NEXT_FILTER;
-    };
-}
-return catchFilter;
-};
-},{"./es5":10,"./util":21}],6:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise) {
-var longStackTraces = false;
-var contextStack = [];
-Promise.prototype._promiseCreated = function() {};
-Promise.prototype._pushContext = function() {};
-Promise.prototype._popContext = function() {return null;};
-Promise._peekContext = Promise.prototype._peekContext = function() {};
-function Context() {
-    this._trace = new Context.CapturedTrace(peekContext());
-}
-Context.prototype._pushContext = function () {
-    if (this._trace !== undefined) {
-        this._trace._promiseCreated = null;
-        contextStack.push(this._trace);
-    }
-};
-Context.prototype._popContext = function () {
-    if (this._trace !== undefined) {
-        var trace = contextStack.pop();
-        var ret = trace._promiseCreated;
-        trace._promiseCreated = null;
-        return ret;
-    }
-    return null;
-};
-function createContext() {
-    if (longStackTraces) return new Context();
-}
-function peekContext() {
-    var lastIndex = contextStack.length - 1;
-    if (lastIndex >= 0) {
-        return contextStack[lastIndex];
-    }
-    return undefined;
-}
-Context.CapturedTrace = null;
-Context.create = createContext;
-Context.deactivateLongStackTraces = function() {};
-Context.activateLongStackTraces = function() {
-    var Promise_pushContext = Promise.prototype._pushContext;
-    var Promise_popContext = Promise.prototype._popContext;
-    var Promise_PeekContext = Promise._peekContext;
-    var Promise_peekContext = Promise.prototype._peekContext;
-    var Promise_promiseCreated = Promise.prototype._promiseCreated;
-    Context.deactivateLongStackTraces = function() {
-        Promise.prototype._pushContext = Promise_pushContext;
-        Promise.prototype._popContext = Promise_popContext;
-        Promise._peekContext = Promise_PeekContext;
-        Promise.prototype._peekContext = Promise_peekContext;
-        Promise.prototype._promiseCreated = Promise_promiseCreated;
-        longStackTraces = false;
-    };
-    longStackTraces = true;
-    Promise.prototype._pushContext = Context.prototype._pushContext;
-    Promise.prototype._popContext = Context.prototype._popContext;
-    Promise._peekContext = Promise.prototype._peekContext = peekContext;
-    Promise.prototype._promiseCreated = function() {
-        var ctx = this._peekContext();
-        if (ctx && ctx._promiseCreated == null) ctx._promiseCreated = this;
-    };
-};
-return Context;
-};
-},{}],7:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise, Context) {
-var getDomain = Promise._getDomain;
-var async = Promise._async;
-var Warning = _dereq_("./errors").Warning;
-var util = _dereq_("./util");
-var canAttachTrace = util.canAttachTrace;
-var unhandledRejectionHandled;
-var possiblyUnhandledRejection;
-var bluebirdFramePattern =
-    /[\\\/]bluebird[\\\/]js[\\\/](release|debug|instrumented)/;
-var nodeFramePattern = /\((?:timers\.js):\d+:\d+\)/;
-var parseLinePattern = /[\/<\(](.+?):(\d+):(\d+)\)?\s*$/;
-var stackFramePattern = null;
-var formatStack = null;
-var indentStackFrames = false;
-var printWarning;
-var debugging = !!(util.env("BLUEBIRD_DEBUG") != 0 &&
-                        (true ||
-                         util.env("BLUEBIRD_DEBUG") ||
-                         util.env("NODE_ENV") === "development"));
-var warnings = !!(util.env("BLUEBIRD_WARNINGS") != 0 &&
-    (debugging || util.env("BLUEBIRD_WARNINGS")));
-var longStackTraces = !!(util.env("BLUEBIRD_LONG_STACK_TRACES") != 0 &&
-    (debugging || util.env("BLUEBIRD_LONG_STACK_TRACES")));
-var wForgottenReturn = util.env("BLUEBIRD_W_FORGOTTEN_RETURN") != 0 &&
-    (warnings || !!util.env("BLUEBIRD_W_FORGOTTEN_RETURN"));
-Promise.prototype.suppressUnhandledRejections = function() {
-    var target = this._target();
-    target._bitField = ((target._bitField & (~1048576)) |
-                      524288);
-};
-Promise.prototype._ensurePossibleRejectionHandled = function () {
-    if ((this._bitField & 524288) !== 0) return;
-    this._setRejectionIsUnhandled();
-    async.invokeLater(this._notifyUnhandledRejection, this, undefined);
-};
-Promise.prototype._notifyUnhandledRejectionIsHandled = function () {
-    fireRejectionEvent("rejectionHandled",
-                                  unhandledRejectionHandled, undefined, this);
-};
-Promise.prototype._setReturnedNonUndefined = function() {
-    this._bitField = this._bitField | 268435456;
-};
-Promise.prototype._returnedNonUndefined = function() {
-    return (this._bitField & 268435456) !== 0;
-};
-Promise.prototype._notifyUnhandledRejection = function () {
-    if (this._isRejectionUnhandled()) {
-        var reason = this._settledValue();
-        this._setUnhandledRejectionIsNotified();
-        fireRejectionEvent("unhandledRejection",
-                                      possiblyUnhandledRejection, reason, this);
-    }
-};
-Promise.prototype._setUnhandledRejectionIsNotified = function () {
-    this._bitField = this._bitField | 262144;
-};
-Promise.prototype._unsetUnhandledRejectionIsNotified = function () {
-    this._bitField = this._bitField & (~262144);
-};
-Promise.prototype._isUnhandledRejectionNotified = function () {
-    return (this._bitField & 262144) > 0;
-};
-Promise.prototype._setRejectionIsUnhandled = function () {
-    this._bitField = this._bitField | 1048576;
-};
-Promise.prototype._unsetRejectionIsUnhandled = function () {
-    this._bitField = this._bitField & (~1048576);
-    if (this._isUnhandledRejectionNotified()) {
-        this._unsetUnhandledRejectionIsNotified();
-        this._notifyUnhandledRejectionIsHandled();
-    }
-};
-Promise.prototype._isRejectionUnhandled = function () {
-    return (this._bitField & 1048576) > 0;
-};
-Promise.prototype._warn = function(message, shouldUseOwnTrace, promise) {
-    return warn(message, shouldUseOwnTrace, promise || this);
-};
-Promise.onPossiblyUnhandledRejection = function (fn) {
-    var domain = getDomain();
-    possiblyUnhandledRejection =
-        typeof fn === "function" ? (domain === null ?
-                                            fn : util.domainBind(domain, fn))
-                                 : undefined;
-};
-Promise.onUnhandledRejectionHandled = function (fn) {
-    var domain = getDomain();
-    unhandledRejectionHandled =
-        typeof fn === "function" ? (domain === null ?
-                                            fn : util.domainBind(domain, fn))
-                                 : undefined;
-};
-var disableLongStackTraces = function() {};
-Promise.longStackTraces = function () {
-    if (async.haveItemsQueued() && !config.longStackTraces) {
-        throw new Error("cannot enable long stack traces after promises have been created\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-    }
-    if (!config.longStackTraces && longStackTracesIsSupported()) {
-        var Promise_captureStackTrace = Promise.prototype._captureStackTrace;
-        var Promise_attachExtraTrace = Promise.prototype._attachExtraTrace;
-        config.longStackTraces = true;
-        disableLongStackTraces = function() {
-            if (async.haveItemsQueued() && !config.longStackTraces) {
-                throw new Error("cannot enable long stack traces after promises have been created\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-            }
-            Promise.prototype._captureStackTrace = Promise_captureStackTrace;
-            Promise.prototype._attachExtraTrace = Promise_attachExtraTrace;
-            Context.deactivateLongStackTraces();
-            async.enableTrampoline();
-            config.longStackTraces = false;
-        };
-        Promise.prototype._captureStackTrace = longStackTracesCaptureStackTrace;
-        Promise.prototype._attachExtraTrace = longStackTracesAttachExtraTrace;
-        Context.activateLongStackTraces();
-        async.disableTrampolineIfNecessary();
-    }
-};
-Promise.hasLongStackTraces = function () {
-    return config.longStackTraces && longStackTracesIsSupported();
-};
-var fireDomEvent = (function() {
-    try {
-        if (typeof CustomEvent === "function") {
-            var event = new CustomEvent("CustomEvent");
-            util.global.dispatchEvent(event);
-            return function(name, event) {
-                var domEvent = new CustomEvent(name.toLowerCase(), {
-                    detail: event,
-                    cancelable: true
-                });
-                return !util.global.dispatchEvent(domEvent);
-            };
-        } else if (typeof Event === "function") {
-            var event = new Event("CustomEvent");
-            util.global.dispatchEvent(event);
-            return function(name, event) {
-                var domEvent = new Event(name.toLowerCase(), {
-                    cancelable: true
-                });
-                domEvent.detail = event;
-                return !util.global.dispatchEvent(domEvent);
-            };
-        } else {
-            var event = document.createEvent("CustomEvent");
-            event.initCustomEvent("testingtheevent", false, true, {});
-            util.global.dispatchEvent(event);
-            return function(name, event) {
-                var domEvent = document.createEvent("CustomEvent");
-                domEvent.initCustomEvent(name.toLowerCase(), false, true,
-                    event);
-                return !util.global.dispatchEvent(domEvent);
-            };
-        }
-    } catch (e) {}
-    return function() {
-        return false;
-    };
-})();
-var fireGlobalEvent = (function() {
-    if (util.isNode) {
-        return function() {
-            return process.emit.apply(process, arguments);
-        };
-    } else {
-        if (!util.global) {
-            return function() {
-                return false;
-            };
-        }
-        return function(name) {
-            var methodName = "on" + name.toLowerCase();
-            var method = util.global[methodName];
-            if (!method) return false;
-            method.apply(util.global, [].slice.call(arguments, 1));
-            return true;
-        };
-    }
-})();
-function generatePromiseLifecycleEventObject(name, promise) {
-    return {promise: promise};
-}
-var eventToObjectGenerator = {
-    promiseCreated: generatePromiseLifecycleEventObject,
-    promiseFulfilled: generatePromiseLifecycleEventObject,
-    promiseRejected: generatePromiseLifecycleEventObject,
-    promiseResolved: generatePromiseLifecycleEventObject,
-    promiseCancelled: generatePromiseLifecycleEventObject,
-    promiseChained: function(name, promise, child) {
-        return {promise: promise, child: child};
-    },
-    warning: function(name, warning) {
-        return {warning: warning};
-    },
-    unhandledRejection: function (name, reason, promise) {
-        return {reason: reason, promise: promise};
-    },
-    rejectionHandled: generatePromiseLifecycleEventObject
-};
-var activeFireEvent = function (name) {
-    var globalEventFired = false;
-    try {
-        globalEventFired = fireGlobalEvent.apply(null, arguments);
-    } catch (e) {
-        async.throwLater(e);
-        globalEventFired = true;
-    }
-    var domEventFired = false;
-    try {
-        domEventFired = fireDomEvent(name,
-                    eventToObjectGenerator[name].apply(null, arguments));
-    } catch (e) {
-        async.throwLater(e);
-        domEventFired = true;
-    }
-    return domEventFired || globalEventFired;
-};
-Promise.config = function(opts) {
-    opts = Object(opts);
-    if ("longStackTraces" in opts) {
-        if (opts.longStackTraces) {
-            Promise.longStackTraces();
-        } else if (!opts.longStackTraces && Promise.hasLongStackTraces()) {
-            disableLongStackTraces();
-        }
-    }
-    if ("warnings" in opts) {
-        var warningsOption = opts.warnings;
-        config.warnings = !!warningsOption;
-        wForgottenReturn = config.warnings;
-        if (util.isObject(warningsOption)) {
-            if ("wForgottenReturn" in warningsOption) {
-                wForgottenReturn = !!warningsOption.wForgottenReturn;
-            }
-        }
-    }
-    if ("cancellation" in opts && opts.cancellation && !config.cancellation) {
-        if (async.haveItemsQueued()) {
-            throw new Error(
-                "cannot enable cancellation after promises are in use");
-        }
-        Promise.prototype._clearCancellationData =
-            cancellationClearCancellationData;
-        Promise.prototype._propagateFrom = cancellationPropagateFrom;
-        Promise.prototype._onCancel = cancellationOnCancel;
-        Promise.prototype._setOnCancel = cancellationSetOnCancel;
-        Promise.prototype._attachCancellationCallback =
-            cancellationAttachCancellationCallback;
-        Promise.prototype._execute = cancellationExecute;
-        propagateFromFunction = cancellationPropagateFrom;
-        config.cancellation = true;
-    }
-    if ("monitoring" in opts) {
-        if (opts.monitoring && !config.monitoring) {
-            config.monitoring = true;
-            Promise.prototype._fireEvent = activeFireEvent;
-        } else if (!opts.monitoring && config.monitoring) {
-            config.monitoring = false;
-            Promise.prototype._fireEvent = defaultFireEvent;
-        }
-    }
-    return Promise;
-};
-function defaultFireEvent() { return false; }
-Promise.prototype._fireEvent = defaultFireEvent;
-Promise.prototype._execute = function(executor, resolve, reject) {
-    try {
-        executor(resolve, reject);
-    } catch (e) {
-        return e;
-    }
-};
-Promise.prototype._onCancel = function () {};
-Promise.prototype._setOnCancel = function (handler) { ; };
-Promise.prototype._attachCancellationCallback = function(onCancel) {
-    ;
-};
-Promise.prototype._captureStackTrace = function () {};
-Promise.prototype._attachExtraTrace = function () {};
-Promise.prototype._clearCancellationData = function() {};
-Promise.prototype._propagateFrom = function (parent, flags) {
-    ;
-    ;
-};
-function cancellationExecute(executor, resolve, reject) {
-    var promise = this;
-    try {
-        executor(resolve, reject, function(onCancel) {
-            if (typeof onCancel !== "function") {
-                throw new TypeError("onCancel must be a function, got: " +
-                                    util.toString(onCancel));
-            }
-            promise._attachCancellationCallback(onCancel);
-        });
-    } catch (e) {
-        return e;
-    }
-}
-function cancellationAttachCancellationCallback(onCancel) {
-    if (!this._isCancellable()) return this;
-    var previousOnCancel = this._onCancel();
-    if (previousOnCancel !== undefined) {
-        if (util.isArray(previousOnCancel)) {
-            previousOnCancel.push(onCancel);
-        } else {
-            this._setOnCancel([previousOnCancel, onCancel]);
-        }
-    } else {
-        this._setOnCancel(onCancel);
-    }
-}
-function cancellationOnCancel() {
-    return this._onCancelField;
-}
-function cancellationSetOnCancel(onCancel) {
-    this._onCancelField = onCancel;
-}
-function cancellationClearCancellationData() {
-    this._cancellationParent = undefined;
-    this._onCancelField = undefined;
-}
-function cancellationPropagateFrom(parent, flags) {
-    if ((flags & 1) !== 0) {
-        this._cancellationParent = parent;
-        var branchesRemainingToCancel = parent._branchesRemainingToCancel;
-        if (branchesRemainingToCancel === undefined) {
-            branchesRemainingToCancel = 0;
-        }
-        parent._branchesRemainingToCancel = branchesRemainingToCancel + 1;
-    }
-    if ((flags & 2) !== 0 && parent._isBound()) {
-        this._setBoundTo(parent._boundTo);
-    }
-}
-function bindingPropagateFrom(parent, flags) {
-    if ((flags & 2) !== 0 && parent._isBound()) {
-        this._setBoundTo(parent._boundTo);
-    }
-}
-var propagateFromFunction = bindingPropagateFrom;
-function boundValueFunction() {
-    var ret = this._boundTo;
-    if (ret !== undefined) {
-        if (ret instanceof Promise) {
-            if (ret.isFulfilled()) {
-                return ret.value();
-            } else {
-                return undefined;
-            }
-        }
-    }
-    return ret;
-}
-function longStackTracesCaptureStackTrace() {
-    this._trace = new CapturedTrace(this._peekContext());
-}
-function longStackTracesAttachExtraTrace(error, ignoreSelf) {
-    if (canAttachTrace(error)) {
-        var trace = this._trace;
-        if (trace !== undefined) {
-            if (ignoreSelf) trace = trace._parent;
-        }
-        if (trace !== undefined) {
-            trace.attachExtraTrace(error);
-        } else if (!error.__stackCleaned__) {
-            var parsed = parseStackAndMessage(error);
-            util.notEnumerableProp(error, "stack",
-                parsed.message + "\n" + parsed.stack.join("\n"));
-            util.notEnumerableProp(error, "__stackCleaned__", true);
-        }
-    }
-}
-function checkForgottenReturns(returnValue, promiseCreated, name, promise,
-                               parent) {
-    if (returnValue === undefined && promiseCreated !== null &&
-        wForgottenReturn) {
-        if (parent !== undefined && parent._returnedNonUndefined()) return;
-        if ((promise._bitField & 65535) === 0) return;
-        if (name) name = name + " ";
-        var handlerLine = "";
-        var creatorLine = "";
-        if (promiseCreated._trace) {
-            var traceLines = promiseCreated._trace.stack.split("\n");
-            var stack = cleanStack(traceLines);
-            for (var i = stack.length - 1; i >= 0; --i) {
-                var line = stack[i];
-                if (!nodeFramePattern.test(line)) {
-                    var lineMatches = line.match(parseLinePattern);
-                    if (lineMatches) {
-                        handlerLine  = "at " + lineMatches[1] +
-                            ":" + lineMatches[2] + ":" + lineMatches[3] + " ";
-                    }
-                    break;
-                }
-            }
-            if (stack.length > 0) {
-                var firstUserLine = stack[0];
-                for (var i = 0; i < traceLines.length; ++i) {
-                    if (traceLines[i] === firstUserLine) {
-                        if (i > 0) {
-                            creatorLine = "\n" + traceLines[i - 1];
-                        }
-                        break;
-                    }
-                }
-            }
-        }
-        var msg = "a promise was created in a " + name +
-            "handler " + handlerLine + "but was not returned from it, " +
-            "see http://goo.gl/rRqMUw" +
-            creatorLine;
-        promise._warn(msg, true, promiseCreated);
-    }
-}
-function deprecated(name, replacement) {
-    var message = name +
-        " is deprecated and will be removed in a future version.";
-    if (replacement) message += " Use " + replacement + " instead.";
-    return warn(message);
-}
-function warn(message, shouldUseOwnTrace, promise) {
-    if (!config.warnings) return;
-    var warning = new Warning(message);
-    var ctx;
-    if (shouldUseOwnTrace) {
-        promise._attachExtraTrace(warning);
-    } else if (config.longStackTraces && (ctx = Promise._peekContext())) {
-        ctx.attachExtraTrace(warning);
-    } else {
-        var parsed = parseStackAndMessage(warning);
-        warning.stack = parsed.message + "\n" + parsed.stack.join("\n");
-    }
-    if (!activeFireEvent("warning", warning)) {
-        formatAndLogError(warning, "", true);
-    }
-}
-function reconstructStack(message, stacks) {
-    for (var i = 0; i < stacks.length - 1; ++i) {
-        stacks[i].push("From previous event:");
-        stacks[i] = stacks[i].join("\n");
-    }
-    if (i < stacks.length) {
-        stacks[i] = stacks[i].join("\n");
-    }
-    return message + "\n" + stacks.join("\n");
-}
-function removeDuplicateOrEmptyJumps(stacks) {
-    for (var i = 0; i < stacks.length; ++i) {
-        if (stacks[i].length === 0 ||
-            ((i + 1 < stacks.length) && stacks[i][0] === stacks[i+1][0])) {
-            stacks.splice(i, 1);
-            i--;
-        }
-    }
-}
-function removeCommonRoots(stacks) {
-    var current = stacks[0];
-    for (var i = 1; i < stacks.length; ++i) {
-        var prev = stacks[i];
-        var currentLastIndex = current.length - 1;
-        var currentLastLine = current[currentLastIndex];
-        var commonRootMeetPoint = -1;
-        for (var j = prev.length - 1; j >= 0; --j) {
-            if (prev[j] === currentLastLine) {
-                commonRootMeetPoint = j;
-                break;
-            }
-        }
-        for (var j = commonRootMeetPoint; j >= 0; --j) {
-            var line = prev[j];
-            if (current[currentLastIndex] === line) {
-                current.pop();
-                currentLastIndex--;
-            } else {
-                break;
-            }
-        }
-        current = prev;
-    }
-}
-function cleanStack(stack) {
-    var ret = [];
-    for (var i = 0; i < stack.length; ++i) {
-        var line = stack[i];
-        var isTraceLine = "    (No stack trace)" === line ||
-            stackFramePattern.test(line);
-        var isInternalFrame = isTraceLine && shouldIgnore(line);
-        if (isTraceLine && !isInternalFrame) {
-            if (indentStackFrames && line.charAt(0) !== " ") {
-                line = "    " + line;
-            }
-            ret.push(line);
-        }
-    }
-    return ret;
-}
-function stackFramesAsArray(error) {
-    var stack = error.stack.replace(/\s+$/g, "").split("\n");
-    for (var i = 0; i < stack.length; ++i) {
-        var line = stack[i];
-        if ("    (No stack trace)" === line || stackFramePattern.test(line)) {
-            break;
-        }
-    }
-    if (i > 0 && error.name != "SyntaxError") {
-        stack = stack.slice(i);
-    }
-    return stack;
-}
-function parseStackAndMessage(error) {
-    var stack = error.stack;
-    var message = error.toString();
-    stack = typeof stack === "string" && stack.length > 0
-                ? stackFramesAsArray(error) : ["    (No stack trace)"];
-    return {
-        message: message,
-        stack: error.name == "SyntaxError" ? stack : cleanStack(stack)
-    };
-}
-function formatAndLogError(error, title, isSoft) {
-    if (typeof console !== "undefined") {
-        var message;
-        if (util.isObject(error)) {
-            var stack = error.stack;
-            message = title + formatStack(stack, error);
-        } else {
-            message = title + String(error);
-        }
-        if (typeof printWarning === "function") {
-            printWarning(message, isSoft);
-        } else if (typeof console.log === "function" ||
-            typeof console.log === "object") {
-            console.log(message);
-        }
-    }
-}
-function fireRejectionEvent(name, localHandler, reason, promise) {
-    var localEventFired = false;
-    try {
-        if (typeof localHandler === "function") {
-            localEventFired = true;
-            if (name === "rejectionHandled") {
-                localHandler(promise);
-            } else {
-                localHandler(reason, promise);
-            }
-        }
-    } catch (e) {
-        async.throwLater(e);
-    }
-    if (name === "unhandledRejection") {
-        if (!activeFireEvent(name, reason, promise) && !localEventFired) {
-            formatAndLogError(reason, "Unhandled rejection ");
-        }
-    } else {
-        activeFireEvent(name, promise);
-    }
-}
-function formatNonError(obj) {
-    var str;
-    if (typeof obj === "function") {
-        str = "[function " +
-            (obj.name || "anonymous") +
-            "]";
-    } else {
-        str = obj && typeof obj.toString === "function"
-            ? obj.toString() : util.toString(obj);
-        var ruselessToString = /\[object [a-zA-Z0-9$_]+\]/;
-        if (ruselessToString.test(str)) {
-            try {
-                var newStr = JSON.stringify(obj);
-                str = newStr;
-            }
-            catch(e) {
-            }
-        }
-        if (str.length === 0) {
-            str = "(empty array)";
-        }
-    }
-    return ("(<" + snip(str) + ">, no stack trace)");
-}
-function snip(str) {
-    var maxChars = 41;
-    if (str.length < maxChars) {
-        return str;
-    }
-    return str.substr(0, maxChars - 3) + "...";
-}
-function longStackTracesIsSupported() {
-    return typeof captureStackTrace === "function";
-}
-var shouldIgnore = function() { return false; };
-var parseLineInfoRegex = /[\/<\(]([^:\/]+):(\d+):(?:\d+)\)?\s*$/;
-function parseLineInfo(line) {
-    var matches = line.match(parseLineInfoRegex);
-    if (matches) {
-        return {
-            fileName: matches[1],
-            line: parseInt(matches[2], 10)
-        };
-    }
-}
-function setBounds(firstLineError, lastLineError) {
-    if (!longStackTracesIsSupported()) return;
-    var firstStackLines = firstLineError.stack.split("\n");
-    var lastStackLines = lastLineError.stack.split("\n");
-    var firstIndex = -1;
-    var lastIndex = -1;
-    var firstFileName;
-    var lastFileName;
-    for (var i = 0; i < firstStackLines.length; ++i) {
-        var result = parseLineInfo(firstStackLines[i]);
-        if (result) {
-            firstFileName = result.fileName;
-            firstIndex = result.line;
-            break;
-        }
-    }
-    for (var i = 0; i < lastStackLines.length; ++i) {
-        var result = parseLineInfo(lastStackLines[i]);
-        if (result) {
-            lastFileName = result.fileName;
-            lastIndex = result.line;
-            break;
-        }
-    }
-    if (firstIndex < 0 || lastIndex < 0 || !firstFileName || !lastFileName ||
-        firstFileName !== lastFileName || firstIndex >= lastIndex) {
-        return;
-    }
-    shouldIgnore = function(line) {
-        if (bluebirdFramePattern.test(line)) return true;
-        var info = parseLineInfo(line);
-        if (info) {
-            if (info.fileName === firstFileName &&
-                (firstIndex <= info.line && info.line <= lastIndex)) {
-                return true;
-            }
-        }
-        return false;
-    };
-}
-function CapturedTrace(parent) {
-    this._parent = parent;
-    this._promisesCreated = 0;
-    var length = this._length = 1 + (parent === undefined ? 0 : parent._length);
-    captureStackTrace(this, CapturedTrace);
-    if (length > 32) this.uncycle();
-}
-util.inherits(CapturedTrace, Error);
-Context.CapturedTrace = CapturedTrace;
-CapturedTrace.prototype.uncycle = function() {
-    var length = this._length;
-    if (length < 2) return;
-    var nodes = [];
-    var stackToIndex = {};
-    for (var i = 0, node = this; node !== undefined; ++i) {
-        nodes.push(node);
-        node = node._parent;
-    }
-    length = this._length = i;
-    for (var i = length - 1; i >= 0; --i) {
-        var stack = nodes[i].stack;
-        if (stackToIndex[stack] === undefined) {
-            stackToIndex[stack] = i;
-        }
-    }
-    for (var i = 0; i < length; ++i) {
-        var currentStack = nodes[i].stack;
-        var index = stackToIndex[currentStack];
-        if (index !== undefined && index !== i) {
-            if (index > 0) {
-                nodes[index - 1]._parent = undefined;
-                nodes[index - 1]._length = 1;
-            }
-            nodes[i]._parent = undefined;
-            nodes[i]._length = 1;
-            var cycleEdgeNode = i > 0 ? nodes[i - 1] : this;
-            if (index < length - 1) {
-                cycleEdgeNode._parent = nodes[index + 1];
-                cycleEdgeNode._parent.uncycle();
-                cycleEdgeNode._length =
-                    cycleEdgeNode._parent._length + 1;
-            } else {
-                cycleEdgeNode._parent = undefined;
-                cycleEdgeNode._length = 1;
-            }
-            var currentChildLength = cycleEdgeNode._length + 1;
-            for (var j = i - 2; j >= 0; --j) {
-                nodes[j]._length = currentChildLength;
-                currentChildLength++;
-            }
-            return;
-        }
-    }
-};
-CapturedTrace.prototype.attachExtraTrace = function(error) {
-    if (error.__stackCleaned__) return;
-    this.uncycle();
-    var parsed = parseStackAndMessage(error);
-    var message = parsed.message;
-    var stacks = [parsed.stack];
-    var trace = this;
-    while (trace !== undefined) {
-        stacks.push(cleanStack(trace.stack.split("\n")));
-        trace = trace._parent;
-    }
-    removeCommonRoots(stacks);
-    removeDuplicateOrEmptyJumps(stacks);
-    util.notEnumerableProp(error, "stack", reconstructStack(message, stacks));
-    util.notEnumerableProp(error, "__stackCleaned__", true);
-};
-var captureStackTrace = (function stackDetection() {
-    var v8stackFramePattern = /^\s*at\s*/;
-    var v8stackFormatter = function(stack, error) {
-        if (typeof stack === "string") return stack;
-        if (error.name !== undefined &&
-            error.message !== undefined) {
-            return error.toString();
-        }
-        return formatNonError(error);
-    };
-    if (typeof Error.stackTraceLimit === "number" &&
-        typeof Error.captureStackTrace === "function") {
-        Error.stackTraceLimit += 6;
-        stackFramePattern = v8stackFramePattern;
-        formatStack = v8stackFormatter;
-        var captureStackTrace = Error.captureStackTrace;
-        shouldIgnore = function(line) {
-            return bluebirdFramePattern.test(line);
-        };
-        return function(receiver, ignoreUntil) {
-            Error.stackTraceLimit += 6;
-            captureStackTrace(receiver, ignoreUntil);
-            Error.stackTraceLimit -= 6;
-        };
-    }
-    var err = new Error();
-    if (typeof err.stack === "string" &&
-        err.stack.split("\n")[0].indexOf("stackDetection@") >= 0) {
-        stackFramePattern = /@/;
-        formatStack = v8stackFormatter;
-        indentStackFrames = true;
-        return function captureStackTrace(o) {
-            o.stack = new Error().stack;
-        };
-    }
-    var hasStackAfterThrow;
-    try { throw new Error(); }
-    catch(e) {
-        hasStackAfterThrow = ("stack" in e);
-    }
-    if (!("stack" in err) && hasStackAfterThrow &&
-        typeof Error.stackTraceLimit === "number") {
-        stackFramePattern = v8stackFramePattern;
-        formatStack = v8stackFormatter;
-        return function captureStackTrace(o) {
-            Error.stackTraceLimit += 6;
-            try { throw new Error(); }
-            catch(e) { o.stack = e.stack; }
-            Error.stackTraceLimit -= 6;
-        };
-    }
-    formatStack = function(stack, error) {
-        if (typeof stack === "string") return stack;
-        if ((typeof error === "object" ||
-            typeof error === "function") &&
-            error.name !== undefined &&
-            error.message !== undefined) {
-            return error.toString();
-        }
-        return formatNonError(error);
-    };
-    return null;
-})([]);
-if (typeof console !== "undefined" && typeof console.warn !== "undefined") {
-    printWarning = function (message) {
-        console.warn(message);
-    };
-    if (util.isNode && process.stderr.isTTY) {
-        printWarning = function(message, isSoft) {
-            var color = isSoft ? "\u001b[33m" : "\u001b[31m";
-            console.warn(color + message + "\u001b[0m\n");
-        };
-    } else if (!util.isNode && typeof (new Error().stack) === "string") {
-        printWarning = function(message, isSoft) {
-            console.warn("%c" + message,
-                        isSoft ? "color: darkorange" : "color: red");
-        };
-    }
-}
-var config = {
-    warnings: warnings,
-    longStackTraces: false,
-    cancellation: false,
-    monitoring: false
-};
-if (longStackTraces) Promise.longStackTraces();
-return {
-    longStackTraces: function() {
-        return config.longStackTraces;
-    },
-    warnings: function() {
-        return config.warnings;
-    },
-    cancellation: function() {
-        return config.cancellation;
-    },
-    monitoring: function() {
-        return config.monitoring;
-    },
-    propagateFromFunction: function() {
-        return propagateFromFunction;
-    },
-    boundValueFunction: function() {
-        return boundValueFunction;
-    },
-    checkForgottenReturns: checkForgottenReturns,
-    setBounds: setBounds,
-    warn: warn,
-    deprecated: deprecated,
-    CapturedTrace: CapturedTrace,
-    fireDomEvent: fireDomEvent,
-    fireGlobalEvent: fireGlobalEvent
-};
-};
-},{"./errors":9,"./util":21}],8:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise) {
-function returner() {
-    return this.value;
-}
-function thrower() {
-    throw this.reason;
-}
-Promise.prototype["return"] =
-Promise.prototype.thenReturn = function (value) {
-    if (value instanceof Promise) value.suppressUnhandledRejections();
-    return this._then(
-        returner, undefined, undefined, {value: value}, undefined);
-};
-Promise.prototype["throw"] =
-Promise.prototype.thenThrow = function (reason) {
-    return this._then(
-        thrower, undefined, undefined, {reason: reason}, undefined);
-};
-Promise.prototype.catchThrow = function (reason) {
-    if (arguments.length <= 1) {
-        return this._then(
-            undefined, thrower, undefined, {reason: reason}, undefined);
-    } else {
-        var _reason = arguments[1];
-        var handler = function() {throw _reason;};
-        return this.caught(reason, handler);
-    }
-};
-Promise.prototype.catchReturn = function (value) {
-    if (arguments.length <= 1) {
-        if (value instanceof Promise) value.suppressUnhandledRejections();
-        return this._then(
-            undefined, returner, undefined, {value: value}, undefined);
-    } else {
-        var _value = arguments[1];
-        if (_value instanceof Promise) _value.suppressUnhandledRejections();
-        var handler = function() {return _value;};
-        return this.caught(value, handler);
-    }
-};
-};
-},{}],9:[function(_dereq_,module,exports){
-"use strict";
-var es5 = _dereq_("./es5");
-var Objectfreeze = es5.freeze;
-var util = _dereq_("./util");
-var inherits = util.inherits;
-var notEnumerableProp = util.notEnumerableProp;
-function subError(nameProperty, defaultMessage) {
-    function SubError(message) {
-        if (!(this instanceof SubError)) return new SubError(message);
-        notEnumerableProp(this, "message",
-            typeof message === "string" ? message : defaultMessage);
-        notEnumerableProp(this, "name", nameProperty);
-        if (Error.captureStackTrace) {
-            Error.captureStackTrace(this, this.constructor);
-        } else {
-            Error.call(this);
-        }
-    }
-    inherits(SubError, Error);
-    return SubError;
-}
-var _TypeError, _RangeError;
-var Warning = subError("Warning", "warning");
-var CancellationError = subError("CancellationError", "cancellation error");
-var TimeoutError = subError("TimeoutError", "timeout error");
-var AggregateError = subError("AggregateError", "aggregate error");
-try {
-    _TypeError = TypeError;
-    _RangeError = RangeError;
-} catch(e) {
-    _TypeError = subError("TypeError", "type error");
-    _RangeError = subError("RangeError", "range error");
-}
-var methods = ("join pop push shift unshift slice filter forEach some " +
-    "every map indexOf lastIndexOf reduce reduceRight sort reverse").split(" ");
-for (var i = 0; i < methods.length; ++i) {
-    if (typeof Array.prototype[methods[i]] === "function") {
-        AggregateError.prototype[methods[i]] = Array.prototype[methods[i]];
-    }
-}
-es5.defineProperty(AggregateError.prototype, "length", {
-    value: 0,
-    configurable: false,
-    writable: true,
-    enumerable: true
-});
-AggregateError.prototype["isOperational"] = true;
-var level = 0;
-AggregateError.prototype.toString = function() {
-    var indent = Array(level * 4 + 1).join(" ");
-    var ret = "\n" + indent + "AggregateError of:" + "\n";
-    level++;
-    indent = Array(level * 4 + 1).join(" ");
-    for (var i = 0; i < this.length; ++i) {
-        var str = this[i] === this ? "[Circular AggregateError]" : this[i] + "";
-        var lines = str.split("\n");
-        for (var j = 0; j < lines.length; ++j) {
-            lines[j] = indent + lines[j];
-        }
-        str = lines.join("\n");
-        ret += str + "\n";
-    }
-    level--;
-    return ret;
-};
-function OperationalError(message) {
-    if (!(this instanceof OperationalError))
-        return new OperationalError(message);
-    notEnumerableProp(this, "name", "OperationalError");
-    notEnumerableProp(this, "message", message);
-    this.cause = message;
-    this["isOperational"] = true;
-    if (message instanceof Error) {
-        notEnumerableProp(this, "message", message.message);
-        notEnumerableProp(this, "stack", message.stack);
-    } else if (Error.captureStackTrace) {
-        Error.captureStackTrace(this, this.constructor);
-    }
-}
-inherits(OperationalError, Error);
-var errorTypes = Error["__BluebirdErrorTypes__"];
-if (!errorTypes) {
-    errorTypes = Objectfreeze({
-        CancellationError: CancellationError,
-        TimeoutError: TimeoutError,
-        OperationalError: OperationalError,
-        RejectionError: OperationalError,
-        AggregateError: AggregateError
-    });
-    es5.defineProperty(Error, "__BluebirdErrorTypes__", {
-        value: errorTypes,
-        writable: false,
-        enumerable: false,
-        configurable: false
-    });
-}
-module.exports = {
-    Error: Error,
-    TypeError: _TypeError,
-    RangeError: _RangeError,
-    CancellationError: errorTypes.CancellationError,
-    OperationalError: errorTypes.OperationalError,
-    TimeoutError: errorTypes.TimeoutError,
-    AggregateError: errorTypes.AggregateError,
-    Warning: Warning
-};
-},{"./es5":10,"./util":21}],10:[function(_dereq_,module,exports){
-var isES5 = (function(){
-    "use strict";
-    return this === undefined;
-})();
-if (isES5) {
-    module.exports = {
-        freeze: Object.freeze,
-        defineProperty: Object.defineProperty,
-        getDescriptor: Object.getOwnPropertyDescriptor,
-        keys: Object.keys,
-        names: Object.getOwnPropertyNames,
-        getPrototypeOf: Object.getPrototypeOf,
-        isArray: Array.isArray,
-        isES5: isES5,
-        propertyIsWritable: function(obj, prop) {
-            var descriptor = Object.getOwnPropertyDescriptor(obj, prop);
-            return !!(!descriptor || descriptor.writable || descriptor.set);
-        }
-    };
-} else {
-    var has = {}.hasOwnProperty;
-    var str = {}.toString;
-    var proto = {}.constructor.prototype;
-    var ObjectKeys = function (o) {
-        var ret = [];
-        for (var key in o) {
-            if (has.call(o, key)) {
-                ret.push(key);
-            }
-        }
-        return ret;
-    };
-    var ObjectGetDescriptor = function(o, key) {
-        return {value: o[key]};
-    };
-    var ObjectDefineProperty = function (o, key, desc) {
-        o[key] = desc.value;
-        return o;
-    };
-    var ObjectFreeze = function (obj) {
-        return obj;
-    };
-    var ObjectGetPrototypeOf = function (obj) {
-        try {
-            return Object(obj).constructor.prototype;
-        }
-        catch (e) {
-            return proto;
-        }
-    };
-    var ArrayIsArray = function (obj) {
-        try {
-            return str.call(obj) === "[object Array]";
-        }
-        catch(e) {
-            return false;
-        }
-    };
-    module.exports = {
-        isArray: ArrayIsArray,
-        keys: ObjectKeys,
-        names: ObjectKeys,
-        defineProperty: ObjectDefineProperty,
-        getDescriptor: ObjectGetDescriptor,
-        freeze: ObjectFreeze,
-        getPrototypeOf: ObjectGetPrototypeOf,
-        isES5: isES5,
-        propertyIsWritable: function() {
-            return true;
-        }
-    };
-}
-},{}],11:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise, tryConvertToPromise, NEXT_FILTER) {
-var util = _dereq_("./util");
-var CancellationError = Promise.CancellationError;
-var errorObj = util.errorObj;
-var catchFilter = _dereq_("./catch_filter")(NEXT_FILTER);
-function PassThroughHandlerContext(promise, type, handler) {
-    this.promise = promise;
-    this.type = type;
-    this.handler = handler;
-    this.called = false;
-    this.cancelPromise = null;
-}
-PassThroughHandlerContext.prototype.isFinallyHandler = function() {
-    return this.type === 0;
-};
-function FinallyHandlerCancelReaction(finallyHandler) {
-    this.finallyHandler = finallyHandler;
-}
-FinallyHandlerCancelReaction.prototype._resultCancelled = function() {
-    checkCancel(this.finallyHandler);
-};
-function checkCancel(ctx, reason) {
-    if (ctx.cancelPromise != null) {
-        if (arguments.length > 1) {
-            ctx.cancelPromise._reject(reason);
-        } else {
-            ctx.cancelPromise._cancel();
-        }
-        ctx.cancelPromise = null;
-        return true;
-    }
-    return false;
-}
-function succeed() {
-    return finallyHandler.call(this, this.promise._target()._settledValue());
-}
-function fail(reason) {
-    if (checkCancel(this, reason)) return;
-    errorObj.e = reason;
-    return errorObj;
-}
-function finallyHandler(reasonOrValue) {
-    var promise = this.promise;
-    var handler = this.handler;
-    if (!this.called) {
-        this.called = true;
-        var ret = this.isFinallyHandler()
-            ? handler.call(promise._boundValue())
-            : handler.call(promise._boundValue(), reasonOrValue);
-        if (ret === NEXT_FILTER) {
-            return ret;
-        } else if (ret !== undefined) {
-            promise._setReturnedNonUndefined();
-            var maybePromise = tryConvertToPromise(ret, promise);
-            if (maybePromise instanceof Promise) {
-                if (this.cancelPromise != null) {
-                    if (maybePromise._isCancelled()) {
-                        var reason =
-                            new CancellationError("late cancellation observer");
-                        promise._attachExtraTrace(reason);
-                        errorObj.e = reason;
-                        return errorObj;
-                    } else if (maybePromise.isPending()) {
-                        maybePromise._attachCancellationCallback(
-                            new FinallyHandlerCancelReaction(this));
-                    }
-                }
-                return maybePromise._then(
-                    succeed, fail, undefined, this, undefined);
-            }
-        }
-    }
-    if (promise.isRejected()) {
-        checkCancel(this);
-        errorObj.e = reasonOrValue;
-        return errorObj;
-    } else {
-        checkCancel(this);
-        return reasonOrValue;
-    }
-}
-Promise.prototype._passThrough = function(handler, type, success, fail) {
-    if (typeof handler !== "function") return this.then();
-    return this._then(success,
-                      fail,
-                      undefined,
-                      new PassThroughHandlerContext(this, type, handler),
-                      undefined);
-};
-Promise.prototype.lastly =
-Promise.prototype["finally"] = function (handler) {
-    return this._passThrough(handler,
-                             0,
-                             finallyHandler,
-                             finallyHandler);
-};
-Promise.prototype.tap = function (handler) {
-    return this._passThrough(handler, 1, finallyHandler);
-};
-Promise.prototype.tapCatch = function (handlerOrPredicate) {
-    var len = arguments.length;
-    if(len === 1) {
-        return this._passThrough(handlerOrPredicate,
-                                 1,
-                                 undefined,
-                                 finallyHandler);
-    } else {
-         var catchInstances = new Array(len - 1),
-            j = 0, i;
-        for (i = 0; i < len - 1; ++i) {
-            var item = arguments[i];
-            if (util.isObject(item)) {
-                catchInstances[j++] = item;
-            } else {
-                return Promise.reject(new TypeError(
-                    "tapCatch statement predicate: "
-                    + "expecting an object but got " + util.classString(item)
-                ));
-            }
-        }
-        catchInstances.length = j;
-        var handler = arguments[i];
-        return this._passThrough(catchFilter(catchInstances, handler, this),
-                                 1,
-                                 undefined,
-                                 finallyHandler);
-    }
-};
-return PassThroughHandlerContext;
-};
-},{"./catch_filter":5,"./util":21}],12:[function(_dereq_,module,exports){
-"use strict";
-module.exports =
-function(Promise, PromiseArray, tryConvertToPromise, INTERNAL, async,
-         getDomain) {
-var util = _dereq_("./util");
-var canEvaluate = util.canEvaluate;
-var tryCatch = util.tryCatch;
-var errorObj = util.errorObj;
-var reject;
-if (!true) {
-if (canEvaluate) {
-    var thenCallback = function(i) {
-        return new Function("value", "holder", "                             \n\
-            'use strict';                                                    \n\
-            holder.pIndex = value;                                           \n\
-            holder.checkFulfillment(this);                                   \n\
-            ".replace(/Index/g, i));
-    };
-    var promiseSetter = function(i) {
-        return new Function("promise", "holder", "                           \n\
-            'use strict';                                                    \n\
-            holder.pIndex = promise;                                         \n\
-            ".replace(/Index/g, i));
-    };
-    var generateHolderClass = function(total) {
-        var props = new Array(total);
-        for (var i = 0; i < props.length; ++i) {
-            props[i] = "this.p" + (i+1);
-        }
-        var assignment = props.join(" = ") + " = null;";
-        var cancellationCode= "var promise;\n" + props.map(function(prop) {
-            return "                                                         \n\
-                promise = " + prop + ";                                      \n\
-                if (promise instanceof Promise) {                            \n\
-                    promise.cancel();                                        \n\
-                }                                                            \n\
-            ";
-        }).join("\n");
-        var passedArguments = props.join(", ");
-        var name = "Holder$" + total;
-        var code = "return function(tryCatch, errorObj, Promise, async) {    \n\
-            'use strict';                                                    \n\
-            function [TheName](fn) {                                         \n\
-                [TheProperties]                                              \n\
-                this.fn = fn;                                                \n\
-                this.asyncNeeded = true;                                     \n\
-                this.now = 0;                                                \n\
-            }                                                                \n\
-                                                                             \n\
-            [TheName].prototype._callFunction = function(promise) {          \n\
-                promise._pushContext();                                      \n\
-                var ret = tryCatch(this.fn)([ThePassedArguments]);           \n\
-                promise._popContext();                                       \n\
-                if (ret === errorObj) {                                      \n\
-                    promise._rejectCallback(ret.e, false);                   \n\
-                } else {                                                     \n\
-                    promise._resolveCallback(ret);                           \n\
-                }                                                            \n\
-            };                                                               \n\
-                                                                             \n\
-            [TheName].prototype.checkFulfillment = function(promise) {       \n\
-                var now = ++this.now;                                        \n\
-                if (now === [TheTotal]) {                                    \n\
-                    if (this.asyncNeeded) {                                  \n\
-                        async.invoke(this._callFunction, this, promise);     \n\
-                    } else {                                                 \n\
-                        this._callFunction(promise);                         \n\
-                    }                                                        \n\
-                                                                             \n\
-                }                                                            \n\
-            };                                                               \n\
-                                                                             \n\
-            [TheName].prototype._resultCancelled = function() {              \n\
-                [CancellationCode]                                           \n\
-            };                                                               \n\
-                                                                             \n\
-            return [TheName];                                                \n\
-        }(tryCatch, errorObj, Promise, async);                               \n\
-        ";
-        code = code.replace(/\[TheName\]/g, name)
-            .replace(/\[TheTotal\]/g, total)
-            .replace(/\[ThePassedArguments\]/g, passedArguments)
-            .replace(/\[TheProperties\]/g, assignment)
-            .replace(/\[CancellationCode\]/g, cancellationCode);
-        return new Function("tryCatch", "errorObj", "Promise", "async", code)
-                           (tryCatch, errorObj, Promise, async);
-    };
-    var holderClasses = [];
-    var thenCallbacks = [];
-    var promiseSetters = [];
-    for (var i = 0; i < 8; ++i) {
-        holderClasses.push(generateHolderClass(i + 1));
-        thenCallbacks.push(thenCallback(i + 1));
-        promiseSetters.push(promiseSetter(i + 1));
-    }
-    reject = function (reason) {
-        this._reject(reason);
-    };
-}}
-Promise.join = function () {
-    var last = arguments.length - 1;
-    var fn;
-    if (last > 0 && typeof arguments[last] === "function") {
-        fn = arguments[last];
-        if (!true) {
-            if (last <= 8 && canEvaluate) {
-                var ret = new Promise(INTERNAL);
-                ret._captureStackTrace();
-                var HolderClass = holderClasses[last - 1];
-                var holder = new HolderClass(fn);
-                var callbacks = thenCallbacks;
-                for (var i = 0; i < last; ++i) {
-                    var maybePromise = tryConvertToPromise(arguments[i], ret);
-                    if (maybePromise instanceof Promise) {
-                        maybePromise = maybePromise._target();
-                        var bitField = maybePromise._bitField;
-                        ;
-                        if (((bitField & 50397184) === 0)) {
-                            maybePromise._then(callbacks[i], reject,
-                                               undefined, ret, holder);
-                            promiseSetters[i](maybePromise, holder);
-                            holder.asyncNeeded = false;
-                        } else if (((bitField & 33554432) !== 0)) {
-                            callbacks[i].call(ret,
-                                              maybePromise._value(), holder);
-                        } else if (((bitField & 16777216) !== 0)) {
-                            ret._reject(maybePromise._reason());
-                        } else {
-                            ret._cancel();
-                        }
-                    } else {
-                        callbacks[i].call(ret, maybePromise, holder);
-                    }
-                }
-                if (!ret._isFateSealed()) {
-                    if (holder.asyncNeeded) {
-                        var domain = getDomain();
-                        if (domain !== null) {
-                            holder.fn = util.domainBind(domain, holder.fn);
-                        }
-                    }
-                    ret._setAsyncGuaranteed();
-                    ret._setOnCancel(holder);
-                }
-                return ret;
-            }
-        }
-    }
-    var args = [].slice.call(arguments);;
-    if (fn) args.pop();
-    var ret = new PromiseArray(args).promise();
-    return fn !== undefined ? ret.spread(fn) : ret;
-};
-};
-},{"./util":21}],13:[function(_dereq_,module,exports){
-"use strict";
-module.exports =
-function(Promise, INTERNAL, tryConvertToPromise, apiRejection, debug) {
-var util = _dereq_("./util");
-var tryCatch = util.tryCatch;
-Promise.method = function (fn) {
-    if (typeof fn !== "function") {
-        throw new Promise.TypeError("expecting a function but got " + util.classString(fn));
-    }
-    return function () {
-        var ret = new Promise(INTERNAL);
-        ret._captureStackTrace();
-        ret._pushContext();
-        var value = tryCatch(fn).apply(this, arguments);
-        var promiseCreated = ret._popContext();
-        debug.checkForgottenReturns(
-            value, promiseCreated, "Promise.method", ret);
-        ret._resolveFromSyncValue(value);
-        return ret;
-    };
-};
-Promise.attempt = Promise["try"] = function (fn) {
-    if (typeof fn !== "function") {
-        return apiRejection("expecting a function but got " + util.classString(fn));
-    }
-    var ret = new Promise(INTERNAL);
-    ret._captureStackTrace();
-    ret._pushContext();
-    var value;
-    if (arguments.length > 1) {
-        debug.deprecated("calling Promise.try with more than 1 argument");
-        var arg = arguments[1];
-        var ctx = arguments[2];
-        value = util.isArray(arg) ? tryCatch(fn).apply(ctx, arg)
-                                  : tryCatch(fn).call(ctx, arg);
-    } else {
-        value = tryCatch(fn)();
-    }
-    var promiseCreated = ret._popContext();
-    debug.checkForgottenReturns(
-        value, promiseCreated, "Promise.try", ret);
-    ret._resolveFromSyncValue(value);
-    return ret;
-};
-Promise.prototype._resolveFromSyncValue = function (value) {
-    if (value === util.errorObj) {
-        this._rejectCallback(value.e, false);
-    } else {
-        this._resolveCallback(value, true);
-    }
-};
-};
-},{"./util":21}],14:[function(_dereq_,module,exports){
-"use strict";
-var util = _dereq_("./util");
-var maybeWrapAsError = util.maybeWrapAsError;
-var errors = _dereq_("./errors");
-var OperationalError = errors.OperationalError;
-var es5 = _dereq_("./es5");
-function isUntypedError(obj) {
-    return obj instanceof Error &&
-        es5.getPrototypeOf(obj) === Error.prototype;
-}
-var rErrorKey = /^(?:name|message|stack|cause)$/;
-function wrapAsOperationalError(obj) {
-    var ret;
-    if (isUntypedError(obj)) {
-        ret = new OperationalError(obj);
-        ret.name = obj.name;
-        ret.message = obj.message;
-        ret.stack = obj.stack;
-        var keys = es5.keys(obj);
-        for (var i = 0; i < keys.length; ++i) {
-            var key = keys[i];
-            if (!rErrorKey.test(key)) {
-                ret[key] = obj[key];
-            }
-        }
-        return ret;
-    }
-    util.markAsOriginatingFromRejection(obj);
-    return obj;
-}
-function nodebackForPromise(promise, multiArgs) {
-    return function(err, value) {
-        if (promise === null) return;
-        if (err) {
-            var wrapped = wrapAsOperationalError(maybeWrapAsError(err));
-            promise._attachExtraTrace(wrapped);
-            promise._reject(wrapped);
-        } else if (!multiArgs) {
-            promise._fulfill(value);
-        } else {
-            var args = [].slice.call(arguments, 1);;
-            promise._fulfill(args);
-        }
-        promise = null;
-    };
-}
-module.exports = nodebackForPromise;
-},{"./errors":9,"./es5":10,"./util":21}],15:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function() {
-var makeSelfResolutionError = function () {
-    return new TypeError("circular promise resolution chain\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-};
-var reflectHandler = function() {
-    return new Promise.PromiseInspection(this._target());
-};
-var apiRejection = function(msg) {
-    return Promise.reject(new TypeError(msg));
-};
-function Proxyable() {}
-var UNDEFINED_BINDING = {};
-var util = _dereq_("./util");
-var getDomain;
-if (util.isNode) {
-    getDomain = function() {
-        var ret = process.domain;
-        if (ret === undefined) ret = null;
-        return ret;
-    };
-} else {
-    getDomain = function() {
-        return null;
-    };
-}
-util.notEnumerableProp(Promise, "_getDomain", getDomain);
-var es5 = _dereq_("./es5");
-var Async = _dereq_("./async");
-var async = new Async();
-es5.defineProperty(Promise, "_async", {value: async});
-var errors = _dereq_("./errors");
-var TypeError = Promise.TypeError = errors.TypeError;
-Promise.RangeError = errors.RangeError;
-var CancellationError = Promise.CancellationError = errors.CancellationError;
-Promise.TimeoutError = errors.TimeoutError;
-Promise.OperationalError = errors.OperationalError;
-Promise.RejectionError = errors.OperationalError;
-Promise.AggregateError = errors.AggregateError;
-var INTERNAL = function(){};
-var APPLY = {};
-var NEXT_FILTER = {};
-var tryConvertToPromise = _dereq_("./thenables")(Promise, INTERNAL);
-var PromiseArray =
-    _dereq_("./promise_array")(Promise, INTERNAL,
-                               tryConvertToPromise, apiRejection, Proxyable);
-var Context = _dereq_("./context")(Promise);
- /*jshint unused:false*/
-var createContext = Context.create;
-var debug = _dereq_("./debuggability")(Promise, Context);
-var CapturedTrace = debug.CapturedTrace;
-var PassThroughHandlerContext =
-    _dereq_("./finally")(Promise, tryConvertToPromise, NEXT_FILTER);
-var catchFilter = _dereq_("./catch_filter")(NEXT_FILTER);
-var nodebackForPromise = _dereq_("./nodeback");
-var errorObj = util.errorObj;
-var tryCatch = util.tryCatch;
-function check(self, executor) {
-    if (self == null || self.constructor !== Promise) {
-        throw new TypeError("the promise constructor cannot be invoked directly\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-    }
-    if (typeof executor !== "function") {
-        throw new TypeError("expecting a function but got " + util.classString(executor));
-    }
-}
-function Promise(executor) {
-    if (executor !== INTERNAL) {
-        check(this, executor);
-    }
-    this._bitField = 0;
-    this._fulfillmentHandler0 = undefined;
-    this._rejectionHandler0 = undefined;
-    this._promise0 = undefined;
-    this._receiver0 = undefined;
-    this._resolveFromExecutor(executor);
-    this._promiseCreated();
-    this._fireEvent("promiseCreated", this);
-}
-Promise.prototype.toString = function () {
-    return "[object Promise]";
-};
-Promise.prototype.caught = Promise.prototype["catch"] = function (fn) {
-    var len = arguments.length;
-    if (len > 1) {
-        var catchInstances = new Array(len - 1),
-            j = 0, i;
-        for (i = 0; i < len - 1; ++i) {
-            var item = arguments[i];
-            if (util.isObject(item)) {
-                catchInstances[j++] = item;
-            } else {
-                return apiRejection("Catch statement predicate: " +
-                    "expecting an object but got " + util.classString(item));
-            }
-        }
-        catchInstances.length = j;
-        fn = arguments[i];
-        return this.then(undefined, catchFilter(catchInstances, fn, this));
-    }
-    return this.then(undefined, fn);
-};
-Promise.prototype.reflect = function () {
-    return this._then(reflectHandler,
-        reflectHandler, undefined, this, undefined);
-};
-Promise.prototype.then = function (didFulfill, didReject) {
-    if (debug.warnings() && arguments.length > 0 &&
-        typeof didFulfill !== "function" &&
-        typeof didReject !== "function") {
-        var msg = ".then() only accepts functions but was passed: " +
-                util.classString(didFulfill);
-        if (arguments.length > 1) {
-            msg += ", " + util.classString(didReject);
-        }
-        this._warn(msg);
-    }
-    return this._then(didFulfill, didReject, undefined, undefined, undefined);
-};
-Promise.prototype.done = function (didFulfill, didReject) {
-    var promise =
-        this._then(didFulfill, didReject, undefined, undefined, undefined);
-    promise._setIsFinal();
-};
-Promise.prototype.spread = function (fn) {
-    if (typeof fn !== "function") {
-        return apiRejection("expecting a function but got " + util.classString(fn));
-    }
-    return this.all()._then(fn, undefined, undefined, APPLY, undefined);
-};
-Promise.prototype.toJSON = function () {
-    var ret = {
-        isFulfilled: false,
-        isRejected: false,
-        fulfillmentValue: undefined,
-        rejectionReason: undefined
-    };
-    if (this.isFulfilled()) {
-        ret.fulfillmentValue = this.value();
-        ret.isFulfilled = true;
-    } else if (this.isRejected()) {
-        ret.rejectionReason = this.reason();
-        ret.isRejected = true;
-    }
-    return ret;
-};
-Promise.prototype.all = function () {
-    if (arguments.length > 0) {
-        this._warn(".all() was passed arguments but it does not take any");
-    }
-    return new PromiseArray(this).promise();
-};
-Promise.prototype.error = function (fn) {
-    return this.caught(util.originatesFromRejection, fn);
-};
-Promise.getNewLibraryCopy = module.exports;
-Promise.is = function (val) {
-    return val instanceof Promise;
-};
-Promise.fromNode = Promise.fromCallback = function(fn) {
-    var ret = new Promise(INTERNAL);
-    ret._captureStackTrace();
-    var multiArgs = arguments.length > 1 ? !!Object(arguments[1]).multiArgs
-                                         : false;
-    var result = tryCatch(fn)(nodebackForPromise(ret, multiArgs));
-    if (result === errorObj) {
-        ret._rejectCallback(result.e, true);
-    }
-    if (!ret._isFateSealed()) ret._setAsyncGuaranteed();
-    return ret;
-};
-Promise.all = function (promises) {
-    return new PromiseArray(promises).promise();
-};
-Promise.cast = function (obj) {
-    var ret = tryConvertToPromise(obj);
-    if (!(ret instanceof Promise)) {
-        ret = new Promise(INTERNAL);
-        ret._captureStackTrace();
-        ret._setFulfilled();
-        ret._rejectionHandler0 = obj;
-    }
-    return ret;
-};
-Promise.resolve = Promise.fulfilled = Promise.cast;
-Promise.reject = Promise.rejected = function (reason) {
-    var ret = new Promise(INTERNAL);
-    ret._captureStackTrace();
-    ret._rejectCallback(reason, true);
-    return ret;
-};
-Promise.setScheduler = function(fn) {
-    if (typeof fn !== "function") {
-        throw new TypeError("expecting a function but got " + util.classString(fn));
-    }
-    return async.setScheduler(fn);
-};
-Promise.prototype._then = function (
-    didFulfill,
-    didReject,
-    _,    receiver,
-    internalData
-) {
-    var haveInternalData = internalData !== undefined;
-    var promise = haveInternalData ? internalData : new Promise(INTERNAL);
-    var target = this._target();
-    var bitField = target._bitField;
-    if (!haveInternalData) {
-        promise._propagateFrom(this, 3);
-        promise._captureStackTrace();
-        if (receiver === undefined &&
-            ((this._bitField & 2097152) !== 0)) {
-            if (!((bitField & 50397184) === 0)) {
-                receiver = this._boundValue();
-            } else {
-                receiver = target === this ? undefined : this._boundTo;
-            }
-        }
-        this._fireEvent("promiseChained", this, promise);
-    }
-    var domain = getDomain();
-    if (!((bitField & 50397184) === 0)) {
-        var handler, value, settler = target._settlePromiseCtx;
-        if (((bitField & 33554432) !== 0)) {
-            value = target._rejectionHandler0;
-            handler = didFulfill;
-        } else if (((bitField & 16777216) !== 0)) {
-            value = target._fulfillmentHandler0;
-            handler = didReject;
-            target._unsetRejectionIsUnhandled();
-        } else {
-            settler = target._settlePromiseLateCancellationObserver;
-            value = new CancellationError("late cancellation observer");
-            target._attachExtraTrace(value);
-            handler = didReject;
-        }
-        async.invoke(settler, target, {
-            handler: domain === null ? handler
-                : (typeof handler === "function" &&
-                    util.domainBind(domain, handler)),
-            promise: promise,
-            receiver: receiver,
-            value: value
-        });
-    } else {
-        target._addCallbacks(didFulfill, didReject, promise, receiver, domain);
-    }
-    return promise;
-};
-Promise.prototype._length = function () {
-    return this._bitField & 65535;
-};
-Promise.prototype._isFateSealed = function () {
-    return (this._bitField & 117506048) !== 0;
-};
-Promise.prototype._isFollowing = function () {
-    return (this._bitField & 67108864) === 67108864;
-};
-Promise.prototype._setLength = function (len) {
-    this._bitField = (this._bitField & -65536) |
-        (len & 65535);
-};
-Promise.prototype._setFulfilled = function () {
-    this._bitField = this._bitField | 33554432;
-    this._fireEvent("promiseFulfilled", this);
-};
-Promise.prototype._setRejected = function () {
-    this._bitField = this._bitField | 16777216;
-    this._fireEvent("promiseRejected", this);
-};
-Promise.prototype._setFollowing = function () {
-    this._bitField = this._bitField | 67108864;
-    this._fireEvent("promiseResolved", this);
-};
-Promise.prototype._setIsFinal = function () {
-    this._bitField = this._bitField | 4194304;
-};
-Promise.prototype._isFinal = function () {
-    return (this._bitField & 4194304) > 0;
-};
-Promise.prototype._unsetCancelled = function() {
-    this._bitField = this._bitField & (~65536);
-};
-Promise.prototype._setCancelled = function() {
-    this._bitField = this._bitField | 65536;
-    this._fireEvent("promiseCancelled", this);
-};
-Promise.prototype._setWillBeCancelled = function() {
-    this._bitField = this._bitField | 8388608;
-};
-Promise.prototype._setAsyncGuaranteed = function() {
-    if (async.hasCustomScheduler()) return;
-    this._bitField = this._bitField | 134217728;
-};
-Promise.prototype._receiverAt = function (index) {
-    var ret = index === 0 ? this._receiver0 : this[
-            index * 4 - 4 + 3];
-    if (ret === UNDEFINED_BINDING) {
-        return undefined;
-    } else if (ret === undefined && this._isBound()) {
-        return this._boundValue();
-    }
-    return ret;
-};
-Promise.prototype._promiseAt = function (index) {
-    return this[
-            index * 4 - 4 + 2];
-};
-Promise.prototype._fulfillmentHandlerAt = function (index) {
-    return this[
-            index * 4 - 4 + 0];
-};
-Promise.prototype._rejectionHandlerAt = function (index) {
-    return this[
-            index * 4 - 4 + 1];
-};
-Promise.prototype._boundValue = function() {};
-Promise.prototype._migrateCallback0 = function (follower) {
-    var bitField = follower._bitField;
-    var fulfill = follower._fulfillmentHandler0;
-    var reject = follower._rejectionHandler0;
-    var promise = follower._promise0;
-    var receiver = follower._receiverAt(0);
-    if (receiver === undefined) receiver = UNDEFINED_BINDING;
-    this._addCallbacks(fulfill, reject, promise, receiver, null);
-};
-Promise.prototype._migrateCallbackAt = function (follower, index) {
-    var fulfill = follower._fulfillmentHandlerAt(index);
-    var reject = follower._rejectionHandlerAt(index);
-    var promise = follower._promiseAt(index);
-    var receiver = follower._receiverAt(index);
-    if (receiver === undefined) receiver = UNDEFINED_BINDING;
-    this._addCallbacks(fulfill, reject, promise, receiver, null);
-};
-Promise.prototype._addCallbacks = function (
-    fulfill,
-    reject,
-    promise,
-    receiver,
-    domain
-) {
-    var index = this._length();
-    if (index >= 65535 - 4) {
-        index = 0;
-        this._setLength(0);
-    }
-    if (index === 0) {
-        this._promise0 = promise;
-        this._receiver0 = receiver;
-        if (typeof fulfill === "function") {
-            this._fulfillmentHandler0 =
-                domain === null ? fulfill : util.domainBind(domain, fulfill);
-        }
-        if (typeof reject === "function") {
-            this._rejectionHandler0 =
-                domain === null ? reject : util.domainBind(domain, reject);
-        }
-    } else {
-        var base = index * 4 - 4;
-        this[base + 2] = promise;
-        this[base + 3] = receiver;
-        if (typeof fulfill === "function") {
-            this[base + 0] =
-                domain === null ? fulfill : util.domainBind(domain, fulfill);
-        }
-        if (typeof reject === "function") {
-            this[base + 1] =
-                domain === null ? reject : util.domainBind(domain, reject);
-        }
-    }
-    this._setLength(index + 1);
-    return index;
-};
-Promise.prototype._proxy = function (proxyable, arg) {
-    this._addCallbacks(undefined, undefined, arg, proxyable, null);
-};
-Promise.prototype._resolveCallback = function(value, shouldBind) {
-    if (((this._bitField & 117506048) !== 0)) return;
-    if (value === this)
-        return this._rejectCallback(makeSelfResolutionError(), false);
-    var maybePromise = tryConvertToPromise(value, this);
-    if (!(maybePromise instanceof Promise)) return this._fulfill(value);
-    if (shouldBind) this._propagateFrom(maybePromise, 2);
-    var promise = maybePromise._target();
-    if (promise === this) {
-        this._reject(makeSelfResolutionError());
-        return;
-    }
-    var bitField = promise._bitField;
-    if (((bitField & 50397184) === 0)) {
-        var len = this._length();
-        if (len > 0) promise._migrateCallback0(this);
-        for (var i = 1; i < len; ++i) {
-            promise._migrateCallbackAt(this, i);
-        }
-        this._setFollowing();
-        this._setLength(0);
-        this._setFollowee(promise);
-    } else if (((bitField & 33554432) !== 0)) {
-        this._fulfill(promise._value());
-    } else if (((bitField & 16777216) !== 0)) {
-        this._reject(promise._reason());
-    } else {
-        var reason = new CancellationError("late cancellation observer");
-        promise._attachExtraTrace(reason);
-        this._reject(reason);
-    }
-};
-Promise.prototype._rejectCallback =
-function(reason, synchronous, ignoreNonErrorWarnings) {
-    var trace = util.ensureErrorObject(reason);
-    var hasStack = trace === reason;
-    if (!hasStack && !ignoreNonErrorWarnings && debug.warnings()) {
-        var message = "a promise was rejected with a non-error: " +
-            util.classString(reason);
-        this._warn(message, true);
-    }
-    this._attachExtraTrace(trace, synchronous ? hasStack : false);
-    this._reject(reason);
-};
-Promise.prototype._resolveFromExecutor = function (executor) {
-    if (executor === INTERNAL) return;
-    var promise = this;
-    this._captureStackTrace();
-    this._pushContext();
-    var synchronous = true;
-    var r = this._execute(executor, function(value) {
-        promise._resolveCallback(value);
-    }, function (reason) {
-        promise._rejectCallback(reason, synchronous);
-    });
-    synchronous = false;
-    this._popContext();
-    if (r !== undefined) {
-        promise._rejectCallback(r, true);
-    }
-};
-Promise.prototype._settlePromiseFromHandler = function (
-    handler, receiver, value, promise
-) {
-    var bitField = promise._bitField;
-    if (((bitField & 65536) !== 0)) return;
-    promise._pushContext();
-    var x;
-    if (receiver === APPLY) {
-        if (!value || typeof value.length !== "number") {
-            x = errorObj;
-            x.e = new TypeError("cannot .spread() a non-array: " +
-                                    util.classString(value));
-        } else {
-            x = tryCatch(handler).apply(this._boundValue(), value);
-        }
-    } else {
-        x = tryCatch(handler).call(receiver, value);
-    }
-    var promiseCreated = promise._popContext();
-    bitField = promise._bitField;
-    if (((bitField & 65536) !== 0)) return;
-    if (x === NEXT_FILTER) {
-        promise._reject(value);
-    } else if (x === errorObj) {
-        promise._rejectCallback(x.e, false);
-    } else {
-        debug.checkForgottenReturns(x, promiseCreated, "",  promise, this);
-        promise._resolveCallback(x);
-    }
-};
-Promise.prototype._target = function() {
-    var ret = this;
-    while (ret._isFollowing()) ret = ret._followee();
-    return ret;
-};
-Promise.prototype._followee = function() {
-    return this._rejectionHandler0;
-};
-Promise.prototype._setFollowee = function(promise) {
-    this._rejectionHandler0 = promise;
-};
-Promise.prototype._settlePromise = function(promise, handler, receiver, value) {
-    var isPromise = promise instanceof Promise;
-    var bitField = this._bitField;
-    var asyncGuaranteed = ((bitField & 134217728) !== 0);
-    if (((bitField & 65536) !== 0)) {
-        if (isPromise) promise._invokeInternalOnCancel();
-        if (receiver instanceof PassThroughHandlerContext &&
-            receiver.isFinallyHandler()) {
-            receiver.cancelPromise = promise;
-            if (tryCatch(handler).call(receiver, value) === errorObj) {
-                promise._reject(errorObj.e);
-            }
-        } else if (handler === reflectHandler) {
-            promise._fulfill(reflectHandler.call(receiver));
-        } else if (receiver instanceof Proxyable) {
-            receiver._promiseCancelled(promise);
-        } else if (isPromise || promise instanceof PromiseArray) {
-            promise._cancel();
-        } else {
-            receiver.cancel();
-        }
-    } else if (typeof handler === "function") {
-        if (!isPromise) {
-            handler.call(receiver, value, promise);
-        } else {
-            if (asyncGuaranteed) promise._setAsyncGuaranteed();
-            this._settlePromiseFromHandler(handler, receiver, value, promise);
-        }
-    } else if (receiver instanceof Proxyable) {
-        if (!receiver._isResolved()) {
-            if (((bitField & 33554432) !== 0)) {
-                receiver._promiseFulfilled(value, promise);
-            } else {
-                receiver._promiseRejected(value, promise);
-            }
-        }
-    } else if (isPromise) {
-        if (asyncGuaranteed) promise._setAsyncGuaranteed();
-        if (((bitField & 33554432) !== 0)) {
-            promise._fulfill(value);
-        } else {
-            promise._reject(value);
-        }
-    }
-};
-Promise.prototype._settlePromiseLateCancellationObserver = function(ctx) {
-    var handler = ctx.handler;
-    var promise = ctx.promise;
-    var receiver = ctx.receiver;
-    var value = ctx.value;
-    if (typeof handler === "function") {
-        if (!(promise instanceof Promise)) {
-            handler.call(receiver, value, promise);
-        } else {
-            this._settlePromiseFromHandler(handler, receiver, value, promise);
-        }
-    } else if (promise instanceof Promise) {
-        promise._reject(value);
-    }
-};
-Promise.prototype._settlePromiseCtx = function(ctx) {
-    this._settlePromise(ctx.promise, ctx.handler, ctx.receiver, ctx.value);
-};
-Promise.prototype._settlePromise0 = function(handler, value, bitField) {
-    var promise = this._promise0;
-    var receiver = this._receiverAt(0);
-    this._promise0 = undefined;
-    this._receiver0 = undefined;
-    this._settlePromise(promise, handler, receiver, value);
-};
-Promise.prototype._clearCallbackDataAtIndex = function(index) {
-    var base = index * 4 - 4;
-    this[base + 2] =
-    this[base + 3] =
-    this[base + 0] =
-    this[base + 1] = undefined;
-};
-Promise.prototype._fulfill = function (value) {
-    var bitField = this._bitField;
-    if (((bitField & 117506048) >>> 16)) return;
-    if (value === this) {
-        var err = makeSelfResolutionError();
-        this._attachExtraTrace(err);
-        return this._reject(err);
-    }
-    this._setFulfilled();
-    this._rejectionHandler0 = value;
-    if ((bitField & 65535) > 0) {
-        if (((bitField & 134217728) !== 0)) {
-            this._settlePromises();
-        } else {
-            async.settlePromises(this);
-        }
-    }
-};
-Promise.prototype._reject = function (reason) {
-    var bitField = this._bitField;
-    if (((bitField & 117506048) >>> 16)) return;
-    this._setRejected();
-    this._fulfillmentHandler0 = reason;
-    if (this._isFinal()) {
-        return async.fatalError(reason, util.isNode);
-    }
-    if ((bitField & 65535) > 0) {
-        async.settlePromises(this);
-    } else {
-        this._ensurePossibleRejectionHandled();
-    }
-};
-Promise.prototype._fulfillPromises = function (len, value) {
-    for (var i = 1; i < len; i++) {
-        var handler = this._fulfillmentHandlerAt(i);
-        var promise = this._promiseAt(i);
-        var receiver = this._receiverAt(i);
-        this._clearCallbackDataAtIndex(i);
-        this._settlePromise(promise, handler, receiver, value);
-    }
-};
-Promise.prototype._rejectPromises = function (len, reason) {
-    for (var i = 1; i < len; i++) {
-        var handler = this._rejectionHandlerAt(i);
-        var promise = this._promiseAt(i);
-        var receiver = this._receiverAt(i);
-        this._clearCallbackDataAtIndex(i);
-        this._settlePromise(promise, handler, receiver, reason);
-    }
-};
-Promise.prototype._settlePromises = function () {
-    var bitField = this._bitField;
-    var len = (bitField & 65535);
-    if (len > 0) {
-        if (((bitField & 16842752) !== 0)) {
-            var reason = this._fulfillmentHandler0;
-            this._settlePromise0(this._rejectionHandler0, reason, bitField);
-            this._rejectPromises(len, reason);
-        } else {
-            var value = this._rejectionHandler0;
-            this._settlePromise0(this._fulfillmentHandler0, value, bitField);
-            this._fulfillPromises(len, value);
-        }
-        this._setLength(0);
-    }
-    this._clearCancellationData();
-};
-Promise.prototype._settledValue = function() {
-    var bitField = this._bitField;
-    if (((bitField & 33554432) !== 0)) {
-        return this._rejectionHandler0;
-    } else if (((bitField & 16777216) !== 0)) {
-        return this._fulfillmentHandler0;
-    }
-};
-function deferResolve(v) {this.promise._resolveCallback(v);}
-function deferReject(v) {this.promise._rejectCallback(v, false);}
-Promise.defer = Promise.pending = function() {
-    debug.deprecated("Promise.defer", "new Promise");
-    var promise = new Promise(INTERNAL);
-    return {
-        promise: promise,
-        resolve: deferResolve,
-        reject: deferReject
-    };
-};
-util.notEnumerableProp(Promise,
-                       "_makeSelfResolutionError",
-                       makeSelfResolutionError);
-_dereq_("./method")(Promise, INTERNAL, tryConvertToPromise, apiRejection,
-    debug);
-_dereq_("./bind")(Promise, INTERNAL, tryConvertToPromise, debug);
-_dereq_("./cancel")(Promise, PromiseArray, apiRejection, debug);
-_dereq_("./direct_resolve")(Promise);
-_dereq_("./synchronous_inspection")(Promise);
-_dereq_("./join")(
-    Promise, PromiseArray, tryConvertToPromise, INTERNAL, async, getDomain);
-Promise.Promise = Promise;
-Promise.version = "3.5.0";
-    util.toFastProperties(Promise);                                          
-    util.toFastProperties(Promise.prototype);                                
-    function fillTypes(value) {                                              
-        var p = new Promise(INTERNAL);                                       
-        p._fulfillmentHandler0 = value;                                      
-        p._rejectionHandler0 = value;                                        
-        p._promise0 = value;                                                 
-        p._receiver0 = value;                                                
-    }                                                                        
-    fillTypes({a: 1});                                                       
-    fillTypes({b: 2});                                                       
-    fillTypes({c: 3});                                                       
-    fillTypes(1);                                                            
-    fillTypes(function(){});                                                 
-    fillTypes(undefined);                                                    
-    fillTypes(false);                                                        
-    fillTypes(new Promise(INTERNAL));                                        
-    debug.setBounds(Async.firstLineError, util.lastLineError);               
-    return Promise;                                                          
-};
-},{"./async":1,"./bind":2,"./cancel":4,"./catch_filter":5,"./context":6,"./debuggability":7,"./direct_resolve":8,"./errors":9,"./es5":10,"./finally":11,"./join":12,"./method":13,"./nodeback":14,"./promise_array":16,"./synchronous_inspection":19,"./thenables":20,"./util":21}],16:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL, tryConvertToPromise,
-    apiRejection, Proxyable) {
-var util = _dereq_("./util");
-var isArray = util.isArray;
-function toResolutionValue(val) {
-    switch(val) {
-    case -2: return [];
-    case -3: return {};
-    case -6: return new Map();
-    }
-}
-function PromiseArray(values) {
-    var promise = this._promise = new Promise(INTERNAL);
-    if (values instanceof Promise) {
-        promise._propagateFrom(values, 3);
-    }
-    promise._setOnCancel(this);
-    this._values = values;
-    this._length = 0;
-    this._totalResolved = 0;
-    this._init(undefined, -2);
-}
-util.inherits(PromiseArray, Proxyable);
-PromiseArray.prototype.length = function () {
-    return this._length;
-};
-PromiseArray.prototype.promise = function () {
-    return this._promise;
-};
-PromiseArray.prototype._init = function init(_, resolveValueIfEmpty) {
-    var values = tryConvertToPromise(this._values, this._promise);
-    if (values instanceof Promise) {
-        values = values._target();
-        var bitField = values._bitField;
-        ;
-        this._values = values;
-        if (((bitField & 50397184) === 0)) {
-            this._promise._setAsyncGuaranteed();
-            return values._then(
-                init,
-                this._reject,
-                undefined,
-                this,
-                resolveValueIfEmpty
-           );
-        } else if (((bitField & 33554432) !== 0)) {
-            values = values._value();
-        } else if (((bitField & 16777216) !== 0)) {
-            return this._reject(values._reason());
-        } else {
-            return this._cancel();
-        }
-    }
-    values = util.asArray(values);
-    if (values === null) {
-        var err = apiRejection(
-            "expecting an array or an iterable object but got " + util.classString(values)).reason();
-        this._promise._rejectCallback(err, false);
-        return;
-    }
-    if (values.length === 0) {
-        if (resolveValueIfEmpty === -5) {
-            this._resolveEmptyArray();
-        }
-        else {
-            this._resolve(toResolutionValue(resolveValueIfEmpty));
-        }
-        return;
-    }
-    this._iterate(values);
-};
-PromiseArray.prototype._iterate = function(values) {
-    var len = this.getActualLength(values.length);
-    this._length = len;
-    this._values = this.shouldCopyValues() ? new Array(len) : this._values;
-    var result = this._promise;
-    var isResolved = false;
-    var bitField = null;
-    for (var i = 0; i < len; ++i) {
-        var maybePromise = tryConvertToPromise(values[i], result);
-        if (maybePromise instanceof Promise) {
-            maybePromise = maybePromise._target();
-            bitField = maybePromise._bitField;
-        } else {
-            bitField = null;
-        }
-        if (isResolved) {
-            if (bitField !== null) {
-                maybePromise.suppressUnhandledRejections();
-            }
-        } else if (bitField !== null) {
-            if (((bitField & 50397184) === 0)) {
-                maybePromise._proxy(this, i);
-                this._values[i] = maybePromise;
-            } else if (((bitField & 33554432) !== 0)) {
-                isResolved = this._promiseFulfilled(maybePromise._value(), i);
-            } else if (((bitField & 16777216) !== 0)) {
-                isResolved = this._promiseRejected(maybePromise._reason(), i);
-            } else {
-                isResolved = this._promiseCancelled(i);
-            }
-        } else {
-            isResolved = this._promiseFulfilled(maybePromise, i);
-        }
-    }
-    if (!isResolved) result._setAsyncGuaranteed();
-};
-PromiseArray.prototype._isResolved = function () {
-    return this._values === null;
-};
-PromiseArray.prototype._resolve = function (value) {
-    this._values = null;
-    this._promise._fulfill(value);
-};
-PromiseArray.prototype._cancel = function() {
-    if (this._isResolved() || !this._promise._isCancellable()) return;
-    this._values = null;
-    this._promise._cancel();
-};
-PromiseArray.prototype._reject = function (reason) {
-    this._values = null;
-    this._promise._rejectCallback(reason, false);
-};
-PromiseArray.prototype._promiseFulfilled = function (value, index) {
-    this._values[index] = value;
-    var totalResolved = ++this._totalResolved;
-    if (totalResolved >= this._length) {
-        this._resolve(this._values);
-        return true;
-    }
-    return false;
-};
-PromiseArray.prototype._promiseCancelled = function() {
-    this._cancel();
-    return true;
-};
-PromiseArray.prototype._promiseRejected = function (reason) {
-    this._totalResolved++;
-    this._reject(reason);
-    return true;
-};
-PromiseArray.prototype._resultCancelled = function() {
-    if (this._isResolved()) return;
-    var values = this._values;
-    this._cancel();
-    if (values instanceof Promise) {
-        values.cancel();
-    } else {
-        for (var i = 0; i < values.length; ++i) {
-            if (values[i] instanceof Promise) {
-                values[i].cancel();
-            }
-        }
-    }
-};
-PromiseArray.prototype.shouldCopyValues = function () {
-    return true;
-};
-PromiseArray.prototype.getActualLength = function (len) {
-    return len;
-};
-return PromiseArray;
-};
-},{"./util":21}],17:[function(_dereq_,module,exports){
-"use strict";
-function arrayMove(src, srcIndex, dst, dstIndex, len) {
-    for (var j = 0; j < len; ++j) {
-        dst[j + dstIndex] = src[j + srcIndex];
-        src[j + srcIndex] = void 0;
-    }
-}
-function Queue(capacity) {
-    this._capacity = capacity;
-    this._length = 0;
-    this._front = 0;
-}
-Queue.prototype._willBeOverCapacity = function (size) {
-    return this._capacity < size;
-};
-Queue.prototype._pushOne = function (arg) {
-    var length = this.length();
-    this._checkCapacity(length + 1);
-    var i = (this._front + length) & (this._capacity - 1);
-    this[i] = arg;
-    this._length = length + 1;
-};
-Queue.prototype.push = function (fn, receiver, arg) {
-    var length = this.length() + 3;
-    if (this._willBeOverCapacity(length)) {
-        this._pushOne(fn);
-        this._pushOne(receiver);
-        this._pushOne(arg);
-        return;
-    }
-    var j = this._front + length - 3;
-    this._checkCapacity(length);
-    var wrapMask = this._capacity - 1;
-    this[(j + 0) & wrapMask] = fn;
-    this[(j + 1) & wrapMask] = receiver;
-    this[(j + 2) & wrapMask] = arg;
-    this._length = length;
-};
-Queue.prototype.shift = function () {
-    var front = this._front,
-        ret = this[front];
-    this[front] = undefined;
-    this._front = (front + 1) & (this._capacity - 1);
-    this._length--;
-    return ret;
-};
-Queue.prototype.length = function () {
-    return this._length;
-};
-Queue.prototype._checkCapacity = function (size) {
-    if (this._capacity < size) {
-        this._resizeTo(this._capacity << 1);
-    }
-};
-Queue.prototype._resizeTo = function (capacity) {
-    var oldCapacity = this._capacity;
-    this._capacity = capacity;
-    var front = this._front;
-    var length = this._length;
-    var moveItemsCount = (front + length) & (oldCapacity - 1);
-    arrayMove(this, 0, this, oldCapacity, moveItemsCount);
-};
-module.exports = Queue;
-},{}],18:[function(_dereq_,module,exports){
-"use strict";
-var util = _dereq_("./util");
-var schedule;
-var noAsyncScheduler = function() {
-    throw new Error("No async scheduler available\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-};
-var NativePromise = util.getNativePromise();
-if (util.isNode && typeof MutationObserver === "undefined") {
-    var GlobalSetImmediate = global.setImmediate;
-    var ProcessNextTick = process.nextTick;
-    schedule = util.isRecentNode
-                ? function(fn) { GlobalSetImmediate.call(global, fn); }
-                : function(fn) { ProcessNextTick.call(process, fn); };
-} else if (typeof NativePromise === "function" &&
-           typeof NativePromise.resolve === "function") {
-    var nativePromise = NativePromise.resolve();
-    schedule = function(fn) {
-        nativePromise.then(fn);
-    };
-} else if ((typeof MutationObserver !== "undefined") &&
-          !(typeof window !== "undefined" &&
-            window.navigator &&
-            (window.navigator.standalone || window.cordova))) {
-    schedule = (function() {
-        var div = document.createElement("div");
-        var opts = {attributes: true};
-        var toggleScheduled = false;
-        var div2 = document.createElement("div");
-        var o2 = new MutationObserver(function() {
-            div.classList.toggle("foo");
-            toggleScheduled = false;
-        });
-        o2.observe(div2, opts);
-        var scheduleToggle = function() {
-            if (toggleScheduled) return;
-            toggleScheduled = true;
-            div2.classList.toggle("foo");
-        };
-        return function schedule(fn) {
-            var o = new MutationObserver(function() {
-                o.disconnect();
-                fn();
-            });
-            o.observe(div, opts);
-            scheduleToggle();
-        };
-    })();
-} else if (typeof setImmediate !== "undefined") {
-    schedule = function (fn) {
-        setImmediate(fn);
-    };
-} else if (typeof setTimeout !== "undefined") {
-    schedule = function (fn) {
-        setTimeout(fn, 0);
-    };
-} else {
-    schedule = noAsyncScheduler;
-}
-module.exports = schedule;
-},{"./util":21}],19:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise) {
-function PromiseInspection(promise) {
-    if (promise !== undefined) {
-        promise = promise._target();
-        this._bitField = promise._bitField;
-        this._settledValueField = promise._isFateSealed()
-            ? promise._settledValue() : undefined;
-    }
-    else {
-        this._bitField = 0;
-        this._settledValueField = undefined;
-    }
-}
-PromiseInspection.prototype._settledValue = function() {
-    return this._settledValueField;
-};
-var value = PromiseInspection.prototype.value = function () {
-    if (!this.isFulfilled()) {
-        throw new TypeError("cannot get fulfillment value of a non-fulfilled promise\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-    }
-    return this._settledValue();
-};
-var reason = PromiseInspection.prototype.error =
-PromiseInspection.prototype.reason = function () {
-    if (!this.isRejected()) {
-        throw new TypeError("cannot get rejection reason of a non-rejected promise\u000a\u000a    See http://goo.gl/MqrFmX\u000a");
-    }
-    return this._settledValue();
-};
-var isFulfilled = PromiseInspection.prototype.isFulfilled = function() {
-    return (this._bitField & 33554432) !== 0;
-};
-var isRejected = PromiseInspection.prototype.isRejected = function () {
-    return (this._bitField & 16777216) !== 0;
-};
-var isPending = PromiseInspection.prototype.isPending = function () {
-    return (this._bitField & 50397184) === 0;
-};
-var isResolved = PromiseInspection.prototype.isResolved = function () {
-    return (this._bitField & 50331648) !== 0;
-};
-PromiseInspection.prototype.isCancelled = function() {
-    return (this._bitField & 8454144) !== 0;
-};
-Promise.prototype.__isCancelled = function() {
-    return (this._bitField & 65536) === 65536;
-};
-Promise.prototype._isCancelled = function() {
-    return this._target().__isCancelled();
-};
-Promise.prototype.isCancelled = function() {
-    return (this._target()._bitField & 8454144) !== 0;
-};
-Promise.prototype.isPending = function() {
-    return isPending.call(this._target());
-};
-Promise.prototype.isRejected = function() {
-    return isRejected.call(this._target());
-};
-Promise.prototype.isFulfilled = function() {
-    return isFulfilled.call(this._target());
-};
-Promise.prototype.isResolved = function() {
-    return isResolved.call(this._target());
-};
-Promise.prototype.value = function() {
-    return value.call(this._target());
-};
-Promise.prototype.reason = function() {
-    var target = this._target();
-    target._unsetRejectionIsUnhandled();
-    return reason.call(target);
-};
-Promise.prototype._value = function() {
-    return this._settledValue();
-};
-Promise.prototype._reason = function() {
-    this._unsetRejectionIsUnhandled();
-    return this._settledValue();
-};
-Promise.PromiseInspection = PromiseInspection;
-};
-},{}],20:[function(_dereq_,module,exports){
-"use strict";
-module.exports = function(Promise, INTERNAL) {
-var util = _dereq_("./util");
-var errorObj = util.errorObj;
-var isObject = util.isObject;
-function tryConvertToPromise(obj, context) {
-    if (isObject(obj)) {
-        if (obj instanceof Promise) return obj;
-        var then = getThen(obj);
-        if (then === errorObj) {
-            if (context) context._pushContext();
-            var ret = Promise.reject(then.e);
-            if (context) context._popContext();
-            return ret;
-        } else if (typeof then === "function") {
-            if (isAnyBluebirdPromise(obj)) {
-                var ret = new Promise(INTERNAL);
-                obj._then(
-                    ret._fulfill,
-                    ret._reject,
-                    undefined,
-                    ret,
-                    null
-                );
-                return ret;
-            }
-            return doThenable(obj, then, context);
-        }
-    }
-    return obj;
-}
-function doGetThen(obj) {
-    return obj.then;
-}
-function getThen(obj) {
-    try {
-        return doGetThen(obj);
-    } catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-var hasProp = {}.hasOwnProperty;
-function isAnyBluebirdPromise(obj) {
-    try {
-        return hasProp.call(obj, "_promise0");
-    } catch (e) {
-        return false;
-    }
-}
-function doThenable(x, then, context) {
-    var promise = new Promise(INTERNAL);
-    var ret = promise;
-    if (context) context._pushContext();
-    promise._captureStackTrace();
-    if (context) context._popContext();
-    var synchronous = true;
-    var result = util.tryCatch(then).call(x, resolve, reject);
-    synchronous = false;
-    if (promise && result === errorObj) {
-        promise._rejectCallback(result.e, true, true);
-        promise = null;
-    }
-    function resolve(value) {
-        if (!promise) return;
-        promise._resolveCallback(value);
-        promise = null;
-    }
-    function reject(reason) {
-        if (!promise) return;
-        promise._rejectCallback(reason, synchronous, true);
-        promise = null;
-    }
-    return ret;
-}
-return tryConvertToPromise;
-};
-},{"./util":21}],21:[function(_dereq_,module,exports){
-"use strict";
-var es5 = _dereq_("./es5");
-var canEvaluate = typeof navigator == "undefined";
-var errorObj = {e: {}};
-var tryCatchTarget;
-var globalObject = typeof self !== "undefined" ? self :
-    typeof window !== "undefined" ? window :
-    typeof global !== "undefined" ? global :
-    this !== undefined ? this : null;
-function tryCatcher() {
-    try {
-        var target = tryCatchTarget;
-        tryCatchTarget = null;
-        return target.apply(this, arguments);
-    } catch (e) {
-        errorObj.e = e;
-        return errorObj;
-    }
-}
-function tryCatch(fn) {
-    tryCatchTarget = fn;
-    return tryCatcher;
-}
-var inherits = function(Child, Parent) {
-    var hasProp = {}.hasOwnProperty;
-    function T() {
-        this.constructor = Child;
-        this.constructor$ = Parent;
-        for (var propertyName in Parent.prototype) {
-            if (hasProp.call(Parent.prototype, propertyName) &&
-                propertyName.charAt(propertyName.length-1) !== "$"
-           ) {
-                this[propertyName + "$"] = Parent.prototype[propertyName];
-            }
-        }
-    }
-    T.prototype = Parent.prototype;
-    Child.prototype = new T();
-    return Child.prototype;
-};
-function isPrimitive(val) {
-    return val == null || val === true || val === false ||
-        typeof val === "string" || typeof val === "number";
-}
-function isObject(value) {
-    return typeof value === "function" ||
-           typeof value === "object" && value !== null;
-}
-function maybeWrapAsError(maybeError) {
-    if (!isPrimitive(maybeError)) return maybeError;
-    return new Error(safeToString(maybeError));
-}
-function withAppended(target, appendee) {
-    var len = target.length;
-    var ret = new Array(len + 1);
-    var i;
-    for (i = 0; i < len; ++i) {
-        ret[i] = target[i];
-    }
-    ret[i] = appendee;
-    return ret;
-}
-function getDataPropertyOrDefault(obj, key, defaultValue) {
-    if (es5.isES5) {
-        var desc = Object.getOwnPropertyDescriptor(obj, key);
-        if (desc != null) {
-            return desc.get == null && desc.set == null
-                    ? desc.value
-                    : defaultValue;
-        }
-    } else {
-        return {}.hasOwnProperty.call(obj, key) ? obj[key] : undefined;
-    }
-}
-function notEnumerableProp(obj, name, value) {
-    if (isPrimitive(obj)) return obj;
-    var descriptor = {
-        value: value,
-        configurable: true,
-        enumerable: false,
-        writable: true
-    };
-    es5.defineProperty(obj, name, descriptor);
-    return obj;
-}
-function thrower(r) {
-    throw r;
-}
-var inheritedDataKeys = (function() {
-    var excludedPrototypes = [
-        Array.prototype,
-        Object.prototype,
-        Function.prototype
-    ];
-    var isExcludedProto = function(val) {
-        for (var i = 0; i < excludedPrototypes.length; ++i) {
-            if (excludedPrototypes[i] === val) {
-                return true;
-            }
-        }
-        return false;
-    };
-    if (es5.isES5) {
-        var getKeys = Object.getOwnPropertyNames;
-        return function(obj) {
-            var ret = [];
-            var visitedKeys = Object.create(null);
-            while (obj != null && !isExcludedProto(obj)) {
-                var keys;
-                try {
-                    keys = getKeys(obj);
-                } catch (e) {
-                    return ret;
-                }
-                for (var i = 0; i < keys.length; ++i) {
-                    var key = keys[i];
-                    if (visitedKeys[key]) continue;
-                    visitedKeys[key] = true;
-                    var desc = Object.getOwnPropertyDescriptor(obj, key);
-                    if (desc != null && desc.get == null && desc.set == null) {
-                        ret.push(key);
-                    }
-                }
-                obj = es5.getPrototypeOf(obj);
-            }
-            return ret;
-        };
-    } else {
-        var hasProp = {}.hasOwnProperty;
-        return function(obj) {
-            if (isExcludedProto(obj)) return [];
-            var ret = [];
-            /*jshint forin:false */
-            enumeration: for (var key in obj) {
-                if (hasProp.call(obj, key)) {
-                    ret.push(key);
-                } else {
-                    for (var i = 0; i < excludedPrototypes.length; ++i) {
-                        if (hasProp.call(excludedPrototypes[i], key)) {
-                            continue enumeration;
-                        }
-                    }
-                    ret.push(key);
-                }
-            }
-            return ret;
-        };
-    }
-})();
-var thisAssignmentPattern = /this\s*\.\s*\S+\s*=/;
-function isClass(fn) {
-    try {
-        if (typeof fn === "function") {
-            var keys = es5.names(fn.prototype);
-            var hasMethods = es5.isES5 && keys.length > 1;
-            var hasMethodsOtherThanConstructor = keys.length > 0 &&
-                !(keys.length === 1 && keys[0] === "constructor");
-            var hasThisAssignmentAndStaticMethods =
-                thisAssignmentPattern.test(fn + "") && es5.names(fn).length > 0;
-            if (hasMethods || hasMethodsOtherThanConstructor ||
-                hasThisAssignmentAndStaticMethods) {
-                return true;
-            }
-        }
-        return false;
-    } catch (e) {
-        return false;
-    }
-}
-function toFastProperties(obj) {
-    /*jshint -W027,-W055,-W031*/
-    function FakeConstructor() {}
-    FakeConstructor.prototype = obj;
-    var l = 8;
-    while (l--) new FakeConstructor();
-    return obj;
-    eval(obj);
-}
-var rident = /^[a-z$_][a-z$_0-9]*$/i;
-function isIdentifier(str) {
-    return rident.test(str);
-}
-function filledRange(count, prefix, suffix) {
-    var ret = new Array(count);
-    for(var i = 0; i < count; ++i) {
-        ret[i] = prefix + i + suffix;
-    }
-    return ret;
-}
-function safeToString(obj) {
-    try {
-        return obj + "";
-    } catch (e) {
-        return "[no string representation]";
-    }
-}
-function isError(obj) {
-    return obj !== null &&
-           typeof obj === "object" &&
-           typeof obj.message === "string" &&
-           typeof obj.name === "string";
-}
-function markAsOriginatingFromRejection(e) {
-    try {
-        notEnumerableProp(e, "isOperational", true);
-    }
-    catch(ignore) {}
-}
-function originatesFromRejection(e) {
-    if (e == null) return false;
-    return ((e instanceof Error["__BluebirdErrorTypes__"].OperationalError) ||
-        e["isOperational"] === true);
-}
-function canAttachTrace(obj) {
-    return isError(obj) && es5.propertyIsWritable(obj, "stack");
-}
-var ensureErrorObject = (function() {
-    if (!("stack" in new Error())) {
-        return function(value) {
-            if (canAttachTrace(value)) return value;
-            try {throw new Error(safeToString(value));}
-            catch(err) {return err;}
-        };
-    } else {
-        return function(value) {
-            if (canAttachTrace(value)) return value;
-            return new Error(safeToString(value));
-        };
-    }
-})();
-function classString(obj) {
-    return {}.toString.call(obj);
-}
-function copyDescriptors(from, to, filter) {
-    var keys = es5.names(from);
-    for (var i = 0; i < keys.length; ++i) {
-        var key = keys[i];
-        if (filter(key)) {
-            try {
-                es5.defineProperty(to, key, es5.getDescriptor(from, key));
-            } catch (ignore) {}
-        }
-    }
-}
-var asArray = function(v) {
-    if (es5.isArray(v)) {
-        return v;
-    }
-    return null;
-};
-if (typeof Symbol !== "undefined" && Symbol.iterator) {
-    var ArrayFrom = typeof Array.from === "function" ? function(v) {
-        return Array.from(v);
-    } : function(v) {
-        var ret = [];
-        var it = v[Symbol.iterator]();
-        var itResult;
-        while (!((itResult = it.next()).done)) {
-            ret.push(itResult.value);
-        }
-        return ret;
-    };
-    asArray = function(v) {
-        if (es5.isArray(v)) {
-            return v;
-        } else if (v != null && typeof v[Symbol.iterator] === "function") {
-            return ArrayFrom(v);
-        }
-        return null;
-    };
-}
-var isNode = typeof process !== "undefined" &&
-        classString(process).toLowerCase() === "[object process]";
-var hasEnvVariables = typeof process !== "undefined" &&
-    typeof process.env !== "undefined";
-function env(key) {
-    return hasEnvVariables ? process.env[key] : undefined;
-}
-function getNativePromise() {
-    if (typeof Promise === "function") {
-        try {
-            var promise = new Promise(function(){});
-            if ({}.toString.call(promise) === "[object Promise]") {
-                return Promise;
-            }
-        } catch (e) {}
-    }
-}
-function domainBind(self, cb) {
-    return self.bind(cb);
-}
-var ret = {
-    isClass: isClass,
-    isIdentifier: isIdentifier,
-    inheritedDataKeys: inheritedDataKeys,
-    getDataPropertyOrDefault: getDataPropertyOrDefault,
-    thrower: thrower,
-    isArray: es5.isArray,
-    asArray: asArray,
-    notEnumerableProp: notEnumerableProp,
-    isPrimitive: isPrimitive,
-    isObject: isObject,
-    isError: isError,
-    canEvaluate: canEvaluate,
-    errorObj: errorObj,
-    tryCatch: tryCatch,
-    inherits: inherits,
-    withAppended: withAppended,
-    maybeWrapAsError: maybeWrapAsError,
-    toFastProperties: toFastProperties,
-    filledRange: filledRange,
-    toString: safeToString,
-    canAttachTrace: canAttachTrace,
-    ensureErrorObject: ensureErrorObject,
-    originatesFromRejection: originatesFromRejection,
-    markAsOriginatingFromRejection: markAsOriginatingFromRejection,
-    classString: classString,
-    copyDescriptors: copyDescriptors,
-    hasDevTools: typeof chrome !== "undefined" && chrome &&
-                 typeof chrome.loadTimes === "function",
-    isNode: isNode,
-    hasEnvVariables: hasEnvVariables,
-    env: env,
-    global: globalObject,
-    getNativePromise: getNativePromise,
-    domainBind: domainBind
-};
-ret.isRecentNode = ret.isNode && (function() {
-    var version = process.versions.node.split(".").map(Number);
-    return (version[0] === 0 && version[1] > 10) || (version[0] > 0);
-})();
-if (ret.isNode) ret.toFastProperties(process);
-try {throw new Error(); } catch (e) {ret.lastLineError = e;}
-module.exports = ret;
-},{"./es5":10}]},{},[3])(3)
-});                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
-}).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":75}],12:[function(require,module,exports){
+},{"bluebird/js/browser/bluebird.core":3}],12:[function(require,module,exports){
 (function (global){
 (function(env){
   var previousKeen = env.Keen || undefined;
@@ -22029,7 +21994,7 @@ module.exports = ret;
   module.exports = Client;
 }).call(this, typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {});
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./utils/each":13,"./utils/extend":14,"./utils/parse-params":15,"./utils/serialize":16,"component-emitter":4}],13:[function(require,module,exports){
+},{"./utils/each":13,"./utils/extend":14,"./utils/parse-params":15,"./utils/serialize":16,"component-emitter":5}],13:[function(require,module,exports){
 module.exports = each;
 function each(o, cb, s){
   var n;
@@ -23643,7 +23608,7 @@ module.exports = function(cols){
     }
   }
 };
-},{"../../../utils/assert-date-string":39,"d3":5}],33:[function(require,module,exports){
+},{"../../../utils/assert-date-string":39,"d3":6}],33:[function(require,module,exports){
 var escapeHtml = require('../../../utils/escape-html');
 module.exports = function (d, defaultTitleFormat, defaultValueFormat, color) {
   var bgcolor,
@@ -24139,7 +24104,7 @@ function bindResizeListener(fn){
     window.attachEvent('onresize', fn);
   }
 }
-},{"../utils/assert-date-string":39,"../utils/each":40,"../utils/extend":43,"../utils/extend-deep":42,"./c3/extensions/default-date-format":31,"./c3/extensions/paginating-legend":32,"./c3/extensions/tooltip-contents":33,"./default/message":34,"./default/metric":35,"./default/spinner":36,"./default/table":37,"c3":3,"d3":5}],39:[function(require,module,exports){
+},{"../utils/assert-date-string":39,"../utils/each":40,"../utils/extend":43,"../utils/extend-deep":42,"./c3/extensions/default-date-format":31,"./c3/extensions/paginating-legend":32,"./c3/extensions/tooltip-contents":33,"./default/message":34,"./default/metric":35,"./default/spinner":36,"./default/table":37,"c3":4,"d3":6}],39:[function(require,module,exports){
 module.exports = function(input){
   if (typeof input === 'object') {
     return testObject(input);
@@ -25267,7 +25232,7 @@ cookie.prototype.options = function(obj){
 cookie.prototype.enabled = function(){
   return navigator.cookieEnabled;
 };
-},{"./extend":63,"js-cookie":6}],61:[function(require,module,exports){
+},{"./extend":63,"js-cookie":7}],61:[function(require,module,exports){
 module.exports = deepExtend;
 function deepExtend(target){
   for (var i = 1; i < arguments.length; i++) {
@@ -25470,7 +25435,7 @@ function deferFormSubmit(evt, form, callback){
   }
   return false;
 }
-},{"./each":62,"component-emitter":4}],65:[function(require,module,exports){
+},{"./each":62,"component-emitter":5}],65:[function(require,module,exports){
 var Emitter = require('component-emitter');
 function queue() {
   if (this instanceof queue === false) {
@@ -25528,7 +25493,7 @@ function shouldFlushQueue(props) {
   return false;
 }
 module.exports = queue;
-},{"component-emitter":4}],66:[function(require,module,exports){
+},{"component-emitter":5}],66:[function(require,module,exports){
 /*
   This is a modified copy of https://github.com/defunctzombie/form-serialize/ v0.7.1
   Includes a new configuration option:
@@ -25916,7 +25881,7 @@ timer.prototype.clear = function(){
   module.exports = Client;
 }).call(this, typeof window !== 'undefined' ? window : typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {});
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./utils/each":70,"./utils/extend":71,"./utils/parse-params":72,"./utils/serialize":73,"component-emitter":4}],69:[function(require,module,exports){
+},{"./utils/each":70,"./utils/extend":71,"./utils/parse-params":72,"./utils/serialize":73,"component-emitter":5}],69:[function(require,module,exports){
 module.exports = {
   map: "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",
   encode: function (n) {
@@ -25975,21 +25940,14 @@ arguments[4][16][0].apply(exports,arguments)
 module.exports={
   "_args": [
     [
-      {
-        "raw": "keen-tracking@1.4.0",
-        "scope": null,
-        "escapedName": "keen-tracking",
-        "name": "keen-tracking",
-        "rawSpec": "1.4.0",
-        "spec": "1.4.0",
-        "type": "version"
-      },
-      "/Users/dustinlarimer/dev/keen/keen-js"
+      "keen-tracking@1.4.0",
+      "/Users/adamk/Desktop/my/keen-js"
     ]
   ],
   "_from": "keen-tracking@1.4.0",
   "_id": "keen-tracking@1.4.0",
   "_inCache": true,
+  "_installable": true,
   "_location": "/keen-tracking",
   "_nodeVersion": "6.11.2",
   "_npmOperationalInternal": {
@@ -25997,34 +25955,32 @@ module.exports={
     "tmp": "tmp/keen-tracking-1.4.0.tgz_1507234385258_0.13838722207583487"
   },
   "_npmUser": {
-    "name": "dustinlarimer",
-    "email": "dustin@keen.io"
+    "email": "dustin@keen.io",
+    "name": "dustinlarimer"
   },
   "_npmVersion": "3.10.10",
   "_phantomChildren": {
-    "component-emitter": "1.2.0"
+    "component-emitter": "1.2.1"
   },
   "_requested": {
-    "raw": "keen-tracking@1.4.0",
-    "scope": null,
-    "escapedName": "keen-tracking",
     "name": "keen-tracking",
+    "raw": "keen-tracking@1.4.0",
     "rawSpec": "1.4.0",
+    "scope": null,
     "spec": "1.4.0",
     "type": "version"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/keen-tracking/-/keen-tracking-1.4.0.tgz",
   "_shasum": "7951cc2da2ea68c4aa8c04a4bb3c411d0c03cf99",
   "_shrinkwrap": null,
   "_spec": "keen-tracking@1.4.0",
-  "_where": "/Users/dustinlarimer/dev/keen/keen-js",
+  "_where": "/Users/adamk/Desktop/my/keen-js",
   "author": {
-    "name": "Dustin Larimer",
     "email": "dustin@keen.io",
+    "name": "Dustin Larimer",
     "url": "https://keen.io/"
   },
   "browser": "lib/browser.js",
@@ -26033,23 +25989,23 @@ module.exports={
   },
   "contributors": [
     {
-      "name": "Dustin Larimer",
       "email": "dustin@keen.io",
+      "name": "Dustin Larimer",
       "url": "https://github.com/dustinlarimer"
     },
     {
-      "name": "Eric Anderson",
       "email": "eric@keen.io",
+      "name": "Eric Anderson",
       "url": "https://github.com/aroc"
     },
     {
-      "name": "Joe Wegner",
       "email": "joe@keen.io",
+      "name": "Joe Wegner",
       "url": "http://www.wegnerdesign.com"
     },
     {
-      "name": "Alex Kleissner",
       "email": "alex@keen.io",
+      "name": "Alex Kleissner",
       "url": "https://github.com/hex337"
     }
   ],
@@ -26105,12 +26061,12 @@ module.exports={
   "main": "lib/server.js",
   "maintainers": [
     {
-      "name": "aroc",
-      "email": "eric@ericanderson.ca"
+      "email": "eric@ericanderson.ca",
+      "name": "aroc"
     },
     {
-      "name": "dustinlarimer",
-      "email": "dustin@keen.io"
+      "email": "dustin@keen.io",
+      "name": "dustinlarimer"
     }
   ],
   "name": "keen-tracking",
@@ -26192,10 +26148,11 @@ module.exports={
     "test": "gulp test:cli"
   },
   "bugs": "https://github.com/keen/keen-js/issues",
-  "author": "Dustin Larimer <dustin@keen.io> (https://keen.io/)",
+  "author": "Keen IO <team@keen.io> (https://keen.io/)",
   "contributors": [
     "Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)",
-    "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)"
+    "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)",
+    "Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"
   ],
   "dependencies": {
     "keen-analysis": "1.3.0",
@@ -26220,6 +26177,7 @@ module.exports={
     "gulp-strip-comments": "^1.0.1",
     "gulp-uglify": "^1.5.4",
     "gulp-util": "^3.0.1",
+    "json2": "^0.4.0",
     "karma": "^0.12.28",
     "karma-chrome-launcher": "^0.1.7",
     "karma-firefox-launcher": "^0.1.3",
@@ -26240,6 +26198,7 @@ module.exports={
     "pump": "^1.0.1",
     "requirejs": "^2.2.0",
     "sinon": "^1.17.3",
+    "uglify-js": "^2.6.4",
     "vinyl-transform": "^1.0.0"
   }
 }
