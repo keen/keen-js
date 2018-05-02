@@ -1,6 +1,5 @@
 /* globals: sinon */
-var expect = require("chai").expect,
-    JSON2 = require("JSON2");
+var expect = require("chai").expect;
 
 var Keen = require("../../../../../lib/index"),
     keenHelper = require("../../../helpers/test-config");
@@ -43,7 +42,7 @@ describe("Keen.Request", function() {
 
     it("should return a response when successful", function(){
       var response = { result: 1 };
-      this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response) ] );
+      this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON.stringify(response) ] );
       this.server.respond();
       this.client.run(this.query, function(err, res){
         expect(err).to.be.a("null");
@@ -53,7 +52,7 @@ describe("Keen.Request", function() {
 
     it("should return an error when unsuccessful", function(){
       var response = { error_code: "ResourceNotFoundError", message: "no foo" };
-      this.server.respondWith( "POST", this.postUrl, [ 500, { "Content-Type": "application/json"}, JSON2.stringify(response) ] );
+      this.server.respondWith( "POST", this.postUrl, [ 500, { "Content-Type": "application/json"}, JSON.stringify(response) ] );
       this.server.respond();
       this.client.run(this.query, function(err, res){
         expect(err).to.exist;
@@ -119,9 +118,9 @@ describe("Keen.Request", function() {
     describe("Multiple queries", function(){
       it("should return a single response when successful", function(){
         var response = [{ result: 1 }, { result: 1 }, { result: 1 }];
-        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response[0]) ] );
-        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response[1]) ] );
-        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify(response[2]) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON.stringify(response[0]) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON.stringify(response[1]) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON.stringify(response[2]) ] );
         this.server.respond();
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.be.a("null");
@@ -131,9 +130,9 @@ describe("Keen.Request", function() {
       });
       it('should return a single error when unsuccessful', function(){
         var response = { error_code: "ResourceNotFoundError", message: "no foo" };
-        this.server.respondWith( "POST", this.postUrl, [ 500, { "Content-Type": "application/json"}, JSON2.stringify(response) ] );
-        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify({ result: 1 }) ] );
-        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON2.stringify({ result: 1 }) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 500, { "Content-Type": "application/json"}, JSON.stringify(response) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON.stringify({ result: 1 }) ] );
+        this.server.respondWith( "POST", this.postUrl, [ 200, { "Content-Type": "application/json"}, JSON.stringify({ result: 1 }) ] );
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.exist;
           expect(err["code"]).to.equal(response.error_code);

@@ -1,6 +1,5 @@
 /* globals: sinon */
-var expect = require("chai").expect,
-    JSON2 = require("JSON2");
+var expect = require("chai").expect;
 
 var Keen = require("../../../../../lib/index"),
     keenHelper = require("../../../helpers/test-config");
@@ -127,7 +126,7 @@ describe("Tracker (browser)", function() {
           { page: "same again" }
         ]
       };
-      this.batchResponse = JSON2.stringify({
+      this.batchResponse = JSON.stringify({
         click: [
           { "success": true }
         ],

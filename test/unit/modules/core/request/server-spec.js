@@ -1,6 +1,5 @@
 var chai = require("chai"),
     expect = require("chai").expect,
-    JSON2 = require("JSON2"),
     spies = require("chai-spies");
 
 chai.use(spies);
@@ -44,7 +43,7 @@ describe("Keen.Request", function() {
 
     it("should return a response when successful", function(){
       var response = { result: 0 };
-      mock.post("/queries/count", 200, JSON2.stringify(response));
+      mock.post("/queries/count", 200, JSON.stringify(response));
       this.client.run(this.query, function(err, res){
         expect(err).to.be.a("null");
         expect(res.query).to.be.an('object');
@@ -55,7 +54,7 @@ describe("Keen.Request", function() {
 
     it("should return an error when unsuccessful", function(){
       var response = { error_code: "ResourceNotFoundError", message: "no foo" };
-      mock.post("/queries/count", 500, JSON2.stringify(response));
+      mock.post("/queries/count", 500, JSON.stringify(response));
       this.client.run(this.query, function(err, res){
         expect(err).to.exist;
         expect(err["code"]).to.equal(response.error_code);
@@ -121,9 +120,9 @@ describe("Keen.Request", function() {
     describe("Multiple queries", function(){
       it("should return a single response when successful", function(done){
         var response = [{ result: 0 }, { result: 0 }, { result: 0 }];
-        mock.post("/queries/count", 200, JSON2.stringify(response[0]));
-        mock.post("/queries/count", 200, JSON2.stringify(response[1]));
-        mock.post("/queries/count", 200, JSON2.stringify(response[2]));
+        mock.post("/queries/count", 200, JSON.stringify(response[0]));
+        mock.post("/queries/count", 200, JSON.stringify(response[1]));
+        mock.post("/queries/count", 200, JSON.stringify(response[2]));
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.be.a("null");
           expect(res).to.be.an("array").and.to.have.length(3);
@@ -135,9 +134,9 @@ describe("Keen.Request", function() {
       });
       it('should return a single error when unsuccessful', function(done) {
         var response = { error_code: "ResourceNotFoundError", message: "no foo" };
-        mock.post("/queries/count", 500, JSON2.stringify(response));
-        mock.post("/queries/count", 500, JSON2.stringify(response));
-        mock.post("/queries/count", 200, JSON2.stringify({ result: 1 }));
+        mock.post("/queries/count", 500, JSON.stringify(response));
+        mock.post("/queries/count", 500, JSON.stringify(response));
+        mock.post("/queries/count", 200, JSON.stringify({ result: 1 }));
         this.client.run([this.query, this.query, this.query], function(err, res){
           expect(err).to.exist;
           expect(err["code"]).to.equal(response.error_code);
@@ -158,7 +157,7 @@ describe("Keen.Request", function() {
           },
           result: 100
         };
-        mock.get("/queries/saved/page-visit-count/result", 200, JSON2.stringify(savedQueryResponse));
+        mock.get("/queries/saved/page-visit-count/result", 200, JSON.stringify(savedQueryResponse));
 
         this.client.run(savedQuery, function(err, res) {
           expect(res).to.deep.equal(savedQueryResponse);
@@ -171,7 +170,7 @@ describe("Keen.Request", function() {
           // message: "Query not found",
           // error_code: "QueryNotFound"
         };
-        mock.get("/queries/saved/page-visit-count/result", 404, JSON2.stringify(savedQueryResponse));
+        mock.get("/queries/saved/page-visit-count/result", 404, JSON.stringify(savedQueryResponse));
 
         this.client.run(savedQuery, function(err, res) {
           expect(err["code"]).to.equal("InvalidHTTPMethodError");

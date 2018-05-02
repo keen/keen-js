@@ -12,6 +12,16 @@
 [{{ release-title }} ({{ version }})](https://github.com/keen/keen-dataviz.js/releases/tag/{{ version }})
 
 -->
+<a name="4.3.1"></a>
+# 4.3.1 Fixes
+
+**Updates:**
+* updated [keen-tracking.js](https://github.com/keen/keen-tracking.js)
+* updated [keen-analysis.js](https://github.com/keen/keen-analysis.js)
+
+**Fixed:**
+* fixed tests
+
 <a name="4.3.0"></a>
 # 4.3.0 Module Updates
 
