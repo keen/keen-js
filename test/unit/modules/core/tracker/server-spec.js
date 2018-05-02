@@ -1,6 +1,5 @@
 var chai = require("chai"),
     expect = require("chai").expect,
-    JSON2 = require("JSON2"),
     spies = require("chai-spies");
 
 chai.use(spies);
@@ -35,7 +34,7 @@ describe("Tracking (server)", function() {
       mock.post("/events/" + keenHelper.collection, 201, keenHelper.responses.success);
       this.client.recordEvent( keenHelper.collection, keenHelper.properties, function(err, res) {
         expect(err).to.be.null;
-        expect(res).to.deep.equal( JSON2.parse(keenHelper.responses.success) );
+        expect(res).to.deep.equal( JSON.parse(keenHelper.responses.success) );
         done();
       });
     });
@@ -75,7 +74,7 @@ describe("Tracking (server)", function() {
           { page: "same again" }
         ]
       };
-      this.batchResponse = JSON2.stringify({
+      this.batchResponse = JSON.stringify({
         click: [
           { "success": true }
         ],
@@ -91,7 +90,7 @@ describe("Tracking (server)", function() {
       mock.post("/events", 201, self.batchResponse);
       self.client.recordEvents( self.batchData, function(err, res) {
         expect(err).to.be.null;
-        expect(res).to.deep.equal( JSON2.parse(self.batchResponse) );
+        expect(res).to.deep.equal( JSON.parse(self.batchResponse) );
       });
     });
 
