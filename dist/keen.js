@@ -26191,7 +26191,10 @@ module.exports={
   },
   "scripts": {
     "start": "gulp with-tests",
-    "test": "gulp test:cli"
+    "test": "gulp test:cli",
+    "preversion": "gulp build && npm run test",
+    "version": "git add .",
+    "postversion": "git push && git push --tags"
   },
   "bugs": "https://github.com/keen/keen-js/issues",
   "author": "Keen IO <team@keen.io> (https://keen.io/)",
