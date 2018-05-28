@@ -1,6 +1,6 @@
-# Keen IO JavaScript SDK (v4)
+# Keen IO JavaScript SDK (v5)
 
-This is v4 of the Keen IO JS SDK. Previous versions and their documentation are available as [branches](https://github.com/keen/keen-js/branches) of this repo.
+This is v5 of the Keen IO JS SDK. Previous versions and their documentation are available as [branches](https://github.com/keen/keen-js/branches) of this repo.
 
 ### Get Project ID & API Keys
 
@@ -14,59 +14,24 @@ Install this package from NPM:
 npm install keen-js --save
 ```
 
-Or load it synchronously from the CDN:
-
-```html
-<link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
-```
-
 Under the hood, this is simply a bundled release of the following packages:
 
 * [keen-tracking.js](https://github.com/keen/keen-tracking.js)
 * [keen-analysis.js](https://github.com/keen/keen-analysis.js)
 * [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)
 
-When **keen-js** is loaded as a global, these packages will be assigned to a shared `Keen` namespace. We recommend using the standalone packages that best suit your needs.
-
 ---
 
-## Getting started
-
-The following examples are intended to help you get up and running quickly with keen-js:
-
-* [Setup and Pageview Tracking](#setup-and-pageview-tracking)
-* [Running a Query](#running-a-query)
-* [Rendering a Chart](#rendering-a-chart)
-
----
-
-## Stream
+## Stream - Keen Tracking JS
 
 **What is an event?** An event is a record of something important happening in the life of your app or service: like a click, a purchase, or a device activation.
-
-This package contains [keen-tracking.js](https://github.com/keen/keen-tracking.js) as-is, and can be used interchangeably. If you only need tracking functionality, we recommend using the standalone package.
 
 [Full documentation is available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js/blob/master/docs/README.md).
 
 
 ### Automated Event Tracking (Browser-only)
 
-Automatically record `pageviews`, `clicks`, and `form_submissions` events with robust data models:
-
-```html
-<link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
-<script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
-<script>
-Keen.ready(function(){
-  var client = new Keen({
-    projectId: 'YOUR_PROJECT_ID',
-    writeKey: 'YOUR_WRITE_KEY'
-  });
-  client.initAutoTracking();
-});
-</script>
-```
+Automatically record `pageviews`, `clicks`, and `form_submissions` events with robust data models.
 
 [Learn how to configure and customize this functionality here](https://github.com/keen/keen-tracking.js/blob/master/docs/auto-tracking.md)
 
@@ -76,15 +41,15 @@ Keen.ready(function(){
 First, let's create a new `client` instance with your Project ID and Write Key, and use the `.extendEvents()` method to define a solid baseline data model that will be applied to every single event that is recorded. Consistent data models and property names make life much easier later on, when analyzing and managing several event streams. This setup also includes our [data enrichment add-ons](https://keen.io/docs/streams/data-enrichment-overview/), which will populate additional information when an event is received on our end.
 
 ```javascript
-import Keen from 'keen-js';
-// import Keen from 'keen-tracking';
+import KeenTracking from 'keen-tracking';
 
-const client = new Keen({
+const client = new KeenTracking({
   projectId: 'PROJECT_ID',
   writeKey: 'WRITE_KEY'
 });
-const helpers = Keen.helpers;
-const utils = Keen.utils;
+
+const helpers = KeenTracking.helpers;
+const utils = KeenTracking.utils;
 
 const sessionCookie = utils.cookie('rename-this-example-cookie');
 if (!sessionCookie.get('guest_id')) {
@@ -161,20 +126,19 @@ Want to get up and running faster? This can also be achieved in the browser with
 
 ---
 
-### API Node.js Server Side Tracking (Back-end)
+### Node.js Event Recording (Back-end)
 
 ```javascript
-const Keen = require('keen-js');
-// const Keen = require('keen-tracking');
+const KeenTracking = require('keen-tracking');
 
-const client = new Keen({
+const client = new KeenTracking({
   projectId: 'PROJECT_ID',
   writeKey: 'WRITE_KEY'
 });
 
 client.recordEvent('purchases', {
   item: 'Avocado',
-  price: 12
+  price: 123
 });
 ```
 
@@ -182,8 +146,8 @@ client.recordEvent('purchases', {
 
 **More examples:**
 
-* [Record clicks and form submissions](https://github.com/keen/keen-tracking.js#click-and-form-submit-tracking)
-* [Block bots and improve device recognition](https://github.com/keen/keen-tracking.js#block-bots-and-improve-device-recognition)
+* [Record clicks and form submissions](https://github.com/keen/keen-tracking.js#click-and-form-submit-tracking-browserfront-end)
+* [Block bots and improve device recognition](https://github.com/keen/keen-tracking.js#block-bots-and-improve-device-recognition-browserfront-end)
 
 **What else can this SDK do?**
 
@@ -202,13 +166,11 @@ client.recordEvent('purchases', {
 ---
 
 
-## Compute
+## Compute - Keen Analysis JS
 
 Keen's powerful Compute API gives you fast answers to the questions that matter.
 
-This package contains [keen-analysis.js](https://github.com/keen/keen-analysis.js) as-is, and can be used interchangeably. If you only need compute functionality, we recommend using the standalone package.
-
-[Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
+[Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js).
 
 
 ### Running a Query
@@ -216,10 +178,9 @@ This package contains [keen-analysis.js](https://github.com/keen/keen-analysis.j
 Create a new `client` instance with your Project ID and Read Key, and use the `.query()` method to execute an ad-hoc query. This client instance is the core of the library and will be required for all API-related functionality.
 
 ```javascript
-import Keen from 'keen-js';
-// import Keen from 'keen-analysis';
+import KeenAnalysis from 'keen-analysis';
 
-const client = new Keen({
+const client = new KeenAnalysis({
   projectId: 'YOUR_PROJECT_ID',
   readKey: 'YOUR_READ_KEY'
 });
@@ -245,14 +206,12 @@ client
 * [Cached Datasets](https://github.com/keen/keen-analysis.js/blob/master/README.md#cached-datasets)
 * [All other API resources](https://github.com/keen/keen-analysis.js/blob/master/README.md#api-resources)
 
-**Documentation:** [Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js#getting-started).
+**Documentation:** [Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js).
 
 ---
 
 
-## Visualize
-
-This package contains [keen-dataviz.js](https://github.com/keen/keen-analysis.js) as-is, and can be used interchangeably.
+## Visualize - Keen Dataviz JS
 
 **Examples:** [keen.github.io/keen-dataviz.js](https://keen.github.io/keen-dataviz.js).
 

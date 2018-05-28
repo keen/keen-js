@@ -4,5 +4,4 @@
 .awspublish-*
 bower_components
 node_modules
-test/keen-unit-all.js
-test/unit/build/*
+demo-config.js
