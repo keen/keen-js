@@ -8,8 +8,6 @@ If you haven’t done so already, [login to Keen IO to create a project](https:/
 
 ### Installation
 
-Install this package from NPM:
-
 ```ssh
 npm install keen-js --save
 ```
@@ -20,9 +18,11 @@ Under the hood, this is simply a bundled release of the following packages:
 * [keen-analysis.js](https://github.com/keen/keen-analysis.js)
 * [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)
 
+## Use standalone packages for better performance
+
 ---
 
-## Stream - Keen Tracking JS
+# Stream Events - Keen Tracking JS
 
 **What is an event?** An event is a record of something important happening in the life of your app or service: like a click, a purchase, or a device activation.
 
@@ -127,7 +127,7 @@ Want to get up and running faster? This can also be achieved in the browser with
 
 ---
 
-### Node.js Event Recording (Back-end)
+### Record Node.js Events (Back-end)
 
 ```javascript
 const KeenTracking = require('keen-tracking');
@@ -167,7 +167,7 @@ client.recordEvent('purchases', {
 ---
 
 
-## Compute - Keen Analysis JS
+# Compute - Keen Analysis JS
 
 Keen's powerful Compute API gives you fast answers to the questions that matter.
 
@@ -212,67 +212,50 @@ client
 ---
 
 
-## Visualize - Keen Dataviz JS
+# Visualize - Keen Dataviz JS
 
 **Documentation:** [Full documentation is available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js).
 
 **Examples:** [keen.github.io/keen-dataviz.js](https://keen.github.io/keen-dataviz.js).
 
-### Rendering a Chart
+### Example
 
-```html
-<html>
-  <head>
-    <meta charset="utf-8">
-    <!-- Use keen-analysis.js to fetch query results -->
-    <script src="https://d26b395fwzu5fz.cloudfront.net/keen-analysis-2.0.0.min.js"></script>
+```javascript
+import KeenAnalysis from 'keen-analysis';
+import KeenDataviz from 'keen-dataviz';
 
-    <!-- Dataviz dependencies -->
-    <link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-2.0.4.min.css" rel="stylesheet" />
-    <script src="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-2.0.4.min.js"></script>
-  </head>
-  <body>
-    <!-- DOM Element -->
-    <div id="my-chart-div"></div>
+const chart = new KeenDataviz()
+  .el('#my-chart-div')
+  .colors(['red', 'orange', 'green'])
+  .height(500)
+  .title('New Customers per Week')
+  .type('area')
+  .prepare();
 
-    <!-- Create and Render -->
-    <script>
-      const chart = new Keen.Dataviz()
-        .el('#my-chart-div')
-        .colors(['red', 'orange', 'green'])
-        .height(500)
-        .title('New Customers per Week')
-        .type('metric')
-        .prepare();
+// Use keen-analysis.js to run a query
+// and pass the result into your chart:
+const client = new KeenAnalysis({
+  projectId: 'YOUR_PROJECT_ID',
+  readKey: 'YOUR_READ_KEY'
+});
 
-
-      // Use keen-analysis.js to run a query
-      // and pass the result into your chart:
-      const client = new Keen({
-        projectId: 'YOUR_PROJECT_ID',
-        readKey: 'YOUR_READ_KEY'
-      });
-
-      client
-        .query('count', {
-          event_collection: 'pageviews',
-          timeframe: 'this_14_days',
-          interval: 'daily'
-        })
-        .then(function(res){
-          // Handle the result
-          chart
-            .data(res)
-            .render();
-        })
-        .catch(function(err){
-          // Handle the error
-          chart
-            .message(err.message);
-        });
-    </script>
-  </body>
-</html>
+client
+  .query('count', {
+    event_collection: 'pageviews',
+    timeframe: 'this_7_days',
+    interval: 'daily'
+  })
+  .then(function(res){
+    // Handle the result
+    chart
+      .data(res)
+      .render();
+  })
+  .catch(function(err){
+    // Handle the error
+    chart
+      .message(err.message);
+  });
 ```
 
 ---
