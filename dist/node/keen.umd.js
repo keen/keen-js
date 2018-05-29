@@ -104,7 +104,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE__0__;
 /* 1 */
 /***/ (function(module) {
 
-module.exports = {"name":"keen-js","version":"4.3.1","license":"MIT","main":"dist/node/keen.umd.js","browser":"dist/keen.umd.js","style":"dist/keen.css","repository":{"type":"git","url":"https://github.com/keen/keen-js.git"},"scripts":{"start":"NODE_ENV=development webpack-dev-server","postcss-watch":"node_modules/postcss-cli/bin/postcss style/keen.css -o test/demo/keen.css --watch --config postcss.config.js","test":"jest","build":"NODE_ENV=production webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 webpack -p && npm run build:bundle && npm run build:node && npm run build:css && npm run build:css:min","build:bundle":"NODE_ENV=production BUNDLE=1 webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 BUNDLE=1 webpack -p ","build:node":"TARGET=node NODE_ENV=production webpack -p","build:css":"node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.css --config postcss.config.js","build:css:min":"OPTIMIZE_MINIMIZE=1 node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.min.css --config postcss.config.js","preversion":"npm run build","version":"git add .","postversion":"git push && git push --tags","profile":"webpack --profile --json > stats.json","analyze":"webpack-bundle-analyzer stats.json /dist"},"bugs":"https://github.com/keen/keen-js/issues","author":"Keen IO <team@keen.io> (https://keen.io/)","contributors":["Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)","Joanne Cheng <joanne@keen.io> (http://joannecheng.me)","Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"],"dependencies":{"keen-analysis":"^2.0.0","keen-dataviz":"^2.0.0","keen-tracking":"^2.0.0"},"devDependencies":{"autoprefixer":"^8.2.0","babel-loader":"^7.1.4","babel-plugin-transform-es2015-modules-commonjs":"^6.26.2","babel-plugin-transform-object-rest-spread":"^6.26.0","babel-preset-env":"^1.7.0","concurrently":"^3.5.1","cssnano":"^3.10.0","eslint":"^4.19.1","eslint-config-airbnb":"^16.1.0","eslint-loader":"^2.0.0","eslint-plugin-import":"^2.11.0","eslint-plugin-jsx-a11y":"^6.0.3","eslint-plugin-react":"^7.7.0","event-stream":"^3.1.7","gulp":"^3.8.10","gulp-awspublish":"0.0.23","gulp-rename":"^1.2.0","gulp-util":"^3.0.1","html-loader":"^0.5.5","jest":"^22.4.3","postcss":"^6.0.21","postcss-cli":"^5.0.0","postcss-cssnext":"^2.4.0","postcss-import":"^8.2.0","postcss-loader":"^2.1.3","precss":"^3.1.2","style-loader":"^0.20.3","webpack":"^4.5.0","webpack-bundle-analyzer":"^2.11.1","webpack-cli":"^2.0.13","webpack-dev-server":"^3.1.1"}};
+module.exports = {"name":"keen-js","version":"5.0.0","license":"MIT","main":"dist/node/keen.umd.js","browser":"dist/keen.umd.js","style":"dist/keen.css","repository":{"type":"git","url":"https://github.com/keen/keen-js.git"},"scripts":{"start":"NODE_ENV=development webpack-dev-server","postcss-watch":"node_modules/postcss-cli/bin/postcss style/keen.css -o test/demo/keen.css --watch --config postcss.config.js","test":"jest","build":"NODE_ENV=production webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 webpack -p && npm run build:bundle && npm run build:node && npm run build:css && npm run build:css:min","build:bundle":"NODE_ENV=production BUNDLE=1 webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 BUNDLE=1 webpack -p ","build:node":"TARGET=node NODE_ENV=production webpack -p","build:css":"node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.css --config postcss.config.js","build:css:min":"OPTIMIZE_MINIMIZE=1 node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.min.css --config postcss.config.js","preversion":"npm run build","version":"git add .","postversion":"git push && git push --tags","profile":"webpack --profile --json > stats.json","analyze":"webpack-bundle-analyzer stats.json /dist"},"bugs":"https://github.com/keen/keen-js/issues","author":"Keen IO <team@keen.io> (https://keen.io/)","contributors":["Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)","Joanne Cheng <joanne@keen.io> (http://joannecheng.me)","Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"],"dependencies":{"keen-analysis":"^2.0.0","keen-dataviz":"^2.0.0","keen-tracking":"^2.0.0"},"devDependencies":{"autoprefixer":"^8.2.0","babel-loader":"^7.1.4","babel-plugin-transform-es2015-modules-commonjs":"^6.26.2","babel-plugin-transform-object-rest-spread":"^6.26.0","babel-preset-env":"^1.7.0","concurrently":"^3.5.1","cssnano":"^3.10.0","eslint":"^4.19.1","eslint-config-airbnb":"^16.1.0","eslint-loader":"^2.0.0","eslint-plugin-import":"^2.11.0","eslint-plugin-jsx-a11y":"^6.0.3","eslint-plugin-react":"^7.7.0","event-stream":"^3.1.7","gulp":"^3.8.10","gulp-awspublish":"0.0.23","gulp-rename":"^1.2.0","gulp-util":"^3.0.1","html-loader":"^0.5.5","jest":"^22.4.3","postcss":"^6.0.21","postcss-cli":"^5.0.0","postcss-cssnext":"^2.4.0","postcss-import":"^8.2.0","postcss-loader":"^2.1.3","precss":"^3.1.2","style-loader":"^0.20.3","webpack":"^4.5.0","webpack-bundle-analyzer":"^2.11.1","webpack-cli":"^2.0.13","webpack-dev-server":"^3.1.1"}};
 
 /***/ }),
 /* 2 */
@@ -174,7 +174,7 @@ var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
-var env = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : typeof window !== 'undefined' ? window : {};
+var env = typeof global !== 'undefined' ? global : typeof self !== 'undefined' ? self : {};
 
 var extendKeenGlobalObject = function extendKeenGlobalObject(env) {
   env.Keen = Keen;
@@ -185,14 +185,13 @@ if ("undefined" !== 'undefined' && undefined || typeof KEEN_EXPOSE_AS_GLOBAL_OBJ
 }
 
 var Keen = _index2.default;
-Keen.Dataviz = _keenDataviz.Dataviz;
 Keen.Dataset = _keenDataviz.Dataset;
 
 module.exports = {
   default: Keen,
   Keen: Keen,
-  Dataviz: _keenDataviz.Dataviz,
-  Dataset: _keenDataviz.Dataset
+  Dataset: _keenDataviz.Dataset,
+  Query: Keen.Query
 };
 
 /***/ })
