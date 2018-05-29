@@ -5,9 +5,9 @@ let extendedPath = path.resolve(__dirname, 'dist');
 
 let fileName = 'keen';
 if (process.env.BUNDLE) {
-  file = `${file}.bundle`; // for loading via html script tag => window vars
+  fileName = `${fileName}.bundle`; // for loading via html script tag => window vars
 } else {
-  file = `${file}.umd`; // npm module
+  fileName = `${fileName}.umd`; // npm module
 }
 
 const entry = ( process.env.TARGET !== 'node' ) ? './lib/browser.js' : './lib/server.js' ;
@@ -86,6 +86,11 @@ module.exports = {
     watchContentBase: true,
   },
 
-  externals: {},
+  externals: process.env.BUNDLE ? {} : {
+    'keen-dataviz': 'keen-dataviz',
+    'keen-tracking': 'keen-tracking',
+    'keen-analysis': 'keen-analysis',
+    'keen-core': 'keen-core',
+  },
 
 };

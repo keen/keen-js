@@ -56,6 +56,7 @@ if (!sessionCookie.get('guest_id')) {
   sessionCookie.set('guest_id', helpers.getUniqueId());
 }
 
+// optional enrichment
 client.extendEvents(() => {
   return {
     geo: {
@@ -213,35 +214,44 @@ client
 
 ## Visualize - Keen Dataviz JS
 
-**Examples:** [keen.github.io/keen-dataviz.js](https://keen.github.io/keen-dataviz.js).
-
 **Documentation:** [Full documentation is available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js).
+
+**Examples:** [keen.github.io/keen-dataviz.js](https://keen.github.io/keen-dataviz.js).
 
 ### Rendering a Chart
 
 ```html
 <html>
   <head>
-    <link href="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.css" rel="stylesheet" />
-    <script src="https://d26b395fwzu5fz.cloudfront.net/4.3.0/keen.min.js"></script>
+    <meta charset="utf-8">
+    <!-- Use keen-analysis.js to fetch query results -->
+    <script src="https://d26b395fwzu5fz.cloudfront.net/keen-analysis-2.0.0.min.js"></script>
+
+    <!-- Dataviz dependencies -->
+    <link href="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-2.0.4.min.css" rel="stylesheet" />
+    <script src="https://d26b395fwzu5fz.cloudfront.net/keen-dataviz-2.0.4.min.js"></script>
   </head>
   <body>
     <!-- DOM Element -->
-    <div id='my-chart-div'></div>
+    <div id="my-chart-div"></div>
 
     <!-- Create and Render -->
     <script>
-      var client = new Keen({
+      const chart = new Keen.Dataviz()
+        .el('#my-chart-div')
+        .colors(['red', 'orange', 'green'])
+        .height(500)
+        .title('New Customers per Week')
+        .type('metric')
+        .prepare();
+
+
+      // Use keen-analysis.js to run a query
+      // and pass the result into your chart:
+      const client = new Keen({
         projectId: 'YOUR_PROJECT_ID',
         readKey: 'YOUR_READ_KEY'
       });
-
-      var chart = new Keen.Dataviz()
-        .el('#my-chart-div')
-        .height(180)
-        .title('Pageviews (14d)')
-        .type('area')
-        .prepare();
 
       client
         .query('count', {
@@ -249,12 +259,14 @@ client
           timeframe: 'this_14_days',
           interval: 'daily'
         })
-        .then(function(res) {
+        .then(function(res){
+          // Handle the result
           chart
             .data(res)
             .render();
         })
-        .catch(function(err) {
+        .catch(function(err){
+          // Handle the error
           chart
             .message(err.message);
         });
