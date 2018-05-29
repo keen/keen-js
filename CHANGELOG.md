@@ -12,6 +12,19 @@
 [{{ release-title }} ({{ version }})](https://github.com/keen/keen-dataviz.js/releases/tag/{{ version }})
 
 -->
+<a name="5.0.0"></a>
+# 5.0.0
+
+**Updates:**
+* updated dependencies
+
+## We strongly recommend you to use standalone packages:
+
+* [keen-tracking.js](https://github.com/keen/keen-tracking.js)
+* [keen-analysis.js](https://github.com/keen/keen-analysis.js)
+* [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)
+
+
 <a name="4.3.1"></a>
 # 4.3.1 Fixes
 
