@@ -1,0 +1,11 @@
+<script src="demo-config.js"></script>
+
+<link href="../../dist/keen.min.css" rel="stylesheet" />
+<script src="../../dist/keen.bundle.js"></script>
+
+<script>
+Keen.ready(function(){
+  const client = new Keen(demoConfig);
+  client.initAutoTracking();
+});
+</script>
