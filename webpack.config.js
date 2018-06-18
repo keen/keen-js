@@ -86,7 +86,7 @@ module.exports = {
     watchContentBase: true,
   },
 
-  externals: process.env.BUNDLE ? {} : {
+  externals: process.env.BUNDLE || process.env.NODE_ENV === 'development' ? {} : {
     'keen-dataviz': 'keen-dataviz',
     'keen-tracking': 'keen-tracking',
     'keen-analysis': 'keen-analysis',
