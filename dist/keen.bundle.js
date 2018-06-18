@@ -19944,7 +19944,7 @@ return /******/ (function(modules) { // webpackBootstrap
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 32);
+/******/ 	return __webpack_require__(__webpack_require__.s = 33);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -20390,27 +20390,27 @@ var _append = __webpack_require__(5);
 
 var append = _interopRequireWildcard(_append);
 
-var _delete = __webpack_require__(29);
+var _delete = __webpack_require__(30);
 
 var del = _interopRequireWildcard(_delete);
 
-var _filter = __webpack_require__(28);
+var _filter = __webpack_require__(29);
 
 var filter = _interopRequireWildcard(_filter);
 
-var _insert = __webpack_require__(27);
+var _insert = __webpack_require__(28);
 
 var insert = _interopRequireWildcard(_insert);
 
-var _select = __webpack_require__(26);
+var _select = __webpack_require__(27);
 
 var select = _interopRequireWildcard(_select);
 
-var _sort = __webpack_require__(25);
+var _sort = __webpack_require__(26);
 
 var sort = _interopRequireWildcard(_sort);
 
-var _update = __webpack_require__(24);
+var _update = __webpack_require__(25);
 
 var update = _interopRequireWildcard(_update);
 
@@ -20420,7 +20420,7 @@ var _analyses2 = _interopRequireDefault(_analyses);
 
 var _extend = __webpack_require__(2);
 
-var _parsers = __webpack_require__(23);
+var _parsers = __webpack_require__(24);
 
 var _parsers2 = _interopRequireDefault(_parsers);
 
@@ -21740,6 +21740,21 @@ function getDefaultType(parser) {
 Object.defineProperty(exports, "__esModule", {
   value: true
 });
+exports.valueAtDeepKey = valueAtDeepKey;
+function valueAtDeepKey(obj, is, value) {
+  if (typeof is == 'string') return valueAtDeepKey(obj, is.split('.'), value);else if (is.length == 1 && value !== undefined) return obj[is[0]] = value;else if (is.length == 0) return obj;else if (typeof is === 'undefined' || typeof obj[is[0]] === 'undefined') return null;else return valueAtDeepKey(obj[is[0]], is.slice(1), value);
+}
+
+/***/ }),
+/* 23 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
 
 var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
 
@@ -21765,7 +21780,7 @@ function flatten(ob) {
 };
 
 /***/ }),
-/* 23 */
+/* 24 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21778,7 +21793,9 @@ exports.default = initialize;
 
 var _each = __webpack_require__(0);
 
-var _flatten = __webpack_require__(22);
+var _flatten = __webpack_require__(23);
+
+var _object = __webpack_require__(22);
 
 var Dataset = void 0; /* injected */
 
@@ -21922,11 +21939,30 @@ function parseList() {
 function parseExtraction() {
   return function (res) {
     var dataset = new Dataset().type('extraction');
-    (0, _each.each)(res.result, function (record, i) {
+    // create header
+
+    var _loop = function _loop(i) {
+      var record = res.result[i];
       (0, _each.each)((0, _flatten.flatten)(record), function (value, key) {
         dataset.set([key, String(i + 1)], value);
       });
-    });
+    };
+
+    for (var i = 0; i < 1; i++) {
+      _loop(i);
+    }
+
+    // get keys of the Object
+    var names = Object.keys((0, _flatten.flatten)(res.result[0]));
+
+    for (var i = 1; i < res.result.length; i++) {
+      var record = [i + 1];
+      for (var iNames = 0; iNames < names.length; iNames++) {
+        record.push((0, _object.valueAtDeepKey)(res.result[i], names[iNames]));
+      }
+      dataset.matrix[String(i + 1)] = record;
+    }
+
     dataset.deleteColumn(0);
     return dataset;
   };
@@ -21946,7 +21982,7 @@ var parsers = {
 };
 
 /***/ }),
-/* 24 */
+/* 25 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22045,7 +22081,7 @@ function updateRow(q, input) {
 }
 
 /***/ }),
-/* 25 */
+/* 26 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22115,7 +22151,7 @@ function sortRows(str, comp) {
 }
 
 /***/ }),
-/* 26 */
+/* 27 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22152,7 +22188,7 @@ function selectRow(q) {
 }
 
 /***/ }),
-/* 27 */
+/* 28 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22254,7 +22290,7 @@ function insertRow(index, str, input) {
 }
 
 /***/ }),
-/* 28 */
+/* 29 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22304,7 +22340,7 @@ function filterRows(fn) {
 }
 
 /***/ }),
-/* 29 */
+/* 30 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22340,7 +22376,7 @@ function deleteRow(q) {
 }
 
 /***/ }),
-/* 30 */
+/* 31 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22847,7 +22883,7 @@ function domReady(fn) {
 exports.default = Dataviz;
 
 /***/ }),
-/* 31 */
+/* 32 */
 /***/ (function(module, exports) {
 
 var g;
@@ -22873,7 +22909,7 @@ module.exports = g;
 
 
 /***/ }),
-/* 32 */
+/* 33 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -22884,7 +22920,7 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.Dataset = exports.Dataviz = exports.extendKeenGlobalObject = undefined;
 
-var _index = __webpack_require__(30);
+var _index = __webpack_require__(31);
 
 Object.defineProperty(exports, 'Dataviz', {
   enumerable: true,
@@ -22913,7 +22949,7 @@ if ("boolean" !== 'undefined' && false || typeof KEEN_EXPOSE_AS_GLOBAL_OBJECT !=
 }
 
 exports.default = _index.Dataviz;
-/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(31)))
+/* WEBPACK VAR INJECTION */}.call(this, __webpack_require__(32)))
 
 /***/ })
 /******/ ]);
@@ -22924,7 +22960,7 @@ exports.default = _index.Dataviz;
 /* 2 */
 /***/ (function(module) {
 
-module.exports = {"name":"keen-js","version":"5.0.0","license":"MIT","main":"dist/node/keen.umd.js","browser":"dist/keen.umd.js","style":"dist/keen.css","repository":{"type":"git","url":"https://github.com/keen/keen-js.git"},"scripts":{"start":"NODE_ENV=development webpack-dev-server","postcss-watch":"node_modules/postcss-cli/bin/postcss style/keen.css -o test/demo/keen.css --watch --config postcss.config.js","test":"jest","build":"NODE_ENV=production webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 webpack -p && npm run build:bundle && npm run build:node && npm run build:css && npm run build:css:min","build:bundle":"NODE_ENV=production BUNDLE=1 webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 BUNDLE=1 webpack -p ","build:node":"TARGET=node NODE_ENV=production webpack -p","build:css":"node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.css --config postcss.config.js","build:css:min":"OPTIMIZE_MINIMIZE=1 node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.min.css --config postcss.config.js","preversion":"npm run build","version":"git add .","postversion":"git push && git push --tags","profile":"webpack --profile --json > stats.json","analyze":"webpack-bundle-analyzer stats.json /dist"},"bugs":"https://github.com/keen/keen-js/issues","author":"Keen IO <team@keen.io> (https://keen.io/)","contributors":["Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)","Joanne Cheng <joanne@keen.io> (http://joannecheng.me)","Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"],"dependencies":{"keen-analysis":"^2.0.0","keen-dataviz":"^2.0.0","keen-tracking":"^2.0.0"},"devDependencies":{"autoprefixer":"^8.2.0","babel-loader":"^7.1.4","babel-plugin-transform-es2015-modules-commonjs":"^6.26.2","babel-plugin-transform-object-rest-spread":"^6.26.0","babel-preset-env":"^1.7.0","concurrently":"^3.5.1","cssnano":"^3.10.0","eslint":"^4.19.1","eslint-config-airbnb":"^16.1.0","eslint-loader":"^2.0.0","eslint-plugin-import":"^2.11.0","eslint-plugin-jsx-a11y":"^6.0.3","eslint-plugin-react":"^7.7.0","event-stream":"^3.1.7","gulp":"^3.8.10","gulp-awspublish":"0.0.23","gulp-rename":"^1.2.0","gulp-util":"^3.0.1","html-loader":"^0.5.5","jest":"^22.4.3","postcss":"^6.0.21","postcss-cli":"^5.0.0","postcss-cssnext":"^2.4.0","postcss-import":"^8.2.0","postcss-loader":"^2.1.3","precss":"^3.1.2","style-loader":"^0.20.3","webpack":"^4.5.0","webpack-bundle-analyzer":"^2.11.1","webpack-cli":"^2.0.13","webpack-dev-server":"^3.1.1"}};
+module.exports = {"name":"keen-js","version":"5.0.1","license":"MIT","main":"dist/node/keen.umd.js","browser":"dist/keen.umd.js","style":"dist/keen.css","repository":{"type":"git","url":"https://github.com/keen/keen-js.git"},"scripts":{"start":"NODE_ENV=development webpack-dev-server","postcss-watch":"node_modules/postcss-cli/bin/postcss style/keen.css -o test/demo/keen.css --watch --config postcss.config.js","test":"jest","build":"NODE_ENV=production webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 webpack -p && npm run build:bundle && npm run build:node && npm run build:css && npm run build:css:min","build:bundle":"NODE_ENV=production BUNDLE=1 webpack -p && NODE_ENV=production OPTIMIZE_MINIMIZE=1 BUNDLE=1 webpack -p ","build:node":"TARGET=node NODE_ENV=production webpack -p","build:css":"node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.css --config postcss.config.js","build:css:min":"OPTIMIZE_MINIMIZE=1 node_modules/postcss-cli/bin/postcss style/keen.css -o dist/keen.min.css --config postcss.config.js","preversion":"npm run build","version":"git add .","postversion":"git push && git push --tags","profile":"webpack --profile --json > stats.json","analyze":"webpack-bundle-analyzer stats.json /dist"},"bugs":"https://github.com/keen/keen-js/issues","author":"Keen IO <team@keen.io> (https://keen.io/)","contributors":["Dustin Larimer <dustin@keen.io> (https://github.com/dustinlarimer)","Joanne Cheng <joanne@keen.io> (http://joannecheng.me)","Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"],"dependencies":{"keen-analysis":"^2.0.0","keen-dataviz":"^2.0.6","keen-tracking":"^2.0.1"},"devDependencies":{"autoprefixer":"^8.2.0","babel-loader":"^7.1.4","babel-plugin-transform-es2015-modules-commonjs":"^6.26.2","babel-plugin-transform-object-rest-spread":"^6.26.0","babel-preset-env":"^1.7.0","concurrently":"^3.5.1","cssnano":"^3.10.0","eslint":"^4.19.1","eslint-config-airbnb":"^16.1.0","eslint-loader":"^2.0.0","eslint-plugin-import":"^2.11.0","eslint-plugin-jsx-a11y":"^6.0.3","eslint-plugin-react":"^7.7.0","event-stream":"^3.1.7","gulp":"^3.8.10","gulp-awspublish":"0.0.23","gulp-rename":"^1.2.0","gulp-util":"^3.0.1","html-loader":"^0.5.5","jest":"^22.4.3","postcss":"^6.0.21","postcss-cli":"^5.0.0","postcss-cssnext":"^2.4.0","postcss-import":"^8.2.0","postcss-loader":"^2.1.3","precss":"^3.1.2","style-loader":"^0.20.3","webpack":"^4.5.0","webpack-bundle-analyzer":"^2.11.1","webpack-cli":"^2.0.13","webpack-dev-server":"^3.1.1"}};
 
 /***/ }),
 /* 3 */

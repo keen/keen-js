@@ -1,6 +1,6 @@
 {
   "name": "keen-js",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "license": "MIT",
   "main": "dist/node/keen.umd.js",
   "browser": "dist/keen.umd.js",
