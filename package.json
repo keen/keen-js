@@ -1,14 +1,13 @@
 {
   "name": "keen-js",
-  "version": "5.0.5",
+  "version": "6.0.0",
   "license": "MIT",
   "main": "",
   "repository": {
     "type": "git",
     "url": "https://github.com/keen/keen-js.git"
   },
-  "scripts": {
-  },
+  "scripts": {},
   "bugs": "https://github.com/keen/keen-js/issues",
   "author": "Keen IO <team@keen.io> (https://keen.io/)",
   "contributors": [
@@ -16,8 +15,6 @@
     "Joanne Cheng <joanne@keen.io> (http://joannecheng.me)",
     "Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"
   ],
-  "dependencies": {
-  },
-  "devDependencies": {
-  }
+  "dependencies": {},
+  "devDependencies": {}
 }
