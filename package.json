@@ -32,9 +32,9 @@
     "Adam Kasprowicz <adam.kasprowicz@keen.io> (https://github.com/adamkasprowicz)"
   ],
   "dependencies": {
-    "keen-analysis": "^2.0.0",
-    "keen-dataviz": "^2.0.6",
-    "keen-tracking": "^2.0.1"
+    "keen-analysis": "^3.1.2",
+    "keen-dataviz": "^3.0.21",
+    "keen-tracking": "^4.0.5"
   },
   "devDependencies": {
     "autoprefixer": "^8.2.0",
