@@ -1,17 +1,12 @@
 <!--
 <a name="{{ version }}"></a>
 # {{ version }} {{ title }}
-
-**Stream: [keen-tracking.js](https://github.com/keen/keen-tracking.js)**
-[Release: {{ title }} ({{ version }})](https://github.com/keen/keen-tracking.js/releases/tag/{{ version }})
-
-**Compute: [keen-analysis.js](https://github.com/keen/keen-analysis.js)**
-[{{ release-title }} ({{ version }})](https://github.com/keen/keen-analysis.js/releases/tag/{{ version }})
-
-**Visualize: [keen-dataviz.js](https://github.com/keen/keen-dataviz.js)**
-[{{ release-title }} ({{ version }})](https://github.com/keen/keen-dataviz.js/releases/tag/{{ version }})
-
 -->
+<a name="5.0.0"></a>
+# 6.0.0
+
+* Clearer install instructions
+
 <a name="5.0.0"></a>
 # 5.0.0
 
