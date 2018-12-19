@@ -1,44 +1,26 @@
 # Keen JavaScript SDK
 
-### Get Project ID & API Keys
+### Get API Keys
 
-If you haven’t done so already, [login to Keen to create a project](https://keen.io/login?s=gh_js). The Project ID and API Keys are available on the Access page of the Project Console. You will need these for the next steps.
+If you haven’t done so already, [login to Keen to create a project](https://keen.io/login?s=gh_js). The Project ID and API Keys are available on the Access page of the Project Console.
 
-# Write, Track, Stream Events - Keen Tracking JS
+## Keen Tracking JS
 
-**What is an event?** An event is a record of something important happening in the life of your app or service: like a click, a purchase, or a device activation.
+A JavaScript tracking library for Keen. Track events, user actions, clicks, pageviews, conversions and more!
 
-### Installation
+https://github.com/keen/keen-tracking.js
 
-```ssh
-npm install keen-tracking --save
-```
+## Keen Analysis JS
 
-[Full documentation is available in the keen-tracking.js repo](https://github.com/keen/keen-tracking.js).
+A JavaScript client for Keen. Make queries with ease!
 
-# Read, Query, Compute - Keen Analysis JS
+https://github.com/keen/keen-analysis.js
 
-Keen's powerful API gives you fast answers to the questions that matter.
+## Keen Dataviz JS
 
-### Installation
+A JavaScript data visualization library for Keen. Create amazing interactive charts!
 
-```ssh
-npm install keen-analysis --save
-```
-
-[Full documentation is available in the keen-analysis.js repo](https://github.com/keen/keen-analysis.js).
-
-# Visualize - Keen Dataviz JS
-
-Create amazing charts with powerful tools like D3/C3.
-
-### Installation
-
-```ssh
-npm install keen-dataviz --save
-```
-
-[Full documentation is available in the keen-dataviz.js repo](https://github.com/keen/keen-dataviz.js).
+https://github.com/keen/keen-dataviz.js
 
 ---
 
