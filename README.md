@@ -22,6 +22,11 @@ A JavaScript data visualization library for Keen. Create amazing interactive cha
 
 https://github.com/keen/keen-dataviz.js
 
+## Keen Explorer JS
+
+https://github.com/keen/explorer
+
+
 ---
 
 ### Keen-js deprecated versions
